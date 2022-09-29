@@ -9,8 +9,7 @@ internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 	public void Configure(EntityTypeBuilder<Deal> builder)
 	{
 		builder.Property(p => p.DealStatus)
-			.HasMaxLength(StringLengths.DealStatus)
-			.IsRequired();
+			.HasMaxLength(StringLengths.DealStatus);
 
 		builder.Property(p => p.EndDate)
 			.IsRequired();

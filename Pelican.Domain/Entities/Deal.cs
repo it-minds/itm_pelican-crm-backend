@@ -7,7 +7,7 @@ public class Deal : Entity, ITimeTracked
 	public Client Client { get; set; }
 	public Guid ClientId { get; set; }
 	public ICollection<DealContact> DealContacts { get; set; }
-	public decimal Revenue { get; set; }
+	public decimal? Revenue { get; set; }
 	public string DealStatus { get; set; }
 	public DateOnly EndDate { get; set; }
 	public long CreatedAt { get; set; }
@@ -16,7 +16,7 @@ public class Deal : Entity, ITimeTracked
 	public Deal(Guid id, ICollection<AccountManagerDeal> accountManagerDeals,
 		Client client,
 		ICollection<DealContact> dealContacts,
-		decimal revenue,
+		decimal? revenue,
 		string dealStatus,
 		DateOnly endDate,
 		Guid clientId) : base(id)

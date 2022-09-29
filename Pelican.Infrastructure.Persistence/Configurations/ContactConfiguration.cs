@@ -20,8 +20,7 @@ internal class ContactConfiguration : IEntityTypeConfiguration<Contact>
 			.HasMaxLength(StringLengths.Url);
 
 		builder.Property(p => p.PhoneNumber)
-			.HasMaxLength(StringLengths.PhoneNumber)
-			.IsRequired();
+			.HasMaxLength(StringLengths.PhoneNumber);
 
 		builder.HasMany(a => a.ClientContacts)
 			.WithOne(e => e.Contact)

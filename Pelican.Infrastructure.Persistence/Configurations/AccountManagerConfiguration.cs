@@ -13,20 +13,17 @@ internal class AccountManagerConfiguration : IEntityTypeConfiguration<AccountMan
 			.IsRequired();
 
 		builder.Property(p => p.PictureUrl)
-			.HasMaxLength(StringLengths.Url)
-			.IsRequired();
+			.HasMaxLength(StringLengths.Url);
 
 		builder.Property(p => p.Email)
 			.HasMaxLength(StringLengths.Email)
 			.IsRequired();
 
 		builder.Property(p => p.LinkedInUrl)
-			.HasMaxLength(StringLengths.Url)
-			.IsRequired();
+			.HasMaxLength(StringLengths.Url);
 
 		builder.Property(p => p.PhoneNumber)
-			.HasMaxLength(StringLengths.PhoneNumber)
-			.IsRequired();
+			.HasMaxLength(StringLengths.PhoneNumber);
 
 		builder.HasOne(a => a.Supplier)
 			.WithMany(e => e.AccountManagers)

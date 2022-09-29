@@ -13,20 +13,17 @@ internal class ClientConfiguration : IEntityTypeConfiguration<Client>
 			.IsRequired();
 
 		builder.Property(p => p.PictureUrl)
-			.HasMaxLength(StringLengths.Url)
-			.IsRequired();
+			.HasMaxLength(StringLengths.Url);
 
 		builder.Property(p => p.OfficeLocation)
-			.HasMaxLength(StringLengths.OfficeLocation)
-			.IsRequired();
+			.HasMaxLength(StringLengths.OfficeLocation);
 
 		builder.Property(p => p.Segment)
-			.HasMaxLength(StringLengths.Industry)
-			.IsRequired();
+			.HasMaxLength(StringLengths.Industry);
 
 		builder.Property(p => p.Classification)
-			.HasMaxLength(StringLengths.Classification)
-			.IsRequired();
+			.HasMaxLength(StringLengths.Classification);
+
 
 		builder.HasMany(a => a.ClientContacts)
 			.WithOne(a => a.Client)

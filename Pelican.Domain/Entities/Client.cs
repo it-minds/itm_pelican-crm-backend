@@ -9,7 +9,7 @@ public class Client : Entity, ITimeTracked
 	public string Segment { get; set; }
 	public string Classification { get; set; }
 	public ICollection<Deal> Deals { get; set; }
-	public ICollection<ClientContactPerson> ClientContactPersons { get; set; }
+	public ICollection<ClientContact> ClientContacts { get; set; }
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
 
@@ -19,7 +19,7 @@ public class Client : Entity, ITimeTracked
 		string segment,
 		string classification,
 		ICollection<Deal> deals,
-		ICollection<ClientContactPerson> clientContactPersons) : base(id)
+		ICollection<ClientContact> clientContacts) : base(id)
 	{
 		Name = name;
 		PictureUrl = pictureUrl;
@@ -27,6 +27,6 @@ public class Client : Entity, ITimeTracked
 		Segment = segment;
 		Classification = classification;
 		Deals = deals;
-		ClientContactPersons = clientContactPersons;
+		ClientContacts = clientContacts;
 	}
 }

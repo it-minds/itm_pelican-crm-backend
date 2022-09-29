@@ -5,7 +5,8 @@ public class Deal : Entity, ITimeTracked
 {
 	public ICollection<AccountManagerDeal> AccountManagerDeals { get; set; }
 	public Client Client { get; set; }
-	public ICollection<DealContactPerson> DealContactPersons { get; set; }
+	public Guid ClientId { get; set; }
+	public ICollection<DealContact> DealContacts { get; set; }
 	public decimal Revenue { get; set; }
 	public string DealStatus { get; set; }
 	public DateOnly EndDate { get; set; }
@@ -14,16 +15,18 @@ public class Deal : Entity, ITimeTracked
 
 	public Deal(Guid id, ICollection<AccountManagerDeal> accountManagerDeals,
 		Client client,
-		ICollection<DealContactPerson> dealContactPersons,
+		ICollection<DealContact> dealContacts,
 		decimal revenue,
 		string dealStatus,
-		DateOnly endDate) : base(id)
+		DateOnly endDate,
+		Guid clientId) : base(id)
 	{
 		AccountManagerDeals = accountManagerDeals;
 		Client = client;
-		DealContactPersons = dealContactPersons;
+		DealContacts = dealContacts;
 		Revenue = revenue;
 		DealStatus = dealStatus;
 		EndDate = endDate;
+		ClientId = clientId;
 	}
 }

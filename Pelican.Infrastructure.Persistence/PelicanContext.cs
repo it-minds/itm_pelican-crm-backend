@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.InMemory.Infrastructure.Internal;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Primitives;
 
@@ -15,11 +14,8 @@ public class PelicanContext : DbContext
 	public DbSet<Deal> Deals { get; set; }
 	public DbSet<DealContactPerson> DealContactPersons { get; set; }
 	public DbSet<Supplier> Suppliers { get; set; }
-	private readonly bool _inMemory;
-	public PelicanContext(DbContextOptions<PelicanContext> options) : base(options)
-	{
-		_inMemory = options.Extensions.Any(e => e is InMemoryOptionsExtension);
-	}
+	public PelicanContext(DbContextOptions<PelicanContext> options) : base(options) { }
+
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
@@ -27,48 +23,24 @@ public class PelicanContext : DbContext
 
 	public override int SaveChanges()
 	{
-		if (_inMemory)
-		{
-			this.ValidateIndexes();
-			this.ValidateForeignKeys();
-		}
-
 		SetTimeTrackedValues();
 		return base.SaveChanges();
 	}
 
 	public override int SaveChanges(bool acceptAllChangesOnSuccess)
 	{
-		if (_inMemory)
-		{
-			this.ValidateIndexes();
-			this.ValidateForeignKeys();
-		}
-
 		SetTimeTrackedValues();
 		return base.SaveChanges(acceptAllChangesOnSuccess);
 	}
 
 	public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
 	{
-		if (_inMemory)
-		{
-			this.ValidateIndexes();
-			this.ValidateForeignKeys();
-		}
-
 		SetTimeTrackedValues();
 		return base.SaveChangesAsync(cancellationToken);
 	}
 
 	public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
 	{
-		if (_inMemory)
-		{
-			this.ValidateIndexes();
-			this.ValidateForeignKeys();
-		}
-
 		SetTimeTrackedValues();
 		return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
 	}

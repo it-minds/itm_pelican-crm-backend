@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Pelican.Application\Pelican.Application.csproj" />
     <ProjectReference Include="..\Pelican.Infrastructure.Persistence\Pelican.Infrastructure.Persistence.csproj" />
+    <ProjectReference Include="..\Pelican.Presentation.GraphQL\Pelican.Presentation.GraphQL.csproj" />
   </ItemGroup>
 
   <ItemGroup>

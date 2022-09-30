@@ -9,10 +9,10 @@ public class PelicanContext : DbContext
 	public DbSet<AccountManager> AccountManagers { get; set; }
 	public DbSet<AccountManagerDeal> AccountManagerDeals { get; set; }
 	public DbSet<Client> Clients { get; set; }
-	public DbSet<ClientContact> ClientContactPersons { get; set; }
-	public DbSet<Contact> ContactPersons { get; set; }
+	public DbSet<ClientContact> ClientContacts { get; set; }
+	public DbSet<Contact> Contacts { get; set; }
 	public DbSet<Deal> Deals { get; set; }
-	public DbSet<DealContact> DealContactPersons { get; set; }
+	public DbSet<DealContact> DealContacs { get; set; }
 	public DbSet<Supplier> Suppliers { get; set; }
 	public string DbPath { get; }
 	public PelicanContext(DbContextOptions<PelicanContext> options) : base(options)

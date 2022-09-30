@@ -7,12 +7,6 @@ internal class DealContactConfiguration : IEntityTypeConfiguration<DealContact>
 {
 	public void Configure(EntityTypeBuilder<DealContact> builder)
 	{
-		builder.Property(p => p.ContactId)
-			.IsRequired();
-
-		builder.Property(p => p.DealId)
-			.IsRequired();
-
 		builder.Property(p => p.IsActive)
 			.IsRequired();
 

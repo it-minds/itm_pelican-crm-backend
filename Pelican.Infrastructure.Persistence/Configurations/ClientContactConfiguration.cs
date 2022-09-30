@@ -7,12 +7,6 @@ internal class ClientContactConfiguration : IEntityTypeConfiguration<ClientConta
 {
 	public void Configure(EntityTypeBuilder<ClientContact> builder)
 	{
-		builder.Property(p => p.ContactId)
-			.IsRequired();
-
-		builder.Property(p => p.ClientId)
-			.IsRequired();
-
 		builder.Property(p => p.IsActive)
 			.IsRequired();
 

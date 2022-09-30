@@ -14,12 +14,17 @@ public class PelicanContext : DbContext
 	public DbSet<Deal> Deals { get; set; }
 	public DbSet<DealContact> DealContactPersons { get; set; }
 	public DbSet<Supplier> Suppliers { get; set; }
-	public PelicanContext(DbContextOptions<PelicanContext> options) : base(options) { }
+	public string DbPath { get; }
+	public PelicanContext(DbContextOptions<PelicanContext> options) : base(options)
+	{
+	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
+		modelBuilder.ApplyConfigurationsFromAssembly(typeof(PelicanContext).Assembly);
 	}
+
 
 	public override int SaveChanges()
 	{
@@ -76,5 +81,6 @@ public class PelicanContext : DbContext
 		SetCreatedAtOnAddedEntities();
 		SetLastUpdatedAtOnUpdatedEntities();
 	}
+
 
 }

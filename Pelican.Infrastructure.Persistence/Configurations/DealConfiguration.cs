@@ -12,7 +12,11 @@ internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 			.HasMaxLength(StringLengths.DealStatus);
 
 		builder.Property(p => p.EndDate)
+			.HasColumnType("Date")
 			.IsRequired();
+
+		builder.Property(p => p.Revenue)
+			.HasColumnType("decimal(19,4)");
 
 		builder.HasMany(a => a.AccountManagerDeals)
 			.WithOne(e => e.Deal)

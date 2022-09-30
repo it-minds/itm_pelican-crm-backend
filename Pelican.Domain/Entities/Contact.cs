@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Primitives;
+﻿using System.Collections.ObjectModel;
+using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
 public class Contact : Entity, ITimeTracked
@@ -15,17 +16,15 @@ public class Contact : Entity, ITimeTracked
 
 	public Contact(Guid id, string name,
 		string? phoneNumber,
-		string? email,
-		string? linkedInUrl,
-		ICollection<ClientContact> clientContacts,
-		ICollection<DealContact> dealContacts, string jobTitle) : base(id)
+		string email,
+		string? linkedInUrl, string jobTitle) : base(id)
 	{
 		Name = name;
 		PhoneNumber = phoneNumber;
 		Email = email;
 		LinkedInUrl = linkedInUrl;
-		ClientContacts = clientContacts;
-		DealContacts = dealContacts;
+		ClientContacts = new Collection<ClientContact>();
+		DealContacts = new Collection<DealContact>();
 		JobTitle = jobTitle;
 	}
 }

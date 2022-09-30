@@ -20,9 +20,7 @@ public class Supplier : Entity, ITimeTracked
 		string? phoneNumber,
 		string? email,
 		string? linkedInUrl,
-		string? websiteUrl,
-		ICollection<Location>? officeLocations,
-		ICollection<AccountManager>? accountManagers) : base(id)
+		string? websiteUrl) : base(id)
 	{
 		Name = name;
 		PictureUrl = pictureUrl;
@@ -30,7 +28,5 @@ public class Supplier : Entity, ITimeTracked
 		Email = email;
 		LinkedInUrl = linkedInUrl;
 		WebsiteUrl = websiteUrl;
-		OfficeLocations = officeLocations;
-		AccountManagers = accountManagers;
 	}
 }

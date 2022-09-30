@@ -1,14 +1,16 @@
-﻿using Pelican.Presentation.Api.Extension;
+﻿using Pelican.Infrastructure.Persistence;
+using Pelican.Presentation.Api.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.ConfigureRepositoryWrapper();
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddPersistince(builder.Configuration);
+
 
 var app = builder.Build();
 

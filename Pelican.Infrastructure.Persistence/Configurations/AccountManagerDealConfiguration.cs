@@ -7,12 +7,6 @@ internal class AccountManagerDealConfiguration : IEntityTypeConfiguration<Accoun
 {
 	public void Configure(EntityTypeBuilder<AccountManagerDeal> builder)
 	{
-		builder.Property(p => p.AccountManagerId)
-			.IsRequired();
-
-		builder.Property(p => p.DealId)
-			.IsRequired();
-
 		builder.Property(p => p.IsActive)
 			.IsRequired();
 

@@ -10,4 +10,5 @@ public interface IRepositoryWrapper
 	IDealRepository Deal { get; }
 	ILocationRepository Location { get; }
 	ISupplierRepository Supplier { get; }
+	void Save();
 }

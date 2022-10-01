@@ -1,12 +1,33 @@
-﻿using Pelican.Infrastructure.Persistence;
+﻿var allowedCorsOrigins = "AllowedCorsOrigins";
+using Pelican.Infrastructure.Persistence;
 using Pelican.Presentation.Api.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.ConfigureRepositoryWrapper();
+
+builder.Services.AddHubSpot(builder.Configuration);
+
+builder
+	.Services
+	.AddCors(options => options
+		.AddPolicy(name: allowedCorsOrigins, policy => policy
+			.WithOrigins("https://localhost")));
+
+
+//builder
+//	.Services
+//	.Scan(scan => scan
+//		.FromAssemblies(Pelican.Infrastructure.HubSpot.AssemblyReference.Assembly)
+//		.AddClasses(false)
+//		.AsImplementedInterfaces()
+//		.WithScopedLifetime());
+
+
+
+builder.Services.AddMediatR(Pelican.Application.AssemblyReference.Assembly);
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddPersistince(builder.Configuration);
@@ -22,6 +43,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(allowedCorsOrigins);
 
 app.UseAuthorization();
 

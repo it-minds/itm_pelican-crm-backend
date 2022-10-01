@@ -1,9 +1,9 @@
 ﻿namespace Pelican.Infrastructure.HubSpot;
+
 public sealed class HubSpotSettings
 {
-	public string? ApiKey { get; set; }
 	public string? BaseUrl { get; set; }
-
+	public string? RefeshToken { get; set; }
 	public HubSpotAppSettings? App { get; set; }
 }
 

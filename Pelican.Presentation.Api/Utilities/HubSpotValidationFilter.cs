@@ -9,11 +9,11 @@ using Pelican.Infrastructure.HubSpot;
 namespace Pelican.Presentation.Api.Utilities;
 
 // https://developers.hubspot.com/docs/api/webhooks/validating-requests
-public sealed class HubSpotHookValidationFilter : IResourceFilter
+public sealed class HubSpotValidationFilter : IResourceFilter
 {
-	private readonly ILogger<HubSpotHookValidationFilter> _logger;
+	private readonly ILogger<HubSpotValidationFilter> _logger;
 	private readonly HubSpotSettings _settings;
-	public HubSpotHookValidationFilter(IOptions<HubSpotSettings> options, ILogger<HubSpotHookValidationFilter> logger)
+	public HubSpotValidationFilter(IOptions<HubSpotSettings> options, ILogger<HubSpotValidationFilter> logger)
 	{
 		_logger = logger;
 		_settings = options.Value;

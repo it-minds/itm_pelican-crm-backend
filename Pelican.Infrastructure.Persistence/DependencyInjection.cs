@@ -8,7 +8,7 @@ public static class DependencyInjection
 	public static IServiceCollection AddPersistince(this IServiceCollection services, IConfiguration configuration)
 	{
 		services.AddDbContext<PelicanContext>(options => options.UseSqlServer(configuration.GetConnectionString("myLocalDb"),
-			b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)), ServiceLifetime.Transient);
+			b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)), ServiceLifetime.Scoped);
 		return services;
 	}
 }

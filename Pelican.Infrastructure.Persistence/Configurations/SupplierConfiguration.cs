@@ -8,6 +8,9 @@ internal class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
 {
 	public void Configure(EntityTypeBuilder<Supplier> builder)
 	{
+		builder.ToTable("Suppliers");
+
+
 		builder.Property(p => p.Name)
 			.HasMaxLength(StringLengths.Name)
 			.IsRequired();

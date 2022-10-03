@@ -8,6 +8,8 @@ internal class ClientConfiguration : IEntityTypeConfiguration<Client>
 {
 	public void Configure(EntityTypeBuilder<Client> builder)
 	{
+		builder.ToTable("Clients");
+
 		builder.Property(p => p.Name)
 			.HasMaxLength(StringLengths.Name)
 			.IsRequired();

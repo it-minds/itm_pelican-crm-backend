@@ -1,8 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using Pelican.Domain.Primitives;
+﻿using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
-public class AccountManager : Entity, ITimeTracked
+public class AccountManager : Entity<Guid>, ITimeTracked
 {
 	public string Name { get; set; }
 	public string? PictureUrl { get; set; }
@@ -14,21 +13,9 @@ public class AccountManager : Entity, ITimeTracked
 	public ICollection<AccountManagerDeal> AccountManagerDeals { get; set; }
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
-
-	public AccountManager(Guid id, string name,
-		string? pictureUrl,
-		string? phoneNumber,
-		string email,
-		string? linkedInUrl,
-		Guid supplierId) : base(id)
+	public AccountManager()
 	{
-		Name = name;
-		PictureUrl = pictureUrl;
-		PhoneNumber = phoneNumber;
-		Email = email;
-		LinkedInUrl = linkedInUrl;
-		SupplierId = supplierId;
-		AccountManagerDeals = new Collection<AccountManagerDeal>();
+		Id = Guid.NewGuid();
 	}
 
 }

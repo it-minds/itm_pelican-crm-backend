@@ -8,6 +8,8 @@ internal class LocationConfiguration : IEntityTypeConfiguration<Location>
 {
 	public void Configure(EntityTypeBuilder<Location> builder)
 	{
+		builder.ToTable("Locations");
+
 		builder.Property(p => p.CityName)
 			.HasMaxLength(StringLengths.OfficeLocation)
 			.IsRequired();

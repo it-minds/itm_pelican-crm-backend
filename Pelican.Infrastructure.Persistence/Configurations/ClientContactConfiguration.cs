@@ -7,6 +7,8 @@ internal class ClientContactConfiguration : IEntityTypeConfiguration<ClientConta
 {
 	public void Configure(EntityTypeBuilder<ClientContact> builder)
 	{
+		builder.ToTable("ClientContacts");
+
 		builder.Property(p => p.IsActive)
 			.IsRequired();
 

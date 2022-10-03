@@ -1,8 +1,13 @@
 ﻿namespace Pelican.Domain.Entities;
 using Pelican.Domain.Primitives;
 
-public class AccountManagerDeal : Entity, ITimeTracked
+public class AccountManagerDeal : Entity<Guid>, ITimeTracked
 {
+	public AccountManagerDeal()
+	{
+		Id = Guid.NewGuid();
+	}
+
 	public Guid AccountManagerId { get; set; }
 	public AccountManager? AccountManager { get; set; }
 	public Deal? Deal { get; set; }
@@ -10,13 +15,4 @@ public class AccountManagerDeal : Entity, ITimeTracked
 	public bool IsActive { get; set; }
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
-
-	public AccountManagerDeal(Guid id, Guid accountManagerId,
-		Guid dealId,
-		bool isActive) : base(id)
-	{
-		AccountManagerId = accountManagerId;
-		DealId = dealId;
-		IsActive = isActive;
-	}
 }

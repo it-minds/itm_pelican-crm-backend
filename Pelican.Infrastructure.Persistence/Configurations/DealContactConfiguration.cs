@@ -7,6 +7,8 @@ internal class DealContactConfiguration : IEntityTypeConfiguration<DealContact>
 {
 	public void Configure(EntityTypeBuilder<DealContact> builder)
 	{
+		builder.ToTable("DealContacts");
+
 		builder.Property(p => p.IsActive)
 			.IsRequired();
 

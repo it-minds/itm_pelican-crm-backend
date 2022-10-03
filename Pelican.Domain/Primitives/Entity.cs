@@ -1,9 +1,5 @@
 ﻿namespace Pelican.Domain.Primitives;
-public abstract class Entity
+public abstract class Entity<TKey>
 {
-	public Guid Id { get; init; }
-	public Entity(Guid id)
-	{
-		Id = id;
-	}
+	public TKey Id { get; init; }
 }

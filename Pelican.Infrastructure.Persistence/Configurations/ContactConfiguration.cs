@@ -8,6 +8,8 @@ internal class ContactConfiguration : IEntityTypeConfiguration<Contact>
 {
 	public void Configure(EntityTypeBuilder<Contact> builder)
 	{
+		builder.ToTable("Contacts");
+
 		builder.Property(p => p.Name)
 			.HasMaxLength(StringLengths.Name)
 			.IsRequired();

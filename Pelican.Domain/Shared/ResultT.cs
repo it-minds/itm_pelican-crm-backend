@@ -12,5 +12,5 @@ public class Result<TValue> : Result
 		? _value!
 		: throw new InvalidOperationException("The value of a failure result can not be accessed");
 
-	public static implicit operator Result<TValue>(TValue? value) => Create(value);
+	public static implicit operator Result<TValue>(TValue value) => Success(value);
 }

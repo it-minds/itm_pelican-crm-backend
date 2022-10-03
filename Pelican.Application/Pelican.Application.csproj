@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="HubSpot\Commands\PropertyChange\**" />
+    <EmbeddedResource Remove="HubSpot\Commands\PropertyChange\**" />
+    <None Remove="HubSpot\Commands\PropertyChange\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.2.2" />
     <PackageReference Include="MediatR" Version="11.0.0" />
     <PackageReference Include="RestSharp" Version="108.0.2" />

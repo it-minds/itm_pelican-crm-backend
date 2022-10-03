@@ -1,13 +1,12 @@
-﻿using MediatR;
-using Pelican.Application.Abstractions.Messaging;
+﻿using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Shared;
 using RestSharp;
 
-namespace Pelican.Application.HubSpot.Command.NewInstallation;
+namespace Pelican.Application.HubSpot.Commands.NewInstallation;
 
-internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstallationCommand, Unit>
+internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstallationCommand>
 {
-	public async Task<Result<Unit>> Handle(NewInstallationCommand command, CancellationToken cancellationToken)
+	public async Task<Result> Handle(NewInstallationCommand command, CancellationToken cancellationToken)
 	{
 		var client = new RestClient(command.BaseUrl);
 
@@ -22,8 +21,11 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 
 		RestResponse response = await client.ExecutePostAsync(request, cancellationToken);
 
-		Console.WriteLine(response.Content);
-
-		return Unit.Value;
+		return response.IsSuccessful
+			? Result.Success()
+			: Result.Failure(
+				new Error(
+					response.StatusCode.ToString(),
+					response.ErrorMessage!));
 	}
 }

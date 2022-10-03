@@ -10,23 +10,33 @@ public class Result
 		Error = error;
 	}
 
-	
+
 	public bool IsSucces { get; }
-	
+
 	public bool IsFailure => !IsSucces;
-	
+
 	public Error Error { get; }
-	
+
 	public static Result Success() => new(true, Error.None);
-	
+
 	public static Result<TValue> Success<TValue>(TValue value) => new(value, true, Error.None);
-	
+
 	public static Result Failure(Error error) => new(false, error);
-	
+
 	public static Result<TValue> Failure<TValue>(Error error) => new(default, false, error);
-	
-	public static Result<TValue> Create<TValue>(TValue? value) =>
-		value is not null
+
+	public static Result<TValue> Create<TValue>(TValue value, Error error)
+		where TValue : class
+		=> value is not null
 		? Success(value)
-		: Failure<TValue>(Error.NullValue);
+		: Failure<TValue>(error);
+
+	public static Result FirstFailureOrSuccess(params Result[] results)
+	{
+		foreach (Result result in results)
+		{
+			if (result.IsFailure) return result;
+		}
+		return Success();
+	}
 }

@@ -1,9 +1,9 @@
-﻿var allowedCorsOrigins = "AllowedCorsOrigins";
+﻿using MediatR;
+using Pelican.Infrastructure.HubSpot;
 using Pelican.Infrastructure.Persistence;
-using Pelican.Presentation.Api.Extension;
+var allowedCorsOrigins = "AllowedCorsOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.AddHubSpot(builder.Configuration);
 
@@ -12,19 +12,6 @@ builder
 	.AddCors(options => options
 		.AddPolicy(name: allowedCorsOrigins, policy => policy
 			.WithOrigins("https://localhost")));
-
-
-//builder
-//	.Services
-//	.Scan(scan => scan
-//		.FromAssemblies(Pelican.Infrastructure.HubSpot.AssemblyReference.Assembly)
-//		.AddClasses(false)
-//		.AsImplementedInterfaces()
-//		.WithScopedLifetime());
-
-
-
-builder.Services.AddMediatR(Pelican.Application.AssemblyReference.Assembly);
 
 builder.Services.AddMediatR(Pelican.Application.AssemblyReference.Assembly);
 

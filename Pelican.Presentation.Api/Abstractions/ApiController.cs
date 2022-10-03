@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Pelican.Presentation.Api.Abstractions;
 
+[ApiController]
 public class ApiController : ControllerBase
 {
 	protected readonly ISender Sender;

@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Common\**" />
     <Compile Remove="HubSpot\Commands\PropertyChange\**" />
+    <EmbeddedResource Remove="Common\**" />
     <EmbeddedResource Remove="HubSpot\Commands\PropertyChange\**" />
+    <None Remove="Common\**" />
     <None Remove="HubSpot\Commands\PropertyChange\**" />
   </ItemGroup>
 
@@ -20,10 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Pelican.Domain\Pelican.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\Interfaces\" />
   </ItemGroup>
 
 </Project>

@@ -1,17 +1,8 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Pelican.Application.HubSpot.Command.NewInstallation;
-using Pelican.Domain.Shared;
-using Pelican.Infrastructure.HubSpot;
-using Pelican.Presentation.Api.Abstractions;
-using Pelican.Presentation.Api.Contracts;
-using Pelican.Presentation.Api.Utilities;
-
-namespace Pelican.Presentation.Api.Controllers;
+﻿namespace Pelican.Presentation.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+//[ServiceFilter(typeof(HubSpotHookValidationFilter))]
 //[EnableCors("HubSpot")]
 public sealed class HubSpotController : ApiController
 {

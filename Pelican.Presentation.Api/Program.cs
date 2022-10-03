@@ -26,6 +26,8 @@ builder
 
 builder.Services.AddMediatR(Pelican.Application.AssemblyReference.Assembly);
 
+builder.Services.AddMediatR(Pelican.Application.AssemblyReference.Assembly);
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();

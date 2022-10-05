@@ -6,5 +6,6 @@ public class NewInstallationCommandValidator : AbstractValidator<NewInstallation
 {
 	public NewInstallationCommandValidator()
 	{
+		RuleFor(c => c.Code).NotEmpty();
 	}
 }

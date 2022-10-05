@@ -3,7 +3,7 @@
 public sealed class HubSpotSettings
 {
 	public string? BaseUrl { get; set; }
-	public string? RefeshToken { get; set; }
+	public string? RedirectUrl { get; set; }
 	public HubSpotAppSettings? App { get; set; }
 }
 

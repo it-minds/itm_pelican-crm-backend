@@ -1,77 +1,83 @@
-﻿using MediatR;
+﻿using System.Collections.Concurrent;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Deals.Commands.DeleteDeal;
+using Pelican.Application.Deals.Commands.UpdateDeal;
 using Pelican.Application.HubSpot.Commands.NewInstallation;
+using Pelican.Domain.Contracts;
 using Pelican.Domain.Shared;
-using Pelican.Infrastructure.HubSpot;
 using Pelican.Presentation.Api.Abstractions;
-using Pelican.Presentation.Api.Contracts;
 using Pelican.Presentation.Api.Utilities;
 
 namespace Pelican.Presentation.Api.Controllers;
 
 [Route("[controller]")]
-//[ServiceFilter(typeof(HubSpotHookValidationFilter))]
 //[EnableCors("HubSpot")]
 public sealed class HubSpotController : ApiController
 {
-	private readonly IOptions<HubSpotSettings> _hubSpotSettings;
-
-	public HubSpotController(ISender sender, IOptions<HubSpotSettings> hubSpotSettings) : base(sender)
-	{
-		_hubSpotSettings = hubSpotSettings;
-	}
+	public HubSpotController(ISender sender)
+		: base(sender)
+	{ }
 
 	[HttpGet]
 	public async Task<IActionResult> NewInstallation(
 		string code,
 		CancellationToken cancellationToken)
 	{
-		if (_hubSpotSettings is null) throw new NullReferenceException();
-
 		NewInstallationCommand newInstallation = new(
-			code,
-			_hubSpotSettings.Value.BaseUrl ?? throw new NullReferenceException(),
-			_hubSpotSettings.Value.App?.ClientId ?? throw new NullReferenceException(),
-			"https://eomyft7gbubnxim.m.pipedream.net",
-			_hubSpotSettings.Value.App.ClientSecret ?? throw new NullReferenceException());
+			code);
 
 		Result result = await Sender.Send(newInstallation, cancellationToken);
 
 		return result.IsSucces
 			? Ok()
-			: BadRequest();
+			: BadRequest(result.Error);
 	}
 
 	[HttpPost]
 	[ServiceFilter(typeof(HubSpotValidationFilter))]
 	public async Task<ActionResult> Hook(
-		[FromBody] IEnumerable<WebHookRequest> payloads,
+		[FromBody] IEnumerable<WebHookRequest> requests,
 		CancellationToken cancellationToken)
 	{
 		List<Result> results = new();
+		IEnumerable<ICommand> commands = ConvertToCommands(requests);
 
-		payloads
-			.GroupBy(payload => payload.SubscriptionType)
-			.ToList()
-			.ForEach(async payloadGroup =>
+		foreach (ICommand command in commands)
+		{
+			Result result = await Sender.Send(command, cancellationToken);
+			results.Add(result);
+		}
+
+		return Result.FirstFailureOrSuccess(results.ToArray()).IsSucces
+			? Ok()
+			: BadRequest();
+	}
+
+	private static IEnumerable<ICommand> ConvertToCommands(IEnumerable<WebHookRequest> requests)
+	{
+		BlockingCollection<ICommand> commands = new();
+
+		requests
+			.AsParallel()
+			.ForAll(request =>
 			{
-				var command = payloadGroup.Key switch
+				ICommand? command = request.SubscriptionType switch
 				{
-					"deal.propertyChange" => new NewInstallationCommand("", "", "", "", ""),
-					"deal.deletion" => new NewInstallationCommand("", "", "", "", ""),
+					//"contact.deletion" => new DeleteContactPropertyCommand(),
+					"deal.deletion" => new DeleteDealCommand(request.ObjectId),
+					//"contact.propertyChange" => new UpdateContactCommand(propertyChangeRequest.ObjectId, propertyChangeRequest.PropertyName, propertyChangeRequest.PropertyValue),
+					"deal.propertyChange" => new UpdateDealCommand(Convert.ToInt64(request.SourceId.Split(":")[1]), request.ObjectId, request.PropertyName, request.PropertyValue),
 					_ => null
 				};
 
 				if (command is not null)
 				{
-					var result = await Sender.Send(command, cancellationToken);
-					results.Add(result);
+					commands.Add(command);
 				}
 			});
 
-		return Result.FirstFailureOrSuccess(results.ToArray()).IsSucces
-			? Ok()
-			: BadRequest();
+		return commands;
 	}
 }

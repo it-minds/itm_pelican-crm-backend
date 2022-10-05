@@ -2,7 +2,6 @@
 using Pelican.Infrastructure.Persistence;
 using Location = Pelican.Domain.Entities.Location;
 
-namespace Pelican.Presentation.GraphQL.DataLoader;
 public class LocationByIdDataLoader : BatchDataLoader<Guid, Location>
 {
 	private readonly IDbContextFactory<PelicanContext> _dbContextFactory;
@@ -10,9 +9,9 @@ public class LocationByIdDataLoader : BatchDataLoader<Guid, Location>
 	{
 		_dbContextFactory = dbContextFactory ?? throw new ArgumentNullException(nameof(dbContextFactory));
 	}
-	protected override async Task<IReadOnlyDictionary<Guid, Location>> LoadBatchAsync(IReadOnlyList<Guid> keys, CancellationToken cancellationTkoken)
+	protected override async Task<IReadOnlyDictionary<Guid, Location>> LoadBatchAsync(IReadOnlyList<Guid> keys, CancellationToken cancellationToken)
 	{
 		await using PelicanContext pelicanContext = _dbContextFactory.CreateDbContext();
-		return await pelicanContext.Locations.Where(s => keys.Contains(s.Id)).ToDictionaryAsync(t => t.Id, cancellationTkoken);
+		return await pelicanContext.Locations.Where(s => keys.Contains(s.Id)).ToDictionaryAsync(t => t.Id, cancellationToken);
 	}
 }

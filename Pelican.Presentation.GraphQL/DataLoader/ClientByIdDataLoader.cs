@@ -10,9 +10,9 @@ public class ClientByIdDataLoader : BatchDataLoader<Guid, Client>
 	{
 		_dbContextFactory = dbContextFactory ?? throw new ArgumentNullException(nameof(dbContextFactory));
 	}
-	protected override async Task<IReadOnlyDictionary<Guid, Client>> LoadBatchAsync(IReadOnlyList<Guid> keys, CancellationToken cancellationTkoken)
+	protected override async Task<IReadOnlyDictionary<Guid, Client>> LoadBatchAsync(IReadOnlyList<Guid> keys, CancellationToken cancellationToken)
 	{
 		await using PelicanContext pelicanContext = _dbContextFactory.CreateDbContext();
-		return await pelicanContext.Clients.Where(s => keys.Contains(s.Id)).ToDictionaryAsync(t => t.Id, cancellationTkoken);
+		return await pelicanContext.Clients.Where(s => keys.Contains(s.Id)).ToDictionaryAsync(t => t.Id, cancellationToken);
 	}
 }

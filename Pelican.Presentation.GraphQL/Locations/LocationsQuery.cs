@@ -1,7 +1,6 @@
 ﻿using HotChocolate.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Pelican.Infrastructure.Persistence;
-using Pelican.Presentation.GraphQL.DataLoader;
 using Location = Pelican.Domain.Entities.Location;
 
 namespace Pelican.Presentation.GraphQL.Locations;

@@ -9,5 +9,4 @@ public class StartUp
 		Configuration = configuration;
 		Environment = environment;
 	}
-
 }

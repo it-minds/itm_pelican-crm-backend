@@ -4,7 +4,7 @@ using Pelican.Domain.Entities;
 
 namespace Pelican.Application.Common.Interfaces;
 
-public interface IPelicanContext : IDisposable
+public interface IPelicanContext : IDbContext
 {
 	DbSet<AccountManager> AccountManagers { get; }
 	DbSet<AccountManagerDeal> AccountManagerDeals { get; }
@@ -16,6 +16,11 @@ public interface IPelicanContext : IDisposable
 	DbSet<Supplier> Suppliers { get; }
 	DbSet<Location> Locations { get; }
 	string DbPath { get; }
+	int SaveChanges();
+	int SaveChanges(bool acceptAllChangesOnSuccess);
+	Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken());
+	Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken());
+
 	void MarkAsModifiedAccountManager(AccountManager accountManager);
 	void MarkAsModifiedAccountManagerDeals(AccountManagerDeal accountManagerDeal);
 	void MarkAsModifiedClient(Client client);
@@ -24,5 +29,4 @@ public interface IPelicanContext : IDisposable
 	void MarkAsModifiedDeals(Deal deal);
 	void MarkAsModifiedDealContact(DealContact dealContact);
 	void MarkAsModifiedClientSupplier(Supplier supplier);
-
 }

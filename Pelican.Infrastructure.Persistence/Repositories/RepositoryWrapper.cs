@@ -1,9 +1,10 @@
-﻿using Pelican.Domain.Repositories;
+﻿using Pelican.Application.Common.Interfaces;
+using Pelican.Domain.Repositories;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
 public class RepositoryWrapper : IRepositoryWrapper
 {
-	private PelicanContext _pelicaContext;
+	private IPelicanContext _pelicanContext;
 	private IAccountManagerDealRepository _accountManagerDeal;
 	private IAccountManagerRepository _accountManager;
 	private IClientContactRepository _clientContact;
@@ -19,7 +20,7 @@ public class RepositoryWrapper : IRepositoryWrapper
 		{
 			if (_accountManagerDeal == null)
 			{
-				_accountManagerDeal = new AccountManagerDealRepository(_pelicaContext);
+				_accountManagerDeal = new AccountManagerDealRepository(_pelicanContext);
 			}
 			return _accountManagerDeal;
 		}
@@ -31,7 +32,7 @@ public class RepositoryWrapper : IRepositoryWrapper
 		{
 			if (_accountManager == null)
 			{
-				_accountManager = new AccountManagerRepository(_pelicaContext);
+				_accountManager = new AccountManagerRepository(_pelicanContext);
 			}
 			return _accountManager;
 		}
@@ -43,7 +44,7 @@ public class RepositoryWrapper : IRepositoryWrapper
 		{
 			if (_clientContact == null)
 			{
-				_clientContact = new ClientContactRepository(_pelicaContext);
+				_clientContact = new ClientContactRepository(_pelicanContext);
 			}
 			return _clientContact;
 		}
@@ -55,7 +56,7 @@ public class RepositoryWrapper : IRepositoryWrapper
 		{
 			if (_client == null)
 			{
-				_client = new ClientRepository(_pelicaContext);
+				_client = new ClientRepository(_pelicanContext);
 			}
 			return _client;
 		}
@@ -67,7 +68,7 @@ public class RepositoryWrapper : IRepositoryWrapper
 		{
 			if (_contact == null)
 			{
-				_contact = new ContactRepository(_pelicaContext);
+				_contact = new ContactRepository(_pelicanContext);
 			}
 			return _contact;
 		}
@@ -79,7 +80,7 @@ public class RepositoryWrapper : IRepositoryWrapper
 		{
 			if (_dealContact == null)
 			{
-				_dealContact = new DealContactRepository(_pelicaContext);
+				_dealContact = new DealContactRepository(_pelicanContext);
 			}
 			return _dealContact;
 		}
@@ -91,7 +92,7 @@ public class RepositoryWrapper : IRepositoryWrapper
 		{
 			if (_deal == null)
 			{
-				_deal = new DealRepository(_pelicaContext);
+				_deal = new DealRepository(_pelicanContext);
 			}
 			return _deal;
 		}
@@ -103,7 +104,7 @@ public class RepositoryWrapper : IRepositoryWrapper
 		{
 			if (_location == null)
 			{
-				_location = new LocationRepository(_pelicaContext);
+				_location = new LocationRepository(_pelicanContext);
 			}
 			return _location;
 		}
@@ -115,17 +116,17 @@ public class RepositoryWrapper : IRepositoryWrapper
 		{
 			if (_supplier == null)
 			{
-				_supplier = new SupplierRepository(_pelicaContext);
+				_supplier = new SupplierRepository(_pelicanContext);
 			}
 			return _supplier;
 		}
 	}
-	public RepositoryWrapper(PelicanContext pelicanContext)
+	public RepositoryWrapper(IPelicanContext pelicanContext)
 	{
-		_pelicaContext = pelicanContext;
+		_pelicanContext = pelicanContext;
 	}
 	public void Save()
 	{
-		_pelicaContext.SaveChanges();
+		_pelicanContext.SaveChanges();
 	}
 }

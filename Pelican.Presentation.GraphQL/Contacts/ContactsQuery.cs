@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.Persistence;
-using Pelican.Presentation.GraphQL.DataLoader;
 
 namespace Pelican.Presentation.GraphQL.Contacts;
 
@@ -18,7 +17,7 @@ public class ContactsQuery
 	public IQueryable<Contact> GetContacts([ScopedService] PelicanContext context) => context.Contacts.AsNoTracking();
 
 	[Authorize]
-	public Task<Contact> GetClientAsync(Guid id, ContactByIdDataLoader dataLoader, CancellationToken cancellationToken)
+	public Task<Contact> GetContactAsync(Guid id, ContactByIdDataLoader dataLoader, CancellationToken cancellationToken)
 	{
 		return dataLoader.LoadAsync(id, cancellationToken);
 	}

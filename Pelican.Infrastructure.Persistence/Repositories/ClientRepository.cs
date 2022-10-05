@@ -1,10 +1,11 @@
-﻿using Pelican.Domain.Entities;
+﻿using Pelican.Application.Common.Interfaces;
+using Pelican.Domain.Entities;
 using Pelican.Domain.Repositories;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
 public class ClientRepository : RepositoryBase<Client>, IClientRepository
 {
-	public ClientRepository(PelicanContext pelicanContext) : base(pelicanContext)
+	public ClientRepository(IPelicanContext pelicanContext) : base(pelicanContext)
 	{
 	}
 }

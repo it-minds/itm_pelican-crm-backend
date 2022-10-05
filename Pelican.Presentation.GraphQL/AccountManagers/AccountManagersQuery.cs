@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.Persistence;
-using Pelican.Presentation.GraphQL.DataLoader;
 
 namespace Pelican.Presentation.GraphQL.AccountManagers;
 [ExtendObjectType("Query")]

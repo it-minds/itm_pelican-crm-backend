@@ -18,7 +18,8 @@ public class PelicanContext : DbContext, IPelicanContext
 	public DbSet<Location> Locations { get; set; }
 	public string DbPath { get; }
 
-	string IPelicanContext.DbPath => throw new NotImplementedException();
+	public DbContext Instance => this;
+
 	public PelicanContext(DbContextOptions<PelicanContext> options) : base(options)
 	{
 	}

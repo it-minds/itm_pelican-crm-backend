@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Pelican.Domain\Pelican.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Common\Interfaces\" />
-  </ItemGroup>
-
 </Project>

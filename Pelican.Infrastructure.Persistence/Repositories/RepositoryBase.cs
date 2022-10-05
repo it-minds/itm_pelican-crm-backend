@@ -1,14 +1,15 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Pelican.Application.Common.Interfaces;
 using Pelican.Domain.Repositories;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
 public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
 {
 	protected PelicanContext PelicanContext { get; set; }
-	public RepositoryBase(PelicanContext pelicanContext)
+	public RepositoryBase(IPelicanContext pelicanContext)
 	{
-		PelicanContext = pelicanContext;
+		PelicanContext = (PelicanContext)pelicanContext;
 	}
 
 	public IQueryable<T> FindAll() => PelicanContext.Set<T>().AsNoTracking();

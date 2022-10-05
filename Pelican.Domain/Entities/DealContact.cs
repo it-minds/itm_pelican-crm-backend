@@ -1,20 +1,22 @@
 ﻿using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
-public class DealContactPerson : Entity, ITimeTracked
+public class DealContact : Entity, ITimeTracked
 {
 	public Guid DealId { get; set; }
-	public Guid ContactPersonId { get; set; }
+	public Guid ContactId { get; set; }
 	public bool IsActive { get; set; }
+	public Deal? Deal { get; set; }
+	public Contact? Contact { get; set; }
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
 
-	public DealContactPerson(Guid id, Guid dealId,
-		Guid contactPersonId,
+	public DealContact(Guid id, Guid dealId,
+		Guid contactId,
 		bool isActive) : base(id)
 	{
 		DealId = dealId;
-		ContactPersonId = contactPersonId;
+		ContactId = contactId;
 		IsActive = isActive;
 	}
 }

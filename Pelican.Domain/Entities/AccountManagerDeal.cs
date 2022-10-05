@@ -3,14 +3,16 @@ using Pelican.Domain.Primitives;
 
 public class AccountManagerDeal : Entity, ITimeTracked
 {
-	public int AccountManagerId { get; set; }
-	public int DealId { get; set; }
+	public Guid AccountManagerId { get; set; }
+	public AccountManager? AccountManager { get; set; }
+	public Deal? Deal { get; set; }
+	public Guid DealId { get; set; }
 	public bool IsActive { get; set; }
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
 
-	public AccountManagerDeal(Guid id, int accountManagerId,
-		int dealId,
+	public AccountManagerDeal(Guid id, Guid accountManagerId,
+		Guid dealId,
 		bool isActive) : base(id)
 	{
 		AccountManagerId = accountManagerId;

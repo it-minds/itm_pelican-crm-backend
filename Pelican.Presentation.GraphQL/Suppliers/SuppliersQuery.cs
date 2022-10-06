@@ -8,13 +8,13 @@ namespace Pelican.Presentation.GraphQL.Suppliers;
 
 public class SuppliersQuery
 {
-	[UseDbContext(typeof(PelicanContext))]
+	[UseDbContext(typeof(IDbContext))]
 	[UsePaging(IncludeTotalCount = true)]
 	[UseProjection]
 	[UseFiltering]
 	[UseSorting]
 	[Authorize]
-	public IQueryable<Supplier> GetSuppliers([ScopedService] PelicanContext context) => context.Suppliers.AsNoTracking();
+	public IQueryable<Supplier> GetSuppliers([ScopedService] IDbContext context) => context.Suppliers.AsNoTracking();
 
 	[Authorize]
 	public Task<Supplier> GetSupplierAsync(Guid id, SupplierByIdDataLoader dataLoader, CancellationToken cancellationToken)

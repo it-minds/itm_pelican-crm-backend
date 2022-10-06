@@ -7,13 +7,13 @@ namespace Pelican.Presentation.GraphQL.AccountManagers;
 [ExtendObjectType("Query")]
 public class AccountManagersQuery
 {
-	[UseDbContext(typeof(PelicanContext))]
+	[UseDbContext(typeof(IDbContext))]
 	[UsePaging(IncludeTotalCount = true)]
 	[UseProjection]
 	[UseFiltering]
 	[UseSorting]
 	[Authorize]
-	public IQueryable<AccountManager> GetAccountManagers([ScopedService] PelicanContext context) => context.AccountManagers.AsNoTracking();
+	public IQueryable<AccountManager> GetAccountManagers([ScopedService] IDbContext context) => context.AccountManagers.AsNoTracking();
 
 
 	[Authorize]

@@ -13,7 +13,6 @@ public class RepositoryWrapperUnitTest
 	{
 		//Arrange
 		var myDbContextMock = new Mock<IPelicanContext>();
-		myDbContextMock.Setup(x => x.SaveChanges());
 		uut = new RepositoryWrapper(myDbContextMock.Object);
 		//Act
 		uut.Save();
@@ -25,7 +24,6 @@ public class RepositoryWrapperUnitTest
 	{
 		//Arrange
 		var myDbContextMock = new Mock<IPelicanContext>();
-		myDbContextMock.Setup(x => x.SaveChanges());
 		uut = new RepositoryWrapper(myDbContextMock.Object);
 		//Act
 		for (int i = 0; i < 50; i++)

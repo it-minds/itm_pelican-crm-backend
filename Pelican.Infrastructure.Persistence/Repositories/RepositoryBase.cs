@@ -6,10 +6,10 @@ using Pelican.Domain.Repositories;
 namespace Pelican.Infrastructure.Persistence.Repositories;
 public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
 {
-	protected PelicanContext PelicanContext { get; set; }
+	protected IDbContext PelicanContext { get; set; }
 	public RepositoryBase(IPelicanContext pelicanContext)
 	{
-		PelicanContext = (PelicanContext)pelicanContext;
+		PelicanContext = (IDbContext)pelicanContext;
 	}
 
 	public IQueryable<T> FindAll() => PelicanContext.Set<T>().AsNoTracking();

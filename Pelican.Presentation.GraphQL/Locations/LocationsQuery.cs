@@ -8,13 +8,13 @@ namespace Pelican.Presentation.GraphQL.Locations;
 
 public class LocationsQuery
 {
-	[UseDbContext(typeof(PelicanContext))]
+	[UseDbContext(typeof(IDbContext))]
 	[UsePaging(IncludeTotalCount = true)]
 	[UseProjection]
 	[UseFiltering]
 	[UseSorting]
 	[Authorize]
-	public IQueryable<Location> GetLocations([ScopedService] PelicanContext context) => context.Locations.AsNoTracking();
+	public IQueryable<Location> GetLocations([ScopedService] IDbContext context) => context.Locations.AsNoTracking();
 
 	[Authorize]
 	public Task<Location> GetLocationAsync(Guid id, LocationByIdDataLoader dataLoader, CancellationToken cancellationToken)

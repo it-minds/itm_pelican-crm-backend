@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GreenDonut;
+using Microsoft.EntityFrameworkCore;
+using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.Persistence;
 
 namespace Pelican.Presentation.GraphQL.DataLoader;
-public class ClientByIdDataLoader : BatchDataLoader<Guid, Client>
+public class ClientByIdDataLoader : BatchDataLoader<Guid, Client>, IClientByIdDataLoader
 {
 	private readonly IDbContextFactory<PelicanContext> _dbContextFactory;
 	public ClientByIdDataLoader(IBatchScheduler batchScheduler, IDbContextFactory<PelicanContext> dbContextFactory) : base(batchScheduler)
@@ -12,7 +14,7 @@ public class ClientByIdDataLoader : BatchDataLoader<Guid, Client>
 	}
 	protected override async Task<IReadOnlyDictionary<Guid, Client>> LoadBatchAsync(IReadOnlyList<Guid> keys, CancellationToken cancellationToken)
 	{
-		await using PelicanContext pelicanContext = _dbContextFactory.CreateDbContext();
+		await using var pelicanContext = _dbContextFactory.CreateDbContext();
 		return await pelicanContext.Clients.Where(s => keys.Contains(s.Id)).ToDictionaryAsync(t => t.Id, cancellationToken);
 	}
 }

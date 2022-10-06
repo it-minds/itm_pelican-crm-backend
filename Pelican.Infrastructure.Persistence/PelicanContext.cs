@@ -18,16 +18,14 @@ public class PelicanContext : DbContext, IPelicanContext
 	public DbSet<Location> Locations { get; set; }
 	public string DbPath { get; }
 
-	public DbContext Instance => this;
-
-	public PelicanContext(DbContextOptions<PelicanContext> options) : base(options)
+	public PelicanContext(DbContextOptions<DbContext> options)
 	{
 	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
-		modelBuilder.ApplyConfigurationsFromAssembly(typeof(PelicanContext).Assembly);
+		modelBuilder.ApplyConfigurationsFromAssembly(typeof(DbContext).Assembly);
 	}
 
 
@@ -85,37 +83,5 @@ public class PelicanContext : DbContext, IPelicanContext
 	{
 		SetCreatedAtOnAddedEntities();
 		SetLastUpdatedAtOnUpdatedEntities();
-	}
-	public void MarkAsModifiedAccountManager(AccountManager accountManager)
-	{
-		Entry(accountManager).State = EntityState.Modified;
-	}
-	public void MarkAsModifiedAccountManagerDeals(AccountManagerDeal accountManagerDeal)
-	{
-		Entry(accountManagerDeal).State = EntityState.Modified;
-	}
-	public void MarkAsModifiedClient(Client client)
-	{
-		Entry(client).State = EntityState.Modified;
-	}
-	public void MarkAsModifiedClientContact(ClientContact clientContact)
-	{
-		Entry(clientContact).State = EntityState.Modified;
-	}
-	public void MarkAsModifiedContact(Contact contact)
-	{
-		Entry(contact).State = EntityState.Modified;
-	}
-	public void MarkAsModifiedDeals(Deal deal)
-	{
-		Entry(deal).State = EntityState.Modified;
-	}
-	public void MarkAsModifiedDealContact(DealContact dealContact)
-	{
-		Entry(dealContact).State = EntityState.Modified;
-	}
-	public void MarkAsModifiedClientSupplier(Supplier supplier)
-	{
-		Entry(supplier).State = EntityState.Modified;
 	}
 }

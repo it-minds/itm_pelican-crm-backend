@@ -8,13 +8,13 @@ namespace Pelican.Presentation.GraphQL.Clients;
 [ExtendObjectType("Query")]
 public class ClientsQuery
 {
-	[UseDbContext(typeof(PelicanContext))]
+	[UseDbContext(typeof(IDbContext))]
 	[UsePaging(IncludeTotalCount = true)]
 	[UseProjection]
 	[UseFiltering]
 	[UseSorting]
 	[Authorize]
-	public IQueryable<Client> GetClients([ScopedService] PelicanContext context) => context.Clients.AsNoTracking();
+	public IQueryable<Client> GetClients([ScopedService] IDbContext context) => context.Clients.AsNoTracking();
 
 
 	[Authorize]

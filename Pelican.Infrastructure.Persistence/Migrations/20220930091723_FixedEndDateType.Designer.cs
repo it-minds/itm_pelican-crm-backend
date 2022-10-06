@@ -11,7 +11,7 @@ using Pelican.Infrastructure.Persistence;
 
 namespace Pelican.Infrastructure.Persistence.Migrations
 {
-    [DbContext(typeof(PelicanContext))]
+    [DbContext(typeof(IDbContext))]
     [Migration("20220930091723_FixedEndDateType")]
     partial class FixedEndDateType
     {

@@ -44,7 +44,7 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-	var pelicanContext = scope.ServiceProvider.GetRequiredService<PelicanContext>();
+	var pelicanContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
 
 
 	if (!pelicanContext.Suppliers.Any())

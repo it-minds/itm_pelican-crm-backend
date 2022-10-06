@@ -8,13 +8,13 @@ namespace Pelican.Presentation.GraphQL.Contacts;
 [ExtendObjectType("Query")]
 public class ContactsQuery
 {
-	[UseDbContext(typeof(PelicanContext))]
+	[UseDbContext(typeof(IDbContext))]
 	[UsePaging(IncludeTotalCount = true)]
 	[UseProjection]
 	[UseFiltering]
 	[UseSorting]
 	[Authorize]
-	public IQueryable<Contact> GetContacts([ScopedService] PelicanContext context) => context.Contacts.AsNoTracking();
+	public IQueryable<Contact> GetContacts([ScopedService] IDbContext context) => context.Contacts.AsNoTracking();
 
 	[Authorize]
 	public Task<Contact> GetContactAsync(Guid id, ContactByIdDataLoader dataLoader, CancellationToken cancellationToken)

@@ -10,10 +10,10 @@ public static class DependencyInjection
 {
 	public static IServiceCollection AddPersistince(this IServiceCollection services, IConfiguration configuration)
 	{
-		services.AddDbContext<IPelicanContext, PelicanContext>(options => options.UseSqlServer(configuration.GetConnectionString("myLocalDb"),
-			b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)), ServiceLifetime.Scoped);
+		services.AddDbContext<IPelicanContext, IDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("myLocalDb"),
+			b => b.MigrationsAssembly(typeof(IDbContext).Assembly.FullName)), ServiceLifetime.Scoped);
 		services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
-		services.AddDbContextFactory<PelicanContext>(o => o.UseSqlServer(configuration.GetConnectionString("myLocalDb")), ServiceLifetime.Scoped);
+		services.AddDbContextFactory<IDbContext>(o => o.UseSqlServer(configuration.GetConnectionString("myLocalDb")), ServiceLifetime.Scoped);
 		return services;
 	}
 }

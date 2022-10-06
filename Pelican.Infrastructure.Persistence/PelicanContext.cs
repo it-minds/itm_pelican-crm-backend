@@ -52,29 +52,35 @@ public class PelicanContext : DbContext
 
 	private void SetCreatedAtOnAddedEntities()
 	{
-		var addedTimeTracked = this.ChangeTracker.Entries()
+		ChangeTracker.Entries()
 			.Where(t =>
 				t.Entity is ITimeTracked &&
 				t.State == EntityState.Added)
 			.Select(t => t.Entity as ITimeTracked)
-			.ToArray();
-		foreach (var entity in addedTimeTracked)
-		{
-			entity.CreatedAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-		}
+			.ToList()
+			.ForEach(entity =>
+			{
+				if (entity is not null)
+				{
+					entity.CreatedAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+				}
+			});
 	}
 	private void SetLastUpdatedAtOnUpdatedEntities()
 	{
-		var updatedTimeTracked = this.ChangeTracker.Entries()
+		ChangeTracker.Entries()
 			.Where(t =>
 				t.Entity is ITimeTracked &&
 				t.State == EntityState.Modified)
 			.Select(t => t.Entity as ITimeTracked)
-			.ToArray();
-		foreach (var entity in updatedTimeTracked)
-		{
-			entity.LastUpdatedAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-		}
+			.ToList()
+			.ForEach(entity =>
+			{
+				if (entity is not null)
+				{
+					entity.LastUpdatedAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+				}
+			});
 	}
 	private void SetTimeTrackedValues()
 	{

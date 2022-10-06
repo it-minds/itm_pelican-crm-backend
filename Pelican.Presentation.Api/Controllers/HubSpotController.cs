@@ -30,14 +30,14 @@ public sealed class HubSpotController : ApiController
 
 		Result result = await Sender.Send(newInstallation, cancellationToken);
 
-		return result.IsSucces
+		return result.IsSuccess
 			? Ok()
 			: BadRequest(result.Error);
 	}
 
 	[HttpPost]
 	[ServiceFilter(typeof(HubSpotValidationFilter))]
-	public async Task<ActionResult> Hook(
+	public async Task<IActionResult> Hook(
 		[FromBody] IEnumerable<WebHookRequest> requests,
 		CancellationToken cancellationToken)
 	{
@@ -46,13 +46,15 @@ public sealed class HubSpotController : ApiController
 
 		foreach (ICommand command in commands)
 		{
-			Result result = await Sender.Send(command, cancellationToken);
-			results.Add(result);
+			results.Add(
+				await Sender.Send(command, cancellationToken));
 		}
 
-		return Result.FirstFailureOrSuccess(results.ToArray()).IsSucces
+		Result result = Result.FirstFailureOrSuccess(results.ToArray());
+
+		return result.IsSuccess
 			? Ok()
-			: BadRequest();
+			: BadRequest(result.Error);
 	}
 
 	private static IEnumerable<ICommand> ConvertToCommands(IEnumerable<WebHookRequest> requests)
@@ -68,7 +70,7 @@ public sealed class HubSpotController : ApiController
 					//"contact.deletion" => new DeleteContactPropertyCommand(),
 					"deal.deletion" => new DeleteDealCommand(request.ObjectId),
 					//"contact.propertyChange" => new UpdateContactCommand(propertyChangeRequest.ObjectId, propertyChangeRequest.PropertyName, propertyChangeRequest.PropertyValue),
-					"deal.propertyChange" => new UpdateDealCommand(Convert.ToInt64(request.SourceId.Split(":")[1]), request.ObjectId, request.PropertyName, request.PropertyValue),
+					"deal.propertyChange" => new UpdateDealCommand(request.ObjectId, request.SourceId, request.PropertyName, request.PropertyValue),
 					_ => null
 				};
 

@@ -7,27 +7,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5D515F34-F1A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{0200A7F9-E192-48B9-A8B8-96118BB18098}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Presentation.Api", "Pelican.Presentation.Api\Pelican.Presentation.Api.csproj", "{DD4DF552-05C6-4F19-9A39-53FEC8DAE96A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Presentation.Api", "Pelican.Presentation.Api\Pelican.Presentation.Api.csproj", "{DD4DF552-05C6-4F19-9A39-53FEC8DAE96A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Domain", "Pelican.Domain\Pelican.Domain.csproj", "{48A0FCB4-B29E-474B-B7FD-7DBD58983325}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Domain", "Pelican.Domain\Pelican.Domain.csproj", "{48A0FCB4-B29E-474B-B7FD-7DBD58983325}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Application", "Pelican.Application\Pelican.Application.csproj", "{617CB2E7-2D7B-4307-BC64-6FD3037D71C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Application", "Pelican.Application\Pelican.Application.csproj", "{617CB2E7-2D7B-4307-BC64-6FD3037D71C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Infrastructure.Persistence", "Pelican.Infrastructure.Persistence\Pelican.Infrastructure.Persistence.csproj", "{8B787CBC-755C-4BCB-865C-6DA50E75C228}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Persistence", "Pelican.Infrastructure.Persistence\Pelican.Infrastructure.Persistence.csproj", "{8B787CBC-755C-4BCB-865C-6DA50E75C228}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Infrastructure.Google", "Pelican.Infrastructure.Google\Pelican.Infrastructure.Google.csproj", "{929220AD-AF44-4E32-8F5A-3ECC97D21528}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Google", "Pelican.Infrastructure.Google\Pelican.Infrastructure.Google.csproj", "{929220AD-AF44-4E32-8F5A-3ECC97D21528}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Infrastructure.HubSpot", "Pelican.Infrastructure.HubSpot\Pelican.Infrastructure.HubSpot.csproj", "{D1A91F65-9625-44CA-A1C0-99B3FFBD6266}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.HubSpot", "Pelican.Infrastructure.HubSpot\Pelican.Infrastructure.HubSpot.csproj", "{D1A91F65-9625-44CA-A1C0-99B3FFBD6266}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Presentation.GraphQL", "Pelican.Presentation.GraphQL\Pelican.Presentation.GraphQL.csproj", "{028B5717-61D7-4D0B-B36A-0245409AECF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Presentation.GraphQL", "Pelican.Presentation.GraphQL\Pelican.Presentation.GraphQL.csproj", "{028B5717-61D7-4D0B-B36A-0245409AECF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Application.Test", "Pelican.Application.Test\Pelican.Application.Test.csproj", "{6BE11877-9829-43B6-A146-C2792B7BADCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Application.Test", "Pelican.Application.Test\Pelican.Application.Test.csproj", "{6BE11877-9829-43B6-A146-C2792B7BADCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Infrastructure.Persistence.Test", "Pelican.Infrastructure.Test\Pelican.Infrastructure.Persistence.Test.csproj", "{DA0C37CF-433B-45E4-8DAF-2205A7C8EF77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Persistence.Test", "Pelican.Infrastructure.Test\Pelican.Infrastructure.Persistence.Test.csproj", "{DA0C37CF-433B-45E4-8DAF-2205A7C8EF77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Presentation.Api.Test", "Pelican.Presentation.Api.Test\Pelican.Presentation.Api.Test.csproj", "{F17C8065-806F-4391-A1E6-B282B80D494D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Presentation.Api.Test", "Pelican.Presentation.Api.Test\Pelican.Presentation.Api.Test.csproj", "{F17C8065-806F-4391-A1E6-B282B80D494D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Presentation.GraphQL.Test", "Pelican.Presentation.GraphQL.Test\Pelican.Presentation.GraphQL.Test.csproj", "{2B48F1CD-B88E-4111-8341-01309A874253}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Presentation.GraphQL.Test", "Pelican.Presentation.GraphQL.Test\Pelican.Presentation.GraphQL.Test.csproj", "{2B48F1CD-B88E-4111-8341-01309A874253}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6326A8D2-2AAF-47B9-BC93-E4EE3BDC34EB}"
 	ProjectSection(SolutionItems) = preProject

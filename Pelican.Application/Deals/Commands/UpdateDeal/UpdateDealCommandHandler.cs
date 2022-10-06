@@ -28,6 +28,8 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 
 		if (deal is null)
 		{
+			if (command.UserId is null) return Result.Failure(Error.NullValue);
+
 			AccountManager accountManager = _accountManagerRepository
 				.FindByCondition(a => a.Id.ToString() == command.UserId.ToString())
 				.First();

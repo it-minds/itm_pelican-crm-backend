@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Infrastructure.HubSpot.Services;
 
 namespace Pelican.Infrastructure.HubSpot;
 
@@ -9,13 +11,8 @@ public static class DependencyInjection
 	{
 		services.Configure<HubSpotSettings>(configuration.GetSection(nameof(HubSpotSettings)));
 
-		//services.AddHttpClient("HubSpot", (provider, client) =>
-		//{
-		//	var settings = provider.GetRequiredService<IOptions<HubSpotSettings>>();
-
-		//	client.BaseAddress = new Uri(settings.Value.BaseUrl
-		//		?? throw new ArgumentNullException(nameof(HubSpotSettings)));
-		//});
+		services.AddSingleton<IHubSpotAuthorizationService, HubSpotAuthorizationService>();
+		services.AddSingleton<IHubSpotDealService, HubSpotDealService>();
 
 		return services;
 	}

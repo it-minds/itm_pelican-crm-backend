@@ -6,14 +6,14 @@ public class Result
 		if (isSucces && error != Error.None) throw new InvalidOperationException();
 		if (!isSucces && error == Error.None) throw new InvalidOperationException();
 
-		IsSucces = isSucces;
+		IsSuccess = isSucces;
 		Error = error;
 	}
 
 
-	public bool IsSucces { get; }
+	public bool IsSuccess { get; }
 
-	public bool IsFailure => !IsSucces;
+	public bool IsFailure => !IsSuccess;
 
 	public Error Error { get; }
 

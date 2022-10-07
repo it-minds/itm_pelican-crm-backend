@@ -1,4 +1,6 @@
 ﻿using HotChocolate;
+using Pelican.Application;
+using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Infrastructure.Persistence;
 using Pelican.Presentation.GraphQL.AccountManagers;
 using Pelican.Presentation.GraphQL.Clients;
@@ -17,7 +19,6 @@ var builder = WebApplication.CreateBuilder(args);
 //// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 //builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
-
 builder.Services.AddPersistince(builder.Configuration);
 
 var executorBuilder = builder.Services.AddGraphQLServer()
@@ -31,26 +32,20 @@ var executorBuilder = builder.Services.AddGraphQLServer()
 			.AddProjections()
 			.AddFiltering()
 			.AddSorting()
-			.AddDataLoader<AccountManagerByIdDataLoader>()
-			.AddDataLoader<ClientByIdDataLoader>()
-			.AddDataLoader<ContactByIdDataLoader>()
-			.AddDataLoader<DealByIdDataLoader>()
-			.AddDataLoader<LocationByIdDataLoader>()
-			.AddDataLoader<SupplierByIdDataLoader>()
+			.AddDataLoader<IAccountManagerByIdDataLoader, AccountManagerByIdDataLoader>()
+			.AddDataLoader<IClientByIdDataLoader, ClientByIdDataLoader>()
+			.AddDataLoader<IContactByIdDataLoader, ContactByIdDataLoader>()
+			.AddDataLoader<IDealByIdDataLoader, DealByIdDataLoader>()
+			.AddDataLoader<ILocationByIdDataLoader, LocationByIdDataLoader>()
+			.AddDataLoader<ISupplierByIdDataLoader, SupplierByIdDataLoader>()
 			.AddErrorFilter<PelicanErrorFilter>();
 
-
+builder.Services.AddApplication();
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-	var pelicanContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
-
-
-	if (!pelicanContext.Suppliers.Any())
-	{
-		DevelopmentSeeder.SeedEntireDb(pelicanContext);
-	}
+	var pelicanContext = scope.ServiceProvider.GetRequiredService<PelicanContext>();
 }
 
 app.UseHttpsRedirection();

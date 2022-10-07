@@ -1,24 +1,19 @@
-﻿using HotChocolate.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Pelican.Application.AccountManagers.Queries.GetAccountManagerById;
+using Pelican.Application.AccountManagers.Queries.GetAccountManagers;
 using Pelican.Domain.Entities;
-using Pelican.Infrastructure.Persistence;
 
 namespace Pelican.Presentation.GraphQL.AccountManagers;
 [ExtendObjectType("Query")]
 public class AccountManagersQuery
 {
-	[UseDbContext(typeof(IDbContext))]
-	[UsePaging(IncludeTotalCount = true)]
-	[UseProjection]
-	[UseFiltering]
-	[UseSorting]
-	[Authorize]
-	public IQueryable<AccountManager> GetAccountManagers([ScopedService] IDbContext context) => context.AccountManagers.AsNoTracking();
-
-
-	[Authorize]
-	public Task<AccountManager> GetAccountManagerAsync(Guid id, AccountManagerByIdDataLoader dataLoader, CancellationToken cancellationToken)
+	public async Task<IQueryable<AccountManager>> GetAccountManagers([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
-		return dataLoader.LoadAsync(id, cancellationToken);
+		return await mediator.Send(new GetAccountManagersQuery(), cancellationToken);
+	}
+
+	public async Task<AccountManager> GetAccountManagerAsync(GetAccountManagerByIdQuery input, [Service] IMediator mediator, CancellationToken cancellationToken)
+	{
+		return await mediator.Send(input, cancellationToken);
 	}
 }

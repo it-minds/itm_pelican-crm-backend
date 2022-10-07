@@ -1,24 +1,20 @@
-﻿using HotChocolate.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Pelican.Application.Contacts.Queries.GetContactById;
+using Pelican.Application.Contacts.Queries.GetContacts;
 using Pelican.Domain.Entities;
-using Pelican.Infrastructure.Persistence;
 
 namespace Pelican.Presentation.GraphQL.Contacts;
 
-[ExtendObjectType("Query")]
+[ExtendObjectType(OperationTypeNames.Query)]
 public class ContactsQuery
 {
-	[UseDbContext(typeof(IDbContext))]
-	[UsePaging(IncludeTotalCount = true)]
-	[UseProjection]
-	[UseFiltering]
-	[UseSorting]
-	[Authorize]
-	public IQueryable<Contact> GetContacts([ScopedService] IDbContext context) => context.Contacts.AsNoTracking();
-
-	[Authorize]
-	public Task<Contact> GetContactAsync(Guid id, ContactByIdDataLoader dataLoader, CancellationToken cancellationToken)
+	public async Task<IQueryable<Contact>> GetContacts([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
-		return dataLoader.LoadAsync(id, cancellationToken);
+		return await mediator.Send(new GetContactsQuery(), cancellationToken);
+	}
+
+	public async Task<Contact> GetContactAsync(GetContactByIdQuery input, [Service] IMediator mediator, CancellationToken cancellationToken)
+	{
+		return await mediator.Send(input, cancellationToken);
 	}
 }

@@ -16,10 +16,13 @@ public class PelicanContext : DbContext, IPelicanContext
 	public DbSet<DealContact> DealContacs { get; set; }
 	public DbSet<Supplier> Suppliers { get; set; }
 	public DbSet<Location> Locations { get; set; }
-	public string DbPath { get; }
 
-	public PelicanContext(DbContextOptions<DbContext> options)
+	public PelicanContext(DbContextOptions<PelicanContext> options) : base(options)
 	{
+	}
+	public PelicanContext()
+	{
+
 	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)

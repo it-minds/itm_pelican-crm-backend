@@ -5,15 +5,15 @@ namespace Pelican.Infrastructure.Persistence.Repositories;
 public class RepositoryWrapper : IRepositoryWrapper
 {
 	private IPelicanContext _pelicanContext;
-	private IAccountManagerDealRepository _accountManagerDeal;
-	private IAccountManagerRepository _accountManager;
-	private IClientContactRepository _clientContact;
-	private IClientRepository _client;
-	private IContactRepository _contact;
-	private IDealContactRepository _dealContact;
-	private IDealRepository _deal;
-	private ILocationRepository _location;
-	private ISupplierRepository _supplier;
+	private IAccountManagerDealRepository? _accountManagerDeal;
+	private IAccountManagerRepository? _accountManager;
+	private IClientContactRepository? _clientContact;
+	private IClientRepository? _client;
+	private IContactRepository? _contact;
+	private IDealContactRepository? _dealContact;
+	private IDealRepository? _deal;
+	private ILocationRepository? _location;
+	private ISupplierRepository? _supplier;
 	public IAccountManagerDealRepository AccountManagerDeal
 	{
 		get

@@ -3,10 +3,10 @@ using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Application.Clients.Queries.GetClientById;
-public class GetContactByIdQueryHandler : IRequestHandler<GetClientByIdQuery, Client>
+public class GetClientByIdQueryHandler : IRequestHandler<GetClientByIdQuery, Client>
 {
 	private readonly IClientByIdDataLoader _dataLoader;
-	public GetContactByIdQueryHandler(IClientByIdDataLoader dataLoader)
+	public GetClientByIdQueryHandler(IClientByIdDataLoader dataLoader)
 	{
 		_dataLoader = dataLoader;
 	}

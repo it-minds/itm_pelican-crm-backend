@@ -4,7 +4,7 @@ using Pelican.Domain.Entities;
 
 namespace Pelican.Application.Common.Interfaces;
 
-public interface IPelicanContext
+public interface IPelicanContext : IDbContext
 {
 	DbSet<AccountManager> AccountManagers { get; }
 	DbSet<AccountManagerDeal> AccountManagerDeals { get; }
@@ -15,7 +15,6 @@ public interface IPelicanContext
 	DbSet<DealContact> DealContacs { get; }
 	DbSet<Supplier> Suppliers { get; }
 	DbSet<Location> Locations { get; }
-	string DbPath { get; }
 	int SaveChanges();
 	int SaveChanges(bool acceptAllChangesOnSuccess);
 	Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken());

@@ -10,7 +10,7 @@ using Pelican.Infrastructure.Persistence;
 
 namespace Pelican.Infrastructure.Persistence.Migrations
 {
-    [DbContext(typeof(IDbContext))]
+    [DbContext(typeof(PelicanContext))]
     partial class PelicanContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

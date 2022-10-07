@@ -1,24 +1,20 @@
-﻿using HotChocolate.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Pelican.Application.Suppliers.Queries.GetSupplierById;
+using Pelican.Application.Suppliers.Queries.GetSuppliers;
 using Pelican.Domain.Entities;
-using Pelican.Infrastructure.Persistence;
 
 namespace Pelican.Presentation.GraphQL.Suppliers;
 [ExtendObjectType("Query")]
 
 public class SuppliersQuery
 {
-	[UseDbContext(typeof(IDbContext))]
-	[UsePaging(IncludeTotalCount = true)]
-	[UseProjection]
-	[UseFiltering]
-	[UseSorting]
-	[Authorize]
-	public IQueryable<Supplier> GetSuppliers([ScopedService] IDbContext context) => context.Suppliers.AsNoTracking();
-
-	[Authorize]
-	public Task<Supplier> GetSupplierAsync(Guid id, SupplierByIdDataLoader dataLoader, CancellationToken cancellationToken)
+	public async Task<IQueryable<Supplier>> GetSuppliers([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
-		return dataLoader.LoadAsync(id, cancellationToken);
+		return await mediator.Send(new GetSuppliersQuery(), cancellationToken);
+	}
+
+	public async Task<Supplier> GetSupplierAsync(GetSupplierByIdQuery input, [Service] IMediator mediator, CancellationToken cancellationToken)
+	{
+		return await mediator.Send(input, cancellationToken);
 	}
 }

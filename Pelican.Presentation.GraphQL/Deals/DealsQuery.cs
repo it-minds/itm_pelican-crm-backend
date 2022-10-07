@@ -1,22 +1,19 @@
-﻿using HotChocolate.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Pelican.Application.Deals.Queries.GetDealById;
+using Pelican.Application.Deals.Queries.GetDeals;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Presentation.GraphQL.Deals;
 [ExtendObjectType("Query")]
 public class DealsQuery
 {
-	[UseDbContext(typeof(IDbContext))]
-	[UsePaging(IncludeTotalCount = true)]
-	[UseProjection]
-	[UseFiltering]
-	[UseSorting]
-	[Authorize]
-	public IQueryable<Deal> GetDeals([ScopedService] IDbContext context) => context.Deals.AsNoTracking();
-
-	[Authorize]
-	public Task<Deal> GetDealAsync(Guid id, DealByIdDataLoader dataLoader, CancellationToken cancellationToken)
+	public async Task<IQueryable<Deal>> GetDeals([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
-		return dataLoader.LoadAsync(id, cancellationToken);
+		return await mediator.Send(new GetDealsQuery(), cancellationToken);
+	}
+
+	public async Task<Deal> GetDealAsync(GetDealByIdQuery input, [Service] IMediator mediator, CancellationToken cancellationToken)
+	{
+		return await mediator.Send(input, cancellationToken);
 	}
 }

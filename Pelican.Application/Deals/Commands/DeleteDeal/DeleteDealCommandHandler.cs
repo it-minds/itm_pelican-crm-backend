@@ -7,28 +7,34 @@ namespace Pelican.Application.Deals.Commands.DeleteDeal;
 
 internal sealed class DeleteDealCommandHandler : ICommandHandler<DeleteDealCommand>
 {
-	private readonly IDealRepository _dealRepository;
+	private readonly IRepositoryWrapper _repositoryWrapper;
 
-	public DeleteDealCommandHandler(IDealRepository dealRepository)
+	public DeleteDealCommandHandler(IRepositoryWrapper repositoryWrapper)
 	{
-		_dealRepository = dealRepository ?? throw new ArgumentNullException(nameof(dealRepository));
+		_repositoryWrapper = repositoryWrapper ?? throw new ArgumentNullException(nameof(repositoryWrapper));
 	}
 
-	public Task<Result> Handle(
+	public async Task<Result> Handle(
 		DeleteDealCommand command,
 		CancellationToken cancellationToken)
 	{
-		Deal? deal = _dealRepository
+		Deal? deal = _repositoryWrapper
+			.Deal
 			.FindByCondition(d => d.Id.ToString() == command.ObjectId.ToString())
 			.FirstOrDefault();
 
 		if (deal is null)
 		{
-			return new Task<Result>(() => Result.Success());
+			return Result.Success();
 		}
 
-		_dealRepository.Delete(deal);
+		_repositoryWrapper
+			.Deal
+			.Delete(deal);
 
-		return new Task<Result>(() => Result.Success());
+		// wait for async impl and await that.
+		_repositoryWrapper.Save();
+
+		return Result.Success();
 	}
 }

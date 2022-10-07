@@ -4,7 +4,7 @@ using Pelican.Application.HubSpot.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Xunit;
 
-namespace Pelican.Application.Test;
+namespace Pelican.Application.Test.HubSpot.Commands.NewInstallation;
 
 public class NewInstallationCommandHandlerTests
 {
@@ -25,14 +25,14 @@ public class NewInstallationCommandHandlerTests
 		string code)
 	{
 		// Arrange
-		NewInstallationCommand command = new NewInstallationCommand(code);
+		var command = new NewInstallationCommand(code);
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(h => h.AuthorizeUserAsync(command.Code, cancellationToken))
 			.ReturnsAsync(Result.Success);
 
 		// Act 
-		Result result = await _uut.Handle(command, cancellationToken);
+		var result = await _uut.Handle(command, cancellationToken);
 
 		// Assert
 		_hubSpotAuthorizationServiceMock.Verify(h => h.AuthorizeUserAsync(command.Code, cancellationToken));
@@ -48,14 +48,14 @@ public class NewInstallationCommandHandlerTests
 		string errorMessage)
 	{
 		// Arrange
-		NewInstallationCommand command = new NewInstallationCommand(code);
+		var command = new NewInstallationCommand(code);
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(h => h.AuthorizeUserAsync(command.Code, cancellationToken))
 			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
 
 		// Act 
-		Result result = await _uut.Handle(command, cancellationToken);
+		var result = await _uut.Handle(command, cancellationToken);
 
 		// Assert
 		_hubSpotAuthorizationServiceMock.Verify(h => h.AuthorizeUserAsync(command.Code, cancellationToken));

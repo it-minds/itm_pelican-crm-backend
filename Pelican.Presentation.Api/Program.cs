@@ -1,7 +1,9 @@
-﻿using MediatR;
+﻿using Pelican.Application;
 using Pelican.Infrastructure.HubSpot;
 using Pelican.Infrastructure.Persistence;
-var allowedCorsOrigins = "AllowedCorsOrigins";
+using Pelican.Presentation.Api;
+
+const string allowedCorsOrigins = "AllowedCorsOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,14 +15,8 @@ builder
 
 builder.Services.AddHubSpot(builder.Configuration);
 builder.Services.AddPersistince(builder.Configuration);
-
-builder.Services.AddMediatR(Pelican.Application.AssemblyReference.Assembly);
-
-builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+builder.Services.AddApplication();
+builder.Services.AddApi();
 
 var app = builder.Build();
 

@@ -5,7 +5,7 @@
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
           <Format>cobertura</Format>          
-          <Exclude>[*]*Migrations*</Exclude> <!-- [Assembly-Filter]Type-Filter -->
+          <Exclude>[*]*Migrations*, [*]*.</Exclude> [Assembly-Filter]Type-Filter
           <SingleHit>false</SingleHit>
           <UseSourceLink>true</UseSourceLink>
           <IncludeTestAssembly>false</IncludeTestAssembly>

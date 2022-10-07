@@ -31,7 +31,7 @@ public class NewInstallationCommandValidatorTests
 	public void NewInstallationCommandValidator_NullCode_ReturnsError()
 	{
 		// Arrange
-		NewInstallationCommand command = new("");
+		NewInstallationCommand command = new("code");
 
 		// Act
 		TestValidationResult<NewInstallationCommand> result = _uut.TestValidate(command);

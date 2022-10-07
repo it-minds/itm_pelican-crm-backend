@@ -14,13 +14,7 @@ public static class DependencyInjection
 		services.AddDbContextFactory<PelicanContext>(
 			o => o.UseSqlServer(configuration.GetConnectionString("myLocalDb"),
 			b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)));
-		services.AddTransient<ISupplierRepository>(_ => new SupplierRepository(_.GetRequiredService<IDbContextFactory<PelicanContext>>().CreateDbContext()));
-		services.AddTransient<IAccountManagerRepository>(_ => new AccountManagerRepository(_.GetRequiredService<IDbContextFactory<PelicanContext>>().CreateDbContext()));
-		services.AddTransient<ILocationRepository>(_ => new LocationRepository(_.GetRequiredService<IDbContextFactory<PelicanContext>>().CreateDbContext()));
-		services.AddTransient<IContactRepository>(_ => new ContactRepository(_.GetRequiredService<IDbContextFactory<PelicanContext>>().CreateDbContext()));
-		services.AddTransient<IClientRepository>(_ => new ClientRepository(_.GetRequiredService<IDbContextFactory<PelicanContext>>().CreateDbContext()));
-
-		services.AddTransient<IDealRepository>(_ => new DealRepository(_.GetRequiredService<IDbContextFactory<PelicanContext>>().CreateDbContext()));
+		services.AddTransient<IUnitOfWork>(_ => new UnitOfWork(_.GetRequiredService<IDbContextFactory<PelicanContext>>().CreateDbContext()));
 		return services;
 	}
 }

@@ -3,12 +3,12 @@ using Pelican.Domain.Entities;
 using Pelican.Domain.Repositories;
 
 namespace Pelican.Application.Deals.Queries.GetDeals;
-public class GetLocationsHandler : IRequestHandler<GetDealsQuery, IQueryable<Deal>>
+public class GetDealsQueryHandler : IRequestHandler<GetDealsQuery, IQueryable<Deal>>
 {
 	private readonly IDealRepository _repository;
-	public GetLocationsHandler(IDealRepository dealRepository)
+	public GetDealsQueryHandler(IUnitOfWork unitOfWork)
 	{
-		_repository = dealRepository;
+		_repository = unitOfWork.DealRepository;
 	}
 	public async Task<IQueryable<Deal>> Handle(GetDealsQuery request, CancellationToken cancellation)
 	{

@@ -6,9 +6,9 @@ namespace Pelican.Application.Contacts.Queries.GetContacts;
 public class GetContactsQueryHandler : IRequestHandler<GetContactsQuery, IQueryable<Contact>>
 {
 	private readonly IContactRepository _repository;
-	public GetContactsQueryHandler(IContactRepository contactRepository)
+	public GetContactsQueryHandler(IUnitOfWork unitOfWork)
 	{
-		_repository = contactRepository;
+		_repository = unitOfWork.ContactRepository;
 	}
 	public async Task<IQueryable<Contact>> Handle(GetContactsQuery request, CancellationToken cancellation)
 	{

@@ -8,14 +8,14 @@ namespace Pelican.Infrastructure.Test;
 
 public class RepositoryWrapperUnitTest
 {
-	private IRepositoryWrapper uut;
+	private IUnitOfWork uut;
 	//One Test
 	[Fact]
 	public void WrapperSaveIsCalledOnce_DbContextReceivesOneSaveChanges()
 	{
 		//Arrange
 		var myDbContextMock = new Mock<IPelicanContext>();
-		uut = new RepositoryWrapper(myDbContextMock.Object);
+		uut = new UnitOfWork(myDbContextMock.Object);
 		//Act
 		uut.Save();
 		//Assert
@@ -27,7 +27,7 @@ public class RepositoryWrapperUnitTest
 	{
 		//Arrange
 		var myDbContextMock = new Mock<IPelicanContext>();
-		uut = new RepositoryWrapper(myDbContextMock.Object);
+		uut = new UnitOfWork(myDbContextMock.Object);
 		//Act
 		for (int i = 0; i < 50; i++)
 		{

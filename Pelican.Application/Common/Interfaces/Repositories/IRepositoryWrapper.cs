@@ -1,14 +1,15 @@
 ﻿namespace Pelican.Domain.Repositories;
-public interface IRepositoryWrapper
+public interface IUnitOfWork
 {
-	IAccountManagerDealRepository AccountManagerDeal { get; }
-	IAccountManagerRepository AccountManager { get; }
-	IClientContactRepository ClientContact { get; }
-	IClientRepository Client { get; }
-	IContactRepository Contact { get; }
-	IDealContactRepository DealContact { get; }
-	IDealRepository Deal { get; }
-	ILocationRepository Location { get; }
-	ISupplierRepository Supplier { get; }
+	IAccountManagerDealRepository AccountManagerDealRepository { get; }
+	IAccountManagerRepository AccountManagerRepository { get; }
+	IClientContactRepository ClientContactRepository { get; }
+	IClientRepository ClientRepository { get; }
+	IContactRepository ContactRepository { get; }
+	IDealContactRepository DealContactRepository { get; }
+	IDealRepository DealRepository { get; }
+	ILocationRepository LocationRepository { get; }
+	ISupplierRepository SupplierRepository { get; }
 	void Save();
+	void SaveAsync();
 }

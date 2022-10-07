@@ -4,12 +4,12 @@ using Pelican.Domain.Entities;
 using Pelican.Domain.Repositories;
 
 namespace Pelican.Application.Clients.Queries.GetCLients;
-internal class GetContactsQueryHandler : IRequestHandler<GetClientsQuery, IQueryable<Client>>
+public class GetClientsQueryHandler : IRequestHandler<GetClientsQuery, IQueryable<Client>>
 {
 	private readonly IClientRepository _repository;
-	public GetContactsQueryHandler(IClientRepository clientRepository)
+	public GetClientsQueryHandler(IUnitOfWork unitOfWork)
 	{
-		_repository = clientRepository;
+		_repository = unitOfWork.ClientRepository;
 	}
 	public async Task<IQueryable<Client>> Handle(GetClientsQuery request, CancellationToken cancellation)
 	{

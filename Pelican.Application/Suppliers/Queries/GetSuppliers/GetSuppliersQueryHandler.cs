@@ -3,12 +3,12 @@ using Pelican.Domain.Entities;
 using Pelican.Domain.Repositories;
 
 namespace Pelican.Application.Suppliers.Queries.GetSuppliers;
-public class GetSuppliersHandler : IRequestHandler<GetSuppliersQuery, IQueryable<Supplier>>
+public class GetSuppliersQueryHandler : IRequestHandler<GetSuppliersQuery, IQueryable<Supplier>>
 {
 	private readonly ISupplierRepository _repository;
-	public GetSuppliersHandler(ISupplierRepository supplierRepository)
+	public GetSuppliersQueryHandler(IUnitOfWork unitOfWork)
 	{
-		_repository = supplierRepository;
+		_repository = unitOfWork.SupplierRepository;
 	}
 	public async Task<IQueryable<Supplier>> Handle(GetSuppliersQuery request, CancellationToken cancellation)
 	{

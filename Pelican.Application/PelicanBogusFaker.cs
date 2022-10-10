@@ -18,8 +18,8 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 				.RuleFor(e => e.WebsiteUrl, f => f.Internet.Url())
 				.RuleFor(e => e.LinkedInUrl, f => f.Internet.Url())
 				.RuleFor(e => e.PhoneNumber, f => f.Phone.PhoneNumber())
-				.RuleFor(e => e.PictureUrl, f => f.Image.PicsumUrl());
+				.RuleFor(e => e.PictureUrl, f => f.Image.PicsumUrl())
+				.RuleFor(e => e.Id, f => f.Random.Guid());
 		return faker.Generate(count);
 	}
-
 }

@@ -1,13 +1,14 @@
 ﻿using Moq;
 using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Application.Contacts.Queries.GetContactById;
+using Pelican.Domain.Entities;
 using Xunit;
 namespace Pelican.Application.Test;
 public class GetContactByIdQueryHandlerUnitTest
 {
 	private GetContactByIdQueryHandler uut;
 	[Fact]
-	public void TestIfWhenHandleIsCalledDataLoaderIsCalledWithCorrectParameters()
+	public async void TestIfWhenHandleIsCalledDataLoaderIsCalledWithCorrectParameters()
 	{
 		//Arrange
 		var dataLoaderMock = new Mock<IContactByIdDataLoader>();
@@ -15,13 +16,19 @@ public class GetContactByIdQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
 		GetContactByIdQuery getContactByIdQuery = new GetContactByIdQuery(guid);
+		List<Contact> resultList = new List<Contact>();
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Contact
+		{
+			Id = guid
+		});
 		//Act
-		uut.Handle(getContactByIdQuery, cancellationToken);
+		resultList.Add(await uut.Handle(getContactByIdQuery, cancellationToken));
 		//Assert
 		dataLoaderMock.Verify(x => x.LoadAsync(guid, cancellationToken), Times.Once());
+		Assert.All(resultList, item => item.Id.Equals(guid));
 	}
 	[Fact]
-	public void TestIfWhenHandleIsCalledMultipleTimesDataLoaderIsCalledWithCorrectParametersMultipleTimes()
+	public async void TestIfWhenHandleIsCalledMultipleTimesDataLoaderIsCalledWithCorrectParametersMultipleTimes()
 	{
 		//Arrange
 		var dataLoaderMock = new Mock<IContactByIdDataLoader>();
@@ -29,13 +36,18 @@ public class GetContactByIdQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
 		GetContactByIdQuery getContactByIdQuery = new GetContactByIdQuery(guid);
+		List<Contact> resultList = new List<Contact>();
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Contact
+		{
+			Id = guid
+		});
 		//Act
 		for (int i = 0; i < 50; i++)
 		{
-			uut.Handle(getContactByIdQuery, cancellationToken);
-
+			resultList.Add(await uut.Handle(getContactByIdQuery, cancellationToken));
 		}
 		//Assert
 		dataLoaderMock.Verify(x => x.LoadAsync(guid, cancellationToken), Times.Exactly(50));
+		Assert.All(resultList, item => item.Id.Equals(guid));
 	}
 }

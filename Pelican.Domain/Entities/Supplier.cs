@@ -2,7 +2,7 @@
 
 namespace Pelican.Domain.Entities;
 
-public class Supplier : Entity<Guid>, ITimeTracked
+public class Supplier : Entity, ITimeTracked
 {
 	public string Name { get; set; }
 	public string? PictureUrl { get; set; }
@@ -15,8 +15,12 @@ public class Supplier : Entity<Guid>, ITimeTracked
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
 
+	public Supplier(Guid id) : base(id)
+	{
+
+	}
 	public Supplier()
 	{
-		Id = Guid.NewGuid();
+
 	}
 }

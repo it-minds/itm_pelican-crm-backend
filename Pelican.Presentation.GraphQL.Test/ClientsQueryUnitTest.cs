@@ -2,6 +2,7 @@
 using Moq;
 using Pelican.Application.Clients.Queries.GetClientById;
 using Pelican.Application.Clients.Queries.GetClients;
+using Pelican.Domain.Entities;
 using Pelican.Presentation.GraphQL.Clients;
 using Xunit;
 
@@ -21,10 +22,10 @@ public class ClientsQueryUnitTest
 		//Act
 		_ = uut.GetClients(mediatorMock.Object, cancellationToken);
 		//Assert
-		mediatorMock.Verify(x => x.Send(It.IsAny<GetClientsQuery>(), cancellationToken), Times.Exactly(1));
+		mediatorMock.Verify(x => x.Send(It.IsAny<GetClientsQuery>(), cancellationToken), Times.Once());
 	}
 	[Fact]
-	public void IfGetClientAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
+	public async void IfGetClientAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
 	{
 		//Arrange
 		uut = new ClientsQuery();
@@ -32,9 +33,11 @@ public class ClientsQueryUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		Guid id = Guid.NewGuid();
 		GetClientByIdQuery input = new GetClientByIdQuery(id);
+		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Client { Id = id });
 		//Act
-		_ = uut.GetClientAsync(input, mediatorMock.Object, cancellationToken);
+		var result = await uut.GetClientAsync(input, mediatorMock.Object, cancellationToken);
 		//Assert
+		Assert.Equal(id, result.Id);
 		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Exactly(1));
 	}
 }

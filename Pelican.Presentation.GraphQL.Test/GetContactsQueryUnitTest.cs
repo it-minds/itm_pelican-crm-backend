@@ -2,6 +2,7 @@
 using Moq;
 using Pelican.Application.Contacts.Queries.GetContactById;
 using Pelican.Application.Contacts.Queries.GetContacts;
+using Pelican.Domain.Entities;
 using Pelican.Presentation.GraphQL.Contacts;
 using Xunit;
 
@@ -19,10 +20,10 @@ public class GetContactsQueryUnitTest
 		//Act
 		_ = uut.GetContacts(mediatorMock.Object, cancellationToken);
 		//Assert
-		mediatorMock.Verify(x => x.Send(It.IsAny<GetContactsQuery>(), cancellationToken), Times.Exactly(1));
+		mediatorMock.Verify(x => x.Send(It.IsAny<GetContactsQuery>(), cancellationToken), Times.Once());
 	}
 	[Fact]
-	public void IfGetContactAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
+	public async void IfGetContactAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
 	{
 		//Arrange
 		uut = new ContactsQuery();
@@ -30,9 +31,11 @@ public class GetContactsQueryUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		Guid id = Guid.NewGuid();
 		GetContactByIdQuery input = new GetContactByIdQuery(id);
+		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Contact { Id = id });
 		//Act
-		_ = uut.GetContactAsync(input, mediatorMock.Object, cancellationToken);
+		var result = await uut.GetContactAsync(input, mediatorMock.Object, cancellationToken);
 		//Assert
-		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Exactly(1));
+		Assert.Equal(id, result.Id);
+		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Once());
 	}
 }

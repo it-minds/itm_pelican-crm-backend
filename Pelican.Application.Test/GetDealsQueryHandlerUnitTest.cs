@@ -17,7 +17,7 @@ public class GetDealsQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		GetDealsQuery dealsQuery = new GetDealsQuery();
 		//Act
-		uut.Handle(dealsQuery, cancellationToken);
+		_ = uut.Handle(dealsQuery, cancellationToken);
 		//Assert
 		unitOfWorkMock.Verify(x => x.DealRepository.FindAll(), Times.Once());
 	}
@@ -34,7 +34,7 @@ public class GetDealsQueryHandlerUnitTest
 		//Act
 		for (int i = 0; i < 50; i++)
 		{
-			uut.Handle(dealsQuery, cancellationToken);
+			_ = uut.Handle(dealsQuery, cancellationToken);
 		}
 
 		//Assert

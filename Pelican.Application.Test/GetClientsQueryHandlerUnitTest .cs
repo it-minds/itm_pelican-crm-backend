@@ -18,7 +18,7 @@ public class GetClientsQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		GetClientsQuery client = new GetClientsQuery();
 		//Act
-		uut.Handle(client, cancellationToken);
+		_ = uut.Handle(client, cancellationToken);
 		//Assert
 		unitOfWorkMock.Verify(x => x.ClientRepository.FindAll(), Times.Once());
 	}
@@ -35,7 +35,7 @@ public class GetClientsQueryHandlerUnitTest
 		//Act
 		for (int i = 0; i < 50; i++)
 		{
-			uut.Handle(clientsQuery, cancellationToken);
+			_ = uut.Handle(clientsQuery, cancellationToken);
 		}
 
 		//Assert

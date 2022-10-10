@@ -2,6 +2,7 @@
 using Moq;
 using Pelican.Application.Deals.Queries.GetDealById;
 using Pelican.Application.Deals.Queries.GetDeals;
+using Pelican.Domain.Entities;
 using Pelican.Presentation.GraphQL.Deals;
 using Xunit;
 
@@ -19,10 +20,10 @@ public class GetDealsQueryUnitTest
 		//Act
 		_ = uut.GetDeals(mediatorMock.Object, cancellationToken);
 		//Assert
-		mediatorMock.Verify(x => x.Send(It.IsAny<GetDealsQuery>(), cancellationToken), Times.Exactly(1));
+		mediatorMock.Verify(x => x.Send(It.IsAny<GetDealsQuery>(), cancellationToken), Times.Once());
 	}
 	[Fact]
-	public void IfGetDealAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
+	public async void IfGetDealAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
 	{
 		//Arrange
 		uut = new DealsQuery();
@@ -30,9 +31,11 @@ public class GetDealsQueryUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		Guid id = Guid.NewGuid();
 		GetDealByIdQuery input = new GetDealByIdQuery(id);
+		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Deal { Id = id });
 		//Act
-		_ = uut.GetDealAsync(input, mediatorMock.Object, cancellationToken);
+		var result = await uut.GetDealAsync(input, mediatorMock.Object, cancellationToken);
 		//Assert
-		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Exactly(1));
+		Assert.Equal(id, result.Id);
+		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Once());
 	}
 }

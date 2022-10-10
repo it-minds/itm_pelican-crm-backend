@@ -10,8 +10,6 @@ public static class DependencyInjection
 	//This depedency injection allows persistence to be added as a service in program.
 	public static IServiceCollection AddPersistince(this IServiceCollection services, IConfiguration configuration)
 	{
-		//services.AddDbContext<PelicanContext>(options => options.UseSqlServer(configuration.GetConnectionString("myLocalDb"),
-		//b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)), ServiceLifetime.Scoped);
 		services.AddDbContextFactory<PelicanContext>(
 			o => o.UseSqlServer(configuration.GetConnectionString("myLocalDb"),
 			b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)));

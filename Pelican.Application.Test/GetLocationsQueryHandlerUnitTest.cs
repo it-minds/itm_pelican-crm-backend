@@ -17,7 +17,7 @@ public class GetLocationsQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		GetLocationsQuery locationsQuery = new GetLocationsQuery();
 		//Act
-		uut.Handle(locationsQuery, cancellationToken);
+		_ = uut.Handle(locationsQuery, cancellationToken);
 		//Assert
 		unitOfWorkMock.Verify(x => x.LocationRepository.FindAll(), Times.Once());
 	}
@@ -34,7 +34,7 @@ public class GetLocationsQueryHandlerUnitTest
 		//Act
 		for (int i = 0; i < 50; i++)
 		{
-			uut.Handle(locationsQuery, cancellationToken);
+			_ = uut.Handle(locationsQuery, cancellationToken);
 		}
 
 		//Assert

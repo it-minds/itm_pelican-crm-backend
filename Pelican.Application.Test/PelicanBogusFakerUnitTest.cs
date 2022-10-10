@@ -1,5 +1,4 @@
-﻿using Pelican.Application.Common;
-using Pelican.Application.Common.Interfaces;
+﻿using Pelican.Application.Common.Interfaces;
 using Pelican.Domain.Entities;
 using Xunit;
 
@@ -16,6 +15,24 @@ public class PelicanBogusFakerUnitTest
 		IEnumerable<Supplier> result = uut.SupplierFaker(1);
 		//Assert
 		Assert.Single(result);
+		Assert.All(result,
+			item => Assert.NotNull(item.Name)
+			);
+		Assert.All(result,
+			item => Assert.NotNull(item.PhoneNumber)
+			);
+		Assert.All(result,
+			item => Assert.NotNull(item.PictureUrl)
+			);
+		Assert.All(result,
+			item => Assert.NotNull(item.PhoneNumber)
+			);
+		Assert.All(result,
+			item => Assert.NotNull(item.LinkedInUrl)
+			);
+		Assert.All(result,
+			item => Assert.NotNull(item.Email)
+			);
 	}
 	[Fact]
 	public void PelicanBogusFakerCreateManySuppliersTest()
@@ -26,5 +43,23 @@ public class PelicanBogusFakerUnitTest
 		IEnumerable<Supplier> result = uut.SupplierFaker(50);
 		//Assert
 		Assert.Equal(50, result.Count());
+		Assert.All(result,
+			item => Assert.NotNull(item.Name)
+			);
+		Assert.All(result,
+			item => Assert.NotNull(item.PhoneNumber)
+			);
+		Assert.All(result,
+			item => Assert.NotNull(item.PictureUrl)
+			);
+		Assert.All(result,
+			item => Assert.NotNull(item.PhoneNumber)
+			);
+		Assert.All(result,
+			item => Assert.NotNull(item.LinkedInUrl)
+			);
+		Assert.All(result,
+			item => Assert.NotNull(item.Email)
+			);
 	}
 }

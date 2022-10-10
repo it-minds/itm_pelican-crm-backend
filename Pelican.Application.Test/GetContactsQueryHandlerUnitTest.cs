@@ -17,7 +17,7 @@ public class GetContacrsQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		GetContactsQuery contactsQuery = new GetContactsQuery();
 		//Act
-		uut.Handle(contactsQuery, cancellationToken);
+		_ = uut.Handle(contactsQuery, cancellationToken);
 		//Assert
 		unitOfWorkMock.Verify(x => x.ContactRepository.FindAll(), Times.Once());
 	}
@@ -34,7 +34,7 @@ public class GetContacrsQueryHandlerUnitTest
 		//Act
 		for (int i = 0; i < 50; i++)
 		{
-			uut.Handle(contactsQuery, cancellationToken);
+			_ = uut.Handle(contactsQuery, cancellationToken);
 		}
 
 		//Assert

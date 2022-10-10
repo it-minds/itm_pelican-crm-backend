@@ -131,8 +131,8 @@ public class UnitOfWork : IUnitOfWork
 		_pelicanContext.SaveChanges();
 	}
 
-	public void SaveAsync()
+	public async Task SaveAsync()
 	{
-		_pelicanContext.SaveChangesAsync();
+		await _pelicanContext.SaveChangesAsync();
 	}
 }

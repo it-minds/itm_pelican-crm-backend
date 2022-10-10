@@ -1,7 +1,7 @@
 ﻿using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
-public class ClientContact : Entity<Guid>, ITimeTracked
+public class ClientContact : Entity, ITimeTracked
 {
 	public Guid ClientId { get; set; }
 	public Guid ContactId { get; set; }
@@ -11,8 +11,9 @@ public class ClientContact : Entity<Guid>, ITimeTracked
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
 
-	public ClientContact()
+	public ClientContact(Guid id) : base(id)
 	{
-		Id = Guid.NewGuid();
 	}
+	public ClientContact() { }
+
 }

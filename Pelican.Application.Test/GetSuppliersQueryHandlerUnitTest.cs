@@ -17,7 +17,7 @@ public class GetSuppliersQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		GetSuppliersQuery accountManagersQuery = new GetSuppliersQuery();
 		//Act
-		uut.Handle(accountManagersQuery, cancellationToken);
+		_ = uut.Handle(accountManagersQuery, cancellationToken);
 		//Assert
 		unitOfWorkMock.Verify(x => x.SupplierRepository.FindAll(), Times.Once());
 	}
@@ -34,7 +34,7 @@ public class GetSuppliersQueryHandlerUnitTest
 		//Act
 		for (int i = 0; i < 50; i++)
 		{
-			uut.Handle(suppliersQuery, cancellationToken);
+			_ = uut.Handle(suppliersQuery, cancellationToken);
 		}
 
 		//Assert

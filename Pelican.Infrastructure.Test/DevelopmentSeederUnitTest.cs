@@ -16,18 +16,18 @@ public class DevelopmentSeederUnitTest
 		var fakePelicanFaker = new Mock<IPelicanBogusFaker>();
 		var guid = Guid.NewGuid();
 		List<Supplier> suppliers = new List<Supplier>();
-		suppliers.Add(new Supplier()
+		suppliers.Add(new Supplier(guid)
 		{
 			Email = "thismail"
 		});
-		//Act
 		fakePelicanContext.Setup(x => x.Suppliers)
 			.Returns((Microsoft.EntityFrameworkCore.DbSet<Supplier>)mockDbSet
 			.As<IQueryable<Supplier>>().Object);
 		fakePelicanFaker.Setup(x => x.SupplierFaker(It.IsAny<int>())).Returns(suppliers);
+		//Act
 		DevelopmentSeeder.SeedEntireDb(fakePelicanContext.Object, fakePelicanFaker.Object);
 		//Assert
-		fakePelicanContext.Verify(x => x.SaveChanges(), Times.Exactly(1));
+		fakePelicanContext.Verify(x => x.SaveChanges(), Times.Once());
 		fakePelicanContext.Verify(x => x.Suppliers.AddRange(suppliers), Times.Once());
 	}
 }

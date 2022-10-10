@@ -17,7 +17,7 @@ public class GetAccountManagersQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		GetAccountManagersQuery accountManagersQuery = new GetAccountManagersQuery();
 		//Act
-		uut.Handle(accountManagersQuery, cancellationToken);
+		_ = uut.Handle(accountManagersQuery, cancellationToken);
 		//Assert
 		unitOfWorkMock.Verify(x => x.AccountManagerRepository.FindAll(), Times.Once());
 	}
@@ -34,7 +34,7 @@ public class GetAccountManagersQueryHandlerUnitTest
 		//Act
 		for (int i = 0; i < 50; i++)
 		{
-			uut.Handle(accountManagersQuery, cancellationToken);
+			_ = uut.Handle(accountManagersQuery, cancellationToken);
 		}
 
 		//Assert

@@ -11,5 +11,5 @@ public interface IUnitOfWork
 	ILocationRepository LocationRepository { get; }
 	ISupplierRepository SupplierRepository { get; }
 	void Save();
-	void SaveAsync();
+	Task SaveAsync();
 }

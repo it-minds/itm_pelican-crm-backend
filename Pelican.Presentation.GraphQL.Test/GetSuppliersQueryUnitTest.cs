@@ -2,6 +2,7 @@
 using Moq;
 using Pelican.Application.Suppliers.Queries.GetSupplierById;
 using Pelican.Application.Suppliers.Queries.GetSuppliers;
+using Pelican.Domain.Entities;
 using Pelican.Presentation.GraphQL.Suppliers;
 using Xunit;
 
@@ -19,10 +20,10 @@ public class GetSuppliersQueryUnitTest
 		//Act
 		_ = uut.GetSuppliers(mediatorMock.Object, cancellationToken);
 		//Assert
-		mediatorMock.Verify(x => x.Send(It.IsAny<GetSuppliersQuery>(), cancellationToken), Times.Exactly(1));
+		mediatorMock.Verify(x => x.Send(It.IsAny<GetSuppliersQuery>(), cancellationToken), Times.Once());
 	}
 	[Fact]
-	public void IfGetSupplierAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
+	public async void IfGetSupplierAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
 	{
 		//Arrange
 		uut = new SuppliersQuery();
@@ -30,9 +31,11 @@ public class GetSuppliersQueryUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		Guid id = Guid.NewGuid();
 		GetSupplierByIdQuery input = new GetSupplierByIdQuery(id);
+		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Supplier { Id = id });
 		//Act
-		_ = uut.GetSupplierAsync(input, mediatorMock.Object, cancellationToken);
+		var result = await uut.GetSupplierAsync(input, mediatorMock.Object, cancellationToken);
 		//Assert
-		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Exactly(1));
+		Assert.Equal(id, result.Id);
+		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Once());
 	}
 }

@@ -7,7 +7,6 @@ using Pelican.Presentation.GraphQL.Clients;
 using Pelican.Presentation.GraphQL.Contacts;
 using Pelican.Presentation.GraphQL.DataLoader;
 using Pelican.Presentation.GraphQL.Deals;
-using Pelican.Presentation.GraphQL.Errors;
 using Pelican.Presentation.GraphQL.Locations;
 using Pelican.Presentation.GraphQL.Suppliers;
 
@@ -37,8 +36,7 @@ var executorBuilder = builder.Services.AddGraphQLServer()
 			.AddDataLoader<IContactByIdDataLoader, ContactByIdDataLoader>()
 			.AddDataLoader<IDealByIdDataLoader, DealByIdDataLoader>()
 			.AddDataLoader<ILocationByIdDataLoader, LocationByIdDataLoader>()
-			.AddDataLoader<ISupplierByIdDataLoader, SupplierByIdDataLoader>()
-			.AddErrorFilter<PelicanErrorFilter>();
+			.AddDataLoader<ISupplierByIdDataLoader, SupplierByIdDataLoader>();
 
 builder.Services.AddApplication();
 var app = builder.Build();

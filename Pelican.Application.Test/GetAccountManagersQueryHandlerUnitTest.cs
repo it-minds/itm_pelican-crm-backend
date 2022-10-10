@@ -21,4 +21,23 @@ public class GetAccountManagersQueryHandlerUnitTest
 		//Assert
 		unitOfWorkMock.Verify(x => x.AccountManagerRepository.FindAll(), Times.Once());
 	}
+	[Fact]
+	public void TestIfWhenHandleIsCalledMultipleTimesRepositoryIsCalledMultipleTimes()
+	{
+		//Arrange
+		var unitOfWorkMock = new Mock<IUnitOfWork>();
+		var accountManagerRepositoryMock = new Mock<IAccountManagerRepository>();
+		unitOfWorkMock.Setup(x => x.AccountManagerRepository).Returns(accountManagerRepositoryMock.Object);
+		uut = new GetAccountManagersQueryHandler(unitOfWorkMock.Object);
+		CancellationToken cancellationToken = new CancellationToken();
+		GetAccountManagersQuery accountManagersQuery = new GetAccountManagersQuery();
+		//Act
+		for (int i = 0; i < 50; i++)
+		{
+			uut.Handle(accountManagersQuery, cancellationToken);
+		}
+
+		//Assert
+		unitOfWorkMock.Verify(x => x.AccountManagerRepository.FindAll(), Times.Exactly(50));
+	}
 }

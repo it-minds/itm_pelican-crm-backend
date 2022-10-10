@@ -1,21 +1,40 @@
-﻿namespace Pelican.Presentation.GraphQL.Test;
+﻿using MediatR;
+using Moq;
+using Pelican.Application.Clients.Queries.GetClientById;
+using Pelican.Application.Clients.Queries.GetClients;
+using Pelican.Presentation.GraphQL.Clients;
+using Xunit;
 
-//public class ClientsQueryUnitTest
-//{
-//	private readonly ClientsQuery uut;
-//	private readonly IRequestExecutorBuilder _serviceCollectionMock;
-//	private readonly IDbContextFactory<Infrastructure.Persistence.IDbContext> _contextFactoryMock;
-//	private readonly IPelicanContext _contextMock;
-//	private ClientsQueryUnitTest()
-//	{
-//		uut = new ClientsQuery();
-//		_serviceCollectionMock = new Mock<IRequestExecutorBuilder>().Object;
-//		_contextFactoryMock = new Mock<IDbContextFactory<Infrastructure.Persistence.IDbContext>>().Object;
-//		_contextMock = new Mock<IPelicanContext>().Object;
-//	}
-//	[Fact]
-//	public void Test1()
-//	{
-//		uut.GetClientAsync(Guid.NewGuid(), );
-//	}
-//}
+namespace Pelican.Presentation.GraphQL.Test;
+
+public class ClientsQueryUnitTest
+{
+	private ClientsQuery uut;
+
+	[Fact]
+	public void IfGetClientsIsCalledMediatorCallsSendWithCorrectCancellationToken()
+	{
+		//Arrange
+		uut = new ClientsQuery();
+		var mediatorMock = new Mock<IMediator>();
+		CancellationToken cancellationToken = new CancellationToken();
+		//Act
+		uut.GetClients(mediatorMock.Object, cancellationToken);
+		//Assert
+		mediatorMock.Verify(x => x.Send(It.IsAny<GetClientsQuery>(), cancellationToken), Times.Exactly(1));
+	}
+	[Fact]
+	public void IfGetClientAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
+	{
+		//Arrange
+		uut = new ClientsQuery();
+		var mediatorMock = new Mock<IMediator>();
+		CancellationToken cancellationToken = new CancellationToken();
+		Guid id = Guid.NewGuid();
+		GetClientByIdQuery input = new GetClientByIdQuery(id);
+		//Act
+		uut.GetClientAsync(input, mediatorMock.Object, cancellationToken);
+		//Assert
+		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Exactly(1));
+	}
+}

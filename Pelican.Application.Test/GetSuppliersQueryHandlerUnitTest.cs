@@ -21,4 +21,23 @@ public class GetSuppliersQueryHandlerUnitTest
 		//Assert
 		unitOfWorkMock.Verify(x => x.SupplierRepository.FindAll(), Times.Once());
 	}
+	[Fact]
+	public void TestIfWhenHandleIsCalledMultipleTimesRepositoryIsCalledMultipleTimes()
+	{
+		//Arrange
+		var unitOfWorkMock = new Mock<IUnitOfWork>();
+		var supplierRepositoryMock = new Mock<ISupplierRepository>();
+		unitOfWorkMock.Setup(x => x.SupplierRepository).Returns(supplierRepositoryMock.Object);
+		uut = new GetSuppliersQueryHandler(unitOfWorkMock.Object);
+		CancellationToken cancellationToken = new CancellationToken();
+		GetSuppliersQuery suppliersQuery = new GetSuppliersQuery();
+		//Act
+		for (int i = 0; i < 50; i++)
+		{
+			uut.Handle(suppliersQuery, cancellationToken);
+		}
+
+		//Assert
+		unitOfWorkMock.Verify(x => x.SupplierRepository.FindAll(), Times.Exactly(50));
+	}
 }

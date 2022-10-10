@@ -20,4 +20,22 @@ public class GetLocationByIdQueryHandlerUnitTest
 		//Assert
 		dataLoaderMock.Verify(x => x.LoadAsync(guid, cancellationToken), Times.Once());
 	}
+	[Fact]
+	public void TestIfWhenHandleIsCalledMultipleTimesDataLoaderIsCalledWithCorrectParametersMultipleTimes()
+	{
+		//Arrange
+		var dataLoaderMock = new Mock<ILocationByIdDataLoader>();
+		uut = new GetLocationByIdQueryHandler(dataLoaderMock.Object);
+		CancellationToken cancellationToken = new CancellationToken();
+		var guid = Guid.NewGuid();
+		GetLocationByIdQuery getLocationByIdQuery = new GetLocationByIdQuery(guid);
+		//Act
+		for (int i = 0; i < 50; i++)
+		{
+			uut.Handle(getLocationByIdQuery, cancellationToken);
+
+		}
+		//Assert
+		dataLoaderMock.Verify(x => x.LoadAsync(guid, cancellationToken), Times.Exactly(50));
+	}
 }

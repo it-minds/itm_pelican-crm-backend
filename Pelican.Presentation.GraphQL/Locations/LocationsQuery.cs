@@ -8,7 +8,7 @@ namespace Pelican.Presentation.GraphQL.Locations;
 
 public class LocationsQuery
 {
-	public async Task<IQueryable<Location>> GetLocatíons([Service] IMediator mediator, CancellationToken cancellationToken)
+	public async Task<IQueryable<Location>> GetLocations([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
 		return await mediator.Send(new GetLocationsQuery(), cancellationToken);
 	}

@@ -51,8 +51,6 @@ IRepositoryWrapper repositoryWrapper,
 
 		switch (command.PropertyName)
 		{
-			case "dealname":
-				break;
 			case "closedate":
 				deal.EndDate = new DateTime(Convert.ToInt64(command.PropertyValue), DateTimeKind.Utc);
 				break;

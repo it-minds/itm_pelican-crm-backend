@@ -8,6 +8,7 @@ using RestSharp;
 [assembly: InternalsVisibleTo("Pelican.Infrastructure.HubSpot.Test")]
 namespace Pelican.Infrastructure.HubSpot.Services;
 
+
 internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuthorizationService
 {
 	public HubSpotAuthorizationService(
@@ -16,33 +17,26 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 	{
 	}
 
-	public async Task<Result> AuthorizeUserAsync(
+	public async Task<Result<Tuple<string, string>>> AuthorizeUserAsync(
 		string code,
 		CancellationToken cancellationToken)
 	{
-		if (_hubSpotSettings is null
-			|| _hubSpotSettings.App is null
-			|| _hubSpotSettings.App.ClientId is null
-			|| _hubSpotSettings.RedirectUrl is null
-			|| _hubSpotSettings.App.ClientSecret is null)
-		{
-			return Result.Failure(Error.NullValue);
-		}
 
 		RestRequest request = new RestRequest("oauth/v1/token")
 			.AddHeader("Content-Type", "application/x-www-form-urlencoded")
 			.AddHeader("charset", "utf-8")
 			.AddQueryParameter("code", code, false)
-			.AddQueryParameter("client_id", _hubSpotSettings.App.ClientId, false)
+			.AddQueryParameter("client_id", _hubSpotSettings.App!.ClientId, false)
 			.AddQueryParameter("redirect_uri", _hubSpotSettings.RedirectUrl, false)
 			.AddQueryParameter("client_secret", _hubSpotSettings.App.ClientSecret, false)
 			.AddQueryParameter("grant_type", "authorization_code", false);
 
-		RestResponse response = await _client.ExecutePostAsync(request, cancellationToken);
+		RestResponse<GetAccessTokenResponse> response = await _client.ExecutePostAsync<GetAccessTokenResponse>(request, cancellationToken);
 
-		return response.IsSuccessful
-			? Result.Success()
-			: Result.Failure(
+
+		return response.IsSuccessful && response.Data is not null
+			? Result.Success(new Tuple<string, string>(response.Data.RefreshToken, response.Data.AccessToken))
+			: Result.Failure<Tuple<string, string>>(
 				new Error(
 					response.StatusCode.ToString(),
 					response.ErrorMessage!));
@@ -69,19 +63,10 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 		string refreshToken,
 		CancellationToken cancellationToken)
 	{
-		if (_hubSpotSettings is null
-			|| _hubSpotSettings.App is null
-			|| _hubSpotSettings.App.ClientId is null
-			|| _hubSpotSettings.RedirectUrl is null
-			|| _hubSpotSettings.App.ClientSecret is null)
-		{
-			return Result.Failure<string>(Error.NullValue);
-		}
-
 		RestRequest request = new RestRequest("oauth/v1/token")
 			.AddHeader("Content-Type", "application/x-www-form-urlencoded")
 			.AddHeader("charset", "utf-8")
-			.AddQueryParameter("client_id", _hubSpotSettings.App.ClientId, false)
+			.AddQueryParameter("client_id", _hubSpotSettings.App!.ClientId, false)
 			.AddQueryParameter("redirect_uri", _hubSpotSettings.RedirectUrl, false)
 			.AddQueryParameter("client_secret", _hubSpotSettings.App.ClientSecret, false)
 			.AddQueryParameter("grant_type", "refresh_token", false)

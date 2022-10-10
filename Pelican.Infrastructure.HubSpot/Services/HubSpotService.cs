@@ -13,7 +13,11 @@ internal abstract class HubSpotService
 	{
 		if (hubSpotSettings is null
 			|| hubSpotSettings.Value is null
-			|| hubSpotSettings.Value.BaseUrl is null)
+			|| hubSpotSettings.Value.BaseUrl is null
+			|| hubSpotSettings.Value.App is null
+			|| hubSpotSettings.Value.App.ClientId is null
+			|| hubSpotSettings.Value.RedirectUrl is null
+			|| hubSpotSettings.Value.App.ClientSecret is null)
 		{
 			throw new ArgumentNullException(nameof(hubSpotSettings));
 		}

@@ -10,6 +10,8 @@ public class GetClientByIdQueryHandler : IRequestHandler<GetClientByIdQuery, Cli
 	{
 		_dataLoader = dataLoader;
 	}
+	//Uses dataloader to fetch a specific Client in the database using their Id
+
 	public async Task<Client> Handle(GetClientByIdQuery request, CancellationToken cancellationToken)
 	{
 		return await _dataLoader.LoadAsync(request.Id, cancellationToken);

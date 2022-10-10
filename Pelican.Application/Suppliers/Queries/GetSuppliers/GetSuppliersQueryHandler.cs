@@ -10,6 +10,7 @@ public class GetSuppliersQueryHandler : IRequestHandler<GetSuppliersQuery, IQuer
 	{
 		_repository = unitOfWork.SupplierRepository;
 	}
+	//Uses the repository for Supplier to find all Suppliers in the database
 	public async Task<IQueryable<Supplier>> Handle(GetSuppliersQuery request, CancellationToken cancellation)
 	{
 		return _repository.FindAll();

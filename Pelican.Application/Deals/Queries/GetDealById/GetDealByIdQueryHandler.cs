@@ -10,6 +10,7 @@ public class GetDealByIdQueryHandler : IRequestHandler<GetDealByIdQuery, Deal>
 	{
 		_dataLoader = dataLoader;
 	}
+	//Uses dataloader to fetch a specific Deal in the database using their Id
 	public async Task<Deal> Handle(GetDealByIdQuery request, CancellationToken cancellationToken)
 	{
 		return await _dataLoader.LoadAsync(request.Id, cancellationToken);

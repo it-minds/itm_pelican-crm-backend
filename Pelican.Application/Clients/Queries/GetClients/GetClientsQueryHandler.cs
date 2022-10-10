@@ -11,6 +11,7 @@ public class GetClientsQueryHandler : IRequestHandler<GetClientsQuery, IQueryabl
 	{
 		_repository = unitOfWork.ClientRepository;
 	}
+	//Uses the repository for Client to find all Clients in the database
 	public async Task<IQueryable<Client>> Handle(GetClientsQuery request, CancellationToken cancellation)
 	{
 		return _repository.FindAll();

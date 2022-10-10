@@ -10,6 +10,7 @@ public class GetLocationsQueryHandler : IRequestHandler<GetLocationsQuery, IQuer
 	{
 		_repository = unitOfWork.LocationRepository;
 	}
+	//Uses the repository for Location to find all Locations in the database
 	public async Task<IQueryable<Location>> Handle(GetLocationsQuery request, CancellationToken cancellation)
 	{
 		return _repository.FindAll();

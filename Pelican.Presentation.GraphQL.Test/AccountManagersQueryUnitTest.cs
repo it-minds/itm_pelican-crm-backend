@@ -17,7 +17,7 @@ public class AccountManagersQueryUnitTest
 		var mediatorMock = new Mock<IMediator>();
 		CancellationToken cancellationToken = new CancellationToken();
 		//Act
-		uut.GetAccountManagers(mediatorMock.Object, cancellationToken);
+		_ = uut.GetAccountManagers(mediatorMock.Object, cancellationToken);
 		//Assert
 		mediatorMock.Verify(x => x.Send(It.IsAny<GetAccountManagersQuery>(), cancellationToken), Times.Exactly(1));
 	}

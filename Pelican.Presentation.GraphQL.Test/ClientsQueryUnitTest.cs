@@ -19,7 +19,7 @@ public class ClientsQueryUnitTest
 		var mediatorMock = new Mock<IMediator>();
 		CancellationToken cancellationToken = new CancellationToken();
 		//Act
-		uut.GetClients(mediatorMock.Object, cancellationToken);
+		_ = uut.GetClients(mediatorMock.Object, cancellationToken);
 		//Assert
 		mediatorMock.Verify(x => x.Send(It.IsAny<GetClientsQuery>(), cancellationToken), Times.Exactly(1));
 	}
@@ -33,7 +33,7 @@ public class ClientsQueryUnitTest
 		Guid id = Guid.NewGuid();
 		GetClientByIdQuery input = new GetClientByIdQuery(id);
 		//Act
-		uut.GetClientAsync(input, mediatorMock.Object, cancellationToken);
+		_ = uut.GetClientAsync(input, mediatorMock.Object, cancellationToken);
 		//Assert
 		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Exactly(1));
 	}

@@ -7,11 +7,12 @@ namespace Pelican.Presentation.GraphQL.Deals;
 [ExtendObjectType("Query")]
 public class DealsQuery
 {
+	//This Query reguests all Deals from the database.
 	public async Task<IQueryable<Deal>> GetDeals([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
 		return await mediator.Send(new GetDealsQuery(), cancellationToken);
 	}
-
+	//This Query reguests a specific Deal from the database.
 	public async Task<Deal> GetDealAsync(GetDealByIdQuery input, [Service] IMediator mediator, CancellationToken cancellationToken)
 	{
 		return await mediator.Send(input, cancellationToken);

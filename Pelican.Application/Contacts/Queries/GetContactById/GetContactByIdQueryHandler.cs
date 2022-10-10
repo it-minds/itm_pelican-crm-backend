@@ -10,6 +10,7 @@ public class GetContactByIdQueryHandler : IRequestHandler<GetContactByIdQuery, C
 	{
 		_dataLoader = dataLoader;
 	}
+	//Uses dataloader to fetch a specific Contact in the database using their Id
 	public async Task<Contact> Handle(GetContactByIdQuery request, CancellationToken cancellationToken)
 	{
 		return await _dataLoader.LoadAsync(request.Id, cancellationToken);

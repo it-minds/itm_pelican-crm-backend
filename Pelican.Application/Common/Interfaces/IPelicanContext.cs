@@ -12,7 +12,7 @@ public interface IPelicanContext : IDbContext
 	DbSet<ClientContact> ClientContacts { get; }
 	DbSet<Contact> Contacts { get; }
 	DbSet<Deal> Deals { get; }
-	DbSet<DealContact> DealContacs { get; }
+	DbSet<DealContact> DealContacts { get; }
 	DbSet<Supplier> Suppliers { get; }
 	DbSet<Location> Locations { get; }
 	int SaveChanges();

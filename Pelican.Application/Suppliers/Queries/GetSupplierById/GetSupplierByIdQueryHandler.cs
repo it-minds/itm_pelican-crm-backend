@@ -10,6 +10,7 @@ public class GetSupplierByIdQueryHandler : IRequestHandler<GetSupplierByIdQuery,
 	{
 		_dataLoader = dataLoader;
 	}
+	//Uses dataloader to fetch a specific Supplier in the database using their Id 
 	public async Task<Supplier> Handle(GetSupplierByIdQuery request, CancellationToken cancellationToken)
 	{
 		return await _dataLoader.LoadAsync(request.Id, cancellationToken);

@@ -17,7 +17,7 @@ public class GetSuppliersQueryUnitTest
 		var mediatorMock = new Mock<IMediator>();
 		CancellationToken cancellationToken = new CancellationToken();
 		//Act
-		uut.GetSuppliers(mediatorMock.Object, cancellationToken);
+		_ = uut.GetSuppliers(mediatorMock.Object, cancellationToken);
 		//Assert
 		mediatorMock.Verify(x => x.Send(It.IsAny<GetSuppliersQuery>(), cancellationToken), Times.Exactly(1));
 	}
@@ -31,7 +31,7 @@ public class GetSuppliersQueryUnitTest
 		Guid id = Guid.NewGuid();
 		GetSupplierByIdQuery input = new GetSupplierByIdQuery(id);
 		//Act
-		uut.GetSupplierAsync(input, mediatorMock.Object, cancellationToken);
+		_ = uut.GetSupplierAsync(input, mediatorMock.Object, cancellationToken);
 		//Assert
 		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Exactly(1));
 	}

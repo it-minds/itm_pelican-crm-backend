@@ -10,6 +10,7 @@ public class GetAccountManagerByIdQueryHandler : IRequestHandler<GetAccountManag
 	{
 		_dataLoader = dataLoader;
 	}
+	//Uses dataloader to fetch a specific AccountManager in the database using their Id
 	public async Task<AccountManager> Handle(GetAccountManagerByIdQuery request, CancellationToken cancellationToken)
 	{
 		return await _dataLoader.LoadAsync(request.Id, cancellationToken);

@@ -10,6 +10,7 @@ public class GetContactsQueryHandler : IRequestHandler<GetContactsQuery, IQuerya
 	{
 		_repository = unitOfWork.ContactRepository;
 	}
+	//Uses the repository for Contact to find all Contacts in the database
 	public async Task<IQueryable<Contact>> Handle(GetContactsQuery request, CancellationToken cancellation)
 	{
 		return _repository.FindAll();

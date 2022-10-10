@@ -1,9 +1,12 @@
 ﻿using Bogus;
+using Pelican.Application.Common.Interfaces;
 using Pelican.Domain.Entities;
 
-namespace Pelican.Application.Common.Interfaces;
-public class PelicanFaker
+namespace Pelican.Application;
+public class PelicanBogusFaker : IPelicanBogusFaker
 {
+	public PelicanBogusFaker() { }
+	//Creates as many dummy suppliers as inputted using rules setup here these are used to seed an empty database
 	public IEnumerable<Supplier> SupplierFaker(int count)
 	{
 		var faker = new Faker<Supplier>().UseSeed(1337);

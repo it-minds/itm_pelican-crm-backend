@@ -7,6 +7,7 @@ using Pelican.Infrastructure.Persistence.Repositories;
 namespace Pelican.Infrastructure.Persistence;
 public static class DependencyInjection
 {
+	//This depedency injection allows persistence to be added as a service in program.
 	public static IServiceCollection AddPersistince(this IServiceCollection services, IConfiguration configuration)
 	{
 		//services.AddDbContext<PelicanContext>(options => options.UseSqlServer(configuration.GetConnectionString("myLocalDb"),

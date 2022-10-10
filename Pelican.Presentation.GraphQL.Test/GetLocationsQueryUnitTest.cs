@@ -17,7 +17,7 @@ public class GetLocationsQueryUnitTest
 		var mediatorMock = new Mock<IMediator>();
 		CancellationToken cancellationToken = new CancellationToken();
 		//Act
-		uut.GetLocations(mediatorMock.Object, cancellationToken);
+		_ = uut.GetLocations(mediatorMock.Object, cancellationToken);
 		//Assert
 		mediatorMock.Verify(x => x.Send(It.IsAny<GetLocationsQuery>(), cancellationToken), Times.Exactly(1));
 	}
@@ -31,7 +31,7 @@ public class GetLocationsQueryUnitTest
 		Guid id = Guid.NewGuid();
 		GetLocationByIdQuery input = new GetLocationByIdQuery(id);
 		//Act
-		uut.GetLocationAsync(input, mediatorMock.Object, cancellationToken);
+		_ = uut.GetLocationAsync(input, mediatorMock.Object, cancellationToken);
 		//Assert
 		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Exactly(1));
 	}

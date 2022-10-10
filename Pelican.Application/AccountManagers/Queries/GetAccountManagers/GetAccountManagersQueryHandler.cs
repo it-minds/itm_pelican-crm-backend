@@ -10,6 +10,7 @@ public class GetAccountManagersQueryHandler : IRequestHandler<GetAccountManagers
 	{
 		_repository = unitOfWork.AccountManagerRepository;
 	}
+	//Uses the repository for AccountManager to find all AccountManagers in the database
 	public async Task<IQueryable<AccountManager>> Handle(GetAccountManagersQuery request, CancellationToken cancellation)
 	{
 		return _repository.FindAll();

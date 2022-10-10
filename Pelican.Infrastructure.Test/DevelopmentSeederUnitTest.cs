@@ -13,7 +13,7 @@ public class DevelopmentSeederUnitTest
 		//Arrange
 		var fakePelicanContext = new Mock<IPelicanContext>();
 		var mockDbSet = new Mock<Microsoft.EntityFrameworkCore.DbSet<Supplier>>();
-		var fakePelicanFaker = new Mock<IPelicanFaker>();
+		var fakePelicanFaker = new Mock<IPelicanBogusFaker>();
 		var guid = Guid.NewGuid();
 		List<Supplier> suppliers = new List<Supplier>();
 		suppliers.Add(new Supplier()

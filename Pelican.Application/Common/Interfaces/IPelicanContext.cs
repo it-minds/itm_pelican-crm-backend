@@ -4,7 +4,7 @@ using Pelican.Domain.Entities;
 
 namespace Pelican.Application.Common.Interfaces;
 
-public interface IPelicanContext : IDbContext
+public interface IPelicanContext : IDisposable
 {
 	DbSet<AccountManager> AccountManagers { get; }
 	DbSet<AccountManagerDeal> AccountManagerDeals { get; }

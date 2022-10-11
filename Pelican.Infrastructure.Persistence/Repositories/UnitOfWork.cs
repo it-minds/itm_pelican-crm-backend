@@ -6,7 +6,7 @@ using Location = Pelican.Domain.Entities.Location;
 namespace Pelican.Infrastructure.Persistence.Repositories;
 public class UnitOfWork : IUnitOfWork
 {
-	private IPelicanContext _pelicanContext;
+	private readonly IPelicanContext _pelicanContext;
 	private IGenericRepository<AccountManagerDeal> accountManagerDealRepository;
 	private IGenericRepository<AccountManager> accountManagerRepository;
 	private IGenericRepository<Client> clientRepository;
@@ -20,10 +20,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			if (accountManagerDealRepository == null)
-			{
-				accountManagerDealRepository = new GenericRepository<AccountManagerDeal>(_pelicanContext);
-			}
+			accountManagerDealRepository ??= new GenericRepository<AccountManagerDeal>(_pelicanContext);
 			return accountManagerDealRepository;
 		}
 	}
@@ -32,10 +29,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			if (accountManagerRepository == null)
-			{
-				accountManagerRepository = new GenericRepository<AccountManager>(_pelicanContext);
-			}
+			accountManagerRepository ??= new GenericRepository<AccountManager>(_pelicanContext);
 			return accountManagerRepository;
 		}
 	}
@@ -44,10 +38,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			if (clientRepository == null)
-			{
-				clientRepository = new GenericRepository<Client>(_pelicanContext);
-			}
+			clientRepository ??= new GenericRepository<Client>(_pelicanContext);
 			return clientRepository;
 		}
 	}
@@ -56,10 +47,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			if (contactRepository == null)
-			{
-				contactRepository = new GenericRepository<Contact>(_pelicanContext);
-			}
+			contactRepository ??= new GenericRepository<Contact>(_pelicanContext);
 			return contactRepository;
 		}
 	}
@@ -68,10 +56,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			if (dealRepository == null)
-			{
-				dealRepository = new GenericRepository<Deal>(_pelicanContext);
-			}
+			dealRepository ??= new GenericRepository<Deal>(_pelicanContext);
 			return dealRepository;
 		}
 	}
@@ -80,10 +65,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			if (locationRepository == null)
-			{
-				locationRepository = new GenericRepository<Location>(_pelicanContext);
-			}
+			locationRepository ??= new GenericRepository<Location>(_pelicanContext);
 			return locationRepository;
 		}
 	}
@@ -92,10 +74,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			if (supplierRepository == null)
-			{
-				supplierRepository = new GenericRepository<Supplier>(_pelicanContext);
-			}
+			supplierRepository ??= new GenericRepository<Supplier>(_pelicanContext);
 			return supplierRepository;
 		}
 	}

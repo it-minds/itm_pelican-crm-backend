@@ -1,6 +1,7 @@
 ﻿using Moq;
 using Pelican.Application.Common.Interfaces;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Repositories;
 using Xunit;
 
 
@@ -11,23 +12,34 @@ public class DevelopmentSeederUnitTest
 	public void CheckIfSaveIsCalledWhenSeedDbIsCalled()
 	{
 		//Arrange
-		var fakePelicanContext = new Mock<IPelicanContext>();
-		var mockDbSet = new Mock<Microsoft.EntityFrameworkCore.DbSet<Supplier>>();
+		var fakeUnitOfWork = new Mock<IUnitOfWork>();
+
+		var fakeSupplierRepository = new Mock<IGenericRepository<Supplier>>();
+
 		var fakePelicanFaker = new Mock<IPelicanBogusFaker>();
+
 		var guid = Guid.NewGuid();
+
 		List<Supplier> suppliers = new List<Supplier>();
+
 		suppliers.Add(new Supplier(guid)
 		{
 			Email = "thismail"
 		});
-		fakePelicanContext.Setup(x => x.Suppliers)
-			.Returns((Microsoft.EntityFrameworkCore.DbSet<Supplier>)mockDbSet
-			.As<IQueryable<Supplier>>().Object);
+
+		fakeUnitOfWork.Setup(x => x.SupplierRepository)
+			.Returns(fakeSupplierRepository.Object);
+
 		fakePelicanFaker.Setup(x => x.SupplierFaker(It.IsAny<int>())).Returns(suppliers);
+
 		//Act
-		DevelopmentSeeder.SeedEntireDb(fakePelicanContext.Object, fakePelicanFaker.Object);
+
+		DevelopmentSeeder.SeedEntireDb(fakeUnitOfWork.Object, fakePelicanFaker.Object);
+
 		//Assert
-		fakePelicanContext.Verify(x => x.SaveChanges(), Times.Once());
-		fakePelicanContext.Verify(x => x.Suppliers.AddRange(suppliers), Times.Once());
+
+		fakeUnitOfWork.Verify(x => x.SupplierRepository.CreateRange(suppliers), Times.Once());
+
+		fakeUnitOfWork.Verify(x => x.Save(), Times.Once());
 	}
 }

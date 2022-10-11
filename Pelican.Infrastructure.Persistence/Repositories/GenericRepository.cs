@@ -17,6 +17,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
 	public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) => PelicanContext.Set<T>().Where(expression).AsNoTracking();
 	public void Create(T entity) => PelicanContext.Set<T>().Add(entity);
+	public void CreateRange(IEnumerable<T> entities) => PelicanContext.Set<T>().AddRange(entities);
 	public void Update(T entity) => PelicanContext.Set<T>().Update(entity);
 	public void Delete(T entity) => PelicanContext.Set<T>().Remove(entity);
 }

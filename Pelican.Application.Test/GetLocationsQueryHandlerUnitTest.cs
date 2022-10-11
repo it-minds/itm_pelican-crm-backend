@@ -1,5 +1,6 @@
 ﻿using Moq;
 using Pelican.Application.Locations.Queries.GetLocations;
+using Pelican.Domain.Entities;
 using Pelican.Domain.Repositories;
 using Xunit;
 namespace Pelican.Application.Test;
@@ -11,7 +12,7 @@ public class GetLocationsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var locationRepositoryMock = new Mock<ILocationRepository>();
+		var locationRepositoryMock = new Mock<IRepositoryBase<Location>>();
 		unitOfWorkMock.Setup(x => x.LocationRepository).Returns(locationRepositoryMock.Object);
 		uut = new GetLocationsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
@@ -26,7 +27,7 @@ public class GetLocationsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var locationRepositoryMock = new Mock<ILocationRepository>();
+		var locationRepositoryMock = new Mock<IRepositoryBase<Location>>();
 		unitOfWorkMock.Setup(x => x.LocationRepository).Returns(locationRepositoryMock.Object);
 		uut = new GetLocationsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();

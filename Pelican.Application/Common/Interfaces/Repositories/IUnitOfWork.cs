@@ -1,15 +1,15 @@
-﻿namespace Pelican.Domain.Repositories;
+﻿using Pelican.Domain.Entities;
+
+namespace Pelican.Domain.Repositories;
 public interface IUnitOfWork
 {
-	IAccountManagerDealRepository AccountManagerDealRepository { get; }
-	IAccountManagerRepository AccountManagerRepository { get; }
-	IClientContactRepository ClientContactRepository { get; }
-	IClientRepository ClientRepository { get; }
-	IContactRepository ContactRepository { get; }
-	IDealContactRepository DealContactRepository { get; }
-	IDealRepository DealRepository { get; }
-	ILocationRepository LocationRepository { get; }
-	ISupplierRepository SupplierRepository { get; }
+	public IRepositoryBase<AccountManagerDeal> AccountManagerDealRepository { get; }
+	public IRepositoryBase<AccountManager> AccountManagerRepository { get; }
+	public IRepositoryBase<Client> ClientRepository { get; }
+	public IRepositoryBase<Contact> ContactRepository { get; }
+	public IRepositoryBase<Deal> DealRepository { get; }
+	public IRepositoryBase<Location> LocationRepository { get; }
+	public IRepositoryBase<Supplier> SupplierRepository { get; }
 	void Save();
 	Task SaveAsync();
 }

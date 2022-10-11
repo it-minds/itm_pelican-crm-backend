@@ -4,7 +4,7 @@ using Pelican.Application.Common.Interfaces;
 using Pelican.Domain.Repositories;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
-public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
+public class RepositoryBase<T> : IRepositoryBase<T> where T : class
 {
 	//This Repository contains base functions that will be inherited by all specific repositories
 	protected PelicanContext PelicanContext { get; set; }

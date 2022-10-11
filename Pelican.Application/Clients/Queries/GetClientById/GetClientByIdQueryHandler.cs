@@ -5,8 +5,8 @@ using Pelican.Domain.Entities;
 namespace Pelican.Application.Clients.Queries.GetClientById;
 public class GetClientByIdQueryHandler : IRequestHandler<GetClientByIdQuery, Client>
 {
-	private readonly IClientByIdDataLoader _dataLoader;
-	public GetClientByIdQueryHandler(IClientByIdDataLoader dataLoader)
+	private readonly IGenericDataLoader<Client> _dataLoader;
+	public GetClientByIdQueryHandler(IGenericDataLoader<Client> dataLoader)
 	{
 		_dataLoader = dataLoader;
 	}

@@ -5,7 +5,7 @@ using Pelican.Domain.Repositories;
 namespace Pelican.Application.Deals.Queries.GetDeals;
 public class GetDealsQueryHandler : IRequestHandler<GetDealsQuery, IQueryable<Deal>>
 {
-	private readonly IDealRepository _repository;
+	private readonly IRepositoryBase<Deal> _repository;
 	public GetDealsQueryHandler(IUnitOfWork unitOfWork)
 	{
 		_repository = unitOfWork.DealRepository;

@@ -5,8 +5,8 @@ using Pelican.Domain.Entities;
 namespace Pelican.Application.Deals.Queries.GetDealById;
 public class GetDealByIdQueryHandler : IRequestHandler<GetDealByIdQuery, Deal>
 {
-	private readonly IDealByIdDataLoader _dataLoader;
-	public GetDealByIdQueryHandler(IDealByIdDataLoader dataLoader)
+	private readonly IGenericDataLoader<Deal> _dataLoader;
+	public GetDealByIdQueryHandler(IGenericDataLoader<Deal> dataLoader)
 	{
 		_dataLoader = dataLoader;
 	}

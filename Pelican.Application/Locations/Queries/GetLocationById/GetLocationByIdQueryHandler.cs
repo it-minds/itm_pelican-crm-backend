@@ -5,8 +5,8 @@ using Pelican.Domain.Entities;
 namespace Pelican.Application.Locations.Queries.GetLocationById;
 public class GetLocationByIdQueryHandler : IRequestHandler<GetLocationByIdQuery, Location>
 {
-	private readonly ILocationByIdDataLoader _dataLoader;
-	public GetLocationByIdQueryHandler(ILocationByIdDataLoader dataLoader)
+	private readonly IGenericDataLoader<Location> _dataLoader;
+	public GetLocationByIdQueryHandler(IGenericDataLoader<Location> dataLoader)
 	{
 		_dataLoader = dataLoader;
 	}

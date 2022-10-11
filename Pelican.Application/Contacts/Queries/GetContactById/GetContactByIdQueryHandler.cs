@@ -5,8 +5,8 @@ using Pelican.Domain.Entities;
 namespace Pelican.Application.Contacts.Queries.GetContactById;
 public class GetContactByIdQueryHandler : IRequestHandler<GetContactByIdQuery, Contact>
 {
-	private readonly IContactByIdDataLoader _dataLoader;
-	public GetContactByIdQueryHandler(IContactByIdDataLoader dataLoader)
+	private readonly IGenericDataLoader<Contact> _dataLoader;
+	public GetContactByIdQueryHandler(IGenericDataLoader<Contact> dataLoader)
 	{
 		_dataLoader = dataLoader;
 	}

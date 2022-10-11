@@ -1,6 +1,7 @@
 ﻿using Moq;
 using Pelican.Application.Clients.Queries.GetClients;
 using Pelican.Application.Clients.Queries.GetCLients;
+using Pelican.Domain.Entities;
 using Pelican.Domain.Repositories;
 using Xunit;
 namespace Pelican.Application.Test;
@@ -12,7 +13,7 @@ public class GetClientsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var clientRepositoryMock = new Mock<IClientRepository>();
+		var clientRepositoryMock = new Mock<IRepositoryBase<Client>>();
 		unitOfWorkMock.Setup(x => x.ClientRepository).Returns(clientRepositoryMock.Object);
 		uut = new GetClientsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
@@ -27,7 +28,7 @@ public class GetClientsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var clientRepositoryMock = new Mock<IClientRepository>();
+		var clientRepositoryMock = new Mock<IRepositoryBase<Client>>();
 		unitOfWorkMock.Setup(x => x.ClientRepository).Returns(clientRepositoryMock.Object);
 		uut = new GetClientsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();

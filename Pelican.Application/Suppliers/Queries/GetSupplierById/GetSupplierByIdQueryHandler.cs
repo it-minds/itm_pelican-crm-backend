@@ -5,8 +5,8 @@ using Pelican.Domain.Entities;
 namespace Pelican.Application.Suppliers.Queries.GetSupplierById;
 public class GetSupplierByIdQueryHandler : IRequestHandler<GetSupplierByIdQuery, Supplier>
 {
-	private readonly ISupplierByIdDataLoader _dataLoader;
-	public GetSupplierByIdQueryHandler(ISupplierByIdDataLoader dataLoader)
+	private readonly IGenericDataLoader<Supplier> _dataLoader;
+	public GetSupplierByIdQueryHandler(IGenericDataLoader<Supplier> dataLoader)
 	{
 		_dataLoader = dataLoader;
 	}

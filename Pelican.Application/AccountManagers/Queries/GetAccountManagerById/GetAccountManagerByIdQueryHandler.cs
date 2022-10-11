@@ -5,8 +5,8 @@ using Pelican.Domain.Entities;
 namespace Pelican.Application.AccountManagers.Queries.GetAccountManagerById;
 public class GetAccountManagerByIdQueryHandler : IRequestHandler<GetAccountManagerByIdQuery, AccountManager>
 {
-	private readonly IAccountManagerByIdDataLoader _dataLoader;
-	public GetAccountManagerByIdQueryHandler(IAccountManagerByIdDataLoader dataLoader)
+	private readonly IGenericDataLoader<AccountManager> _dataLoader;
+	public GetAccountManagerByIdQueryHandler(IGenericDataLoader<AccountManager> dataLoader)
 	{
 		_dataLoader = dataLoader;
 	}

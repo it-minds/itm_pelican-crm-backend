@@ -1,124 +1,102 @@
 ﻿using Pelican.Application.Common.Interfaces;
+using Pelican.Domain.Entities;
 using Pelican.Domain.Repositories;
+using Location = Pelican.Domain.Entities.Location;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
 public class UnitOfWork : IUnitOfWork
 {
 	private IPelicanContext _pelicanContext;
-	private IAccountManagerDealRepository? _accountManagerDealRepository;
-	private IAccountManagerRepository? _accountManagerRepository;
-	private IClientContactRepository? _clientContactRepository;
-	private IClientRepository? _clientRepository;
-	private IContactRepository? _contactRepository;
-	private IDealContactRepository? _dealContactRepository;
-	private IDealRepository? _dealRepository;
-	private ILocationRepository? _locationRepository;
-	private ISupplierRepository? _supplierRepository;
-	public IAccountManagerDealRepository AccountManagerDealRepository
+	private RepositoryBase<AccountManagerDeal> accountManagerDealRepository;
+	private RepositoryBase<AccountManager> accountManagerRepository;
+	private RepositoryBase<Client> clientRepository;
+	private RepositoryBase<Contact> contactRepository;
+	private RepositoryBase<Deal> dealRepository;
+	private RepositoryBase<Location> locationRepository;
+	private RepositoryBase<Supplier> supplierRepository;
+
+
+	public IRepositoryBase<AccountManagerDeal> AccountManagerDealRepository
 	{
 		get
 		{
-			if (_accountManagerDealRepository == null)
+			if (accountManagerDealRepository == null)
 			{
-				_accountManagerDealRepository = new AccountManagerDealRepository(_pelicanContext);
+				accountManagerDealRepository = new RepositoryBase<AccountManagerDeal>(_pelicanContext);
 			}
-			return _accountManagerDealRepository;
+			return accountManagerDealRepository;
 		}
 	}
 
-	public IAccountManagerRepository AccountManagerRepository
+	public IRepositoryBase<AccountManager> AccountManagerRepository
 	{
 		get
 		{
-			if (_accountManagerRepository == null)
+			if (accountManagerRepository == null)
 			{
-				_accountManagerRepository = new AccountManagerRepository(_pelicanContext);
+				accountManagerRepository = new RepositoryBase<AccountManager>(_pelicanContext);
 			}
-			return _accountManagerRepository;
+			return accountManagerRepository;
 		}
 	}
 
-	public IClientContactRepository ClientContactRepository
+	public IRepositoryBase<Client> ClientRepository
 	{
 		get
 		{
-			if (_clientContactRepository == null)
+			if (clientRepository == null)
 			{
-				_clientContactRepository = new ClientContactRepository(_pelicanContext);
+				clientRepository = new RepositoryBase<Client>(_pelicanContext);
 			}
-			return _clientContactRepository;
+			return clientRepository;
 		}
 	}
 
-	public IClientRepository ClientRepository
+	public IRepositoryBase<Contact> ContactRepository
 	{
 		get
 		{
-			if (_clientRepository == null)
+			if (contactRepository == null)
 			{
-				_clientRepository = new ClientRepository(_pelicanContext);
+				contactRepository = new RepositoryBase<Contact>(_pelicanContext);
 			}
-			return _clientRepository;
+			return contactRepository;
 		}
 	}
 
-	public IContactRepository ContactRepository
+	public IRepositoryBase<Deal> DealRepository
 	{
 		get
 		{
-			if (_contactRepository == null)
+			if (dealRepository == null)
 			{
-				_contactRepository = new ContactRepository(_pelicanContext);
+				dealRepository = new RepositoryBase<Deal>(_pelicanContext);
 			}
-			return _contactRepository;
+			return dealRepository;
 		}
 	}
 
-	public IDealContactRepository DealContactRepository
+	public IRepositoryBase<Location> LocationRepository
 	{
 		get
 		{
-			if (_dealContactRepository == null)
+			if (locationRepository == null)
 			{
-				_dealContactRepository = new DealContactRepository(_pelicanContext);
+				locationRepository = new RepositoryBase<Location>(_pelicanContext);
 			}
-			return _dealContactRepository;
+			return locationRepository;
 		}
 	}
 
-	public IDealRepository DealRepository
+	public IRepositoryBase<Supplier> SupplierRepository
 	{
 		get
 		{
-			if (_dealRepository == null)
+			if (supplierRepository == null)
 			{
-				_dealRepository = new DealRepository(_pelicanContext);
+				supplierRepository = new RepositoryBase<Supplier>(_pelicanContext);
 			}
-			return _dealRepository;
-		}
-	}
-
-	public ILocationRepository LocationRepository
-	{
-		get
-		{
-			if (_locationRepository == null)
-			{
-				_locationRepository = new LocationRepository(_pelicanContext);
-			}
-			return _locationRepository;
-		}
-	}
-
-	public ISupplierRepository SupplierRepository
-	{
-		get
-		{
-			if (_supplierRepository == null)
-			{
-				_supplierRepository = new SupplierRepository(_pelicanContext);
-			}
-			return _supplierRepository;
+			return supplierRepository;
 		}
 	}
 

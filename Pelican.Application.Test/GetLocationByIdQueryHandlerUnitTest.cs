@@ -11,7 +11,7 @@ public class GetLocationByIdQueryHandlerUnitTest
 	public async void TestIfWhenHandleIsCalledDataLoaderIsCalledWithCorrectParameters()
 	{
 		//Arrange
-		var dataLoaderMock = new Mock<ILocationByIdDataLoader>();
+		var dataLoaderMock = new Mock<IGenericDataLoader<Location>>();
 		uut = new GetLocationByIdQueryHandler(dataLoaderMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
@@ -31,7 +31,7 @@ public class GetLocationByIdQueryHandlerUnitTest
 	public async void TestIfWhenHandleIsCalledMultipleTimesDataLoaderIsCalledWithCorrectParametersMultipleTimes()
 	{
 		//Arrange
-		var dataLoaderMock = new Mock<ILocationByIdDataLoader>();
+		var dataLoaderMock = new Mock<IGenericDataLoader<Location>>();
 		uut = new GetLocationByIdQueryHandler(dataLoaderMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();

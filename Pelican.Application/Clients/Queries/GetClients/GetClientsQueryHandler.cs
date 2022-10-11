@@ -6,7 +6,7 @@ using Pelican.Domain.Repositories;
 namespace Pelican.Application.Clients.Queries.GetCLients;
 public class GetClientsQueryHandler : IRequestHandler<GetClientsQuery, IQueryable<Client>>
 {
-	private readonly IClientRepository _repository;
+	private readonly IRepositoryBase<Client> _repository;
 	public GetClientsQueryHandler(IUnitOfWork unitOfWork)
 	{
 		_repository = unitOfWork.ClientRepository;

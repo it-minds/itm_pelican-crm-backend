@@ -11,7 +11,7 @@ public class GetDealByIdQueryHandlerUnitTest
 	public async void TestIfWhenHandleIsCalledDataLoaderIsCalledWithCorrectParameters()
 	{
 		//Arrange
-		var dataLoaderMock = new Mock<IDealByIdDataLoader>();
+		var dataLoaderMock = new Mock<IGenericDataLoader<Deal>>();
 		uut = new GetDealByIdQueryHandler(dataLoaderMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
@@ -31,7 +31,7 @@ public class GetDealByIdQueryHandlerUnitTest
 	public async void TestIfWhenHandleIsCalledMultipleTimesDataLoaderIsCalledWithCorrectParametersMultipleTimes()
 	{
 		//Arrange
-		var dataLoaderMock = new Mock<IDealByIdDataLoader>();
+		var dataLoaderMock = new Mock<IGenericDataLoader<Deal>>();
 		uut = new GetDealByIdQueryHandler(dataLoaderMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();

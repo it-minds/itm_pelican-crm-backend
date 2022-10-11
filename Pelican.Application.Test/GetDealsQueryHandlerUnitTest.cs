@@ -1,5 +1,6 @@
 ﻿using Moq;
 using Pelican.Application.Deals.Queries.GetDeals;
+using Pelican.Domain.Entities;
 using Pelican.Domain.Repositories;
 using Xunit;
 namespace Pelican.Application.Test;
@@ -11,7 +12,7 @@ public class GetDealsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var dealRepositoryMock = new Mock<IDealRepository>();
+		var dealRepositoryMock = new Mock<IRepositoryBase<Deal>>();
 		unitOfWorkMock.Setup(x => x.DealRepository).Returns(dealRepositoryMock.Object);
 		uut = new GetDealsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
@@ -26,7 +27,7 @@ public class GetDealsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var dealRepositoryMock = new Mock<IDealRepository>();
+		var dealRepositoryMock = new Mock<IRepositoryBase<Deal>>();
 		unitOfWorkMock.Setup(x => x.DealRepository).Returns(dealRepositoryMock.Object);
 		uut = new GetDealsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();

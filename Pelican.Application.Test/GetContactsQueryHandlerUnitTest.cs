@@ -1,5 +1,6 @@
 ﻿using Moq;
 using Pelican.Application.Contacts.Queries.GetContacts;
+using Pelican.Domain.Entities;
 using Pelican.Domain.Repositories;
 using Xunit;
 namespace Pelican.Application.Test;
@@ -11,7 +12,7 @@ public class GetContacrsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var contactRepositoryMock = new Mock<IContactRepository>();
+		var contactRepositoryMock = new Mock<IRepositoryBase<Contact>>();
 		unitOfWorkMock.Setup(x => x.ContactRepository).Returns(contactRepositoryMock.Object);
 		uut = new GetContactsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
@@ -26,7 +27,7 @@ public class GetContacrsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var contactRepositoryMock = new Mock<IContactRepository>();
+		var contactRepositoryMock = new Mock<IRepositoryBase<Contact>>();
 		unitOfWorkMock.Setup(x => x.ContactRepository).Returns(contactRepositoryMock.Object);
 		uut = new GetContactsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();

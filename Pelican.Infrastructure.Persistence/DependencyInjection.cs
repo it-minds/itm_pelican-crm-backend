@@ -1,8 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HotChocolate.Execution.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pelican.Application.Common.Interfaces.DataLoaders;
+using Pelican.Domain.Entities;
 using Pelican.Domain.Repositories;
+using Pelican.Infrastructure.Persistence.DataLoader;
 using Pelican.Infrastructure.Persistence.Repositories;
+using Location = Pelican.Domain.Entities.Location;
 
 namespace Pelican.Infrastructure.Persistence;
 public static class DependencyInjection
@@ -15,5 +20,15 @@ public static class DependencyInjection
 			b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)));
 		services.AddTransient<IUnitOfWork>(_ => new UnitOfWork(_.GetRequiredService<IDbContextFactory<PelicanContext>>().CreateDbContext()));
 		return services;
+	}
+	public static IRequestExecutorBuilder AddDataLoaders(this IRequestExecutorBuilder builder)
+	{
+		builder.AddDataLoader<IGenericDataLoader<AccountManager>, GenericDataLoader<AccountManager>>()
+			.AddDataLoader<IGenericDataLoader<Client>, GenericDataLoader<Client>>()
+			.AddDataLoader<IGenericDataLoader<Contact>, GenericDataLoader<Contact>>()
+			.AddDataLoader<IGenericDataLoader<Deal>, GenericDataLoader<Deal>>()
+			.AddDataLoader<IGenericDataLoader<Location>, GenericDataLoader<Location>>()
+			.AddDataLoader<IGenericDataLoader<Supplier>, GenericDataLoader<Supplier>>();
+		return builder;
 	}
 }

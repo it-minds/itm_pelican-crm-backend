@@ -32,7 +32,8 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 		}
 
 
-
+		/// Needs furhter development to fetch data from new installation
+		/// Either by raising domain event or just calling functions from here
 
 
 		return tokensResult;

@@ -26,32 +26,25 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 
 		if (deal is null)
 		{
-			AccountManager? accountManager = _unitOfWork
-				.AccountManagerRepository
-				.FindByCondition(a => a.Id.ToString() == command.UserId.ToString())
-				.FirstOrDefault();
-
-			if (accountManager is null) return Result.Failure(Error.NullValue);
-
-			/// account manager should hold refreshtoken
-			string token = "";
-
-			Result<Deal> result
-				= await _hubSpotDealService.GetDealByIdAsync(token, command.ObjectId, cancellationToken);
-
-			if (result.IsFailure) return Result.Failure(result.Error);
-
-			_unitOfWork
-				.DealRepository
-				.Create(result.Value);
-
-			return Result.Success();
+			return await GetDealFromHubSpot(
+				command.UserId,
+				command.ObjectId,
+				cancellationToken);
 		}
 
 		switch (command.PropertyName)
 		{
 			case "closedate":
 				deal.EndDate = new DateTime(Convert.ToInt64(command.PropertyValue), DateTimeKind.Utc);
+				break;
+			case "amount":
+				deal.Revenue = Convert.ToDecimal(command.PropertyValue);
+				break;
+			case "dealstage":
+				deal.DealStatus = command.PropertyValue;
+				break;
+			case "deal_currency_code":
+				deal.CurrencyCode = command.PropertyValue;
 				break;
 			default:
 				break;
@@ -62,6 +55,34 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 			.Update(deal);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
+
+		return Result.Success();
+	}
+
+	private async Task<Result> GetDealFromHubSpot(string userId, long objectId, CancellationToken cancellationToken)
+	{
+		Supplier? supplier = _unitOfWork
+				.SupplierRepository
+				.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId)
+				.FirstOrDefault();
+
+		if (supplier is null)
+		{
+			return Result.Failure<Deal>(Error.NullValue);
+		}
+
+		string token = supplier.RefreshToken;
+
+		Result<Deal> result = await _hubSpotDealService.GetDealByIdAsync(token, objectId, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return Result.Failure<Deal>(result.Error);
+		}
+
+		_unitOfWork
+			.DealRepository
+			.Create(result.Value);
 
 		return Result.Success();
 	}

@@ -13,10 +13,6 @@ public class AccountManager : Entity, ITimeTracked
 	public ICollection<AccountManagerDeal> AccountManagerDeals { get; set; }
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
-	public AccountManager(Guid id) : base(id)
-	{
-	}
-	public AccountManager()
-	{
-	}
+	public AccountManager(Guid id) : base(id) { }
+	public AccountManager() { }
 }

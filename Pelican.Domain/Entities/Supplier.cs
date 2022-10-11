@@ -15,12 +15,6 @@ public class Supplier : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
 
-	public Supplier(Guid id) : base(id)
-	{
-
-	}
-	public Supplier()
-	{
-
-	}
+	public Supplier(Guid id) : base(id) { }
+	public Supplier() { }
 }

@@ -9,8 +9,6 @@ public class Location : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
 
-	public Location(Guid id) : base(id)
-	{
-	}
+	public Location(Guid id) : base(id) { }
 	public Location() { }
 }

@@ -1,9 +1,9 @@
-﻿using MediatR;
+﻿using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 
 namespace Pelican.Application.Contacts.Queries.GetContacts;
-public class GetContactsQueryHandler : IRequestHandler<GetContactsQuery, IQueryable<Contact>>
+public class GetContactsQueryHandler : IQueryHandler<GetContactsQuery, IQueryable<Contact>>
 {
 	private readonly IGenericRepository<Contact> _repository;
 	public GetContactsQueryHandler(IUnitOfWork unitOfWork)

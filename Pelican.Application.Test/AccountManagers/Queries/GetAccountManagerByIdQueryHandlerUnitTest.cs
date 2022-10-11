@@ -3,7 +3,8 @@ using Pelican.Application.AccountManagers.Queries.GetAccountManagerById;
 using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Domain.Entities;
 using Xunit;
-namespace Pelican.Application.Test;
+
+namespace Pelican.Application.Test.AccountManagers.Queries;
 public class GetAccountManagerByIdQueryHandlerUnitTest
 {
 	private GetAccountManagerByIdQueryHandler uut;
@@ -13,14 +14,11 @@ public class GetAccountManagerByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<AccountManager>>();
 		uut = new GetAccountManagerByIdQueryHandler(dataLoaderMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
+		var cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		GetAccountManagerByIdQuery getAccountManagerByIdQuery = new GetAccountManagerByIdQuery(guid);
-		List<AccountManager> resultList = new List<AccountManager>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new AccountManager
-		{
-			Id = guid
-		});
+		var getAccountManagerByIdQuery = new GetAccountManagerByIdQuery(guid);
+		var resultList = new List<AccountManager>();
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new AccountManager(guid));
 		//Act
 		resultList.Add(await uut.Handle(getAccountManagerByIdQuery, cancellationToken));
 		//Assert
@@ -33,16 +31,13 @@ public class GetAccountManagerByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<AccountManager>>();
 		uut = new GetAccountManagerByIdQueryHandler(dataLoaderMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
+		var cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		GetAccountManagerByIdQuery getAccountManagerByIdQuery = new GetAccountManagerByIdQuery(guid);
-		List<AccountManager> resultList = new List<AccountManager>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new AccountManager
-		{
-			Id = guid
-		});
+		var getAccountManagerByIdQuery = new GetAccountManagerByIdQuery(guid);
+		var resultList = new List<AccountManager>();
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new AccountManager(guid));
 		//Act
-		for (int i = 0; i < 50; i++)
+		for (var i = 0; i < 50; i++)
 		{
 			resultList.Add(await uut.Handle(getAccountManagerByIdQuery, cancellationToken));
 		}

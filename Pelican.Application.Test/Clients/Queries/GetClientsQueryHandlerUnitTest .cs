@@ -1,10 +1,11 @@
 ﻿using Moq;
 using Pelican.Application.Clients.Queries.GetClients;
 using Pelican.Application.Clients.Queries.GetCLients;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 using Xunit;
-namespace Pelican.Application.Test;
+
+namespace Pelican.Application.Test.Clients.Queries;
 public class GetClientsQueryHandlerUnitTest
 {
 	private GetClientsQueryHandler uut;
@@ -16,8 +17,8 @@ public class GetClientsQueryHandlerUnitTest
 		var clientRepositoryMock = new Mock<IGenericRepository<Client>>();
 		unitOfWorkMock.Setup(x => x.ClientRepository).Returns(clientRepositoryMock.Object);
 		uut = new GetClientsQueryHandler(unitOfWorkMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
-		GetClientsQuery client = new GetClientsQuery();
+		var cancellationToken = new CancellationToken();
+		var client = new GetClientsQuery();
 		//Act
 		_ = uut.Handle(client, cancellationToken);
 		//Assert
@@ -31,10 +32,10 @@ public class GetClientsQueryHandlerUnitTest
 		var clientRepositoryMock = new Mock<IGenericRepository<Client>>();
 		unitOfWorkMock.Setup(x => x.ClientRepository).Returns(clientRepositoryMock.Object);
 		uut = new GetClientsQueryHandler(unitOfWorkMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
-		GetClientsQuery clientsQuery = new GetClientsQuery();
+		var cancellationToken = new CancellationToken();
+		var clientsQuery = new GetClientsQuery();
 		//Act
-		for (int i = 0; i < 50; i++)
+		for (var i = 0; i < 50; i++)
 		{
 			_ = uut.Handle(clientsQuery, cancellationToken);
 		}

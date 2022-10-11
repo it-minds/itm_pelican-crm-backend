@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 
 namespace Pelican.Application.AccountManagers.Queries.GetAccountManagers;
-public class GetAccountManagersQueryHandler : IRequestHandler<GetAccountManagersQuery, IQueryable<AccountManager>>
+public class GetAccountManagersQueryHandler : IQueryHandler<GetAccountManagersQuery, IQueryable<AccountManager>>
 {
 	private readonly IGenericRepository<AccountManager> _repository;
 	public GetAccountManagersQueryHandler(IUnitOfWork unitOfWork)

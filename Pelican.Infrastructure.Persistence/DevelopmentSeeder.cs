@@ -1,5 +1,5 @@
 ﻿using Pelican.Application.Common.Interfaces;
-using Pelican.Domain.Repositories;
+using Pelican.Application.Common.Interfaces.Repositories;
 
 namespace Pelican.Infrastructure.Persistence;
 public static class DevelopmentSeeder

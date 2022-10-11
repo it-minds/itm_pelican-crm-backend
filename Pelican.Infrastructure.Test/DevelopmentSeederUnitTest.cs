@@ -1,7 +1,7 @@
 ﻿using Moq;
 using Pelican.Application.Common.Interfaces;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 using Xunit;
 
 

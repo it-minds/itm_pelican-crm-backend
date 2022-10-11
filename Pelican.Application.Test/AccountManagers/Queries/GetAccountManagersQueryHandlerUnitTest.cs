@@ -1,9 +1,9 @@
 ﻿using Moq;
 using Pelican.Application.AccountManagers.Queries.GetAccountManagers;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 using Xunit;
-namespace Pelican.Application.Test;
+namespace Pelican.Application.Test.AccountManagers.Queries;
 public class GetAccountManagersQueryHandlerUnitTest
 {
 	private GetAccountManagersQueryHandler uut;
@@ -15,8 +15,8 @@ public class GetAccountManagersQueryHandlerUnitTest
 		var accountMangerRepositoryMock = new Mock<IGenericRepository<AccountManager>>();
 		unitOfWorkMock.Setup(x => x.AccountManagerRepository).Returns(accountMangerRepositoryMock.Object);
 		uut = new GetAccountManagersQueryHandler(unitOfWorkMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
-		GetAccountManagersQuery accountManagersQuery = new GetAccountManagersQuery();
+		var cancellationToken = new CancellationToken();
+		var accountManagersQuery = new GetAccountManagersQuery();
 		//Act
 		_ = uut.Handle(accountManagersQuery, cancellationToken);
 		//Assert
@@ -30,10 +30,10 @@ public class GetAccountManagersQueryHandlerUnitTest
 		var accountManagerRepositoryMock = new Mock<IGenericRepository<AccountManager>>();
 		unitOfWorkMock.Setup(x => x.AccountManagerRepository).Returns(accountManagerRepositoryMock.Object);
 		uut = new GetAccountManagersQueryHandler(unitOfWorkMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
-		GetAccountManagersQuery accountManagersQuery = new GetAccountManagersQuery();
+		var cancellationToken = new CancellationToken();
+		var accountManagersQuery = new GetAccountManagersQuery();
 		//Act
-		for (int i = 0; i < 50; i++)
+		for (var i = 0; i < 50; i++)
 		{
 			_ = uut.Handle(accountManagersQuery, cancellationToken);
 		}

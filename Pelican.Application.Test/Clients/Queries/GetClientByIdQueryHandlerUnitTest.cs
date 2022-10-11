@@ -3,7 +3,7 @@ using Pelican.Application.Clients.Queries.GetClientById;
 using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Domain.Entities;
 using Xunit;
-namespace Pelican.Application.Test;
+namespace Pelican.Application.Test.Clients.Queries;
 public class GetClientByIdQueryHandlerUnitTest
 {
 	private GetClientByIdQueryHandler uut;
@@ -13,14 +13,11 @@ public class GetClientByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Client>>();
 		uut = new GetClientByIdQueryHandler(dataLoaderMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
+		var cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		GetClientByIdQuery getClientByIdQuery = new GetClientByIdQuery(guid);
-		List<Client> resultList = new List<Client>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Client
-		{
-			Id = guid
-		});
+		var getClientByIdQuery = new GetClientByIdQuery(guid);
+		var resultList = new List<Client>();
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Client(guid));
 		//Act
 		resultList.Add(await uut.Handle(getClientByIdQuery, cancellationToken));
 		//Assert
@@ -33,16 +30,13 @@ public class GetClientByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Client>>();
 		uut = new GetClientByIdQueryHandler(dataLoaderMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
+		var cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		GetClientByIdQuery getClientByIdQuery = new GetClientByIdQuery(guid);
-		List<Client> resultList = new List<Client>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Client
-		{
-			Id = guid
-		});
+		var getClientByIdQuery = new GetClientByIdQuery(guid);
+		var resultList = new List<Client>();
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Client(guid));
 		//Act
-		for (int i = 0; i < 50; i++)
+		for (var i = 0; i < 50; i++)
 		{
 			resultList.Add(await uut.Handle(getClientByIdQuery, cancellationToken));
 		}

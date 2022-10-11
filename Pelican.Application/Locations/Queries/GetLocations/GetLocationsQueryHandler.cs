@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 
 namespace Pelican.Application.Locations.Queries.GetLocations;
-public class GetLocationsQueryHandler : IRequestHandler<GetLocationsQuery, IQueryable<Location>>
+public class GetLocationsQueryHandler : IQueryHandler<GetLocationsQuery, IQueryable<Location>>
 {
 	private readonly IGenericRepository<Location> _repository;
 	public GetLocationsQueryHandler(IUnitOfWork unitOfWork)

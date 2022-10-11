@@ -3,7 +3,7 @@ using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Application.Suppliers.Queries.GetSupplierById;
 using Pelican.Domain.Entities;
 using Xunit;
-namespace Pelican.Application.Test;
+namespace Pelican.Application.Test.Suppliers.Queries;
 public class GetSupplierByIdQueryHandlerUnitTest
 {
 	private GetSupplierByIdQueryHandler uut;
@@ -13,14 +13,11 @@ public class GetSupplierByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Supplier>>();
 		uut = new GetSupplierByIdQueryHandler(dataLoaderMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
+		var cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		GetSupplierByIdQuery getSupplierByIdQuery = new GetSupplierByIdQuery(guid);
-		List<Supplier> resultList = new List<Supplier>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Supplier
-		{
-			Id = guid
-		});
+		var getSupplierByIdQuery = new GetSupplierByIdQuery(guid);
+		var resultList = new List<Supplier>();
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Supplier(guid));
 		//Act
 		resultList.Add(await uut.Handle(getSupplierByIdQuery, cancellationToken));
 		//Assert
@@ -33,16 +30,13 @@ public class GetSupplierByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Supplier>>();
 		uut = new GetSupplierByIdQueryHandler(dataLoaderMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
+		var cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		GetSupplierByIdQuery getSupplierByIdQuery = new GetSupplierByIdQuery(guid);
-		List<Supplier> resultList = new List<Supplier>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Supplier
-		{
-			Id = guid
-		});
+		var getSupplierByIdQuery = new GetSupplierByIdQuery(guid);
+		var resultList = new List<Supplier>();
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Supplier(guid));
 		//Act
-		for (int i = 0; i < 50; i++)
+		for (var i = 0; i < 50; i++)
 		{
 			resultList.Add(await uut.Handle(getSupplierByIdQuery, cancellationToken));
 		}

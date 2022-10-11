@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Application.Deals.Queries.GetDealById;
-public class GetDealByIdQueryHandler : IRequestHandler<GetDealByIdQuery, Deal>
+public class GetDealByIdQueryHandler : IQueryHandler<GetDealByIdQuery, Deal>
 {
 	private readonly IGenericDataLoader<Deal> _dataLoader;
 	public GetDealByIdQueryHandler(IGenericDataLoader<Deal> dataLoader)

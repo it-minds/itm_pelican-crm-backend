@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Application.AccountManagers.Queries.GetAccountManagerById;
-public class GetAccountManagerByIdQueryHandler : IRequestHandler<GetAccountManagerByIdQuery, AccountManager>
+public class GetAccountManagerByIdQueryHandler : IQueryHandler<GetAccountManagerByIdQuery, AccountManager>
 {
 	private readonly IGenericDataLoader<AccountManager> _dataLoader;
 	public GetAccountManagerByIdQueryHandler(IGenericDataLoader<AccountManager> dataLoader)

@@ -1,6 +1,6 @@
 ﻿using Pelican.Application.Common.Interfaces;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 using Location = Pelican.Domain.Entities.Location;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
@@ -88,8 +88,8 @@ public class UnitOfWork : IUnitOfWork
 		_pelicanContext.SaveChanges();
 	}
 
-	public async Task SaveAsync()
+	public async Task SaveAsync(CancellationToken cancellationToken)
 	{
-		await _pelicanContext.SaveChangesAsync();
+		await _pelicanContext.SaveChangesAsync(cancellationToken);
 	}
 }

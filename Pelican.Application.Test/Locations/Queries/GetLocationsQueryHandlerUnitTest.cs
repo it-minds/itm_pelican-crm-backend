@@ -1,9 +1,10 @@
 ﻿using Moq;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Application.Locations.Queries.GetLocations;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 using Xunit;
-namespace Pelican.Application.Test;
+
+namespace Pelican.Application.Test.Locations.Queries;
 public class GetLocationsQueryHandlerUnitTest
 {
 	private GetLocationsQueryHandler uut;
@@ -15,8 +16,8 @@ public class GetLocationsQueryHandlerUnitTest
 		var locationRepositoryMock = new Mock<IGenericRepository<Location>>();
 		unitOfWorkMock.Setup(x => x.LocationRepository).Returns(locationRepositoryMock.Object);
 		uut = new GetLocationsQueryHandler(unitOfWorkMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
-		GetLocationsQuery locationsQuery = new GetLocationsQuery();
+		var cancellationToken = new CancellationToken();
+		var locationsQuery = new GetLocationsQuery();
 		//Act
 		_ = uut.Handle(locationsQuery, cancellationToken);
 		//Assert
@@ -30,10 +31,10 @@ public class GetLocationsQueryHandlerUnitTest
 		var locationRepositoryMock = new Mock<IGenericRepository<Location>>();
 		unitOfWorkMock.Setup(x => x.LocationRepository).Returns(locationRepositoryMock.Object);
 		uut = new GetLocationsQueryHandler(unitOfWorkMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
-		GetLocationsQuery locationsQuery = new GetLocationsQuery();
+		var cancellationToken = new CancellationToken();
+		var locationsQuery = new GetLocationsQuery();
 		//Act
-		for (int i = 0; i < 50; i++)
+		for (var i = 0; i < 50; i++)
 		{
 			_ = uut.Handle(locationsQuery, cancellationToken);
 		}

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Pelican.Domain.Contracts;
+namespace Pelican.Presentation.Api.Contracts;
 public class WebHookRequest
 {
 	[JsonPropertyName("objectId")]

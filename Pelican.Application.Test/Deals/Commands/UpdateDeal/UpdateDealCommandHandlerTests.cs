@@ -1,8 +1,8 @@
 ﻿using Moq;
 using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Application.Deals.Commands.UpdateDeal;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 using Pelican.Domain.Shared;
 using Xunit;
 
@@ -11,7 +11,7 @@ namespace Pelican.Application.Test.Deals.Commands.UpdateDeal;
 public class UpdateDealCommandHandlerTests
 {
 	private readonly UpdateDealCommandHandler _uut;
-	private readonly Mock<IRepositoryWrapper> _unitOfWorkMock;
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 	private readonly Mock<IHubSpotDealService> _hubSpotDealServiceMock;
 	private readonly CancellationToken _cancellationToken;
 
@@ -38,11 +38,11 @@ public class UpdateDealCommandHandlerTests
 			"0");
 
 		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.Deal.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
+			.Setup(unitOfWork => unitOfWork.DealRepository.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
 			.Returns(Enumerable.Empty<Deal>().AsQueryable());
 
 		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.AccountManager.FindByCondition(accountManager => accountManager.Id.ToString() == command.UserId.ToString()))
+			.Setup(unitOfWork => unitOfWork.AccountManagerRepository.FindByCondition(accountManager => accountManager.Id.ToString() == command.UserId.ToString()))
 			.Returns(Enumerable.Empty<AccountManager>().AsQueryable());
 
 		// Act
@@ -50,12 +50,12 @@ public class UpdateDealCommandHandlerTests
 
 		// Assert
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.Deal.FindByCondition(
+			unitOfWork => unitOfWork.DealRepository.FindByCondition(
 				deal => deal.Id.ToString() == command.ObjectId.ToString()),
 			Times.Once());
 
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.AccountManager.FindByCondition(
+			unitOfWork => unitOfWork.AccountManagerRepository.FindByCondition(
 				accountManager => accountManager.Id.ToString() == command.UserId.ToString()),
 			Times.Once());
 
@@ -74,21 +74,14 @@ public class UpdateDealCommandHandlerTests
 			"0",
 			"0");
 
-		AccountManager accountManager = new(
-			Guid.NewGuid(),
-			"name",
-			string.Empty,
-			"email",
-			string.Empty,
-			string.Empty,
-			Guid.NewGuid());
+		AccountManager accountManager = new(Guid.NewGuid());
 
 		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.Deal.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
+			.Setup(unitOfWork => unitOfWork.DealRepository.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
 			.Returns(Enumerable.Empty<Deal>().AsQueryable());
 
 		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.AccountManager.FindByCondition(accountManager => accountManager.Id.ToString() == command.UserId.ToString()))
+			.Setup(unitOfWork => unitOfWork.AccountManagerRepository.FindByCondition(accountManager => accountManager.Id.ToString() == command.UserId.ToString()))
 			.Returns(new List<AccountManager> { accountManager }.AsQueryable());
 
 		_hubSpotDealServiceMock
@@ -100,12 +93,12 @@ public class UpdateDealCommandHandlerTests
 
 		// Assert
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.Deal.FindByCondition(
+			unitOfWork => unitOfWork.DealRepository.FindByCondition(
 				deal => deal.Id.ToString() == command.ObjectId.ToString()),
 			Times.Once());
 
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.AccountManager.FindByCondition(
+			unitOfWork => unitOfWork.AccountManagerRepository.FindByCondition(
 				accountManager => accountManager.Id.ToString() == command.UserId.ToString()),
 			Times.Once());
 
@@ -129,28 +122,16 @@ public class UpdateDealCommandHandlerTests
 			"0",
 			"0");
 
-		AccountManager accountManager = new(
-			Guid.NewGuid(),
-			"name",
-			string.Empty,
-			"email",
-			string.Empty,
-			string.Empty,
-			Guid.NewGuid());
+		AccountManager accountManager = new(Guid.NewGuid());
 
-		Deal deal = new(
-			Guid.NewGuid(),
-			null,
-			string.Empty,
-			DateTime.Now,
-			Guid.NewGuid());
+		Deal deal = new(Guid.NewGuid());
 
 		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.Deal.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
+			.Setup(unitOfWork => unitOfWork.DealRepository.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
 			.Returns(Enumerable.Empty<Deal>().AsQueryable());
 
 		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.AccountManager.FindByCondition(accountManager => accountManager.Id.ToString() == command.UserId.ToString()))
+			.Setup(unitOfWork => unitOfWork.AccountManagerRepository.FindByCondition(accountManager => accountManager.Id.ToString() == command.UserId.ToString()))
 			.Returns(new List<AccountManager> { accountManager }.AsQueryable());
 
 		_hubSpotDealServiceMock
@@ -162,12 +143,12 @@ public class UpdateDealCommandHandlerTests
 
 		// Assert
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.Deal.FindByCondition(
+			unitOfWork => unitOfWork.DealRepository.FindByCondition(
 				deal => deal.Id.ToString() == command.ObjectId.ToString()),
 			Times.Once());
 
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.AccountManager.FindByCondition(
+			unitOfWork => unitOfWork.AccountManagerRepository.FindByCondition(
 				accountManager => accountManager.Id.ToString() == command.UserId.ToString()),
 			Times.Once());
 
@@ -189,15 +170,10 @@ public class UpdateDealCommandHandlerTests
 			"0",
 			"0");
 
-		Deal deal = new(
-			Guid.NewGuid(),
-			null,
-			string.Empty,
-			DateTime.Now,
-			Guid.NewGuid());
+		Deal deal = new(Guid.NewGuid());
 
 		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.Deal.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
+			.Setup(unitOfWork => unitOfWork.DealRepository.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
 			.Returns(new List<Deal> { deal }.AsQueryable());
 
 		// Act
@@ -205,16 +181,16 @@ public class UpdateDealCommandHandlerTests
 
 		// Assert
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.Deal.FindByCondition(
+			unitOfWork => unitOfWork.DealRepository.FindByCondition(
 				deal => deal.Id.ToString() == command.ObjectId.ToString()),
 			Times.Once());
 
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.Deal.Update(deal),
+			unitOfWork => unitOfWork.DealRepository.Update(deal),
 			Times.Once());
 
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.Save(),
+			unitOfWork => unitOfWork.SaveAsync(_cancellationToken),
 			Times.Once());
 
 		Assert.True(result.IsSuccess);
@@ -232,18 +208,13 @@ public class UpdateDealCommandHandlerTests
 			"closedate",
 			"1664958141535");
 
-		Deal deal = new(
-			Guid.NewGuid(),
-			null,
-			string.Empty,
-			DateTime.Now,
-			Guid.NewGuid());
+		Deal deal = new(Guid.NewGuid());
 
 		Deal updatedDeal = deal;
 		updatedDeal.EndDate = new DateTime(Convert.ToInt64(command.PropertyValue), DateTimeKind.Utc);
 
 		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.Deal.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
+			.Setup(unitOfWork => unitOfWork.DealRepository.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
 			.Returns(new List<Deal> { deal }.AsQueryable());
 
 		// Act
@@ -251,16 +222,16 @@ public class UpdateDealCommandHandlerTests
 
 		// Assert
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.Deal.FindByCondition(
+			unitOfWork => unitOfWork.DealRepository.FindByCondition(
 				deal => deal.Id.ToString() == command.ObjectId.ToString()),
 			Times.Once());
 
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.Deal.Update(updatedDeal),
+			unitOfWork => unitOfWork.DealRepository.Update(updatedDeal),
 			Times.Once());
 
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.Save(),
+			unitOfWork => unitOfWork.SaveAsync(_cancellationToken),
 			Times.Once());
 
 		Assert.True(result.IsSuccess);

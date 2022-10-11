@@ -5,9 +5,9 @@ using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Deals.Commands.DeleteDeal;
 using Pelican.Application.Deals.Commands.UpdateDeal;
 using Pelican.Application.HubSpot.Commands.NewInstallation;
-using Pelican.Domain.Contracts;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
+using Pelican.Presentation.Api.Contracts;
 using Pelican.Presentation.Api.Utilities;
 
 namespace Pelican.Presentation.Api.Controllers;
@@ -67,7 +67,7 @@ public sealed class HubSpotController : ApiController
 			{
 				ICommand? command = request.SubscriptionType switch
 				{
-					//"contact.deletion" => new DeleteContactPropertyCommand(),
+					//"contact.deletion" => new DeleteContactPropertyCommand(request.ObjectId),
 					"deal.deletion" => new DeleteDealCommand(request.ObjectId),
 					//"contact.propertyChange" => new UpdateContactCommand(propertyChangeRequest.ObjectId, propertyChangeRequest.PropertyName, propertyChangeRequest.PropertyValue),
 					"deal.propertyChange" => new UpdateDealCommand(request.ObjectId, request.SourceId, request.PropertyName, request.PropertyValue),

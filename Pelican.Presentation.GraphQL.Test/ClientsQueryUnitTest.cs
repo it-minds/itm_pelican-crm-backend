@@ -33,7 +33,7 @@ public class ClientsQueryUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		Guid id = Guid.NewGuid();
 		GetClientByIdQuery input = new GetClientByIdQuery(id);
-		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Client { Id = id });
+		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Client(id));
 		//Act
 		var result = await uut.GetClientAsync(input, mediatorMock.Object, cancellationToken);
 		//Assert

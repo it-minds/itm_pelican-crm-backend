@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 
 namespace Pelican.Application.Deals.Queries.GetDeals;
-public class GetDealsQueryHandler : IRequestHandler<GetDealsQuery, IQueryable<Deal>>
+public class GetDealsQueryHandler : IQueryHandler<GetDealsQuery, IQueryable<Deal>>
 {
 	private readonly IGenericRepository<Deal> _repository;
 	public GetDealsQueryHandler(IUnitOfWork unitOfWork)

@@ -3,7 +3,8 @@ using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Application.Deals.Queries.GetDealById;
 using Pelican.Domain.Entities;
 using Xunit;
-namespace Pelican.Application.Test;
+
+namespace Pelican.Application.Test.Deals.Queries;
 public class GetDealByIdQueryHandlerUnitTest
 {
 	private GetDealByIdQueryHandler uut;
@@ -13,14 +14,11 @@ public class GetDealByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Deal>>();
 		uut = new GetDealByIdQueryHandler(dataLoaderMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
+		var cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		GetDealByIdQuery getDealByIdQuery = new GetDealByIdQuery(guid);
-		List<Deal> resultList = new List<Deal>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Deal
-		{
-			Id = guid
-		});
+		var getDealByIdQuery = new GetDealByIdQuery(guid);
+		var resultList = new List<Deal>();
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Deal(guid));
 		//Act
 		resultList.Add(await uut.Handle(getDealByIdQuery, cancellationToken));
 		//Assert
@@ -33,16 +31,13 @@ public class GetDealByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Deal>>();
 		uut = new GetDealByIdQueryHandler(dataLoaderMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
+		var cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		GetDealByIdQuery getDealByIdQuery = new GetDealByIdQuery(guid);
-		List<Deal> resultList = new List<Deal>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Deal
-		{
-			Id = guid
-		});
+		var getDealByIdQuery = new GetDealByIdQuery(guid);
+		var resultList = new List<Deal>();
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Deal(guid));
 		//Act
-		for (int i = 0; i < 50; i++)
+		for (var i = 0; i < 50; i++)
 		{
 			resultList.Add(await uut.Handle(getDealByIdQuery, cancellationToken));
 		}

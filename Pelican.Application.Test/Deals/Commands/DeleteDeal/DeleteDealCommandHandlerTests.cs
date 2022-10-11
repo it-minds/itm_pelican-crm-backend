@@ -1,7 +1,7 @@
 ﻿using Moq;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Application.Deals.Commands.DeleteDeal;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 using Pelican.Domain.Shared;
 using Xunit;
 
@@ -9,13 +9,13 @@ namespace Pelican.Application.Test.Deals.Commands.DeleteDeal;
 public class DeleteDealCommandHandlerTests
 {
 	private readonly DeleteDealCommandHandler _uut;
-	private readonly Mock<IRepositoryWrapper> _repositoryWrapperMock;
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 	private readonly CancellationToken _cancellationToken;
 
 	public DeleteDealCommandHandlerTests()
 	{
-		_repositoryWrapperMock = new();
-		_uut = new(_repositoryWrapperMock.Object);
+		_unitOfWorkMock = new();
+		_uut = new(_unitOfWorkMock.Object);
 		_cancellationToken = new();
 	}
 
@@ -25,17 +25,23 @@ public class DeleteDealCommandHandlerTests
 		// Arrange
 		DeleteDealCommand command = new(0);
 
-		_repositoryWrapperMock
-			.Setup(unitOfWork => unitOfWork.Deal.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork.DealRepository.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
 			.Returns(Enumerable.Empty<Deal>().AsQueryable());
 
 		// Act
 		Result result = await _uut.Handle(command, _cancellationToken);
 
 		// Assert
-		_repositoryWrapperMock.Verify(unitOfWork => unitOfWork.Deal.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()), Times.Once());
+		_unitOfWorkMock
+			.Verify(
+				unitOfWork => unitOfWork.DealRepository.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()),
+				Times.Once());
 
-		_repositoryWrapperMock.Verify(unitOfWork => unitOfWork.Deal.Delete(It.IsAny<Deal>()), Times.Never());
+		_unitOfWorkMock
+			.Verify(
+				unitOfWork => unitOfWork.DealRepository.Delete(It.IsAny<Deal>()),
+				Times.Never());
 
 		Assert.True(result.IsSuccess);
 
@@ -47,14 +53,10 @@ public class DeleteDealCommandHandlerTests
 	{
 		// Arrange
 		DeleteDealCommand command = new(0);
-		Deal deal = new(Guid.NewGuid(),
-					0,
-					String.Empty,
-					DateTime.Now,
-					Guid.NewGuid());
+		Deal deal = new(Guid.NewGuid());
 
-		_repositoryWrapperMock
-			.Setup(unitOfWork => unitOfWork.Deal.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork.DealRepository.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
 			.Returns(new List<Deal>
 			{
 				deal
@@ -64,9 +66,13 @@ public class DeleteDealCommandHandlerTests
 		Result result = await _uut.Handle(command, _cancellationToken);
 
 		// Assert
-		_repositoryWrapperMock.Verify(unitOfWork => unitOfWork.Deal.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()), Times.Once());
+		_unitOfWorkMock
+			.Verify(unitOfWork => unitOfWork.DealRepository.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()),
+			Times.Once());
 
-		_repositoryWrapperMock.Verify(unitOfWork => unitOfWork.Deal.Delete(deal), Times.Once());
+		_unitOfWorkMock
+			.Verify(unitOfWork => unitOfWork.DealRepository.Delete(deal),
+			Times.Once());
 
 		Assert.True(result.IsSuccess);
 

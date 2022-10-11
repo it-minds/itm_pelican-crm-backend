@@ -1,4 +1,10 @@
-﻿const string allowedCorsOrigins = "AllowedCorsOrigins";
+﻿using Pelican.Application;
+using Pelican.Infrastructure.HubSpot;
+using Pelican.Infrastructure.Persistence;
+using Pelican.Presentation.Api;
+using Pelican.Presentation.GraphQL;
+
+const string allowedCorsOrigins = "AllowedCorsOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,14 +36,14 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthorization();
+
 app.UseEndpoints(endpoints =>
 {
 	endpoints.MapGraphQL();
 });
 
 app.UseCors(allowedCorsOrigins);
-
-app.UseAuthorization();
 
 app.MapControllers();
 

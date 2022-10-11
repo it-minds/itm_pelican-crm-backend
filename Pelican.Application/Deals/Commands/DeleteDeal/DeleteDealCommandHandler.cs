@@ -1,25 +1,25 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 using Pelican.Domain.Shared;
 
 namespace Pelican.Application.Deals.Commands.DeleteDeal;
 
 internal sealed class DeleteDealCommandHandler : ICommandHandler<DeleteDealCommand>
 {
-	private readonly IRepositoryWrapper _repositoryWrapper;
+	private readonly IUnitOfWork _unitOfWork;
 
-	public DeleteDealCommandHandler(IRepositoryWrapper repositoryWrapper)
+	public DeleteDealCommandHandler(IUnitOfWork unitOfWork)
 	{
-		_repositoryWrapper = repositoryWrapper ?? throw new ArgumentNullException(nameof(repositoryWrapper));
+		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(IUnitOfWork));
 	}
 
 	public async Task<Result> Handle(
 		DeleteDealCommand command,
 		CancellationToken cancellationToken)
 	{
-		Deal? deal = _repositoryWrapper
-			.Deal
+		Deal? deal = _unitOfWork
+			.DealRepository
 			.FindByCondition(d => d.Id.ToString() == command.ObjectId.ToString())
 			.FirstOrDefault();
 
@@ -28,12 +28,11 @@ internal sealed class DeleteDealCommandHandler : ICommandHandler<DeleteDealComma
 			return Result.Success();
 		}
 
-		_repositoryWrapper
-			.Deal
+		_unitOfWork
+			.DealRepository
 			.Delete(deal);
 
-		// wait for async impl and await that.
-		_repositoryWrapper.Save();
+		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
 	}

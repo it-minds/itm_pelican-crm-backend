@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Domain.Repositories;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Shared;
 
 [assembly: InternalsVisibleTo("Pelican.Application.Test")]
@@ -10,11 +10,15 @@ namespace Pelican.Application.HubSpot.Commands.NewInstallation;
 internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstallationCommand>
 {
 	private readonly IHubSpotAuthorizationService _hubSpotService;
-	private readonly IAccountManagerRepository _accountManagerRepository;
+	private readonly IUnitOfWork _unitOfWork;
 
 	public NewInstallationCommandHandler(
-		IHubSpotAuthorizationService hubSpotService)
-		=> _hubSpotService = hubSpotService;
+		IHubSpotAuthorizationService hubSpotService,
+		IUnitOfWork unitOfWork)
+	{
+		_hubSpotService = hubSpotService;
+		_unitOfWork = unitOfWork;
+	}
 
 	public async Task<Result> Handle(
 		NewInstallationCommand command,

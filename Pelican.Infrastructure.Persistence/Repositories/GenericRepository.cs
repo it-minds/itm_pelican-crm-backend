@@ -1,17 +1,16 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Pelican.Application.Common.Interfaces;
-using Pelican.Domain.Repositories;
+using Pelican.Application.Common.Interfaces.Repositories;
+using Pelican.Domain.Primitives;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
-public class GenericRepository<T> : IGenericRepository<T> where T : class
+public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 {
 	//This Repository contains base functions that will be inherited by all specific repositories
 	protected PelicanContext PelicanContext { get; set; }
-	public GenericRepository(IPelicanContext pelicanContext)
-	{
+	public GenericRepository(IPelicanContext pelicanContext) =>
 		PelicanContext = (PelicanContext)pelicanContext ?? throw new ArgumentNullException(nameof(PelicanContext));
-	}
 
 	public IQueryable<T> FindAll() => PelicanContext.Set<T>().AsNoTracking();
 

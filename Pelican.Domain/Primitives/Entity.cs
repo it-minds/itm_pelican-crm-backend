@@ -27,4 +27,6 @@ public abstract class Entity : IEquatable<Entity>
 		if (obj is not Entity entity) return false;
 		return entity.Id == Id;
 	}
+
+	public override int GetHashCode() => Id.GetHashCode();
 }

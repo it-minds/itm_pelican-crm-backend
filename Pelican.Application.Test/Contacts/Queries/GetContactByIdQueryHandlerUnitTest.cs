@@ -3,7 +3,8 @@ using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Application.Contacts.Queries.GetContactById;
 using Pelican.Domain.Entities;
 using Xunit;
-namespace Pelican.Application.Test;
+
+namespace Pelican.Application.Test.Contacts.Queries;
 public class GetContactByIdQueryHandlerUnitTest
 {
 	private GetContactByIdQueryHandler uut;
@@ -13,14 +14,11 @@ public class GetContactByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Contact>>();
 		uut = new GetContactByIdQueryHandler(dataLoaderMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
+		var cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		GetContactByIdQuery getContactByIdQuery = new GetContactByIdQuery(guid);
-		List<Contact> resultList = new List<Contact>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Contact
-		{
-			Id = guid
-		});
+		var getContactByIdQuery = new GetContactByIdQuery(guid);
+		var resultList = new List<Contact>();
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Contact(guid));
 		//Act
 		resultList.Add(await uut.Handle(getContactByIdQuery, cancellationToken));
 		//Assert
@@ -33,16 +31,13 @@ public class GetContactByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Contact>>();
 		uut = new GetContactByIdQueryHandler(dataLoaderMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
+		var cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		GetContactByIdQuery getContactByIdQuery = new GetContactByIdQuery(guid);
-		List<Contact> resultList = new List<Contact>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Contact
-		{
-			Id = guid
-		});
+		var getContactByIdQuery = new GetContactByIdQuery(guid);
+		var resultList = new List<Contact>();
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Contact(guid));
 		//Act
-		for (int i = 0; i < 50; i++)
+		for (var i = 0; i < 50; i++)
 		{
 			resultList.Add(await uut.Handle(getContactByIdQuery, cancellationToken));
 		}

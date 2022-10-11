@@ -1,33 +1,33 @@
 ﻿using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 using Pelican.Domain.Shared;
 
 namespace Pelican.Application.Deals.Commands.UpdateDeal;
 
 internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealCommand>
 {
-	private readonly IRepositoryWrapper _repositoryWrapper;
+	private readonly IUnitOfWork _unitOfWork;
 	private readonly IHubSpotDealService _hubSpotDealService;
 	public UpdateDealCommandHandler(
-IRepositoryWrapper repositoryWrapper,
+		IUnitOfWork unitOfWork,
 		IHubSpotDealService hubSpotDealService)
 	{
-		_repositoryWrapper = repositoryWrapper;
+		_unitOfWork = unitOfWork;
 		_hubSpotDealService = hubSpotDealService;
 	}
 	public async Task<Result> Handle(UpdateDealCommand command, CancellationToken cancellationToken)
 	{
-		Deal? deal = _repositoryWrapper
-			.Deal
+		Deal? deal = _unitOfWork
+			.DealRepository
 			.FindByCondition(d => d.Id.ToString() == command.ObjectId.ToString())
 			.FirstOrDefault();
 
 		if (deal is null)
 		{
-			AccountManager? accountManager = _repositoryWrapper
-				.AccountManager
+			AccountManager? accountManager = _unitOfWork
+				.AccountManagerRepository
 				.FindByCondition(a => a.Id.ToString() == command.UserId.ToString())
 				.FirstOrDefault();
 
@@ -41,9 +41,8 @@ IRepositoryWrapper repositoryWrapper,
 
 			if (result.IsFailure) return Result.Failure(result.Error);
 
-
-			_repositoryWrapper
-				.Deal
+			_unitOfWork
+				.DealRepository
 				.Create(result.Value);
 
 			return Result.Success();
@@ -58,9 +57,11 @@ IRepositoryWrapper repositoryWrapper,
 				break;
 		}
 
-		_repositoryWrapper.Deal.Update(deal);
+		_unitOfWork
+			.DealRepository
+			.Update(deal);
 
-		_repositoryWrapper.Save();
+		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
 	}

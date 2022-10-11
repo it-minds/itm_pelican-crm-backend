@@ -1,9 +1,10 @@
 ﻿using Moq;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Application.Suppliers.Queries.GetSuppliers;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 using Xunit;
-namespace Pelican.Application.Test;
+
+namespace Pelican.Application.Test.Suppliers.Queries;
 public class GetSuppliersQueryHandlerUnitTest
 {
 	private GetSuppliersQueryHandler uut;
@@ -15,8 +16,8 @@ public class GetSuppliersQueryHandlerUnitTest
 		var supplierRepositoryMock = new Mock<IGenericRepository<Supplier>>();
 		unitOfWorkMock.Setup(x => x.SupplierRepository).Returns(supplierRepositoryMock.Object);
 		uut = new GetSuppliersQueryHandler(unitOfWorkMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
-		GetSuppliersQuery accountManagersQuery = new GetSuppliersQuery();
+		var cancellationToken = new CancellationToken();
+		var accountManagersQuery = new GetSuppliersQuery();
 		//Act
 		_ = uut.Handle(accountManagersQuery, cancellationToken);
 		//Assert
@@ -30,10 +31,10 @@ public class GetSuppliersQueryHandlerUnitTest
 		var supplierRepositoryMock = new Mock<IGenericRepository<Supplier>>();
 		unitOfWorkMock.Setup(x => x.SupplierRepository).Returns(supplierRepositoryMock.Object);
 		uut = new GetSuppliersQueryHandler(unitOfWorkMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
-		GetSuppliersQuery suppliersQuery = new GetSuppliersQuery();
+		var cancellationToken = new CancellationToken();
+		var suppliersQuery = new GetSuppliersQuery();
 		//Act
-		for (int i = 0; i < 50; i++)
+		for (var i = 0; i < 50; i++)
 		{
 			_ = uut.Handle(suppliersQuery, cancellationToken);
 		}

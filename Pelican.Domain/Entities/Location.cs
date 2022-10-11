@@ -1,14 +1,16 @@
 ﻿using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
-public class Location : Entity
+public class Location : Entity, ITimeTracked
 {
 	public string CityName { get; set; }
 	public Supplier? Supplier { get; set; }
 	public Guid SupplierId { get; set; }
-	public Location(Guid id, string cityName, Guid supplierId) : base(id)
+	public long CreatedAt { get; set; }
+	public long? LastUpdatedAt { get; set; }
+
+	public Location(Guid id) : base(id)
 	{
-		CityName = cityName;
-		SupplierId = supplierId;
 	}
+	public Location() { }
 }

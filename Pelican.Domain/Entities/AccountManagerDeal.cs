@@ -10,13 +10,10 @@ public class AccountManagerDeal : Entity, ITimeTracked
 	public bool IsActive { get; set; }
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
-
-	public AccountManagerDeal(Guid id, Guid accountManagerId,
-		Guid dealId,
-		bool isActive) : base(id)
+	public AccountManagerDeal(Guid id) : base(id)
 	{
-		AccountManagerId = accountManagerId;
-		DealId = dealId;
-		IsActive = isActive;
+	}
+	public AccountManagerDeal()
+	{
 	}
 }

@@ -7,6 +7,8 @@ internal class AccountManagerDealConfiguration : IEntityTypeConfiguration<Accoun
 {
 	public void Configure(EntityTypeBuilder<AccountManagerDeal> builder)
 	{
+		builder.ToTable("AccountManagerDeals");
+
 		builder.Property(p => p.IsActive)
 			.IsRequired();
 

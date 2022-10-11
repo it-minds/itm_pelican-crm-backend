@@ -8,6 +8,8 @@ internal class AccountManagerConfiguration : IEntityTypeConfiguration<AccountMan
 {
 	public void Configure(EntityTypeBuilder<AccountManager> builder)
 	{
+		builder.ToTable("AccountManagers");
+
 		builder.Property(p => p.Name)
 			.HasMaxLength(StringLengths.Name)
 			.IsRequired();

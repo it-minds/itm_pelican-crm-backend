@@ -15,18 +15,12 @@ public class Supplier : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
 
-	public Supplier(Guid id, string name,
-		string? pictureUrl,
-		string? phoneNumber,
-		string? email,
-		string? linkedInUrl,
-		string? websiteUrl) : base(id)
+	public Supplier(Guid id) : base(id)
 	{
-		Name = name;
-		PictureUrl = pictureUrl;
-		PhoneNumber = phoneNumber;
-		Email = email;
-		LinkedInUrl = linkedInUrl;
-		WebsiteUrl = websiteUrl;
+
+	}
+	public Supplier()
+	{
+
 	}
 }

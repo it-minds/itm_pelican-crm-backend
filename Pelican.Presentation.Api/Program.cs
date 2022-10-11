@@ -1,30 +1,31 @@
-﻿using Pelican.Infrastructure.Persistence;
-using Pelican.Presentation.Api.Extension;
+﻿using Pelican.Application;
+using Pelican.Infrastructure.Persistence;
+using Pelican.Presentation.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.ConfigureRepositoryWrapper();
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddPersistince(builder.Configuration);
+builder.Services.AddApplication();
 
+
+//Adding GraphQl Specific extensions and services.
+var executorBuilder = builder.Services
+	.AddPresentationGraphQL()
+	.AddDataLoaders();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
-
 app.UseHttpsRedirection();
+app.UseRouting();
 
-app.UseAuthorization();
+app.UseEndpoints(endpoints =>
+{
+	endpoints.MapGraphQL();
+});
 
-app.MapControllers();
+
 
 app.Run();
+
+

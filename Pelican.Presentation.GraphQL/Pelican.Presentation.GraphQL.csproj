@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FairyBread" Version="9.0.0" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="12.15.0" />
+    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="12.14.0" />
+    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="12.14.0" />
+    <PackageReference Include="MediatR" Version="11.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -15,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Pelican.Application\Pelican.Application.csproj" />
+    <ProjectReference Include="..\Pelican.Infrastructure.Persistence\Pelican.Infrastructure.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

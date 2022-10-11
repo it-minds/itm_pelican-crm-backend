@@ -49,8 +49,8 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PictureUrl")
                         .HasMaxLength(1000)
@@ -63,7 +63,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("AccountManagers");
+                    b.ToTable("AccountManagers", (string)null);
                 });
 
             modelBuilder.Entity("Pelican.Domain.Entities.AccountManagerDeal", b =>
@@ -93,7 +93,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("DealId");
 
-                    b.ToTable("AccountManagerDeals");
+                    b.ToTable("AccountManagerDeals", (string)null);
                 });
 
             modelBuilder.Entity("Pelican.Domain.Entities.Client", b =>
@@ -131,7 +131,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", (string)null);
                 });
 
             modelBuilder.Entity("Pelican.Domain.Entities.ClientContact", b =>
@@ -159,7 +159,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("ClientContactPersons");
+                    b.ToTable("ClientContacts", (string)null);
                 });
 
             modelBuilder.Entity("Pelican.Domain.Entities.Contact", b =>
@@ -192,12 +192,12 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactPersons");
+                    b.ToTable("Contacts", (string)null);
                 });
 
             modelBuilder.Entity("Pelican.Domain.Entities.Deal", b =>
@@ -230,7 +230,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("Deals");
+                    b.ToTable("Deals", (string)null);
                 });
 
             modelBuilder.Entity("Pelican.Domain.Entities.DealContact", b =>
@@ -260,7 +260,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("DealId");
 
-                    b.ToTable("DealContactPersons");
+                    b.ToTable("DealContacts", (string)null);
                 });
 
             modelBuilder.Entity("Pelican.Domain.Entities.Location", b =>
@@ -274,6 +274,12 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<long>("CreatedAt")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("LastUpdatedAt")
+                        .HasColumnType("bigint");
+
                     b.Property<Guid>("SupplierId")
                         .HasColumnType("uniqueidentifier");
 
@@ -281,7 +287,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("Location");
+                    b.ToTable("Locations", (string)null);
                 });
 
             modelBuilder.Entity("Pelican.Domain.Entities.Supplier", b =>
@@ -310,8 +316,8 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PictureUrl")
                         .HasMaxLength(1000)
@@ -323,7 +329,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("Pelican.Domain.Entities.AccountManager", b =>

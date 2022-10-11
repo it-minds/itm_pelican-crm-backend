@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Pelican.Domain.Primitives;
+﻿using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
 public class Client : Entity, ITimeTracked
@@ -14,18 +13,9 @@ public class Client : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
 
-	public Client(Guid id, string name,
-		string? pictureUrl,
-		string? officeLocation,
-		string? segment,
-		string? classification) : base(id)
+	public Client(Guid id) : base(id)
 	{
-		Name = name;
-		PictureUrl = pictureUrl;
-		OfficeLocation = officeLocation;
-		Segment = segment;
-		Classification = classification;
-		Deals = new Collection<Deal>();
-		ClientContacts = new Collection<ClientContact>();
 	}
+	public Client() { }
+
 }

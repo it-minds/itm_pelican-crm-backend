@@ -11,12 +11,9 @@ public class ClientContact : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
 
-	public ClientContact(Guid id, Guid clientId,
-		Guid contactId,
-		bool isActive) : base(id)
+	public ClientContact(Guid id) : base(id)
 	{
-		ClientId = clientId;
-		ContactId = contactId;
-		IsActive = isActive;
 	}
+	public ClientContact() { }
+
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Pelican.Domain.Primitives;
+﻿using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
 public class Deal : Entity, ITimeTracked
@@ -14,17 +13,9 @@ public class Deal : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
 
-	public Deal(Guid id,
-		decimal? revenue,
-		string dealStatus,
-		DateTime endDate,
-		Guid clientId) : base(id)
+	public Deal(Guid id) : base(id)
 	{
-		AccountManagerDeals = new Collection<AccountManagerDeal>();
-		DealContacts = new Collection<DealContact>();
-		Revenue = revenue;
-		DealStatus = dealStatus;
-		EndDate = endDate;
-		ClientId = clientId;
 	}
+	public Deal() { }
+
 }

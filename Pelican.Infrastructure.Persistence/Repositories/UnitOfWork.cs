@@ -7,94 +7,94 @@ namespace Pelican.Infrastructure.Persistence.Repositories;
 public class UnitOfWork : IUnitOfWork
 {
 	private IPelicanContext _pelicanContext;
-	private RepositoryBase<AccountManagerDeal> accountManagerDealRepository;
-	private RepositoryBase<AccountManager> accountManagerRepository;
-	private RepositoryBase<Client> clientRepository;
-	private RepositoryBase<Contact> contactRepository;
-	private RepositoryBase<Deal> dealRepository;
-	private RepositoryBase<Location> locationRepository;
-	private RepositoryBase<Supplier> supplierRepository;
+	private IGenericRepository<AccountManagerDeal> accountManagerDealRepository;
+	private IGenericRepository<AccountManager> accountManagerRepository;
+	private IGenericRepository<Client> clientRepository;
+	private IGenericRepository<Contact> contactRepository;
+	private IGenericRepository<Deal> dealRepository;
+	private IGenericRepository<Location> locationRepository;
+	private IGenericRepository<Supplier> supplierRepository;
 
 
-	public IRepositoryBase<AccountManagerDeal> AccountManagerDealRepository
+	public IGenericRepository<AccountManagerDeal> AccountManagerDealRepository
 	{
 		get
 		{
 			if (accountManagerDealRepository == null)
 			{
-				accountManagerDealRepository = new RepositoryBase<AccountManagerDeal>(_pelicanContext);
+				accountManagerDealRepository = new GenericRepository<AccountManagerDeal>(_pelicanContext);
 			}
 			return accountManagerDealRepository;
 		}
 	}
 
-	public IRepositoryBase<AccountManager> AccountManagerRepository
+	public IGenericRepository<AccountManager> AccountManagerRepository
 	{
 		get
 		{
 			if (accountManagerRepository == null)
 			{
-				accountManagerRepository = new RepositoryBase<AccountManager>(_pelicanContext);
+				accountManagerRepository = new GenericRepository<AccountManager>(_pelicanContext);
 			}
 			return accountManagerRepository;
 		}
 	}
 
-	public IRepositoryBase<Client> ClientRepository
+	public IGenericRepository<Client> ClientRepository
 	{
 		get
 		{
 			if (clientRepository == null)
 			{
-				clientRepository = new RepositoryBase<Client>(_pelicanContext);
+				clientRepository = new GenericRepository<Client>(_pelicanContext);
 			}
 			return clientRepository;
 		}
 	}
 
-	public IRepositoryBase<Contact> ContactRepository
+	public IGenericRepository<Contact> ContactRepository
 	{
 		get
 		{
 			if (contactRepository == null)
 			{
-				contactRepository = new RepositoryBase<Contact>(_pelicanContext);
+				contactRepository = new GenericRepository<Contact>(_pelicanContext);
 			}
 			return contactRepository;
 		}
 	}
 
-	public IRepositoryBase<Deal> DealRepository
+	public IGenericRepository<Deal> DealRepository
 	{
 		get
 		{
 			if (dealRepository == null)
 			{
-				dealRepository = new RepositoryBase<Deal>(_pelicanContext);
+				dealRepository = new GenericRepository<Deal>(_pelicanContext);
 			}
 			return dealRepository;
 		}
 	}
 
-	public IRepositoryBase<Location> LocationRepository
+	public IGenericRepository<Location> LocationRepository
 	{
 		get
 		{
 			if (locationRepository == null)
 			{
-				locationRepository = new RepositoryBase<Location>(_pelicanContext);
+				locationRepository = new GenericRepository<Location>(_pelicanContext);
 			}
 			return locationRepository;
 		}
 	}
 
-	public IRepositoryBase<Supplier> SupplierRepository
+	public IGenericRepository<Supplier> SupplierRepository
 	{
 		get
 		{
 			if (supplierRepository == null)
 			{
-				supplierRepository = new RepositoryBase<Supplier>(_pelicanContext);
+				supplierRepository = new GenericRepository<Supplier>(_pelicanContext);
 			}
 			return supplierRepository;
 		}

@@ -12,7 +12,7 @@ public class GetDealsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var dealRepositoryMock = new Mock<IRepositoryBase<Deal>>();
+		var dealRepositoryMock = new Mock<IGenericRepository<Deal>>();
 		unitOfWorkMock.Setup(x => x.DealRepository).Returns(dealRepositoryMock.Object);
 		uut = new GetDealsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
@@ -27,7 +27,7 @@ public class GetDealsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var dealRepositoryMock = new Mock<IRepositoryBase<Deal>>();
+		var dealRepositoryMock = new Mock<IGenericRepository<Deal>>();
 		unitOfWorkMock.Setup(x => x.DealRepository).Returns(dealRepositoryMock.Object);
 		uut = new GetDealsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();

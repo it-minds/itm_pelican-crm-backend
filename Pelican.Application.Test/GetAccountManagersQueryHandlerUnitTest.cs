@@ -12,7 +12,7 @@ public class GetAccountManagersQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var accountMangerRepositoryMock = new Mock<IRepositoryBase<AccountManager>>();
+		var accountMangerRepositoryMock = new Mock<IGenericRepository<AccountManager>>();
 		unitOfWorkMock.Setup(x => x.AccountManagerRepository).Returns(accountMangerRepositoryMock.Object);
 		uut = new GetAccountManagersQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
@@ -27,7 +27,7 @@ public class GetAccountManagersQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var accountManagerRepositoryMock = new Mock<IRepositoryBase<AccountManager>>();
+		var accountManagerRepositoryMock = new Mock<IGenericRepository<AccountManager>>();
 		unitOfWorkMock.Setup(x => x.AccountManagerRepository).Returns(accountManagerRepositoryMock.Object);
 		uut = new GetAccountManagersQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();

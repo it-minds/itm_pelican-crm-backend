@@ -3,13 +3,13 @@
 namespace Pelican.Domain.Repositories;
 public interface IUnitOfWork
 {
-	public IRepositoryBase<AccountManagerDeal> AccountManagerDealRepository { get; }
-	public IRepositoryBase<AccountManager> AccountManagerRepository { get; }
-	public IRepositoryBase<Client> ClientRepository { get; }
-	public IRepositoryBase<Contact> ContactRepository { get; }
-	public IRepositoryBase<Deal> DealRepository { get; }
-	public IRepositoryBase<Location> LocationRepository { get; }
-	public IRepositoryBase<Supplier> SupplierRepository { get; }
+	public IGenericRepository<AccountManagerDeal> AccountManagerDealRepository { get; }
+	public IGenericRepository<AccountManager> AccountManagerRepository { get; }
+	public IGenericRepository<Client> ClientRepository { get; }
+	public IGenericRepository<Contact> ContactRepository { get; }
+	public IGenericRepository<Deal> DealRepository { get; }
+	public IGenericRepository<Location> LocationRepository { get; }
+	public IGenericRepository<Supplier> SupplierRepository { get; }
 	void Save();
 	Task SaveAsync();
 }

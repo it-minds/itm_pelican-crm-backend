@@ -12,7 +12,7 @@ public class GetSuppliersQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var supplierRepositoryMock = new Mock<IRepositoryBase<Supplier>>();
+		var supplierRepositoryMock = new Mock<IGenericRepository<Supplier>>();
 		unitOfWorkMock.Setup(x => x.SupplierRepository).Returns(supplierRepositoryMock.Object);
 		uut = new GetSuppliersQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
@@ -27,7 +27,7 @@ public class GetSuppliersQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var supplierRepositoryMock = new Mock<IRepositoryBase<Supplier>>();
+		var supplierRepositoryMock = new Mock<IGenericRepository<Supplier>>();
 		unitOfWorkMock.Setup(x => x.SupplierRepository).Returns(supplierRepositoryMock.Object);
 		uut = new GetSuppliersQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();

@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 
 namespace Pelican.Domain.Repositories;
-public interface IRepositoryBase<T>
+public interface IGenericRepository<T>
 {
 	IQueryable<T> FindAll();
 	IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);

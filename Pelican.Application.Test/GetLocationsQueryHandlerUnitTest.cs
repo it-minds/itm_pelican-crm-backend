@@ -12,7 +12,7 @@ public class GetLocationsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var locationRepositoryMock = new Mock<IRepositoryBase<Location>>();
+		var locationRepositoryMock = new Mock<IGenericRepository<Location>>();
 		unitOfWorkMock.Setup(x => x.LocationRepository).Returns(locationRepositoryMock.Object);
 		uut = new GetLocationsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
@@ -27,7 +27,7 @@ public class GetLocationsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var locationRepositoryMock = new Mock<IRepositoryBase<Location>>();
+		var locationRepositoryMock = new Mock<IGenericRepository<Location>>();
 		unitOfWorkMock.Setup(x => x.LocationRepository).Returns(locationRepositoryMock.Object);
 		uut = new GetLocationsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();

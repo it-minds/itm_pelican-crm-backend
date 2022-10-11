@@ -5,7 +5,7 @@ using Pelican.Domain.Repositories;
 namespace Pelican.Application.Suppliers.Queries.GetSuppliers;
 public class GetSuppliersQueryHandler : IRequestHandler<GetSuppliersQuery, IQueryable<Supplier>>
 {
-	private readonly IRepositoryBase<Supplier> _repository;
+	private readonly IGenericRepository<Supplier> _repository;
 	public GetSuppliersQueryHandler(IUnitOfWork unitOfWork)
 	{
 		_repository = unitOfWork.SupplierRepository;

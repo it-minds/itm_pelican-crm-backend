@@ -13,7 +13,7 @@ public class GetClientsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var clientRepositoryMock = new Mock<IRepositoryBase<Client>>();
+		var clientRepositoryMock = new Mock<IGenericRepository<Client>>();
 		unitOfWorkMock.Setup(x => x.ClientRepository).Returns(clientRepositoryMock.Object);
 		uut = new GetClientsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
@@ -28,7 +28,7 @@ public class GetClientsQueryHandlerUnitTest
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var clientRepositoryMock = new Mock<IRepositoryBase<Client>>();
+		var clientRepositoryMock = new Mock<IGenericRepository<Client>>();
 		unitOfWorkMock.Setup(x => x.ClientRepository).Returns(clientRepositoryMock.Object);
 		uut = new GetClientsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();

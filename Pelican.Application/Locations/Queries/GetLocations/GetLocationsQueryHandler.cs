@@ -5,7 +5,7 @@ using Pelican.Domain.Repositories;
 namespace Pelican.Application.Locations.Queries.GetLocations;
 public class GetLocationsQueryHandler : IRequestHandler<GetLocationsQuery, IQueryable<Location>>
 {
-	private readonly IRepositoryBase<Location> _repository;
+	private readonly IGenericRepository<Location> _repository;
 	public GetLocationsQueryHandler(IUnitOfWork unitOfWork)
 	{
 		_repository = unitOfWork.LocationRepository;

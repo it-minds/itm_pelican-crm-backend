@@ -5,7 +5,7 @@ using Pelican.Domain.Repositories;
 namespace Pelican.Application.Contacts.Queries.GetContacts;
 public class GetContactsQueryHandler : IRequestHandler<GetContactsQuery, IQueryable<Contact>>
 {
-	private readonly IRepositoryBase<Contact> _repository;
+	private readonly IGenericRepository<Contact> _repository;
 	public GetContactsQueryHandler(IUnitOfWork unitOfWork)
 	{
 		_repository = unitOfWork.ContactRepository;

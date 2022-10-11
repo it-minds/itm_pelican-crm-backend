@@ -5,7 +5,7 @@ using Pelican.Domain.Repositories;
 namespace Pelican.Application.AccountManagers.Queries.GetAccountManagers;
 public class GetAccountManagersQueryHandler : IRequestHandler<GetAccountManagersQuery, IQueryable<AccountManager>>
 {
-	private readonly IRepositoryBase<AccountManager> _repository;
+	private readonly IGenericRepository<AccountManager> _repository;
 	public GetAccountManagersQueryHandler(IUnitOfWork unitOfWork)
 	{
 		_repository = unitOfWork.AccountManagerRepository;

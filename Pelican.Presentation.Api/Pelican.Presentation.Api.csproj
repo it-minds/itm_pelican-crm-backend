@@ -7,14 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\**" />
-    <Content Remove="Controllers\**" />
-    <EmbeddedResource Remove="Controllers\**" />
-    <None Remove="Controllers\**" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="LazyCache" Version="2.4.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -25,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Pelican.Application\Pelican.Application.csproj" />
+    <ProjectReference Include="..\Pelican.Infrastructure.Google\Pelican.Infrastructure.Google.csproj" />
     <ProjectReference Include="..\Pelican.Infrastructure.Persistence\Pelican.Infrastructure.Persistence.csproj" />
     <ProjectReference Include="..\Pelican.Presentation.GraphQL\Pelican.Presentation.GraphQL.csproj" />
   </ItemGroup>

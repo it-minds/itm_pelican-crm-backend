@@ -14,6 +14,8 @@ public class UnitOfWork : IUnitOfWork
 	private IGenericRepository<Deal> dealRepository;
 	private IGenericRepository<Location> locationRepository;
 	private IGenericRepository<Supplier> supplierRepository;
+	private IGenericRepository<ClientContact> clientContactRepository;
+	private IGenericRepository<DealContact> dealContactRepository;
 
 
 	public IGenericRepository<AccountManagerDeal> AccountManagerDealRepository
@@ -76,6 +78,22 @@ public class UnitOfWork : IUnitOfWork
 		{
 			supplierRepository ??= new GenericRepository<Supplier>(_pelicanContext);
 			return supplierRepository;
+		}
+	}
+	public IGenericRepository<ClientContact> ClientContactRepository
+	{
+		get
+		{
+			clientContactRepository ??= new GenericRepository<ClientContact>(_pelicanContext);
+			return clientContactRepository;
+		}
+	}
+	public IGenericRepository<DealContact> DealContactRepository
+	{
+		get
+		{
+			dealContactRepository ??= new GenericRepository<DealContact>(_pelicanContext);
+			return dealContactRepository;
 		}
 	}
 

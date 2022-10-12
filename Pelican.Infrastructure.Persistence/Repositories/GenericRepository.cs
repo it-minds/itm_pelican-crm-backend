@@ -10,7 +10,14 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 	protected PelicanContext PelicanContext { get; set; }
 	public GenericRepository(IPelicanContext pelicanContext)
 	{
-		PelicanContext = (PelicanContext)pelicanContext ?? throw new ArgumentNullException(nameof(PelicanContext));
+		try
+		{
+			PelicanContext = (PelicanContext)pelicanContext;
+		}
+		catch (InvalidCastException e)
+		{
+			throw e;
+		}
 	}
 
 	public IQueryable<T> FindAll() => PelicanContext.Set<T>().AsNoTracking();

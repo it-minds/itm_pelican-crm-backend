@@ -147,4 +147,14 @@ public class UnitOfWorkUnitTest
 		//Assert
 		var ex = Assert.Throws<InvalidCastException>(() => uut.DealContactRepository);
 	}
+	[Fact]
+	public void UnitOfWorkGetDealRepository()
+	{
+		//Arrange
+		var myPelicantContextMock = new Mock<IPelicanContext>();
+		uut = new UnitOfWork(myPelicantContextMock.Object);
+		//Act
+		//Assert
+		var ex = Assert.Throws<InvalidCastException>(() => uut.DealRepository);
+	}
 }

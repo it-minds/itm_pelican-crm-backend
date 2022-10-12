@@ -1,7 +1,8 @@
 ﻿namespace Pelican.Infrastructure.Google.Authentication;
-public static class AccessPolicies
+public static class AccessPoliciesStrings
 {
+	public const string Own = "OWN";
 }
-public enum Accesspolicies
+public enum AccessPolicies
 {
 }

@@ -4,7 +4,6 @@ public static class GoogleGroups
 	public const string SalesCph = "sales-cph@it-minds.dk";
 	public const string SalesAarhus = "sales-aarhus@it-minds.dk";
 	public const string SalesAalborg = "sales-aalborg@it-minds.dk";
-	public const string Management = "management@it-minds.dk";
 	public const string Marketing = "marketing@it-minds.dk";
 	public const string Koebenhavn = "koebenhavn@it-minds.dk";
 	public const string Aarhus = "aarhus@it-minds.dk";

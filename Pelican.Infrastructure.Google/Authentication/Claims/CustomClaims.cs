@@ -1,4 +1,4 @@
-﻿namespace Pelican.Infrastructure.Google.Authentication;
+﻿namespace Pelican.Infrastructure.Google.Authentication.Claims;
 public class CustomClaims
 {
 	public const string EmployeeId = "EmployeeId";
@@ -6,4 +6,5 @@ public class CustomClaims
 	public const string Company = "Company";
 	public const string Department = "Department";
 	public const string IsAccountManager = "IsAccountManager";
+	public const string IsDirector = "IsDirector";
 }

@@ -1,4 +1,4 @@
-﻿namespace Pelican.Infrastructure.Google.Authentication;
+﻿namespace Pelican.Infrastructure.Google.Authentication.Claims;
 public static class GoogleClaims
 {
 	public const string Id = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";

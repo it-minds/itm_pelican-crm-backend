@@ -1,4 +1,5 @@
 ﻿using Pelican.Application.Common.Interfaces;
+using Pelican.Domain.Entities;
 using Pelican.Domain.Repositories;
 
 namespace Pelican.Infrastructure.Persistence;
@@ -10,12 +11,19 @@ public static class DevelopmentSeeder
 		SeedSuppliers(unitOfWork, pelicanFaker);
 	}
 	//This Method calls on the PelicanBogusFaker to give it a list of 5 Supplier entities and saves these to the database.
+
 	private static void SeedSuppliers(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker)
 	{
 		unitOfWork
 			.SupplierRepository
 			.CreateRange(pelicanFaker.SupplierFaker(5));
-		unitOfWork.Save();
+		unitOfWork.SaveAsync();
+		var supplierList = unitOfWork.SupplierRepository.FindAll();
+		SeedAccountManagers(unitOfWork, pelicanFaker, supplierList);
 	}
-
+	private static void SeedAccountManagers(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Supplier> suppliers)
+	{
+		unitOfWork.AccountManagerRepository.CreateRange(pelicanFaker.AccountManagerFaker(suppliers.Count(), suppliers));
+		unitOfWork.SaveAsync();
+	}
 }

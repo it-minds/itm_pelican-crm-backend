@@ -1,11 +1,11 @@
-﻿using LazyCache;
+﻿using Google.Apis.Auth.AspNetCore3;
+using LazyCache;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Pelican.Domain.Enums;
 using Pelican.Infrastructure.Google.Authentication;
-using Pelican.Infrastructure.Persistence;
+using Pelican.Infrastructure.Google.Authentication.Claims;
 
 namespace Pelican.Presentation.Api.Controllers;
 [ApiController]
@@ -13,42 +13,35 @@ namespace Pelican.Presentation.Api.Controllers;
 public class AuthController : Controller
 {
 	private readonly IAppCache _cache;
-	private readonly IDbContextFactory<PelicanContext> _pelicanContext;
-	public AuthController(IAppCache cache, IDbContextFactory<PelicanContext> pelicanContext)
+	public AuthController(IAppCache cache)
 	{
 		_cache = cache;
-		_pelicanContext = pelicanContext;
 	}
 
-	public async Task Login()
-	{
-		await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, new AuthenticationProperties()
-		{
-			RedirectUri = Url.Action("GoogleResponse")
-		});
-	}
-
-	public async Task<IActionResult> GoogleResponse()
-	{
-		var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-		var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
-		{
-			claim.Issuer,
-			claim.OriginalIssuer,
-			claim.Type,
-			claim.Value
-		});
-		return Json(claims);
-	}
-	public async Task LogOut()
+	[Authorize(AuthenticationSchemes = GoogleOpenIdConnectDefaults.AuthenticationScheme)]
+	[HttpGet("sign-in")]
+	public IActionResult SignIn(Country country, string returnUrl, string errorUrl)
 	{
 		var emailClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == GoogleClaims.Email);
 		if (emailClaim != null)
 		{
 			var groupCacheKey = GoogleGroups.GetGroupCacheStringForUser(emailClaim.Value);
+			_cache.Remove(groupCacheKey);
+		}
 
+		return Redirect(returnUrl);
+	}
+	[Authorize()]
+	[HttpGet("sign-out")]
+	public async Task<IActionResult> AppSignOut()
+	{
+		var emailClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == GoogleClaims.Email);
+		if (emailClaim != null)
+		{
+			var groupCacheKey = GoogleGroups.GetGroupCacheStringForUser(emailClaim.Value);
 			_cache.Remove(groupCacheKey);
 		}
 		await HttpContext.SignOutAsync();
+		return Ok();
 	}
 }

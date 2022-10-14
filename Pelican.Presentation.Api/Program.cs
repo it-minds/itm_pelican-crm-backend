@@ -22,10 +22,14 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseCookiePolicy();
+app.UseAuthorization();
+
 
 app.UseEndpoints(endpoints =>
 {
 	endpoints.MapGraphQL();
+	endpoints.MapControllers();
+
 });
 
 

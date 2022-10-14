@@ -40,6 +40,6 @@ public class DevelopmentSeederUnitTest
 
 		fakeUnitOfWork.Verify(x => x.SupplierRepository.CreateRange(suppliers), Times.Once());
 
-		fakeUnitOfWork.Verify(x => x.Save(), Times.Once());
+		fakeUnitOfWork.Verify(x => x.SaveAsync(), Times.Once());
 	}
 }

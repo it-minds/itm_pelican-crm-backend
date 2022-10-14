@@ -27,9 +27,12 @@ public class EmployeeClaimsService : IEmployeeClaimsService
 				config.CreateMap<AccountManager, EmployeeClaimData>()
 				.ForMember(dest => dest.EmployeeId, opts => opts.MapFrom(src => src.Id))
 				.ForMember(dest => dest.EmployeeName, opts => opts.MapFrom(src => src.Name))
-				.ForMember(dest => dest.Company, opts => opts.MapFrom(src => src.Supplier));
+				.ForMember(dest => dest.Company, opts => opts.MapFrom(src => src.Supplier.Name));
 			}))
 			.FirstOrDefaultAsync(cancellationToken);
+		var list = new List<string>();
+		list.Add(GoogleGroups.SalesManager);
+		employee.UserGroups = list;
 		return employee;
 	}
 }

@@ -2,6 +2,7 @@
 using LazyCache;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Hosting;
+using Pelican.Infrastructure.Google.Authentication.Claims;
 using Pelican.Infrastructure.Google.Authentication.Interfaces;
 
 
@@ -11,11 +12,13 @@ public class GoogleClaimsTransformation : IClaimsTransformation
 	private readonly IEmployeeClaimsService _employeeClaimsService;
 	private readonly IHostEnvironment _environment;
 	private readonly IAppCache _appCache;
-	public GoogleClaimsTransformation(IEmployeeClaimsService employeeClaimsService, IHostEnvironment environment, IAppCache appCache)
+	private readonly IGroupService _groupService;
+	public GoogleClaimsTransformation(IEmployeeClaimsService employeeClaimsService, IHostEnvironment environment, IAppCache appCache, IGroupService groupService)
 	{
 		_employeeClaimsService = employeeClaimsService;
 		_environment = environment;
 		_appCache = appCache;
+		_groupService = groupService;
 	}
 
 	public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
@@ -23,17 +26,21 @@ public class GoogleClaimsTransformation : IClaimsTransformation
 		ClaimsIdentity claimsIdentity = (ClaimsIdentity)principal.Identity;
 		var userEmail = principal.Claims.FirstOrDefault(c => c.Type == GoogleClaims.Email).Value;
 		var employeeClaimsData = await _employeeClaimsService.GetEmployeeClaimDataAsync(userEmail, CancellationToken.None);
-		if (employeeClaimsData.EmployeeId == null || employeeClaimsData.EmployeeId == String.Empty)
+		if (employeeClaimsData.EmployeeId != null || employeeClaimsData.EmployeeId == String.Empty)
 		{
 			claimsIdentity.AddClaim(new Claim(CustomClaims.EmployeeId, employeeClaimsData.EmployeeId));
 		}
-		if (employeeClaimsData.EmployeeName == null || employeeClaimsData.EmployeeName == String.Empty)
+		if (employeeClaimsData.EmployeeName != null || employeeClaimsData.EmployeeName == String.Empty)
 		{
 			claimsIdentity.AddClaim(new Claim(CustomClaims.EmployeeName, employeeClaimsData.EmployeeName));
 		}
-		claimsIdentity.AddClaim(new Claim(CustomClaims.Company, employeeClaimsData.Company.ToString()));
-		var userGroups = employeeClaimsData.UserGroups;
-
+		if (employeeClaimsData.Company != null || employeeClaimsData.Company == String.Empty)
+		{
+			claimsIdentity.AddClaim(new Claim(CustomClaims.Company, employeeClaimsData.Company.ToString()));
+		}
+		var groupCacheKey = GoogleGroups.GetGroupCacheStringForUser(userEmail);
+		Func<Task<IEnumerable<string>>> getUserGroups = () => _groupService.GetGroupsForUser(userEmail);
+		var userGroups = await _appCache.GetOrAddAsync(groupCacheKey, getUserGroups);
 		if (IsAccountManager(userGroups))
 		{
 			//Add accesspolicies when these are created

@@ -30,9 +30,7 @@ public class EmployeeClaimsService : IEmployeeClaimsService
 				.ForMember(dest => dest.Company, opts => opts.MapFrom(src => src.Supplier.Name));
 			}))
 			.FirstOrDefaultAsync(cancellationToken);
-		var list = new List<string>();
-		list.Add(GoogleGroups.SalesManager);
-		employee.UserGroups = list;
+
 		return employee;
 	}
 }

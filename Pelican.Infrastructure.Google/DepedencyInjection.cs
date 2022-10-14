@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using Google.Apis.Auth.AspNetCore3;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -8,10 +9,13 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Pelican.Application.Auth;
 using Pelican.Domain.Enums;
 using Pelican.Infrastructure.Google.Authentication;
 using Pelican.Infrastructure.Google.Authentication.Handlers;
+using Pelican.Infrastructure.Google.Authentication.Interfaces;
 using Pelican.Infrastructure.Google.Authentication.Requirements;
+using Pelican.Infrastructure.Google.Authentication.Services;
 
 namespace Pelican.Infrastructure.Google;
 public static class DepedencyInjection
@@ -93,9 +97,10 @@ public static class DepedencyInjection
 		{
 			options.AddPolicy(AccessPoliciesStrings.Own, policy => policy.AddRequirements(new OwnRequirement()));
 		});
-		//services.AddSingleton<IClaimsTransformation, GoogleClaimsTransformation>();
-		//services.AddSingleton<IEmployeeClaimsService, EmployeeClaimsService>();
+		services.AddSingleton<IEmployeeClaimsService, EmployeeClaimsService>();
+		services.AddSingleton<IClaimsTransformation, GoogleClaimsTransformation>();
 		services.AddSingleton<IAuthorizationHandler, IsDirectorAuthorizationHandler>();
+		services.AddSingleton<IGroupService, GoogleGroupService>();
 		services.AddHttpContextAccessor();
 		services.AddLazyCache();
 		services.AddControllers();

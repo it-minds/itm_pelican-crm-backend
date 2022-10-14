@@ -8,7 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddPersistince(builder.Configuration);
 builder.Services.AddApplication();
+//builder.Services.AddAzure();
 builder.Services.AddGoogleAuth(builder.Configuration);
+
 
 
 //Adding GraphQl Specific extensions and services.

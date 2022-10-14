@@ -9,24 +9,27 @@ namespace Pelican.Infrastructure.Google.Authentication.Services;
 ///<inheritdoc cref="IGroupService"/>
 public class GoogleGroupService : IGroupService
 {
-	private readonly ICertificateService _certService;
+	//private readonly ICertificateService _certService;
 	private readonly IOptionsMonitor<DirectorySettings> _directorySettingsMonitor;
 
-	public GoogleGroupService(ICertificateService certService, IOptionsMonitor<DirectorySettings> _directorySettingsMonitor)
+	public GoogleGroupService(
+		//ICertificateService certService, 
+		IOptionsMonitor<DirectorySettings> _directorySettingsMonitor)
 	{
-		_certService = certService;
+		//_certService = certService;
 		this._directorySettingsMonitor = _directorySettingsMonitor;
 	}
 
 	private async Task<DirectoryService> GetDirectoryService()
 	{
-		var cert = await _certService.GetGoogleCertificate();
+		//var cert = await _certService.GetGoogleCertificate();
 		ServiceAccountCredential credential = new ServiceAccountCredential(
 			new ServiceAccountCredential.Initializer(_directorySettingsMonitor.CurrentValue.ServiceAccountEmail)
 			{
 				Scopes = new[] { DirectoryService.Scope.AdminDirectoryGroupReadonly },
 				User = _directorySettingsMonitor.CurrentValue.AdminEmail
-			}.FromCertificate(cert));
+			});
+		//.FromCertificate(cert));
 
 		return new DirectoryService(
 			new BaseClientService.Initializer

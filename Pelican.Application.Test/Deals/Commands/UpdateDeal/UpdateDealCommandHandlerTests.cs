@@ -12,51 +12,84 @@ public class UpdateDealCommandHandlerTests
 {
 	private readonly UpdateDealCommandHandler _uut;
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+	private readonly Mock<IGenericRepository<Deal>> _dealRepositoryMock;
+	private readonly Mock<IGenericRepository<Supplier>> _supplierRepositoryMock;
 	private readonly Mock<IHubSpotDealService> _hubSpotDealServiceMock;
+	private readonly Mock<IHubSpotAuthorizationService> _hubSpotAuthorizationServiceMock;
 	private readonly CancellationToken _cancellationToken;
 
 	public UpdateDealCommandHandlerTests()
 	{
 		_unitOfWorkMock = new();
+		_dealRepositoryMock = new();
+		_supplierRepositoryMock = new();
 		_hubSpotDealServiceMock = new();
+		_hubSpotAuthorizationServiceMock = new();
 
 		_uut = new(
 			_unitOfWorkMock.Object,
-			_hubSpotDealServiceMock.Object);
+			_hubSpotDealServiceMock.Object,
+			_hubSpotAuthorizationServiceMock.Object);
 
 		_cancellationToken = new();
 	}
 
-	[Fact]
-	public async void Handle_DealNotFoundAccountManagerNotFound_ReturnsFailureErrorNullValue()
+	private void SetupUnitOfWork()
 	{
-		// Arrange
-		UpdateDealCommand command = new(
-			0,
-			"0",
-			"0",
-			"0");
+		_unitOfWorkMock
+			.Setup(
+				u => u.DealRepository)
+			.Returns(_dealRepositoryMock.Object);
 
 		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.DealRepository.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
+			.Setup(
+				u => u.SupplierRepository)
+			.Returns(_supplierRepositoryMock.Object);
+	}
+
+	[Theory]
+	[InlineData(0, "0", "0", "0")]
+	public async void Handle_DealNotFoundSupplierNotFound_ReturnsFailureErrorNullValue(
+		long objectId,
+		string userId,
+		string propertyName,
+		string propertyValue)
+	{
+		// Arrange
+		UpdateDealCommand command = new(objectId, userId, propertyName, propertyValue);
+
+		SetupUnitOfWork();
+
+		_unitOfWorkMock
+			.Setup(
+				u => u
+					.DealRepository
+					.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
 			.Returns(Enumerable.Empty<Deal>().AsQueryable());
 
 		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.AccountManagerRepository.FindByCondition(accountManager => accountManager.Id.ToString() == command.UserId.ToString()))
-			.Returns(Enumerable.Empty<AccountManager>().AsQueryable());
+			.Setup(
+				u => u
+					.SupplierRepository
+					.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId))
+			.Returns(Enumerable.Empty<Supplier>().AsQueryable());
 
 		// Act
 		Result result = await _uut.Handle(command, _cancellationToken);
 
 		// Assert
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.DealRepository.FindByCondition(
-				deal => deal.Id.ToString() == command.ObjectId.ToString()),
+			u => u
+				.DealRepository
+				.FindByCondition(
+					deal => deal.Id.ToString() == command.ObjectId.ToString()),
 			Times.Once());
 
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.AccountManagerRepository.FindByCondition(
-				accountManager => accountManager.Id.ToString() == command.UserId.ToString()),
+			u => u
+				.SupplierRepository
+				.FindByCondition(
+					supplier => supplier.HubSpotId.ToString() == userId),
 			Times.Once());
 
 		Assert.True(result.IsFailure);
@@ -64,29 +97,35 @@ public class UpdateDealCommandHandlerTests
 		Assert.Equal(Error.NullValue, result.Error);
 	}
 
-	[Fact]
-	public async void Handle_DealNotFoundFailsFetchingFromHubSpot_ReturnsFailure()
+	[Theory]
+	[InlineData(0, "0", "0", "0")]
+	public async void Handle_DealNotFoundFailsRefreshingToken_ReturnsFailure(
+		long objectId,
+		string userId,
+		string propertyName,
+		string propertyValue)
 	{
 		// Arrange
-		UpdateDealCommand command = new(
-			0,
-			"0",
-			"0",
-			"0");
+		UpdateDealCommand command = new(objectId, userId, propertyName, propertyValue);
 
-		AccountManager accountManager = new(Guid.NewGuid());
+		Supplier supplier = new(Guid.NewGuid())
+		{
+			RefreshToken = "token",
+		};
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork.DealRepository.FindByCondition(deal => deal.Id.ToString() == command.ObjectId.ToString()))
 			.Returns(Enumerable.Empty<Deal>().AsQueryable());
 
 		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.AccountManagerRepository.FindByCondition(accountManager => accountManager.Id.ToString() == command.UserId.ToString()))
-			.Returns(new List<AccountManager> { accountManager }.AsQueryable());
+			.Setup(unitOfWork => unitOfWork
+				.SupplierRepository
+				.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId))
+			.Returns(new List<Supplier> { supplier }.AsQueryable());
 
-		_hubSpotDealServiceMock
-			.Setup(service => service.GetDealByIdAsync("", command.ObjectId, _cancellationToken))
-			.ReturnsAsync(Result.Failure<Deal>(new Error("0", "error")));
+		_hubSpotAuthorizationServiceMock
+			.Setup(service => service.RefreshAccessTokenAsync(It.IsAny<string>(), _cancellationToken))
+			.ReturnsAsync(Result.Failure<string>(new Error("0", "error")));
 
 		// Act
 		Result result = await _uut.Handle(command, _cancellationToken);
@@ -98,12 +137,12 @@ public class UpdateDealCommandHandlerTests
 			Times.Once());
 
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.AccountManagerRepository.FindByCondition(
-				accountManager => accountManager.Id.ToString() == command.UserId.ToString()),
+			unitOfWork => unitOfWork.SupplierRepository.FindByCondition(
+				supplier => supplier.HubSpotId.ToString() == userId),
 			Times.Once());
 
-		_hubSpotDealServiceMock.Verify(
-			service => service.GetDealByIdAsync("", command.ObjectId, _cancellationToken),
+		_hubSpotAuthorizationServiceMock.Verify(
+			service => service.RefreshAccessTokenAsync(It.IsAny<string>(), _cancellationToken),
 			Times.Once());
 
 		Assert.True(result.IsFailure);
@@ -112,17 +151,21 @@ public class UpdateDealCommandHandlerTests
 		Assert.Equal("error", result.Error.Message);
 	}
 
-	[Fact]
-	public async void Handle_DealNotFoundSuccessFetchingFromHubSpot_ReturnsFailure()
+	[Theory]
+	[InlineData(0, "0", "0", "0")]
+	public async void Handle_DealNotFoundSuccessFetchingFromHubSpot_ReturnsFailure(
+		long objectId,
+		string userId,
+		string propertyName,
+		string propertyValue)
 	{
 		// Arrange
-		UpdateDealCommand command = new(
-			0,
-			"0",
-			"0",
-			"0");
+		UpdateDealCommand command = new(objectId, userId, propertyName, propertyValue);
 
-		AccountManager accountManager = new(Guid.NewGuid());
+		Supplier supplier = new(Guid.NewGuid())
+		{
+			RefreshToken = "token",
+		};
 
 		Deal deal = new(Guid.NewGuid());
 
@@ -131,11 +174,17 @@ public class UpdateDealCommandHandlerTests
 			.Returns(Enumerable.Empty<Deal>().AsQueryable());
 
 		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.AccountManagerRepository.FindByCondition(accountManager => accountManager.Id.ToString() == command.UserId.ToString()))
-			.Returns(new List<AccountManager> { accountManager }.AsQueryable());
+			.Setup(unitOfWork => unitOfWork
+				.SupplierRepository
+				.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId))
+			.Returns(new List<Supplier> { supplier }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(service => service.RefreshAccessTokenAsync(It.IsAny<string>(), _cancellationToken))
+			.ReturnsAsync(Result.Success("token"));
 
 		_hubSpotDealServiceMock
-			.Setup(service => service.GetDealByIdAsync("", command.ObjectId, _cancellationToken))
+			.Setup(service => service.GetDealByIdAsync("token", command.ObjectId, _cancellationToken))
 			.ReturnsAsync(Result.Success(deal));
 
 		// Act
@@ -148,27 +197,28 @@ public class UpdateDealCommandHandlerTests
 			Times.Once());
 
 		_unitOfWorkMock.Verify(
-			unitOfWork => unitOfWork.AccountManagerRepository.FindByCondition(
-				accountManager => accountManager.Id.ToString() == command.UserId.ToString()),
+			unitOfWork => unitOfWork.SupplierRepository.FindByCondition(
+				supplier => supplier.HubSpotId.ToString() == userId),
 			Times.Once());
 
 		_hubSpotDealServiceMock.Verify(
-			service => service.GetDealByIdAsync("", command.ObjectId, _cancellationToken),
+			service => service.GetDealByIdAsync("token", command.ObjectId, _cancellationToken),
 			Times.Once());
 
 		Assert.True(result.IsSuccess);
 		Assert.Equal(Error.None, result.Error);
 	}
 
-	[Fact]
-	public async void Handle_DealFoundNoUpdates_ReturnsFailure()
+	[Theory]
+	[InlineData(0, "0", "0", "0")]
+	public async void Handle_DealFoundNoUpdates_ReturnsFailure(
+		long objectId,
+		string userId,
+		string propertyName,
+		string propertyValue)
 	{
 		// Arrange
-		UpdateDealCommand command = new(
-			0,
-			"0",
-			"0",
-			"0");
+		UpdateDealCommand command = new(objectId, userId, propertyName, propertyValue);
 
 		Deal deal = new(Guid.NewGuid());
 
@@ -198,15 +248,16 @@ public class UpdateDealCommandHandlerTests
 		Assert.Equal(Error.None, result.Error);
 	}
 
-	[Fact]
-	public async void Handle_DealFoundCloseDateUpdated_ReturnsFailure()
+	[Theory]
+	[InlineData(0, "0", "closedate", "1664958141535")]
+	public async void Handle_DealFoundCloseDateUpdated_ReturnsFailure(
+		long objectId,
+		string userId,
+		string propertyName,
+		string propertyValue)
 	{
 		// Arrange
-		UpdateDealCommand command = new(
-			0,
-			"0",
-			"closedate",
-			"1664958141535");
+		UpdateDealCommand command = new(objectId, userId, propertyName, propertyValue);
 
 		Deal deal = new(Guid.NewGuid());
 

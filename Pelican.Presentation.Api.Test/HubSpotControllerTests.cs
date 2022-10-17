@@ -40,7 +40,7 @@ public class HubSpotControllerTests
 		// Assert
 		_senderMock.Verify(s => s.Send(It.IsAny<NewInstallationCommand>(), _cancellationToken));
 
-		Assert.IsType<OkResult>(result);
+		Assert.IsType<RedirectResult>(result);
 	}
 
 	[Theory]

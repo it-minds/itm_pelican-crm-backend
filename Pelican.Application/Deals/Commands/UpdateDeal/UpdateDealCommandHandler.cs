@@ -10,12 +10,15 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IHubSpotDealService _hubSpotDealService;
+	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
 	public UpdateDealCommandHandler(
 		IUnitOfWork unitOfWork,
-		IHubSpotDealService hubSpotDealService)
+		IHubSpotDealService hubSpotDealService,
+		IHubSpotAuthorizationService hubSpotAuthorizationService)
 	{
 		_unitOfWork = unitOfWork;
 		_hubSpotDealService = hubSpotDealService;
+		_hubSpotAuthorizationService = hubSpotAuthorizationService;
 	}
 	public async Task<Result> Handle(UpdateDealCommand command, CancellationToken cancellationToken)
 	{
@@ -71,9 +74,15 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 			return Result.Failure<Deal>(Error.NullValue);
 		}
 
-		string token = supplier.RefreshToken;
+		Result<string> accessTokenResult = await _hubSpotAuthorizationService
+			.RefreshAccessTokenAsync(supplier.RefreshToken, cancellationToken);
 
-		Result<Deal> result = await _hubSpotDealService.GetDealByIdAsync(token, objectId, cancellationToken);
+		if (accessTokenResult.IsFailure)
+		{
+			return Result.Failure<Deal>(accessTokenResult.Error);
+		}
+
+		Result<Deal> result = await _hubSpotDealService.GetDealByIdAsync(accessTokenResult.Value, objectId, cancellationToken);
 
 		if (result.IsFailure)
 		{

@@ -3,6 +3,7 @@ using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Application.HubSpot.Commands.NewInstallation;
 using Pelican.Application.HubSpot.Dtos;
+using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Xunit;
 
@@ -11,52 +12,39 @@ namespace Pelican.Application.Test.HubSpot.Commands.NewInstallation;
 public class NewInstallationCommandHandlerTests
 {
 	private readonly NewInstallationCommandHandler _uut;
-	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-	private readonly Mock<IHubSpotAuthorizationService> _hubSpotAuthorizationServiceMock;
 	private readonly Mock<IHubSpotAccountManagerService> _hubSpotAccountManagerServiceMock;
+	private readonly Mock<IHubSpotAuthorizationService> _hubSpotAuthorizationServiceMock;
+	private readonly Mock<IHubSpotContactService> _hubSpotContactServiceMock;
+	private readonly Mock<IHubSpotClientService> _hubSpotClientServiceMock;
+	private readonly Mock<IHubSpotDealService> _hubSpotDealServiceMock;
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+	private readonly Mock<IGenericRepository<Supplier>> _supplierRepositoryMock;
 	private readonly CancellationToken cancellationToken;
 
 	public NewInstallationCommandHandlerTests()
 	{
-		//_unitOfWorkMock = new Mock<IUnitOfWork>();
-		//_hubSpotAuthorizationServiceMock = new Mock<IHubSpotAuthorizationService>();
-		//_hubSpotAccountManagerServiceMock = new Mock<IHubSpotAccountManagerService>();
-		//_uut = new NewInstallationCommandHandler(
-		//	_hubSpotAuthorizationServiceMock.Object,
-		//	_hubSpotAccountManagerServiceMock.Object,
-		//	_unitOfWorkMock.Object);
-		//cancellationToken = new();
+		_hubSpotAccountManagerServiceMock = new();
+		_hubSpotAuthorizationServiceMock = new();
+		_hubSpotContactServiceMock = new();
+		_hubSpotClientServiceMock = new();
+		_hubSpotDealServiceMock = new();
+		_unitOfWorkMock = new();
+		_supplierRepositoryMock = new();
+		cancellationToken = new();
+
+		_uut = new NewInstallationCommandHandler(
+			_hubSpotAccountManagerServiceMock.Object,
+			_hubSpotAuthorizationServiceMock.Object,
+			_hubSpotContactServiceMock.Object,
+			_hubSpotClientServiceMock.Object,
+			_hubSpotDealServiceMock.Object,
+			_unitOfWorkMock.Object);
 	}
 
-	[Theory]
-	[InlineData("code")]
-	public async void Handle_HubSpotServiceReturnsSuccess_ReturnsResultIsSuccessTrueWithErrorNone(
-		string code)
-	{
-		// Arrange
-		var command = new NewInstallationCommand(code);
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(h => h.AuthorizeUserAsync(command.Code, cancellationToken))
-			.ReturnsAsync(Result.Success(
-				new RefreshAccessTokens
-				{
-					RefreshToken = "token",
-					AccessToken = "token"
-				}));
-
-		// Act 
-		var result = await _uut.Handle(command, cancellationToken);
-
-		// Assert
-		_hubSpotAuthorizationServiceMock.Verify(h => h.AuthorizeUserAsync(command.Code, cancellationToken));
-		Assert.True(result.IsSuccess);
-		Assert.Equal(Error.None, result.Error);
-	}
 
 	[Theory]
 	[InlineData("code", "0", "fail")]
-	public async void Handle_HubSpotServiceReturnsFailure_ReturnsResultIsFailureTrueWithError(
+	public async void Handle_HubSpotServiceAuthorizeUserAsyncReturnsFailure_ReturnsResultIsFailureTrueWithError(
 		string code,
 		string errorCode,
 		string errorMessage)
@@ -65,16 +53,136 @@ public class NewInstallationCommandHandlerTests
 		var command = new NewInstallationCommand(code);
 
 		_hubSpotAuthorizationServiceMock
-			.Setup(h => h.AuthorizeUserAsync(command.Code, cancellationToken))
-			.ReturnsAsync(Result.Failure<RefreshAccessTokens>(new Error(errorCode, errorMessage)));
+			.Setup(
+				h => h.AuthorizeUserAsync(command.Code, cancellationToken))
+			.ReturnsAsync(
+				Result.Failure<RefreshAccessTokens>(
+					new Error(
+						errorCode,
+						errorMessage)));
 
 		// Act 
 		var result = await _uut.Handle(command, cancellationToken);
 
 		// Assert
-		_hubSpotAuthorizationServiceMock.Verify(h => h.AuthorizeUserAsync(command.Code, cancellationToken));
+		_hubSpotAuthorizationServiceMock.Verify(
+			h => h.AuthorizeUserAsync(command.Code, cancellationToken),
+			Times.Once);
+
+		_hubSpotAuthorizationServiceMock.Verify(
+			h => h.DecodeAccessTokenAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+			Times.Never);
+
+		_hubSpotAccountManagerServiceMock.Verify(
+			h => h.GetAccountManagersAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+			Times.Never);
+
+		_hubSpotContactServiceMock.Verify(
+			h => h.GetContactsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+			Times.Never);
+
+		_hubSpotClientServiceMock.Verify(
+			h => h.GetClientsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+			Times.Never);
+
+		_hubSpotDealServiceMock.Verify(
+			h => h.GetDealsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+			Times.Never);
+
 		Assert.True(result.IsFailure);
+
 		Assert.Equal(errorCode, result.Error.Code);
+
 		Assert.Equal(errorMessage, result.Error.Message);
+	}
+
+	[Theory]
+	[InlineData("code", "token1", "token2")]
+	public async void Handle_HubSpotServiceReturnsSuccess_ReturnsResultIsSuccessTrueWithErrorNone(
+		string code,
+		string token1,
+		string token2)
+	{
+		// Arrange
+		var command = new NewInstallationCommand(code);
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(
+				h => h.AuthorizeUserAsync(command.Code, cancellationToken))
+			.ReturnsAsync(
+				Result.Success(
+					new RefreshAccessTokens
+					{
+						RefreshToken = token1,
+						AccessToken = token2
+					}));
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(
+				h => h.DecodeAccessTokenAsync(token2, cancellationToken))
+			.ReturnsAsync(
+				Result.Success(
+					new Supplier()));
+
+		_hubSpotAccountManagerServiceMock
+			.Setup(
+				h => h.GetAccountManagersAsync(token2, cancellationToken))
+			.ReturnsAsync(
+				Result.Success(
+					new List<AccountManager>().AsEnumerable()));
+
+		_hubSpotContactServiceMock
+			.Setup(
+				h => h.GetContactsAsync(token2, cancellationToken))
+			.ReturnsAsync(
+				Result.Success(
+					new List<Contact>().AsEnumerable()));
+
+		_hubSpotClientServiceMock
+			.Setup(
+				h => h.GetClientsAsync(token2, cancellationToken))
+			.ReturnsAsync(
+				Result.Success(
+					new List<Client>().AsEnumerable()));
+
+		_hubSpotDealServiceMock
+			.Setup(
+				h => h.GetDealsAsync(token2, cancellationToken))
+			.ReturnsAsync(
+				Result.Success(
+					new List<Deal>().AsEnumerable()));
+
+		_unitOfWorkMock
+			.Setup(
+				u => u.SupplierRepository)
+			.Returns(_supplierRepositoryMock.Object);
+
+		// Act 
+		var result = await _uut.Handle(command, cancellationToken);
+
+		// Assert
+		_hubSpotAuthorizationServiceMock.Verify(
+			h => h.AuthorizeUserAsync(command.Code, cancellationToken),
+			Times.Once);
+
+		_hubSpotAuthorizationServiceMock.Verify(
+			h => h.DecodeAccessTokenAsync(token2, cancellationToken),
+			Times.Once);
+
+		_hubSpotAccountManagerServiceMock.Verify(
+			h => h.GetAccountManagersAsync(token2, cancellationToken),
+			Times.Once);
+
+		_hubSpotContactServiceMock.Verify(
+			h => h.GetContactsAsync(token2, cancellationToken),
+			Times.Once);
+
+		_hubSpotClientServiceMock.Verify(
+			h => h.GetClientsAsync(token2, cancellationToken),
+			Times.Once);
+
+		_hubSpotDealServiceMock.Verify(
+			h => h.GetDealsAsync(token2, cancellationToken),
+			Times.Once);
 	}
 }

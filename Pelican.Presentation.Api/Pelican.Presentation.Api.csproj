@@ -23,7 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Pelican.Application\Pelican.Application.csproj" />
     <ProjectReference Include="..\Pelican.Infrastructure.Azure\Pelican.Infrastructure.Azure.csproj" />
-    <ProjectReference Include="..\Pelican.Infrastructure.Google\Pelican.Infrastructure.Google.csproj" />
+    <ProjectReference Include="..\Pelican.Infrastructure.Google\Pelican.Infrastructure.Authentication.csproj" />
     <ProjectReference Include="..\Pelican.Infrastructure.Persistence\Pelican.Infrastructure.Persistence.csproj" />
     <ProjectReference Include="..\Pelican.Presentation.GraphQL\Pelican.Presentation.GraphQL.csproj" />
   </ItemGroup>

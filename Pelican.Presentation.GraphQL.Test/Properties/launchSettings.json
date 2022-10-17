@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Pelican.Presentation.GraphQL.Test": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:62947;http://localhost:62948"
+    }
+  }
+}

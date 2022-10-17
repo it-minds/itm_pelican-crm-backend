@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pelican.Infrastructure.Google\Pelican.Infrastructure.Google.csproj" />
+    <ProjectReference Include="..\Pelican.Infrastructure.Google\Pelican.Infrastructure.Authentication.csproj" />
   </ItemGroup>
 
 </Project>

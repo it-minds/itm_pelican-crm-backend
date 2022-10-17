@@ -1,4 +1,4 @@
-﻿namespace Pelican.Infrastructure.Google.Authentication;
+﻿namespace Pelican.Infrastructure.Authentication.Authentication;
 public static class AccessPoliciesStrings
 {
 	public const string Own = "OWN";

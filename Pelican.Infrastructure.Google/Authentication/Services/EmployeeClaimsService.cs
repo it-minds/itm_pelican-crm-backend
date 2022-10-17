@@ -2,12 +2,11 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Pelican.Domain.Entities;
-using Pelican.Infrastructure.Google.Authentication.Interfaces;
-using Pelican.Infrastructure.Google.Authentication.Models;
+using Pelican.Infrastructure.Authentication.Authentication.Models;
 using Pelican.Infrastructure.Persistence;
 
 
-namespace Pelican.Infrastructure.Google.Authentication.Services;
+namespace Pelican.Infrastructure.Authentication.Authentication.Services;
 
 public class EmployeeClaimsService : IEmployeeClaimsService
 {

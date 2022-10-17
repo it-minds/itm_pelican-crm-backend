@@ -1,6 +1,6 @@
-﻿using Pelican.Infrastructure.Google.Authentication.Models;
+﻿using Pelican.Infrastructure.Authentication.Authentication.Models;
 
-namespace Pelican.Infrastructure.Google.Authentication.Interfaces;
+namespace Pelican.Infrastructure.Authentication.Authentication;
 
 public interface IEmployeeClaimsService
 {

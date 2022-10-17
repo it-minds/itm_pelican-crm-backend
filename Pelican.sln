@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Application", "Peli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Persistence", "Pelican.Infrastructure.Persistence\Pelican.Infrastructure.Persistence.csproj", "{8B787CBC-755C-4BCB-865C-6DA50E75C228}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Google", "Pelican.Infrastructure.Google\Pelican.Infrastructure.Google.csproj", "{929220AD-AF44-4E32-8F5A-3ECC97D21528}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Authentication", "Pelican.Infrastructure.Google\Pelican.Infrastructure.Authentication.csproj", "{929220AD-AF44-4E32-8F5A-3ECC97D21528}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.HubSpot", "Pelican.Infrastructure.HubSpot\Pelican.Infrastructure.HubSpot.csproj", "{D1A91F65-9625-44CA-A1C0-99B3FFBD6266}"
 EndProject
@@ -34,9 +34,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Google.Test", "Pelican.Infrastructure.Google.Test\Pelican.Infrastructure.Google.Test.csproj", "{2B5FA481-4D92-4010-BB71-534D9FE17BE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Auth.Test", "Pelican.Infrastructure.Google.Test\Pelican.Infrastructure.Auth.Test.csproj", "{2B5FA481-4D92-4010-BB71-534D9FE17BE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Infrastructure.Azure", "Pelican.Infrastructure.Azure\Pelican.Infrastructure.Azure.csproj", "{FFDE9AFD-35EC-4F67-A2A1-B84A0AB62E6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Azure", "Pelican.Infrastructure.Azure\Pelican.Infrastructure.Azure.csproj", "{FFDE9AFD-35EC-4F67-A2A1-B84A0AB62E6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

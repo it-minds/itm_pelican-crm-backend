@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Pelican.Domain.Entities;
-using Pelican.Infrastructure.Google.Authentication.Claims;
-using Pelican.Infrastructure.Google.Authentication.Requirements;
+using Pelican.Infrastructure.Authentication.Authentication.Claims;
+using Pelican.Infrastructure.Authentication.Authentication.Requirements;
 
-namespace Pelican.Infrastructure.Google.Authentication.Handlers;
+namespace Pelican.Infrastructure.Authentication.Authentication.Handlers;
 
 public class IsDirectorAuthorizationHandler : AuthorizationHandler<IsDirectorRequirement, AccountManager>
 {

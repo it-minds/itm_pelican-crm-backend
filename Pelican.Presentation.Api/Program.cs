@@ -1,5 +1,5 @@
 ﻿using Pelican.Application;
-using Pelican.Infrastructure.Google;
+using Pelican.Infrastructure.Authentication;
 using Pelican.Infrastructure.Persistence;
 using Pelican.Presentation.GraphQL;
 
@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddPersistince(builder.Configuration);
 builder.Services.AddApplication();
 //builder.Services.AddAzure();
-builder.Services.AddGoogleAuth(builder.Configuration);
+builder.Services.AddAuth(builder.Configuration);
 
 
 
@@ -37,5 +37,7 @@ app.UseEndpoints(endpoints =>
 
 
 app.Run();
+
+
 
 

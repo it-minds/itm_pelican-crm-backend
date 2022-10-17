@@ -1,4 +1,4 @@
-﻿namespace Pelican.Infrastructure.Google.Settings;
+﻿namespace Pelican.Infrastructure.Authentication.Settings;
 public class DirectorySettings
 {
 	public string ServiceAccountEmail { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace Pelican.Infrastructure.Google.Authentication.Models;
+﻿namespace Pelican.Infrastructure.Authentication.Authentication.Models;
 
 public struct EmployeeClaimData
 {

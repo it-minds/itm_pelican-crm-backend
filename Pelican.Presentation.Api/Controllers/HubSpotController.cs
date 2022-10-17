@@ -31,7 +31,7 @@ public sealed class HubSpotController : ApiController
 		Result result = await Sender.Send(newInstallation, cancellationToken);
 
 		return result.IsSuccess
-			? Ok()
+			? Redirect("https://it-minds.dk/")
 			: BadRequest(result.Error);
 	}
 

@@ -10,9 +10,14 @@ internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 	{
 		builder.ToTable("Deals");
 
-
 		builder.Property(p => p.DealStatus)
 			.HasMaxLength(StringLengths.DealStatus);
+
+		builder.Property(p => p.CurrencyCode)
+			.HasMaxLength(StringLengths.CurrencyCode);
+
+		builder.Property(p => p.HubSpotId)
+			.HasMaxLength(StringLengths.Id);
 
 		builder.Property(p => p.EndDate)
 			.HasColumnType("Date")

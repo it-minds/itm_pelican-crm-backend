@@ -10,6 +10,7 @@ public interface IUnitOfWork
 	public IGenericRepository<Deal> DealRepository { get; }
 	public IGenericRepository<Location> LocationRepository { get; }
 	public IGenericRepository<Supplier> SupplierRepository { get; }
+	public IGenericRepository<ClientContact> ClientContactRepository { get; }
 	void Save();
 	Task SaveAsync(CancellationToken cancellationToken);
 }

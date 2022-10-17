@@ -1,8 +1,14 @@
 ﻿using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Options;
 using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Application.HubSpot.Dtos;
+using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
-using Pelican.Infrastructure.HubSpot.Contracts.Responses;
+using Pelican.Infrastructure.HubSpot.Abstractions;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
+using Pelican.Infrastructure.HubSpot.Extensions;
+using Pelican.Infrastructure.HubSpot.Mapping;
+using Pelican.Infrastructure.HubSpot.Settings;
 using RestSharp;
 
 [assembly: InternalsVisibleTo("Pelican.Infrastructure.HubSpot.Test")]
@@ -14,35 +20,31 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 	public HubSpotAuthorizationService(
 		IOptions<HubSpotSettings> hubSpotSettings)
 		: base(hubSpotSettings)
-	{
-	}
+	{ }
 
-	public async Task<Result<Tuple<string, string>>> AuthorizeUserAsync(
+	public async Task<Result<RefreshAccessTokens>> AuthorizeUserAsync(
 		string code,
 		CancellationToken cancellationToken)
 	{
-
 		RestRequest request = new RestRequest("oauth/v1/token")
-			.AddHeader("Content-Type", "application/x-www-form-urlencoded")
-			.AddHeader("charset", "utf-8")
+			.AddAuthorizationHeaders()
+			.AddCommonAuthorizationQueryParams(_hubSpotSettings)
 			.AddQueryParameter("code", code, false)
-			.AddQueryParameter("client_id", _hubSpotSettings.App!.ClientId, false)
-			.AddQueryParameter("redirect_uri", _hubSpotSettings.RedirectUrl, false)
-			.AddQueryParameter("client_secret", _hubSpotSettings.App.ClientSecret, false)
 			.AddQueryParameter("grant_type", "authorization_code", false);
 
-		RestResponse<GetAccessTokenResponse> response = await _client.ExecutePostAsync<GetAccessTokenResponse>(request, cancellationToken);
+		RestResponse<GetAccessTokenResponse> response = await _client
+			.ExecutePostAsync<GetAccessTokenResponse>(request, cancellationToken);
 
-
-		return response.IsSuccessful && response.Data is not null
-			? Result.Success(new Tuple<string, string>(response.Data.RefreshToken, response.Data.AccessToken))
-			: Result.Failure<Tuple<string, string>>(
+		return response.IsSuccessful
+			&& response.Data is not null
+			? Result.Success(response.Data.ToRefreshAccessTokens())
+			: Result.Failure<RefreshAccessTokens>(
 				new Error(
 					response.StatusCode.ToString(),
 					response.ErrorMessage!));
 	}
 
-	public async Task<Result<long>> DecodeAccessTokenAsync(
+	public async Task<Result<Supplier>> DecodeAccessTokenAsync(
 		string accessToken,
 		CancellationToken cancellationToken)
 	{
@@ -51,12 +53,13 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 		RestResponse<AccessTokenResponse> response =
 			await _client.ExecuteGetAsync<AccessTokenResponse>(request, cancellationToken);
 
-		return response.IsSuccessful && response.Data is not null
-			? Result.Success(response.Data.UserId)
-			: Result.Failure<long>(
+		return response.IsSuccessful
+			&& response.Data is not null
+			? Result.Success(response.Data.ToSupplier())
+			: Result.Failure<Supplier>(
 				new Error(
 					response.StatusCode.ToString(),
-					response.ErrorMessage!));
+					response.ErrorException?.Message!));
 	}
 
 	public async Task<Result<string>> RefreshAccessTokenAsync(
@@ -64,25 +67,22 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 		CancellationToken cancellationToken)
 	{
 		RestRequest request = new RestRequest("oauth/v1/token")
-			.AddHeader("Content-Type", "application/x-www-form-urlencoded")
-			.AddHeader("charset", "utf-8")
-			.AddQueryParameter("client_id", _hubSpotSettings.App!.ClientId, false)
-			.AddQueryParameter("redirect_uri", _hubSpotSettings.RedirectUrl, false)
-			.AddQueryParameter("client_secret", _hubSpotSettings.App.ClientSecret, false)
+			.AddAuthorizationHeaders()
+			.AddCommonAuthorizationQueryParams(_hubSpotSettings)
 			.AddQueryParameter("grant_type", "refresh_token", false)
-			.AddQueryParameter("refresh_token", refreshToken);
+			.AddQueryParameter("refresh_token", refreshToken, false);
 
-		RestResponse<RefreshAccessTokenResponse> response =
-			await _client.ExecutePostAsync<RefreshAccessTokenResponse>(
+		RestResponse<RefreshAccessTokenResponse> response = await _client
+			.ExecutePostAsync<RefreshAccessTokenResponse>(
 				request,
 				cancellationToken);
 
 		return response.IsSuccessful
-			&& response.Data?.AccessToken is not null
+			&& response.Data is not null
 			? Result.Success(response.Data.AccessToken)
 			: Result.Failure<string>(
 				new Error(
 					response.StatusCode.ToString(),
-					response.ErrorMessage!));
+					response.ErrorException?.Message!));
 	}
 }

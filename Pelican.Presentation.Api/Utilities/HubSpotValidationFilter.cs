@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
-using Pelican.Infrastructure.HubSpot;
+using Pelican.Infrastructure.HubSpot.Settings;
 
 namespace Pelican.Presentation.Api.Utilities;
 

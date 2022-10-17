@@ -6,4 +6,5 @@ namespace Pelican.Application.Abstractions.HubSpot;
 public interface IHubSpotContactService
 {
 	Task<Result<Contact>> GetContactByIdAsync(string refreshToken, long id, CancellationToken cancellationToken);
+	Task<Result<IEnumerable<Contact>>> GetContactsAsync(string accessToken, CancellationToken cancellationToken);
 }

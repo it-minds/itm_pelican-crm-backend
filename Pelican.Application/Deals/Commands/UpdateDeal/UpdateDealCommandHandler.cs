@@ -66,7 +66,7 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 				.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId)
 				.FirstOrDefault();
 
-		if (supplier is null)
+		if (supplier is null || supplier.RefreshToken is null or "")
 		{
 			return Result.Failure<Deal>(Error.NullValue);
 		}
@@ -80,9 +80,9 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 			return Result.Failure<Deal>(result.Error);
 		}
 
-		_unitOfWork
+		await _unitOfWork
 			.DealRepository
-			.Create(result.Value);
+			.CreateAsync(result.Value, cancellationToken);
 
 		return Result.Success();
 	}

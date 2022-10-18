@@ -30,6 +30,7 @@ public class PelicanContext : DbContext, IPelicanContext
 	{
 		base.OnModelCreating(modelBuilder);
 		modelBuilder.ApplyConfigurationsFromAssembly(typeof(DbContext).Assembly);
+
 	}
 
 

@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pelican.Application;
+using Pelican.Application.Common.Interfaces;
 using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Repositories;
@@ -19,6 +21,8 @@ public static class DependencyInjection
 			o => o.UseSqlServer(configuration.GetConnectionString("myLocalDb"),
 			b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)));
 		services.AddTransient<IUnitOfWork>(_ => new UnitOfWork(_.GetRequiredService<IDbContextFactory<PelicanContext>>().CreateDbContext()));
+		services.AddTransient<IPelicanBogusFaker, PelicanBogusFaker>();
+		services.AddTransient<DevelopmentSeeder>();
 		return services;
 	}
 	public static IRequestExecutorBuilder AddDataLoaders(this IRequestExecutorBuilder builder)

@@ -1,6 +1,7 @@
 ﻿using Pelican.Application;
 using Pelican.Infrastructure.Authentication;
 using Pelican.Infrastructure.Persistence;
+
 using Pelican.Presentation.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +36,7 @@ app.UseEndpoints(endpoints =>
 });
 
 
+app.Services.GetRequiredService<DevelopmentSeeder>().SeedEntireDb(10);
 
 app.Run();
 

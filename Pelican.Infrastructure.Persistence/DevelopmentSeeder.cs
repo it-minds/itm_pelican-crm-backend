@@ -4,71 +4,88 @@ using Pelican.Domain.Repositories;
 using Location = Pelican.Domain.Entities.Location;
 
 namespace Pelican.Infrastructure.Persistence;
-public static class DevelopmentSeeder
+public class DevelopmentSeeder
 {
 	//This method is only partially created it should call specific methods to seed each table in the database.
-	public static void SeedEntireDb(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, int count)
+	private IUnitOfWork _unitOfWork;
+	private IPelicanBogusFaker _faker;
+	public DevelopmentSeeder(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker)
 	{
-		var locations = SeedLocations(unitOfWork, pelicanFaker, count);
-		var suppliers = SeedSuppliers(unitOfWork, pelicanFaker, locations, count);
-		var accountManagers = SeedAccountManagers(unitOfWork, pelicanFaker, suppliers, count);
-		var clients = SeedClients(unitOfWork, pelicanFaker, locations, count);
-		var deals = SeedDeals(unitOfWork, pelicanFaker, clients, count);
-		var contact = SeedContacts(unitOfWork, pelicanFaker, count);
+		_unitOfWork = unitOfWork;
+		_faker = pelicanFaker;
 	}
-	public static IQueryable<Location> SeedLocations(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, int count)
+	public async void SeedEntireDb(int count)
 	{
-		unitOfWork
-			.LocationRepository
-			.CreateRange(pelicanFaker.LocationFaker(count));
-		unitOfWork.SaveAsync();
-		var locationList = unitOfWork.LocationRepository.FindAll();
-		return locationList;
+		var locations = SeedLocations(_unitOfWork, _faker, count);
+		var suppliers = SeedSuppliers(_unitOfWork, _faker, locations, count);
+		var accountManagers = SeedAccountManagers(_unitOfWork, _faker, suppliers, count);
+		var clients = SeedClients(_unitOfWork, _faker, locations, count);
+		var deals = SeedDeals(_unitOfWork, _faker, clients, count);
+		var contact = SeedContacts(_unitOfWork, _faker, count);
+		await _unitOfWork.SaveAsync();
+	}
+	public IQueryable<Location> SeedLocations(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, int count)
+	{
+		var variable = unitOfWork.LocationRepository.FindAll();
+		if (variable.Any())
+			return variable;
+		var result = pelicanFaker.LocationFaker(count);
+		unitOfWork.LocationRepository
+			.CreateRange(result);
+		return result.AsQueryable();
 	}
 	//This Method calls on the PelicanBogusFaker to give it a list of 5 Supplier entities and saves these to the database.
-	public static IQueryable<Supplier> SeedSuppliers(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Location> locations, int count)
+	public IQueryable<Supplier> SeedSuppliers(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Location> locations, int count)
 	{
-		unitOfWork
-			.SupplierRepository
-			.CreateRange(pelicanFaker.SupplierFaker(count, locations));
-		unitOfWork.SaveAsync();
-		var supplierList = unitOfWork.SupplierRepository.FindAll();
-		return supplierList;
+		var variable = unitOfWork.SupplierRepository.FindAll();
+		if (variable.Any())
+			return variable;
+		var result = pelicanFaker.SupplierFaker(count, locations);
+		unitOfWork.SupplierRepository
+			.CreateRange(result);
+		return result.AsQueryable();
 	}
-	public static IQueryable<AccountManager> SeedAccountManagers(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Supplier> supplier, int count)
+	public IQueryable<AccountManager> SeedAccountManagers(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Supplier> supplier, int count)
 	{
-		unitOfWork
-			.AccountManagerRepository
-			.CreateRange(pelicanFaker.AccountManagerFaker(count, supplier));
-		unitOfWork.SaveAsync();
-		var accountManagerList = unitOfWork.AccountManagerRepository.FindAll();
-		return accountManagerList;
+		var variable = unitOfWork.AccountManagerRepository.FindAll();
+		if (variable.Any())
+			return variable;
+		var result = pelicanFaker.AccountManagerFaker(count, supplier);
+		unitOfWork.AccountManagerRepository
+			.CreateRange(result);
+		return result.AsQueryable();
 	}
-	public static IQueryable<Client> SeedClients(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Location> location, int count)
+	public IQueryable<Client> SeedClients(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Location> location, int count)
 	{
+		var variable = unitOfWork.ClientRepository.FindAll();
+		if (variable.Any())
+			return variable;
+		var result = pelicanFaker.ClientFaker(count, location);
 		unitOfWork.ClientRepository
-			.CreateRange(pelicanFaker
-			.ClientFaker(count, location));
-		unitOfWork.SaveAsync();
-		var clientList = unitOfWork.ClientRepository.FindAll();
-		return clientList;
+			.CreateRange(result);
+		return result.AsQueryable();
 	}
-	public static IQueryable<Deal> SeedDeals(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Client> client, int count)
+	public IQueryable<Deal> SeedDeals(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Client> client, int count)
 	{
+		var variable = unitOfWork.DealRepository.FindAll();
+		if (variable.Any())
+			return variable;
+		var result = pelicanFaker.DealFaker(count, client);
 		unitOfWork.DealRepository
-			.CreateRange(pelicanFaker
-			.DealFaker(count, client));
-		unitOfWork.SaveAsync();
-		var dealList = unitOfWork.DealRepository.FindAll();
-		return dealList;
+			.CreateRange(result);
+		return result.AsQueryable();
+
+
 	}
-	public static IQueryable<Contact> SeedContacts(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, int count)
+	public IQueryable<Contact> SeedContacts(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, int count)
 	{
+		var variable = unitOfWork.ContactRepository.FindAll();
+		if (variable.Any())
+			return variable;
+		var result = pelicanFaker.ContactFaker(count);
 		unitOfWork
 			.ContactRepository
-			.CreateRange(pelicanFaker.ContactFaker(count));
-		unitOfWork.SaveAsync();
-		var contactList = unitOfWork.ContactRepository.FindAll();
-		return contactList;
+			.CreateRange(result);
+		return result.AsQueryable();
 	}
 }

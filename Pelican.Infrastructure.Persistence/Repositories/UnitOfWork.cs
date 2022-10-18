@@ -17,7 +17,6 @@ public class UnitOfWork : IUnitOfWork
 	private IGenericRepository<ClientContact> clientContactRepository;
 	private IGenericRepository<DealContact> dealContactRepository;
 
-
 	public IGenericRepository<AccountManagerDeal> AccountManagerDealRepository
 	{
 		get

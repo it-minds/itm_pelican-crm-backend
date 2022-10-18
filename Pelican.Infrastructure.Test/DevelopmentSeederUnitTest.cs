@@ -28,6 +28,7 @@ public class DevelopmentSeederUnitTest
 		var fakeDealsCollection = new Mock<IEnumerable<Deal>>();
 		var fakeLocationsCollection = new Mock<IEnumerable<Location>>();
 		var fakeSuppliersCollection = new Mock<IEnumerable<Supplier>>();
+		var uut = new DevelopmentSeeder(fakeUnitOfWork.Object, fakePelicanFaker.Object);
 
 		fakeUnitOfWork.Setup(x => x.AccountManagerRepository)
 			.Returns(fakeAccountManagerRepository.Object);
@@ -51,7 +52,7 @@ public class DevelopmentSeederUnitTest
 
 		//Act
 
-		DevelopmentSeeder.SeedEntireDb(fakeUnitOfWork.Object, fakePelicanFaker.Object, count);
+		uut.SeedEntireDb(count);
 
 		//Assert
 		fakeUnitOfWork.Verify(x => x.LocationRepository.CreateRange(fakeLocationsCollection.Object), Times.Exactly(1));
@@ -60,12 +61,12 @@ public class DevelopmentSeederUnitTest
 		fakeUnitOfWork.Verify(x => x.ContactRepository.CreateRange(fakeContactsCollection.Object), Times.Exactly(1));
 		fakeUnitOfWork.Verify(x => x.DealRepository.CreateRange(fakeDealsCollection.Object), Times.Exactly(1));
 		fakeUnitOfWork.Verify(x => x.SupplierRepository.CreateRange(fakeSuppliersCollection.Object), Times.Exactly(1));
-		fakeUnitOfWork.Verify(x => x.SaveAsync(), Times.Exactly(6));
+		fakeUnitOfWork.Verify(x => x.SaveAsync(), Times.Exactly(1));
 	}
 	[Theory]
 	[InlineData(1)]
 	[InlineData(50)]
-	public void CheckIfSaveIsCalledWhenSeedAccountManagerIsCalled(int count)
+	public void CheckIfAccountManagerIsCalledWhenSeedAccountManagerIsCalled(int count)
 	{
 		//Arrange
 		var fakeUnitOfWork = new Mock<IUnitOfWork>();
@@ -73,22 +74,22 @@ public class DevelopmentSeederUnitTest
 		var fakePelicanFaker = new Mock<IPelicanBogusFaker>();
 		var fakeSupplier = new Mock<IQueryable<Supplier>>();
 		var fakeAccountManagersCollection = new Mock<IEnumerable<AccountManager>>();
+		var uut = new DevelopmentSeeder(fakeUnitOfWork.Object, fakePelicanFaker.Object);
 
 		fakePelicanFaker.Setup(x => x.AccountManagerFaker(It.IsAny<int>(), It.IsAny<IQueryable<Supplier>>())).Returns(fakeAccountManagersCollection.Object);
 		fakeUnitOfWork.Setup(x => x.AccountManagerRepository)
 			.Returns(fakeAccountManagerRepository.Object);
 		fakePelicanFaker.Setup(x => x.SupplierFaker(It.IsAny<int>(), It.IsAny<IQueryable<Location>>())).Returns(fakeSupplier.Object);
 		//Act
-		var result = DevelopmentSeeder.SeedAccountManagers(fakeUnitOfWork.Object, fakePelicanFaker.Object, fakeSupplier.Object, count);
+		var result = uut.SeedAccountManagers(fakeUnitOfWork.Object, fakePelicanFaker.Object, fakeSupplier.Object, count);
 		//Assert
 		fakeUnitOfWork.Verify(x => x.AccountManagerRepository.CreateRange(fakeAccountManagersCollection.Object), Times.Once());
 		fakePelicanFaker.Verify(x => x.AccountManagerFaker(count, fakeSupplier.Object));
-		fakeUnitOfWork.Verify(x => x.SaveAsync(), Times.Once());
 	}
 	[Theory]
 	[InlineData(1)]
 	[InlineData(50)]
-	public void CheckIfSaveIsCalledWhenSeedClientIsCalled(int count)
+	public void CheckIfClientFakerIsCalledWhenSeedClientIsCalled(int count)
 	{
 		//Arrange
 		var fakeUnitOfWork = new Mock<IUnitOfWork>();
@@ -96,35 +97,37 @@ public class DevelopmentSeederUnitTest
 		var fakePelicanFaker = new Mock<IPelicanBogusFaker>();
 		var fakeLocation = new Mock<IQueryable<Location>>();
 		var fakeClientsCollection = new Mock<IEnumerable<Client>>();
+		var uut = new DevelopmentSeeder(fakeUnitOfWork.Object, fakePelicanFaker.Object);
+
 		fakePelicanFaker.Setup(x => x.ClientFaker(It.IsAny<int>(), It.IsAny<IQueryable<Location>>())).Returns(fakeClientsCollection.Object);
 		fakeUnitOfWork.Setup(x => x.ClientRepository)
 			.Returns(fakeClientRepository.Object);
 		//Act
-		var result = DevelopmentSeeder.SeedClients(fakeUnitOfWork.Object, fakePelicanFaker.Object, fakeLocation.Object, count);
+		var result = uut.SeedClients(fakeUnitOfWork.Object, fakePelicanFaker.Object, fakeLocation.Object, count);
 		//Assert
 		fakeUnitOfWork.Verify(x => x.ClientRepository.CreateRange(fakeClientsCollection.Object), Times.Once());
 		fakePelicanFaker.Verify(x => x.ClientFaker(count, fakeLocation.Object), Times.Once());
-		fakeUnitOfWork.Verify(x => x.SaveAsync(), Times.Once());
 	}
 	[Theory]
 	[InlineData(1)]
 	[InlineData(50)]
-	public void CheckIfSaveIsCalledWhenSeedContactIsCalled(int count)
+	public void CheckIfContactFakerIsCalledWhenSeedContactIsCalled(int count)
 	{
 		//Arrange
 		var fakeUnitOfWork = new Mock<IUnitOfWork>();
 		var fakeContactRepository = new Mock<IGenericRepository<Contact>>();
 		var fakePelicanFaker = new Mock<IPelicanBogusFaker>();
 		var fakeContactsCollection = new Mock<IEnumerable<Contact>>();
+		var uut = new DevelopmentSeeder(fakeUnitOfWork.Object, fakePelicanFaker.Object);
+
 		fakePelicanFaker.Setup(x => x.ContactFaker(It.IsAny<int>())).Returns(fakeContactsCollection.Object);
 		fakeUnitOfWork.Setup(x => x.ContactRepository)
 			.Returns(fakeContactRepository.Object);
 		//Act
-		var result = DevelopmentSeeder.SeedContacts(fakeUnitOfWork.Object, fakePelicanFaker.Object, count);
+		var result = uut.SeedContacts(fakeUnitOfWork.Object, fakePelicanFaker.Object, count);
 		//Assert
 		fakeUnitOfWork.Verify(x => x.ContactRepository.CreateRange(fakeContactsCollection.Object), Times.Once());
 		fakePelicanFaker.Verify(x => x.ContactFaker(count), Times.Once());
-		fakeUnitOfWork.Verify(x => x.SaveAsync(), Times.Once());
 	}
 	[Theory]
 	[InlineData(1)]
@@ -137,16 +140,16 @@ public class DevelopmentSeederUnitTest
 		var fakePelicanFaker = new Mock<IPelicanBogusFaker>();
 		var fakeDealsCollection = new Mock<IEnumerable<Deal>>();
 		var fakeClient = new Mock<IQueryable<Client>>();
+		var uut = new DevelopmentSeeder(fakeUnitOfWork.Object, fakePelicanFaker.Object);
 
 		fakePelicanFaker.Setup(x => x.DealFaker(It.IsAny<int>(), fakeClient.Object)).Returns(fakeDealsCollection.Object);
 		fakeUnitOfWork.Setup(x => x.DealRepository)
 			.Returns(fakeDealRepository.Object);
 		//Act
-		var result = DevelopmentSeeder.SeedDeals(fakeUnitOfWork.Object, fakePelicanFaker.Object, fakeClient.Object, count);
+		var result = uut.SeedDeals(fakeUnitOfWork.Object, fakePelicanFaker.Object, fakeClient.Object, count);
 		//Assert
 		fakeUnitOfWork.Verify(x => x.DealRepository.CreateRange(fakeDealsCollection.Object), Times.Once());
 		fakePelicanFaker.Verify(x => x.DealFaker(count, fakeClient.Object), Times.Once());
-		fakeUnitOfWork.Verify(x => x.SaveAsync(), Times.Once());
 	}
 	[Theory]
 	[InlineData(1)]
@@ -158,16 +161,16 @@ public class DevelopmentSeederUnitTest
 		var fakeLocationRepository = new Mock<IGenericRepository<Location>>();
 		var fakePelicanFaker = new Mock<IPelicanBogusFaker>();
 		var fakeLocationsCollection = new Mock<IEnumerable<Location>>();
+		var uut = new DevelopmentSeeder(fakeUnitOfWork.Object, fakePelicanFaker.Object);
 
 		fakePelicanFaker.Setup(x => x.LocationFaker(It.IsAny<int>())).Returns(fakeLocationsCollection.Object);
 		fakeUnitOfWork.Setup(x => x.LocationRepository)
 			.Returns(fakeLocationRepository.Object);
 		//Act
-		var result = DevelopmentSeeder.SeedLocations(fakeUnitOfWork.Object, fakePelicanFaker.Object, count);
+		var result = uut.SeedLocations(fakeUnitOfWork.Object, fakePelicanFaker.Object, count);
 		//Assert
 		fakeUnitOfWork.Verify(x => x.LocationRepository.CreateRange(fakeLocationsCollection.Object), Times.Once());
 		fakePelicanFaker.Verify(x => x.LocationFaker(count), Times.Once());
-		fakeUnitOfWork.Verify(x => x.SaveAsync(), Times.Once());
 	}
 	[Theory]
 	[InlineData(1)]
@@ -180,16 +183,17 @@ public class DevelopmentSeederUnitTest
 		var fakePelicanFaker = new Mock<IPelicanBogusFaker>();
 		var fakeSuppliersCollection = new Mock<IEnumerable<Supplier>>();
 		var fakeLocation = new Mock<IQueryable<Location>>();
+		var uut = new DevelopmentSeeder(fakeUnitOfWork.Object, fakePelicanFaker.Object);
 
 
 		fakePelicanFaker.Setup(x => x.SupplierFaker(It.IsAny<int>(), fakeLocation.Object)).Returns(fakeSuppliersCollection.Object);
 		fakeUnitOfWork.Setup(x => x.SupplierRepository)
 			.Returns(fakeSupplierRepository.Object);
 		//Act
-		var result = DevelopmentSeeder.SeedSuppliers(fakeUnitOfWork.Object, fakePelicanFaker.Object, fakeLocation.Object, count);
+		var result = uut.SeedSuppliers(fakeUnitOfWork.Object, fakePelicanFaker.Object, fakeLocation.Object, count);
 		//Assert
 		fakeUnitOfWork.Verify(x => x.SupplierRepository.CreateRange(fakeSuppliersCollection.Object), Times.Once());
 		fakePelicanFaker.Verify(x => x.SupplierFaker(count, fakeLocation.Object), Times.Once());
-		fakeUnitOfWork.Verify(x => x.SaveAsync(), Times.Once());
 	}
+
 }

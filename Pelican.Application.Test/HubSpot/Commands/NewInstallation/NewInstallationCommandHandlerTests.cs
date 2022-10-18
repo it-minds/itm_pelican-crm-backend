@@ -12,11 +12,11 @@ namespace Pelican.Application.Test.HubSpot.Commands.NewInstallation;
 public class NewInstallationCommandHandlerTests
 {
 	private readonly NewInstallationCommandHandler _uut;
-	private readonly Mock<IHubSpotAccountManagerService> _hubSpotAccountManagerServiceMock;
+	private readonly Mock<IHubSpotObjectService<AccountManager>> _hubSpotAccountManagerServiceMock;
 	private readonly Mock<IHubSpotAuthorizationService> _hubSpotAuthorizationServiceMock;
-	private readonly Mock<IHubSpotContactService> _hubSpotContactServiceMock;
-	private readonly Mock<IHubSpotClientService> _hubSpotClientServiceMock;
-	private readonly Mock<IHubSpotDealService> _hubSpotDealServiceMock;
+	private readonly Mock<IHubSpotObjectService<Contact>> _hubSpotContactServiceMock;
+	private readonly Mock<IHubSpotObjectService<Client>> _hubSpotClientServiceMock;
+	private readonly Mock<IHubSpotObjectService<Deal>> _hubSpotDealServiceMock;
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 	private readonly Mock<IGenericRepository<Supplier>> _supplierRepositoryMock;
 	private readonly CancellationToken cancellationToken;
@@ -74,19 +74,19 @@ public class NewInstallationCommandHandlerTests
 			Times.Never);
 
 		_hubSpotAccountManagerServiceMock.Verify(
-			h => h.GetAccountManagersAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+			h => h.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
 			Times.Never);
 
 		_hubSpotContactServiceMock.Verify(
-			h => h.GetContactsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+			h => h.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
 			Times.Never);
 
 		_hubSpotClientServiceMock.Verify(
-			h => h.GetClientsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+			h => h.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
 			Times.Never);
 
 		_hubSpotDealServiceMock.Verify(
-			h => h.GetDealsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+			h => h.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
 			Times.Never);
 
 		Assert.True(result.IsFailure);
@@ -126,28 +126,28 @@ public class NewInstallationCommandHandlerTests
 
 		_hubSpotAccountManagerServiceMock
 			.Setup(
-				h => h.GetAccountManagersAsync(token2, cancellationToken))
+				h => h.GetAsync(token2, cancellationToken))
 			.ReturnsAsync(
 				Result.Success(
 					new List<AccountManager>().AsEnumerable()));
 
 		_hubSpotContactServiceMock
 			.Setup(
-				h => h.GetContactsAsync(token2, cancellationToken))
+				h => h.GetAsync(token2, cancellationToken))
 			.ReturnsAsync(
 				Result.Success(
 					new List<Contact>().AsEnumerable()));
 
 		_hubSpotClientServiceMock
 			.Setup(
-				h => h.GetClientsAsync(token2, cancellationToken))
+				h => h.GetAsync(token2, cancellationToken))
 			.ReturnsAsync(
 				Result.Success(
 					new List<Client>().AsEnumerable()));
 
 		_hubSpotDealServiceMock
 			.Setup(
-				h => h.GetDealsAsync(token2, cancellationToken))
+				h => h.GetAsync(token2, cancellationToken))
 			.ReturnsAsync(
 				Result.Success(
 					new List<Deal>().AsEnumerable()));
@@ -170,19 +170,19 @@ public class NewInstallationCommandHandlerTests
 			Times.Once);
 
 		_hubSpotAccountManagerServiceMock.Verify(
-			h => h.GetAccountManagersAsync(token2, cancellationToken),
+			h => h.GetAsync(token2, cancellationToken),
 			Times.Once);
 
 		_hubSpotContactServiceMock.Verify(
-			h => h.GetContactsAsync(token2, cancellationToken),
+			h => h.GetAsync(token2, cancellationToken),
 			Times.Once);
 
 		_hubSpotClientServiceMock.Verify(
-			h => h.GetClientsAsync(token2, cancellationToken),
+			h => h.GetAsync(token2, cancellationToken),
 			Times.Once);
 
 		_hubSpotDealServiceMock.Verify(
-			h => h.GetDealsAsync(token2, cancellationToken),
+			h => h.GetAsync(token2, cancellationToken),
 			Times.Once);
 	}
 }

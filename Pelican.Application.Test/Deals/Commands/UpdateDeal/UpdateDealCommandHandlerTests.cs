@@ -14,7 +14,7 @@ public class UpdateDealCommandHandlerTests
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 	private readonly Mock<IGenericRepository<Deal>> _dealRepositoryMock;
 	private readonly Mock<IGenericRepository<Supplier>> _supplierRepositoryMock;
-	private readonly Mock<IHubSpotDealService> _hubSpotDealServiceMock;
+	private readonly Mock<IHubSpotObjectService<Deal>> _hubSpotDealServiceMock;
 	private readonly Mock<IHubSpotAuthorizationService> _hubSpotAuthorizationServiceMock;
 	private readonly CancellationToken _cancellationToken;
 
@@ -184,7 +184,7 @@ public class UpdateDealCommandHandlerTests
 			.ReturnsAsync(Result.Success("token"));
 
 		_hubSpotDealServiceMock
-			.Setup(service => service.GetDealByIdAsync("token", command.ObjectId, _cancellationToken))
+			.Setup(service => service.GetByIdAsync("token", command.ObjectId, _cancellationToken))
 			.ReturnsAsync(Result.Success(deal));
 
 		// Act
@@ -202,7 +202,7 @@ public class UpdateDealCommandHandlerTests
 			Times.Once());
 
 		_hubSpotDealServiceMock.Verify(
-			service => service.GetDealByIdAsync("token", command.ObjectId, _cancellationToken),
+			service => service.GetByIdAsync("token", command.ObjectId, _cancellationToken),
 			Times.Once());
 
 		Assert.True(result.IsSuccess);

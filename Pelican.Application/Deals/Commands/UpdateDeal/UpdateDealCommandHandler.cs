@@ -9,11 +9,11 @@ namespace Pelican.Application.Deals.Commands.UpdateDeal;
 internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;
-	private readonly IHubSpotDealService _hubSpotDealService;
+	private readonly IHubSpotObjectService<Deal> _hubSpotDealService;
 	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
 	public UpdateDealCommandHandler(
 		IUnitOfWork unitOfWork,
-		IHubSpotDealService hubSpotDealService,
+		IHubSpotObjectService<Deal> hubSpotDealService,
 		IHubSpotAuthorizationService hubSpotAuthorizationService)
 	{
 		_unitOfWork = unitOfWork;
@@ -82,7 +82,7 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 			return Result.Failure<Deal>(accessTokenResult.Error);
 		}
 
-		Result<Deal> result = await _hubSpotDealService.GetDealByIdAsync(accessTokenResult.Value, objectId, cancellationToken);
+		Result<Deal> result = await _hubSpotDealService.GetByIdAsync(accessTokenResult.Value, objectId, cancellationToken);
 
 		if (result.IsFailure)
 		{

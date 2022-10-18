@@ -10,10 +10,10 @@ namespace Pelican.Application.Contacts.Commands.UpdateContact;
 internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContactCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;
-	private readonly IHubSpotContactService _hubSpotContactService;
+	private readonly IHubSpotObjectService<Contact> _hubSpotContactService;
 	public UpdateContactCommandHandler(
 		IUnitOfWork unitOfWork,
-		IHubSpotContactService hubSpotContactService)
+		IHubSpotObjectService<Contact> hubSpotContactService)
 	{
 		_unitOfWork = unitOfWork;
 		_hubSpotContactService = hubSpotContactService;
@@ -87,7 +87,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 			return Result.Failure<Contact>(Error.NullValue);
 		}
 
-		Result<Contact> result = await _hubSpotContactService.GetContactByIdAsync(supplier.RefreshToken, objectId, cancellationToken);
+		Result<Contact> result = await _hubSpotContactService.GetByIdAsync(supplier.RefreshToken, objectId, cancellationToken);
 
 		if (result.IsFailure)
 		{

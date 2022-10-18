@@ -11,14 +11,14 @@ using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;
 
-internal sealed class HubSpotClientService : HubSpotService, IHubSpotClientService
+internal sealed class HubSpotClientService : HubSpotService, IHubSpotObjectService<Client>
 {
 	public HubSpotClientService(
 		IOptions<HubSpotSettings> hubSpotSettings)
 		: base(hubSpotSettings)
 	{ }
 
-	public async Task<Result<Client>> GetClientByIdAsync(
+	public async Task<Result<Client>> GetByIdAsync(
 		string accessToken,
 		long id,
 		CancellationToken cancellationToken)
@@ -41,7 +41,7 @@ internal sealed class HubSpotClientService : HubSpotService, IHubSpotClientServi
 					response.ErrorMessage!));
 	}
 
-	public async Task<Result<IEnumerable<Client>>> GetClientsAsync(
+	public async Task<Result<IEnumerable<Client>>> GetAsync(
 		string accessToken,
 		CancellationToken cancellationToken)
 	{

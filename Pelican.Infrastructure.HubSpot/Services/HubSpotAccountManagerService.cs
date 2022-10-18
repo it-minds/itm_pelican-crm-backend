@@ -10,14 +10,14 @@ using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;
 
-internal sealed class HubSpotAccountManagerService : HubSpotService, IHubSpotAccountManagerService
+internal sealed class HubSpotAccountManagerService : HubSpotService, IHubSpotObjectService<AccountManager>
 {
 	public HubSpotAccountManagerService(
 		IOptions<HubSpotSettings> hubSpotSettings)
 		: base(hubSpotSettings)
 	{ }
 
-	public async Task<Result<AccountManager>> GetAccountManagerByIdAsync(
+	public async Task<Result<AccountManager>> GetByIdAsync(
 		string accessToken,
 		long id,
 		CancellationToken cancellationToken)
@@ -39,7 +39,7 @@ internal sealed class HubSpotAccountManagerService : HubSpotService, IHubSpotAcc
 					response.ErrorMessage!));
 	}
 
-	public async Task<Result<IEnumerable<AccountManager>>> GetAccountManagersAsync(
+	public async Task<Result<IEnumerable<AccountManager>>> GetAsync(
 		string accessToken,
 		CancellationToken cancellationToken)
 	{

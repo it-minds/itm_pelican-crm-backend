@@ -11,19 +11,19 @@ namespace Pelican.Application.HubSpot.Commands.NewInstallation;
 
 internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstallationCommand>
 {
-	private readonly IHubSpotAccountManagerService _hubSpotAccountManagerService;
+	private readonly IHubSpotObjectService<AccountManager> _hubSpotAccountManagerService;
 	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
-	private readonly IHubSpotContactService _hubSpotContactService;
-	private readonly IHubSpotClientService _hubSpotClientService;
-	private readonly IHubSpotDealService _hubSpotDealService;
+	private readonly IHubSpotObjectService<Contact> _hubSpotContactService;
+	private readonly IHubSpotObjectService<Client> _hubSpotClientService;
+	private readonly IHubSpotObjectService<Deal> _hubSpotDealService;
 	private readonly IUnitOfWork _unitOfWork;
 
 	public NewInstallationCommandHandler(
-		IHubSpotAccountManagerService hubSpotAccountManagerService,
+		IHubSpotObjectService<AccountManager> hubSpotAccountManagerService,
 		IHubSpotAuthorizationService hubSpotAuthorizationService,
-		IHubSpotContactService hubSpotContactService,
-		IHubSpotClientService hubSpotClientService,
-		IHubSpotDealService hubSpotDealService,
+		IHubSpotObjectService<Contact> hubSpotContactService,
+		IHubSpotObjectService<Client> hubSpotClientService,
+		IHubSpotObjectService<Deal> hubSpotDealService,
 		IUnitOfWork unitOfWork)
 	{
 		_hubSpotAccountManagerService = hubSpotAccountManagerService;
@@ -54,16 +54,16 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 			.DecodeAccessTokenAsync(accessToken, cancellationToken);
 
 		Result<IEnumerable<AccountManager>> accountManagersResult = await _hubSpotAccountManagerService
-			.GetAccountManagersAsync(accessToken, cancellationToken);
+			.GetAsync(accessToken, cancellationToken);
 
 		Result<IEnumerable<Contact>> contactsResult = await _hubSpotContactService
-			.GetContactsAsync(accessToken, cancellationToken);
+			.GetAsync(accessToken, cancellationToken);
 
 		Result<IEnumerable<Client>> clientsResult = await _hubSpotClientService
-			.GetClientsAsync(accessToken, cancellationToken);
+			.GetAsync(accessToken, cancellationToken);
 
 		Result<IEnumerable<Deal>> dealsResult = await _hubSpotDealService
-			.GetDealsAsync(accessToken, cancellationToken);
+			.GetAsync(accessToken, cancellationToken);
 
 
 		if (Result.FirstFailureOrSuccess(new Result[]

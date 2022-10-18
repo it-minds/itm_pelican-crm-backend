@@ -16,8 +16,8 @@ public class GetLocationsQueryHandlerUnitTest
 		var locationRepositoryMock = new Mock<IGenericRepository<Location>>();
 		unitOfWorkMock.Setup(x => x.LocationRepository).Returns(locationRepositoryMock.Object);
 		uut = new GetLocationsQueryHandler(unitOfWorkMock.Object);
-		var cancellationToken = new CancellationToken();
-		var locationsQuery = new GetLocationsQuery();
+		CancellationToken cancellationToken = new CancellationToken();
+		GetLocationsQuery locationsQuery = new GetLocationsQuery();
 		//Act
 		_ = uut.Handle(locationsQuery, cancellationToken);
 		//Assert
@@ -31,10 +31,10 @@ public class GetLocationsQueryHandlerUnitTest
 		var locationRepositoryMock = new Mock<IGenericRepository<Location>>();
 		unitOfWorkMock.Setup(x => x.LocationRepository).Returns(locationRepositoryMock.Object);
 		uut = new GetLocationsQueryHandler(unitOfWorkMock.Object);
-		var cancellationToken = new CancellationToken();
-		var locationsQuery = new GetLocationsQuery();
+		CancellationToken cancellationToken = new CancellationToken();
+		GetLocationsQuery locationsQuery = new GetLocationsQuery();
 		//Act
-		for (var i = 0; i < 50; i++)
+		for (int i = 0; i < 50; i++)
 		{
 			_ = uut.Handle(locationsQuery, cancellationToken);
 		}

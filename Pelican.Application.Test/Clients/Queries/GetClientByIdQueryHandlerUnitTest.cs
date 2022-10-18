@@ -13,10 +13,10 @@ public class GetClientByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Client>>();
 		uut = new GetClientByIdQueryHandler(dataLoaderMock.Object);
-		var cancellationToken = new CancellationToken();
+		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		var getClientByIdQuery = new GetClientByIdQuery(guid);
-		var resultList = new List<Client>();
+		GetClientByIdQuery getClientByIdQuery = new GetClientByIdQuery(guid);
+		List<Client> resultList = new List<Client>();
 		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Client(guid));
 		//Act
 		resultList.Add(await uut.Handle(getClientByIdQuery, cancellationToken));
@@ -30,13 +30,13 @@ public class GetClientByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Client>>();
 		uut = new GetClientByIdQueryHandler(dataLoaderMock.Object);
-		var cancellationToken = new CancellationToken();
+		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		var getClientByIdQuery = new GetClientByIdQuery(guid);
-		var resultList = new List<Client>();
+		GetClientByIdQuery getClientByIdQuery = new GetClientByIdQuery(guid);
+		List<Client> resultList = new List<Client>();
 		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Client(guid));
 		//Act
-		for (var i = 0; i < 50; i++)
+		for (int i = 0; i < 50; i++)
 		{
 			resultList.Add(await uut.Handle(getClientByIdQuery, cancellationToken));
 		}

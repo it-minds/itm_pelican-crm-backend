@@ -15,8 +15,8 @@ public class GetAccountManagersQueryHandlerUnitTest
 		var accountMangerRepositoryMock = new Mock<IGenericRepository<AccountManager>>();
 		unitOfWorkMock.Setup(x => x.AccountManagerRepository).Returns(accountMangerRepositoryMock.Object);
 		uut = new GetAccountManagersQueryHandler(unitOfWorkMock.Object);
-		var cancellationToken = new CancellationToken();
-		var accountManagersQuery = new GetAccountManagersQuery();
+		CancellationToken cancellationToken = new CancellationToken();
+		GetAccountManagersQuery accountManagersQuery = new GetAccountManagersQuery();
 		//Act
 		_ = uut.Handle(accountManagersQuery, cancellationToken);
 		//Assert
@@ -30,10 +30,10 @@ public class GetAccountManagersQueryHandlerUnitTest
 		var accountManagerRepositoryMock = new Mock<IGenericRepository<AccountManager>>();
 		unitOfWorkMock.Setup(x => x.AccountManagerRepository).Returns(accountManagerRepositoryMock.Object);
 		uut = new GetAccountManagersQueryHandler(unitOfWorkMock.Object);
-		var cancellationToken = new CancellationToken();
-		var accountManagersQuery = new GetAccountManagersQuery();
+		CancellationToken cancellationToken = new CancellationToken();
+		GetAccountManagersQuery accountManagersQuery = new GetAccountManagersQuery();
 		//Act
-		for (var i = 0; i < 50; i++)
+		for (int i = 0; i < 50; i++)
 		{
 			_ = uut.Handle(accountManagersQuery, cancellationToken);
 		}

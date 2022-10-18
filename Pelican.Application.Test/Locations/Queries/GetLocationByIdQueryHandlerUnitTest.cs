@@ -13,10 +13,10 @@ public class GetLocationByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Location>>();
 		uut = new GetLocationByIdQueryHandler(dataLoaderMock.Object);
-		var cancellationToken = new CancellationToken();
+		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		var getLocationByIdQuery = new GetLocationByIdQuery(guid);
-		var resultList = new List<Location>();
+		GetLocationByIdQuery getLocationByIdQuery = new GetLocationByIdQuery(guid);
+		List<Location> resultList = new List<Location>();
 		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Location(guid));
 		//Act
 		resultList.Add(await uut.Handle(getLocationByIdQuery, cancellationToken));
@@ -30,13 +30,13 @@ public class GetLocationByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Location>>();
 		uut = new GetLocationByIdQueryHandler(dataLoaderMock.Object);
-		var cancellationToken = new CancellationToken();
+		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		var getLocationByIdQuery = new GetLocationByIdQuery(guid);
-		var resultList = new List<Location>();
+		GetLocationByIdQuery getLocationByIdQuery = new GetLocationByIdQuery(guid);
+		List<Location> resultList = new List<Location>();
 		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Location(guid));
 		//Act
-		for (var i = 0; i < 50; i++)
+		for (int i = 0; i < 50; i++)
 		{
 			resultList.Add(await uut.Handle(getLocationByIdQuery, cancellationToken));
 		}

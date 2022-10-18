@@ -16,8 +16,8 @@ public class GetDealsQueryHandlerUnitTest
 		var dealRepositoryMock = new Mock<IGenericRepository<Deal>>();
 		unitOfWorkMock.Setup(x => x.DealRepository).Returns(dealRepositoryMock.Object);
 		uut = new GetDealsQueryHandler(unitOfWorkMock.Object);
-		var cancellationToken = new CancellationToken();
-		var dealsQuery = new GetDealsQuery();
+		CancellationToken cancellationToken = new CancellationToken();
+		GetDealsQuery dealsQuery = new GetDealsQuery();
 		//Act
 		_ = uut.Handle(dealsQuery, cancellationToken);
 		//Assert
@@ -31,10 +31,10 @@ public class GetDealsQueryHandlerUnitTest
 		var dealRepositoryMock = new Mock<IGenericRepository<Deal>>();
 		unitOfWorkMock.Setup(x => x.DealRepository).Returns(dealRepositoryMock.Object);
 		uut = new GetDealsQueryHandler(unitOfWorkMock.Object);
-		var cancellationToken = new CancellationToken();
-		var dealsQuery = new GetDealsQuery();
+		CancellationToken cancellationToken = new CancellationToken();
+		GetDealsQuery dealsQuery = new GetDealsQuery();
 		//Act
-		for (var i = 0; i < 50; i++)
+		for (int i = 0; i < 50; i++)
 		{
 			_ = uut.Handle(dealsQuery, cancellationToken);
 		}

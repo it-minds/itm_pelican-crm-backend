@@ -17,8 +17,8 @@ public class GetClientsQueryHandlerUnitTest
 		var clientRepositoryMock = new Mock<IGenericRepository<Client>>();
 		unitOfWorkMock.Setup(x => x.ClientRepository).Returns(clientRepositoryMock.Object);
 		uut = new GetClientsQueryHandler(unitOfWorkMock.Object);
-		var cancellationToken = new CancellationToken();
-		var client = new GetClientsQuery();
+		CancellationToken cancellationToken = new CancellationToken();
+		GetClientsQuery client = new GetClientsQuery();
 		//Act
 		_ = uut.Handle(client, cancellationToken);
 		//Assert
@@ -32,10 +32,10 @@ public class GetClientsQueryHandlerUnitTest
 		var clientRepositoryMock = new Mock<IGenericRepository<Client>>();
 		unitOfWorkMock.Setup(x => x.ClientRepository).Returns(clientRepositoryMock.Object);
 		uut = new GetClientsQueryHandler(unitOfWorkMock.Object);
-		var cancellationToken = new CancellationToken();
-		var clientsQuery = new GetClientsQuery();
+		CancellationToken cancellationToken = new CancellationToken();
+		GetClientsQuery clientsQuery = new GetClientsQuery();
 		//Act
-		for (var i = 0; i < 50; i++)
+		for (int i = 0; i < 50; i++)
 		{
 			_ = uut.Handle(clientsQuery, cancellationToken);
 		}

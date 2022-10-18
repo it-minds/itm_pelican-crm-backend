@@ -15,8 +15,8 @@ public class GetContacrsQueryHandlerUnitTest
 		var contactRepositoryMock = new Mock<IGenericRepository<Contact>>();
 		unitOfWorkMock.Setup(x => x.ContactRepository).Returns(contactRepositoryMock.Object);
 		uut = new GetContactsQueryHandler(unitOfWorkMock.Object);
-		var cancellationToken = new CancellationToken();
-		var contactsQuery = new GetContactsQuery();
+		CancellationToken cancellationToken = new CancellationToken();
+		GetContactsQuery contactsQuery = new GetContactsQuery();
 		//Act
 		_ = uut.Handle(contactsQuery, cancellationToken);
 		//Assert
@@ -30,10 +30,10 @@ public class GetContacrsQueryHandlerUnitTest
 		var contactRepositoryMock = new Mock<IGenericRepository<Contact>>();
 		unitOfWorkMock.Setup(x => x.ContactRepository).Returns(contactRepositoryMock.Object);
 		uut = new GetContactsQueryHandler(unitOfWorkMock.Object);
-		var cancellationToken = new CancellationToken();
-		var contactsQuery = new GetContactsQuery();
+		CancellationToken cancellationToken = new CancellationToken();
+		GetContactsQuery contactsQuery = new GetContactsQuery();
 		//Act
-		for (var i = 0; i < 50; i++)
+		for (int i = 0; i < 50; i++)
 		{
 			_ = uut.Handle(contactsQuery, cancellationToken);
 		}

@@ -15,7 +15,7 @@ public class GetAccountManagerByIdQueryHandlerUnitTest
 		var dataLoaderMock = new Mock<IGenericDataLoader<AccountManager>>();
 		uut = new GetAccountManagerByIdQueryHandler(dataLoaderMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
-		Guid guid = Guid.NewGuid();
+		var guid = Guid.NewGuid();
 		GetAccountManagerByIdQuery getAccountManagerByIdQuery = new GetAccountManagerByIdQuery(guid);
 		List<AccountManager> resultList = new List<AccountManager>();
 		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new AccountManager(guid));

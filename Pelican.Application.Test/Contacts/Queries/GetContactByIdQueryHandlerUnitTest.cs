@@ -14,10 +14,10 @@ public class GetContactByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Contact>>();
 		uut = new GetContactByIdQueryHandler(dataLoaderMock.Object);
-		var cancellationToken = new CancellationToken();
+		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		var getContactByIdQuery = new GetContactByIdQuery(guid);
-		var resultList = new List<Contact>();
+		GetContactByIdQuery getContactByIdQuery = new GetContactByIdQuery(guid);
+		List<Contact> resultList = new List<Contact>();
 		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Contact(guid));
 		//Act
 		resultList.Add(await uut.Handle(getContactByIdQuery, cancellationToken));
@@ -31,13 +31,13 @@ public class GetContactByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Contact>>();
 		uut = new GetContactByIdQueryHandler(dataLoaderMock.Object);
-		var cancellationToken = new CancellationToken();
+		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		var getContactByIdQuery = new GetContactByIdQuery(guid);
-		var resultList = new List<Contact>();
+		GetContactByIdQuery getContactByIdQuery = new GetContactByIdQuery(guid);
+		List<Contact> resultList = new List<Contact>();
 		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Contact(guid));
 		//Act
-		for (var i = 0; i < 50; i++)
+		for (int i = 0; i < 50; i++)
 		{
 			resultList.Add(await uut.Handle(getContactByIdQuery, cancellationToken));
 		}

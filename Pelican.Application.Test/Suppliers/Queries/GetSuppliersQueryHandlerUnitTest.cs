@@ -16,8 +16,8 @@ public class GetSuppliersQueryHandlerUnitTest
 		var supplierRepositoryMock = new Mock<IGenericRepository<Supplier>>();
 		unitOfWorkMock.Setup(x => x.SupplierRepository).Returns(supplierRepositoryMock.Object);
 		uut = new GetSuppliersQueryHandler(unitOfWorkMock.Object);
-		var cancellationToken = new CancellationToken();
-		var accountManagersQuery = new GetSuppliersQuery();
+		CancellationToken cancellationToken = new CancellationToken();
+		GetSuppliersQuery accountManagersQuery = new GetSuppliersQuery();
 		//Act
 		_ = uut.Handle(accountManagersQuery, cancellationToken);
 		//Assert
@@ -31,10 +31,10 @@ public class GetSuppliersQueryHandlerUnitTest
 		var supplierRepositoryMock = new Mock<IGenericRepository<Supplier>>();
 		unitOfWorkMock.Setup(x => x.SupplierRepository).Returns(supplierRepositoryMock.Object);
 		uut = new GetSuppliersQueryHandler(unitOfWorkMock.Object);
-		var cancellationToken = new CancellationToken();
-		var suppliersQuery = new GetSuppliersQuery();
+		CancellationToken cancellationToken = new CancellationToken();
+		GetSuppliersQuery suppliersQuery = new GetSuppliersQuery();
 		//Act
-		for (var i = 0; i < 50; i++)
+		for (int i = 0; i < 50; i++)
 		{
 			_ = uut.Handle(suppliersQuery, cancellationToken);
 		}

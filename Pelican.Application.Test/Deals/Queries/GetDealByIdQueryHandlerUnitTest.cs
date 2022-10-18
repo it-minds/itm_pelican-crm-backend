@@ -14,10 +14,10 @@ public class GetDealByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Deal>>();
 		uut = new GetDealByIdQueryHandler(dataLoaderMock.Object);
-		var cancellationToken = new CancellationToken();
+		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		var getDealByIdQuery = new GetDealByIdQuery(guid);
-		var resultList = new List<Deal>();
+		GetDealByIdQuery getDealByIdQuery = new GetDealByIdQuery(guid);
+		List<Deal> resultList = new List<Deal>();
 		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Deal(guid));
 		//Act
 		resultList.Add(await uut.Handle(getDealByIdQuery, cancellationToken));
@@ -31,13 +31,13 @@ public class GetDealByIdQueryHandlerUnitTest
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Deal>>();
 		uut = new GetDealByIdQueryHandler(dataLoaderMock.Object);
-		var cancellationToken = new CancellationToken();
+		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
-		var getDealByIdQuery = new GetDealByIdQuery(guid);
-		var resultList = new List<Deal>();
+		GetDealByIdQuery getDealByIdQuery = new GetDealByIdQuery(guid);
+		List<Deal> resultList = new List<Deal>();
 		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Deal(guid));
 		//Act
-		for (var i = 0; i < 50; i++)
+		for (int i = 0; i < 50; i++)
 		{
 			resultList.Add(await uut.Handle(getDealByIdQuery, cancellationToken));
 		}

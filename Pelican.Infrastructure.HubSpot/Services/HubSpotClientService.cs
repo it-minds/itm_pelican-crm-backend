@@ -30,15 +30,18 @@ internal sealed class HubSpotClientService : HubSpotService, IHubSpotObjectServi
 		RestResponse<CompanyResponse> response = await _client
 			.ExecuteGetAsync<CompanyResponse>(request, cancellationToken);
 
-		return response.IsSuccessful
-			&& response.Data is not null
-			? Result.Success(
-				response
-				.Data.ToClient())
-			: Result.Failure<Client>(
-				new Error(
-					response.StatusCode.ToString(),
-					response.ErrorMessage!));
+		if (response.IsSuccessful
+			&& response.Data is not null)
+		{
+			Client result = response.Data.ToClient();
+
+			return Result.Success(result);
+		}
+
+		return Result.Failure<Client>(
+			new Error(
+				response.StatusCode.ToString(),
+				response.ErrorException?.Message!));
 	}
 
 	public async Task<Result<List<Client>>> GetAsync(
@@ -52,9 +55,10 @@ internal sealed class HubSpotClientService : HubSpotService, IHubSpotObjectServi
 		RestResponse<CompaniesResponse> response = await _client
 			.ExecuteGetAsync<CompaniesResponse>(request, cancellationToken);
 
-		if (response.IsSuccessful && response.Data is not null)
+		if (response.IsSuccessful
+			&& response.Data is not null)
 		{
-			List<Client> ress = new();
+			List<Client> results = new();
 
 			response
 				.Data
@@ -62,11 +66,11 @@ internal sealed class HubSpotClientService : HubSpotService, IHubSpotObjectServi
 				.ToList()
 				.ForEach(contactResponse =>
 				{
-					var res = contactResponse.ToClient();
-					ress.Add(res);
+					var result = contactResponse.ToClient();
+					results.Add(result);
 				});
 
-			return Result.Success(ress);
+			return Result.Success(results);
 		}
 
 		return Result.Failure<List<Client>>(

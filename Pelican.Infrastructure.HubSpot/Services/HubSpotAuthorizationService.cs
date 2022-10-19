@@ -35,13 +35,18 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 		RestResponse<GetAccessTokenResponse> response = await _client
 			.ExecutePostAsync<GetAccessTokenResponse>(request, cancellationToken);
 
-		return response.IsSuccessful
-			&& response.Data is not null
-			? Result.Success(response.Data.ToRefreshAccessTokens())
-			: Result.Failure<RefreshAccessTokens>(
-				new Error(
-					response.StatusCode.ToString(),
-					response.ErrorMessage!));
+		if (response.IsSuccessful
+			&& response.Data is not null)
+		{
+			RefreshAccessTokens result = response.Data.ToRefreshAccessTokens();
+
+			return Result.Success(result);
+		}
+
+		return Result.Failure<RefreshAccessTokens>(
+			new Error(
+				response.StatusCode.ToString(),
+				response.ErrorException?.Message!));
 	}
 
 	public async Task<Result<Supplier>> DecodeAccessTokenAsync(
@@ -53,13 +58,18 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 		RestResponse<AccessTokenResponse> response =
 			await _client.ExecuteGetAsync<AccessTokenResponse>(request, cancellationToken);
 
-		return response.IsSuccessful
-			&& response.Data is not null
-			? Result.Success(response.Data.ToSupplier())
-			: Result.Failure<Supplier>(
-				new Error(
-					response.StatusCode.ToString(),
-					response.ErrorException?.Message!));
+		if (response.IsSuccessful
+			&& response.Data is not null)
+		{
+			Supplier result = response.Data.ToSupplier();
+
+			return Result.Success(result);
+		}
+
+		return Result.Failure<Supplier>(
+			new Error(
+				response.StatusCode.ToString(),
+				response.ErrorException?.Message!));
 	}
 
 	public async Task<Result<string>> RefreshAccessTokenAsync(
@@ -77,12 +87,17 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 				request,
 				cancellationToken);
 
-		return response.IsSuccessful
-			&& response.Data is not null
-			? Result.Success(response.Data.AccessToken)
-			: Result.Failure<string>(
-				new Error(
-					response.StatusCode.ToString(),
-					response.ErrorException?.Message!));
+		if (response.IsSuccessful
+			&& response.Data is not null)
+		{
+			string result = response.Data.AccessToken;
+
+			return Result.Success(result);
+		}
+
+		return Result.Failure<string>(
+			new Error(
+				response.StatusCode.ToString(),
+				response.ErrorException?.Message!));
 	}
 }

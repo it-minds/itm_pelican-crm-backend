@@ -28,15 +28,18 @@ internal sealed class HubSpotDealService : HubSpotService, IHubSpotObjectService
 
 		RestResponse<DealResponse> response = await _client.ExecuteGetAsync<DealResponse>(request, cancellationToken);
 
-		return (response.IsSuccessful && response.Data is not null
-			? Result.Success(
-				response
-				.Data
-				.ToDeal())
-			: Result.Failure<Deal>(
-				new Error(
-					response.StatusCode.ToString(),
-					response.ErrorException?.Message!)));
+		if (response.IsSuccessful
+			&& response.Data is not null)
+		{
+			Deal result = response.Data.ToDeal();
+
+			return Result.Success(result);
+		}
+
+		return Result.Failure<Deal>(
+			new Error(
+				response.StatusCode.ToString(),
+				response.ErrorException?.Message!));
 	}
 
 	public async Task<Result<List<Deal>>> GetAsync(
@@ -49,9 +52,10 @@ internal sealed class HubSpotDealService : HubSpotService, IHubSpotObjectService
 
 		RestResponse<DealsResponse> response = await _client.ExecuteGetAsync<DealsResponse>(request, cancellationToken);
 
-		if (response.IsSuccessful && response.Data is not null)
+		if (response.IsSuccessful
+			&& response.Data is not null)
 		{
-			List<Deal> ress = new();
+			List<Deal> results = new();
 
 			response
 				.Data

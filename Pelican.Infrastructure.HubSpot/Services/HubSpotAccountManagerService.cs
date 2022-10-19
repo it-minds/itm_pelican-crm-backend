@@ -28,15 +28,19 @@ internal sealed class HubSpotAccountManagerService : HubSpotService, IHubSpotObj
 		RestResponse<OwnerResponse> response = await _client
 			.ExecuteGetAsync<OwnerResponse>(request, cancellationToken);
 
-		return response.IsSuccessful
-			&& response.Data is not null
-			? Result.Success(
-				response
-				.Data.ToAccountManager())
-			: Result.Failure<AccountManager>(
+		if (response.IsSuccessful && response.Data is not null)
+		{
+			AccountManager result = response
+				.Data
+				.ToAccountManager();
+
+			return Result.Success(result);
+		}
+
+		return Result.Failure<AccountManager>(
 				new Error(
 					response.StatusCode.ToString(),
-					response.ErrorMessage!));
+					response.ErrorException?.Message!));
 	}
 
 	public async Task<Result<List<AccountManager>>> GetAsync(
@@ -51,7 +55,7 @@ internal sealed class HubSpotAccountManagerService : HubSpotService, IHubSpotObj
 
 		if (response.IsSuccessful && response.Data is not null)
 		{
-			List<AccountManager> ress = new();
+			List<AccountManager> results = new();
 
 			response
 				.Data
@@ -59,11 +63,11 @@ internal sealed class HubSpotAccountManagerService : HubSpotService, IHubSpotObj
 				.ToList()
 				.ForEach(contactResponse =>
 				{
-					var res = contactResponse.ToAccountManager();
-					ress.Add(res);
+					var result = contactResponse.ToAccountManager();
+					results.Add(result);
 				});
 
-			return Result.Success(ress);
+			return Result.Success(results);
 		}
 
 		return Result.Failure<List<AccountManager>>(

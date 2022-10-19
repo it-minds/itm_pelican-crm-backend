@@ -19,6 +19,10 @@ public class NewInstallationCommandHandlerTests
 	private readonly Mock<IHubSpotObjectService<Deal>> _hubSpotDealServiceMock;
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 	private readonly Mock<IGenericRepository<Supplier>> _supplierRepositoryMock;
+	private readonly Mock<IGenericRepository<AccountManager>> _accountManagerRepositoryMock;
+	private readonly Mock<IGenericRepository<Deal>> _dealRepositoryMock;
+	private readonly Mock<IGenericRepository<Client>> _clientRepositoryMock;
+	private readonly Mock<IGenericRepository<Contact>> _contactRepositoryMock;
 	private readonly CancellationToken cancellationToken;
 
 	public NewInstallationCommandHandlerTests()
@@ -30,6 +34,10 @@ public class NewInstallationCommandHandlerTests
 		_hubSpotDealServiceMock = new();
 		_unitOfWorkMock = new();
 		_supplierRepositoryMock = new();
+		_accountManagerRepositoryMock = new();
+		_dealRepositoryMock = new();
+		_clientRepositoryMock = new();
+		_contactRepositoryMock = new();
 		cancellationToken = new();
 
 		_uut = new NewInstallationCommandHandler(
@@ -156,6 +164,26 @@ public class NewInstallationCommandHandlerTests
 			.Setup(
 				u => u.SupplierRepository)
 			.Returns(_supplierRepositoryMock.Object);
+
+		_unitOfWorkMock
+			.Setup(
+				u => u.AccountManagerRepository)
+			.Returns(_accountManagerRepositoryMock.Object);
+
+		_unitOfWorkMock
+			.Setup(
+				u => u.DealRepository)
+			.Returns(_dealRepositoryMock.Object);
+
+		_unitOfWorkMock
+			.Setup(
+				u => u.ClientRepository)
+			.Returns(_clientRepositoryMock.Object);
+
+		_unitOfWorkMock
+			.Setup(
+				u => u.ContactRepository)
+			.Returns(_contactRepositoryMock.Object);
 
 		// Act 
 		var result = await _uut.Handle(command, cancellationToken);

@@ -10,7 +10,6 @@ internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 	{
 		builder.ToTable("Deals");
 
-
 		builder.Property(p => p.DealStatus)
 			.HasMaxLength(StringLengths.DealStatus);
 

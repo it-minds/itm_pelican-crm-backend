@@ -9,4 +9,7 @@ public interface IPelicanBogusFaker
 	public IEnumerable<Location> LocationFaker(int count);
 	public IEnumerable<Client> ClientFaker(int count, IQueryable<Location> locations);
 	public IEnumerable<Contact> ContactFaker(int count);
+	public IEnumerable<AccountManagerDeal> AccountManagerDealFaker(IQueryable<AccountManager> accountManagers, IQueryable<Deal> deals);
+	public IEnumerable<DealContact> DealContactFaker(IQueryable<Deal> deals, IQueryable<Contact> contacts);
+	public IEnumerable<ClientContact> ClientContactFaker(IQueryable<Client> clients, IQueryable<Contact> contacts);
 }

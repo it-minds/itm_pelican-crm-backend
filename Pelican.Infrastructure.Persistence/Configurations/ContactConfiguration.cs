@@ -26,12 +26,10 @@ internal class ContactConfiguration : IEntityTypeConfiguration<Contact>
 
 		builder.HasMany(a => a.ClientContacts)
 			.WithOne(e => e.Contact)
-			.HasForeignKey(a => a.ClientId)
-			.IsRequired();
+			.HasForeignKey(a => a.ContactId);
 
 		builder.HasMany(a => a.DealContacts)
 			.WithOne(a => a.Contact)
-			.HasForeignKey(a => a.DealId)
-			.IsRequired();
+			.HasForeignKey(a => a.ContactId);
 	}
 }

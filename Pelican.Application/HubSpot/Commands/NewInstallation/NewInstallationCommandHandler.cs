@@ -46,12 +46,20 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 			return Result.Failure(tokensResult.Error);
 		}
 
-		/// missing check to see if supplier is already loaded
-
 		string accessToken = tokensResult.Value.AccessToken;
 
 		Result<Supplier> supplierResult = await _hubSpotAuthorizationService
 			.DecodeAccessTokenAsync(accessToken, cancellationToken);
+
+		if (supplierResult.IsFailure)
+		{
+			return supplierResult;
+		}
+
+		if (_unitOfWork.SupplierRepository.FindAll().Any(supplier => supplier.HubSpotId == supplierResult.Value.HubSpotId))
+		{
+			return Result.Failure(Error.AlreadyExists);
+		}
 
 		Result<List<AccountManager>> accountManagersResult = await _hubSpotAccountManagerService
 			.GetAsync(accessToken, cancellationToken);
@@ -68,7 +76,6 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 
 		if (Result.FirstFailureOrSuccess(new Result[]
 				{
-					supplierResult,
 					accountManagersResult,
 					contactsResult,
 					clientsResult,

@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Pelican.Application.BogusExtension;
 using Pelican.Application.Common.Interfaces;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Enums;
@@ -59,11 +60,12 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 	}
 	public IEnumerable<Client> ClientFaker(int count, IQueryable<Location> locations)
 	{
+		var client = new Client();
 		var faker = new Faker<Client>().UseSeed(1341);
 		faker
-			.RuleFor(e => e.Classification, f => f.PickRandom<ClientStatus>().ToString())
+			.RuleFor(e => e.Classification, f => f.PickRandom<ClientStatus>().OrNull().ToString())
 			.RuleFor(e => e.OfficeLocation, f => f.PickRandom<Location>(locations).CityName)
-			.RuleFor(e => e.Segment, f => f.PickRandom<Segment>().ToString())
+			.RuleFor(e => e.Segment, f => f.PickRandom<Segment>().OrNull().ToString())
 			.RuleFor(e => e.Name, f => f.Name.FullName(f.Person.Gender))
 			.RuleFor(e => e.PictureUrl, f => f.Image.PicsumUrl())
 			.RuleFor(e => e.Id, f => f.Random.Guid());

@@ -8,7 +8,7 @@ using Pelican.Presentation.GraphQL.Locations;
 using Pelican.Presentation.GraphQL.Suppliers;
 
 namespace Pelican.Presentation.GraphQL;
-public static class DepedencyInjection
+public static class DependencyInjection
 {
 	public static IRequestExecutorBuilder AddPresentationGraphQL(this IServiceCollection services)
 	{

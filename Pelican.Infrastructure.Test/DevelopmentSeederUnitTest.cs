@@ -1,7 +1,7 @@
 ﻿using Moq;
 using Pelican.Application.Common.Interfaces;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 using Xunit;
 
 
@@ -9,7 +9,7 @@ namespace Pelican.Infrastructure.Persistence.Test;
 public class DevelopmentSeederUnitTest
 {
 	[Fact]
-	public void CheckIfSaveIsCalledWhenSeedDbIsCalled()
+	public async Task CheckIfSaveIsCalledWhenSeedDbIsCalled()
 	{
 		//Arrange
 		var fakeUnitOfWork = new Mock<IUnitOfWork>();
@@ -34,11 +34,11 @@ public class DevelopmentSeederUnitTest
 
 		//Act
 
-		DevelopmentSeeder.SeedEntireDb(fakeUnitOfWork.Object, fakePelicanFaker.Object);
+		await DevelopmentSeeder.SeedEntireDb(fakeUnitOfWork.Object, fakePelicanFaker.Object);
 
 		//Assert
 
-		fakeUnitOfWork.Verify(x => x.SupplierRepository.CreateRange(suppliers), Times.Once());
+		fakeUnitOfWork.Verify(x => x.SupplierRepository.CreateRangeAsync(suppliers, CancellationToken.None), Times.Once());
 
 		fakeUnitOfWork.Verify(x => x.Save(), Times.Once());
 	}

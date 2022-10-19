@@ -10,9 +10,11 @@ internal class AccountManagerConfiguration : IEntityTypeConfiguration<AccountMan
 	{
 		builder.ToTable("AccountManagers");
 
-		builder.Property(p => p.Name)
-			.HasMaxLength(StringLengths.Name)
-			.IsRequired();
+		builder.Property(p => p.FirstName)
+			.HasMaxLength(StringLengths.Name);
+
+		builder.Property(p => p.LastName)
+			.HasMaxLength(StringLengths.Name);
 
 		builder.Property(p => p.PictureUrl)
 			.HasMaxLength(StringLengths.Url);
@@ -27,6 +29,9 @@ internal class AccountManagerConfiguration : IEntityTypeConfiguration<AccountMan
 		builder.Property(p => p.PhoneNumber)
 			.HasMaxLength(StringLengths.PhoneNumber);
 
+		builder.Property(p => p.HubSpotId)
+			.HasMaxLength(StringLengths.Id);
+
 		builder.HasOne(a => a.Supplier)
 			.WithMany(e => e.AccountManagers)
 			.HasForeignKey(a => a.SupplierId)
@@ -34,7 +39,6 @@ internal class AccountManagerConfiguration : IEntityTypeConfiguration<AccountMan
 
 		builder.HasMany(a => a.AccountManagerDeals)
 			.WithOne(a => a.AccountManager)
-			.HasForeignKey(a => a.AccountManagerId)
-			.IsRequired();
+			.HasForeignKey(a => a.AccountManagerId);
 	}
 }

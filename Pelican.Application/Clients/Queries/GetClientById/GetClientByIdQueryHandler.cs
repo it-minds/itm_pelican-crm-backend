@@ -1,9 +1,9 @@
-﻿using MediatR;
+﻿using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Application.Clients.Queries.GetClientById;
-public class GetClientByIdQueryHandler : IRequestHandler<GetClientByIdQuery, Client>
+public class GetClientByIdQueryHandler : IQueryHandler<GetClientByIdQuery, Client>
 {
 	private readonly IGenericDataLoader<Client> _dataLoader;
 	public GetClientByIdQueryHandler(IGenericDataLoader<Client> dataLoader)

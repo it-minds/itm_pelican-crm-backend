@@ -1,10 +1,10 @@
-﻿using MediatR;
+﻿using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Clients.Queries.GetClients;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 
 namespace Pelican.Application.Clients.Queries.GetCLients;
-public class GetClientsQueryHandler : IRequestHandler<GetClientsQuery, IQueryable<Client>>
+public class GetClientsQueryHandler : IQueryHandler<GetClientsQuery, IQueryable<Client>>
 {
 	private readonly IGenericRepository<Client> _repository;
 	public GetClientsQueryHandler(IUnitOfWork unitOfWork)

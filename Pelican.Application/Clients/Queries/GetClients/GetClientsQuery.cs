@@ -1,5 +1,5 @@
-﻿using MediatR;
+﻿using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Application.Clients.Queries.GetClients;
-public record GetClientsQuery() : IRequest<IQueryable<Client>>;
+public record GetClientsQuery() : IQuery<IQueryable<Client>>;

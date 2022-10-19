@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Application.Locations.Queries.GetLocationById;
-public class GetLocationByIdQueryHandler : IRequestHandler<GetLocationByIdQuery, Location>
+public class GetLocationByIdQueryHandler : IQueryHandler<GetLocationByIdQuery, Location>
 {
 	private readonly IGenericDataLoader<Location> _dataLoader;
 	public GetLocationByIdQueryHandler(IGenericDataLoader<Location> dataLoader)

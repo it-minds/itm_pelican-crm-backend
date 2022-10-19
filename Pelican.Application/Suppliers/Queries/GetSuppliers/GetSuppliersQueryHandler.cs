@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 
 namespace Pelican.Application.Suppliers.Queries.GetSuppliers;
-public class GetSuppliersQueryHandler : IRequestHandler<GetSuppliersQuery, IQueryable<Supplier>>
+public class GetSuppliersQueryHandler : IQueryHandler<GetSuppliersQuery, IQueryable<Supplier>>
 {
 	private readonly IGenericRepository<Supplier> _repository;
 	public GetSuppliersQueryHandler(IUnitOfWork unitOfWork)

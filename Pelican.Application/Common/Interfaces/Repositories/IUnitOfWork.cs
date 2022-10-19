@@ -1,6 +1,6 @@
 ﻿using Pelican.Domain.Entities;
 
-namespace Pelican.Domain.Repositories;
+namespace Pelican.Application.Common.Interfaces.Repositories;
 public interface IUnitOfWork
 {
 	public IGenericRepository<AccountManagerDeal> AccountManagerDealRepository { get; }
@@ -10,6 +10,7 @@ public interface IUnitOfWork
 	public IGenericRepository<Deal> DealRepository { get; }
 	public IGenericRepository<Location> LocationRepository { get; }
 	public IGenericRepository<Supplier> SupplierRepository { get; }
+	public IGenericRepository<ClientContact> ClientContactRepository { get; }
 	void Save();
-	Task SaveAsync();
+	Task SaveAsync(CancellationToken cancellationToken);
 }

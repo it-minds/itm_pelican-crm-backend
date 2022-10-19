@@ -5,7 +5,7 @@
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
           <Format>cobertura</Format>          
-          <Exclude>[*.Persistence]*Migrations*, [*]*DependencyInjection,[*Api]*Program</Exclude> [Assembly-Filter]Type-Filter
+          <Exclude>[*.Persistence]*Migrations*,[*.Persistence]*Configurations*, [*]*DependencyInjection,[*Api]*Program</Exclude> [Assembly-Filter]Type-Filter
           <SingleHit>false</SingleHit>
           <UseSourceLink>true</UseSourceLink>
           <IncludeTestAssembly>false</IncludeTestAssembly>

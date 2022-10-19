@@ -1,10 +1,10 @@
 ﻿using Moq;
 using Pelican.Application.Common.Interfaces;
-using Pelican.Domain.Repositories;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Infrastructure.Persistence.Repositories;
 using Xunit;
 
-namespace Pelican.Infrastructure.Test;
+namespace Pelican.Infrastructure.Persistence.Test;
 
 public class UnitOfWorkUnitTest
 {
@@ -29,7 +29,7 @@ public class UnitOfWorkUnitTest
 		var myDbContextMock = new Mock<IPelicanContext>();
 		uut = new UnitOfWork(myDbContextMock.Object);
 		//Act
-		for (int i = 0; i < 50; i++)
+		for (var i = 0; i < 50; i++)
 		{
 			uut.Save();
 		}
@@ -38,29 +38,29 @@ public class UnitOfWorkUnitTest
 	}
 	//One Test
 	[Fact]
-	public void UnitOfWorlSaveAsyncIsCalledOnce_DbContextReceivesOneSaveChanges()
+	public async void UnitOfWorlSaveAsyncIsCalledOnce_DbContextReceivesOneSaveChanges()
 	{
 		//Arrange
 		var myDbContextMock = new Mock<IPelicanContext>();
 		uut = new UnitOfWork(myDbContextMock.Object);
 		CancellationToken cancellation = new();
 		//Act
-		uut.SaveAsync();
+		await uut.SaveAsync(cancellation);
 		//Assert
 		myDbContextMock.Verify(x => x.SaveChangesAsync(cancellation), Times.Once());
 	}
 	//Many Test
 	[Fact]
-	public void UnitOfWorkSaveAsyncIsCalled50Times_DbContextReceives50SaveChanges()
+	public async void UnitOfWorkSaveAsyncIsCalled50Times_DbContextReceives50SaveChanges()
 	{
 		//Arrange
 		var myDbContextMock = new Mock<IPelicanContext>();
 		uut = new UnitOfWork(myDbContextMock.Object);
 		CancellationToken cancellation = new();
 		//Act
-		for (int i = 0; i < 50; i++)
+		for (var i = 0; i < 50; i++)
 		{
-			uut.SaveAsync();
+			await uut.SaveAsync(cancellation);
 		}
 		//Assert
 		myDbContextMock.Verify(x => x.SaveChangesAsync(cancellation), Times.Exactly(50));

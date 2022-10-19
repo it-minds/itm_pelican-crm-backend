@@ -8,7 +8,7 @@ public class ClientContact : Entity, ITimeTracked
 
 	public Guid ClientId { get; set; }
 
-	public string HubspotClientId { get; set; }
+	public string HubSpotClientId { get; set; }
 
 	public Client Client { get; set; }
 

@@ -38,7 +38,7 @@ internal sealed class HubSpotContactService : HubSpotService, IHubSpotObjectServ
 					response.ErrorException?.Message!));
 	}
 
-	public async Task<Result<IEnumerable<Contact>>> GetAsync(
+	public async Task<Result<List<Contact>>> GetAsync(
 		string accessToken,
 		CancellationToken cancellationToken)
 	{
@@ -62,12 +62,10 @@ internal sealed class HubSpotContactService : HubSpotService, IHubSpotObjectServ
 					ress.Add(res);
 				});
 
-
-
-			return Result.Success(ress.AsEnumerable());
+			return Result.Success(ress);
 		}
 
-		return Result.Failure<IEnumerable<Contact>>(
+		return Result.Failure<List<Contact>>(
 				new Error(
 					response.StatusCode.ToString(),
 					response.ErrorException?.Message!));

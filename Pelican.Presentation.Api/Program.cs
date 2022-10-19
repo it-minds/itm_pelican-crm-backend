@@ -20,7 +20,7 @@ builder.Services.AddPersistince(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddApi();
 //Adding GraphQl Specific extensions and services.
-var executorBuilder = builder.Services
+builder.Services
 	.AddPresentationGraphQL()
 	.AddDataLoaders();
 

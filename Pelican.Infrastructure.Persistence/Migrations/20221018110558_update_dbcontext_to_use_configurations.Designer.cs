@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pelican.Infrastructure.Persistence;
 
@@ -11,9 +12,10 @@ using Pelican.Infrastructure.Persistence;
 namespace Pelican.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(PelicanContext))]
-    partial class PelicanContextModelSnapshot : ModelSnapshot
+    [Migration("20221018110558_update_dbcontext_to_use_configurations")]
+    partial class update_dbcontext_to_use_configurations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,13 +98,11 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("HubSpotAccountManagerId")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HubSpotDealId")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -177,15 +177,13 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                     b.Property<long>("CreatedAt")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("HubSpotClientId")
+                    b.Property<string>("HubspotClientId")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HubspotContactId")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -196,8 +194,6 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("ContactId");
 
                     b.ToTable("ClientContacts", (string)null);
                 });
@@ -212,6 +208,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -259,6 +256,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ClientId")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long>("CreatedAt")
@@ -273,6 +271,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("EndDate")
+                        .IsRequired()
                         .HasColumnType("Date");
 
                     b.Property<string>("HubSpotId")
@@ -314,13 +313,11 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("HubSpotContactId")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HubSpotDealId")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -453,7 +450,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.HasOne("Pelican.Domain.Entities.Contact", "Contact")
                         .WithMany("ClientContacts")
-                        .HasForeignKey("ContactId")
+                        .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -466,7 +463,9 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("Pelican.Domain.Entities.Client", "Client")
                         .WithMany("Deals")
-                        .HasForeignKey("ClientId");
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Client");
                 });

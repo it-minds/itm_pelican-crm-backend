@@ -29,9 +29,24 @@ internal static class ContactResponseToContact
 				HubspotContactId = result.HubSpotId,
 				Contact = result,
 				IsActive = true,
-				HubspotClientId = company.Id,
+				HubSpotClientId = company.Id,
 			})
 			.ToList() ?? new List<ClientContact>();
+
+		result.DealContacts = response
+			.Associations?
+			.Deals?
+			.AssociationList
+			.Where(deal => deal.Type == "contact_to_deal")?
+			.Select(deal => new DealContact(Guid.NewGuid())
+			{
+				Contact = result,
+				ContactId = result.Id,
+				HubSpotContactId = result.HubSpotId,
+				HubSpotDealId = deal.Id,
+				IsActive = true,
+			})
+			.ToList() ?? new List<DealContact>();
 
 		return result;
 	}

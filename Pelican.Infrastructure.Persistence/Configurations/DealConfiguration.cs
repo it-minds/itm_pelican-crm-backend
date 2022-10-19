@@ -20,8 +20,7 @@ internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 			.HasMaxLength(StringLengths.Id);
 
 		builder.Property(p => p.EndDate)
-			.HasColumnType("Date")
-			.IsRequired();
+			.HasColumnType("Date");
 
 		builder.Property(p => p.Revenue)
 			.HasColumnType("decimal(19,4)");

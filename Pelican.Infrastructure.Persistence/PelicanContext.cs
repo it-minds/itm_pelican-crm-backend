@@ -29,7 +29,7 @@ public class PelicanContext : DbContext, IPelicanContext
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
-		modelBuilder.ApplyConfigurationsFromAssembly(typeof(DbContext).Assembly);
+		modelBuilder.ApplyConfigurationsFromAssembly(typeof(PelicanContext).Assembly);
 	}
 
 

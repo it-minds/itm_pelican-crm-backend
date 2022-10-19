@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pelican.Infrastructure.Persistence;
 
@@ -11,9 +12,10 @@ using Pelican.Infrastructure.Persistence;
 namespace Pelican.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(PelicanContext))]
-    partial class PelicanContextModelSnapshot : ModelSnapshot
+    [Migration("20221018114715_updated_required_fields")]
+    partial class updated_required_fields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,7 +179,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                     b.Property<long>("CreatedAt")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("HubSpotClientId")
+                    b.Property<string>("HubspotClientId")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -196,8 +198,6 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("ContactId");
 
                     b.ToTable("ClientContacts", (string)null);
                 });
@@ -453,7 +453,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.HasOne("Pelican.Domain.Entities.Contact", "Contact")
                         .WithMany("ClientContacts")
-                        .HasForeignKey("ContactId")
+                        .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

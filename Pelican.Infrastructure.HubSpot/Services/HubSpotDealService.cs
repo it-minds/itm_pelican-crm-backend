@@ -39,7 +39,7 @@ internal sealed class HubSpotDealService : HubSpotService, IHubSpotObjectService
 					response.ErrorException?.Message!)));
 	}
 
-	public async Task<Result<IEnumerable<Deal>>> GetAsync(
+	public async Task<Result<List<Deal>>> GetAsync(
 		string accessToken,
 		CancellationToken cancellationToken)
 	{
@@ -64,10 +64,10 @@ internal sealed class HubSpotDealService : HubSpotService, IHubSpotObjectService
 					ress.Add(r);
 				});
 
-			return Result.Success(ress.AsEnumerable());
+			return Result.Success(ress);
 		}
 
-		return Result.Failure<IEnumerable<Deal>>(
+		return Result.Failure<List<Deal>>(
 				new Error(
 					response.StatusCode.ToString(),
 					response.ErrorException?.Message!));

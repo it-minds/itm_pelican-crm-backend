@@ -129,28 +129,28 @@ public class NewInstallationCommandHandlerTests
 				h => h.GetAsync(token2, cancellationToken))
 			.ReturnsAsync(
 				Result.Success(
-					new List<AccountManager>().AsEnumerable()));
+					new List<AccountManager>()));
 
 		_hubSpotContactServiceMock
 			.Setup(
 				h => h.GetAsync(token2, cancellationToken))
 			.ReturnsAsync(
 				Result.Success(
-					new List<Contact>().AsEnumerable()));
+					new List<Contact>()));
 
 		_hubSpotClientServiceMock
 			.Setup(
 				h => h.GetAsync(token2, cancellationToken))
 			.ReturnsAsync(
 				Result.Success(
-					new List<Client>().AsEnumerable()));
+					new List<Client>()));
 
 		_hubSpotDealServiceMock
 			.Setup(
 				h => h.GetAsync(token2, cancellationToken))
 			.ReturnsAsync(
 				Result.Success(
-					new List<Deal>().AsEnumerable()));
+					new List<Deal>()));
 
 		_unitOfWorkMock
 			.Setup(

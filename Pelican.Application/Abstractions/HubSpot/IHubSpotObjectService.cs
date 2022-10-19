@@ -9,7 +9,7 @@ public interface IHubSpotObjectService<TEntity>
 		long id,
 		CancellationToken cancellationToken);
 
-	Task<Result<IEnumerable<TEntity>>> GetAsync(
+	Task<Result<List<TEntity>>> GetAsync(
 		string accessToken,
 		CancellationToken cancellationToken);
 }

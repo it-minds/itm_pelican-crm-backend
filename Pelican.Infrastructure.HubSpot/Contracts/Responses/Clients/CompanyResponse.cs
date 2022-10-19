@@ -7,4 +7,7 @@ internal sealed class CompanyResponse : HubSpotResponse
 {
 	[JsonPropertyName("properties")]
 	public CompanyProperties Properties { get; set; } = default!;
+
+	[JsonPropertyName("associations")]
+	public CompanyAssociations? Associations { get; set; } = default!;
 }

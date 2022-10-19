@@ -42,6 +42,18 @@ internal static class DealResponseToDeal
 			.ToList()
 			?? new List<DealContact>();
 
+		result.Client = response
+			.Associations?
+			.Companies?
+			.AssociationList
+			.Where(company => company.Type == "deal_to_company")
+			.Select(company => new Client(Guid.NewGuid())
+			{
+				HubSpotId = company.Id,
+				Deals = new List<Deal>() { result },
+			})
+			.FirstOrDefault();
+
 		result.ClientId = result.Client?.Id;
 
 		return result;

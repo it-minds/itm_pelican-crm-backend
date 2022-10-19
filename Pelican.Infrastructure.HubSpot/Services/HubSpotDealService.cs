@@ -63,12 +63,12 @@ internal sealed class HubSpotDealService : HubSpotService, IHubSpotObjectService
 				.ToList()
 				.ForEach(res =>
 				{
-					var r = res.ToDeal();
+					var result = res.ToDeal();
 
-					ress.Add(r);
+					results.Add(result);
 				});
 
-			return Result.Success(ress);
+			return Result.Success(results);
 		}
 
 		return Result.Failure<List<Deal>>(

@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Application.Suppliers.Queries.GetSupplierById;
-public class GetSupplierByIdQueryHandler : IRequestHandler<GetSupplierByIdQuery, Supplier>
+public class GetSupplierByIdQueryHandler : IQueryHandler<GetSupplierByIdQuery, Supplier>
 {
 	private readonly IGenericDataLoader<Supplier> _dataLoader;
 	public GetSupplierByIdQueryHandler(IGenericDataLoader<Supplier> dataLoader)

@@ -10,19 +10,23 @@ internal class ContactConfiguration : IEntityTypeConfiguration<Contact>
 	{
 		builder.ToTable("Contacts");
 
-		builder.Property(p => p.Name)
-			.HasMaxLength(StringLengths.Name)
-			.IsRequired();
+		builder.Property(p => p.Firstname)
+			.HasMaxLength(StringLengths.Name);
+
+		builder.Property(p => p.Lastname)
+			.HasMaxLength(StringLengths.Name);
 
 		builder.Property(p => p.Email)
-			.HasMaxLength(StringLengths.Email)
-			.IsRequired();
+			.HasMaxLength(StringLengths.Email);
 
 		builder.Property(p => p.LinkedInUrl)
 			.HasMaxLength(StringLengths.Url);
 
 		builder.Property(p => p.PhoneNumber)
 			.HasMaxLength(StringLengths.PhoneNumber);
+
+		builder.Property(p => p.HubSpotId)
+			.HasMaxLength(StringLengths.Id);
 
 		builder.HasMany(a => a.ClientContacts)
 			.WithOne(e => e.Contact)

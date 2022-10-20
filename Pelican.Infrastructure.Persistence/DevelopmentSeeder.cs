@@ -1,4 +1,5 @@
 ﻿using Pelican.Application.Common.Interfaces;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Repositories;
 using Location = Pelican.Domain.Entities.Location;
@@ -6,7 +7,6 @@ using Location = Pelican.Domain.Entities.Location;
 namespace Pelican.Infrastructure.Persistence;
 public class DevelopmentSeeder : IDevelopmentSeeder
 {
-	//This method is only partially created it should call specific methods to seed each table in the database.
 	private IUnitOfWork _unitOfWork;
 	private IPelicanBogusFaker _faker;
 	public DevelopmentSeeder(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker)

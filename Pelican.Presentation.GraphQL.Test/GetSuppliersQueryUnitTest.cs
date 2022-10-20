@@ -31,7 +31,7 @@ public class GetSuppliersQueryUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		Guid id = Guid.NewGuid();
 		GetSupplierByIdQuery input = new GetSupplierByIdQuery(id);
-		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Supplier { Id = id });
+		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Supplier(id));
 		//Act
 		var result = await uut.GetSupplierAsync(input, mediatorMock.Object, cancellationToken);
 		//Assert

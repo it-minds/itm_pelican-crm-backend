@@ -10,10 +10,8 @@ internal class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
 	{
 		builder.ToTable("Suppliers");
 
-
 		builder.Property(p => p.Name)
-			.HasMaxLength(StringLengths.Name)
-			.IsRequired();
+			.HasMaxLength(StringLengths.Name);
 
 		builder.Property(p => p.PictureUrl)
 			.HasMaxLength(StringLengths.Url);
@@ -29,6 +27,9 @@ internal class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
 
 		builder.Property(p => p.WebsiteUrl)
 			.HasMaxLength(StringLengths.Url);
+
+		builder.Property(p => p.RefreshToken)
+			.HasMaxLength(StringLengths.Token);
 
 		builder.HasMany(a => a.AccountManagers)
 			.WithOne(a => a.Supplier)

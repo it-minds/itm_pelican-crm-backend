@@ -1,4 +1,5 @@
 ﻿using Moq;
+using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Services;
@@ -24,6 +25,8 @@ public class HubSpotDealServicesTests
 	[Fact]
 	public async Task GetByIdAsync_ClientReturnsFailure_ReturnFailure()
 	{
+		const string ERROR = "testError";
+
 		/// Arrange
 		_hubSpotClientMock
 			.Setup(client => client.GetAsync<DealResponse>(
@@ -32,6 +35,8 @@ public class HubSpotDealServicesTests
 			.ReturnsAsync(new RestResponse<DealResponse>()
 			{
 				IsSuccessStatusCode = false,
+				StatusCode = System.Net.HttpStatusCode.BadRequest,
+				ErrorException = new Exception(ERROR)
 			});
 
 		/// Act
@@ -39,6 +44,20 @@ public class HubSpotDealServicesTests
 
 		/// Assert
 		Assert.True(result.IsFailure);
+		Assert.Equal(ERROR, result.Error.Message);
+	}
+
+	[Fact]
+	public async Task GetByIdAsync_ClientReturnsNull_ReturnFailureNullError()
+	{
+		const string ERROR = "testError";
+
+		/// Act
+		var result = await _uut.GetByIdAsync("", 0, _cancellationToken);
+
+		/// Assert
+		Assert.True(result.IsFailure);
+		Assert.Equal(Error.NullValue, result.Error);
 	}
 
 	[Fact]

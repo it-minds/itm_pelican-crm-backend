@@ -63,11 +63,11 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 		var client = new Client();
 		var faker = new Faker<Client>().UseSeed(1341);
 		faker
-			.RuleFor(e => e.Classification, f => f.PickRandom<ClientStatus>().OrNull().ToString())
-			.RuleFor(e => e.OfficeLocation, f => f.PickRandom<Location>(locations).CityName)
-			.RuleFor(e => e.Segment, f => f.PickRandom<Segment>().OrNull().ToString())
+			.RuleFor(e => e.Classification, f => f.PickRandom<ClientStatus>().ToString().OrNull(f))
+			.RuleFor(e => e.OfficeLocation, f => f.PickRandom<Location>(locations).CityName.OrNull(f))
+			.RuleFor(e => e.Segment, f => f.PickRandom<Segment>().ToString().OrNull(f))
 			.RuleFor(e => e.Name, f => f.Name.FullName(f.Person.Gender))
-			.RuleFor(e => e.PictureUrl, f => f.Image.PicsumUrl())
+			.RuleFor(e => e.PictureUrl, f => f.Image.PicsumUrl().OrNull(f))
 			.RuleFor(e => e.Id, f => f.Random.Guid());
 		return faker.Generate(count);
 	}

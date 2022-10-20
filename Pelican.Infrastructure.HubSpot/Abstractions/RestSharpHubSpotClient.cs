@@ -11,29 +11,16 @@ internal sealed class RestSharpHubSpotClient : IHubSpotClient
 	public RestSharpHubSpotClient(
 		IOptions<HubSpotSettings> options)
 	{
-		if (options is null
-			|| options.Value is null
-			|| options.Value.BaseUrl is null or "")
-		{
-			throw new ArgumentNullException(nameof(options));
-		}
-
 		_client = new RestClient(options.Value.BaseUrl);
 	}
 
 	public async Task<RestResponse<TResponse>> GetAsync<TResponse>(
 		RestRequest request,
 		CancellationToken cancellationToken)
-	{
-		return await _client
-			.ExecuteGetAsync<TResponse>(request, cancellationToken);
-	}
+		=> await _client.ExecuteGetAsync<TResponse>(request, cancellationToken);
 
 	public async Task<RestResponse<TResponse>> PostAsync<TResponse>(
 		RestRequest request,
 		CancellationToken cancellationToken)
-	{
-		return await _client
-			.ExecutePostAsync<TResponse>(request, cancellationToken);
-	}
+		=> await _client.ExecutePostAsync<TResponse>(request, cancellationToken);
 }

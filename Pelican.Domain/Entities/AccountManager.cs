@@ -34,7 +34,6 @@ public class AccountManager : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
-
 	public AccountManager(Guid id) : base(id) { }
 
 	public AccountManager() { }

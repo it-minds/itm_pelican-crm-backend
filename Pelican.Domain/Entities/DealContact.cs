@@ -25,7 +25,6 @@ public class DealContact : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
-
 	public DealContact(Guid id) : base(id) { }
 
 	public DealContact() { }

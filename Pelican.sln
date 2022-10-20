@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Pers
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Google", "Pelican.Infrastructure.Google\Pelican.Infrastructure.Google.csproj", "{929220AD-AF44-4E32-8F5A-3ECC97D21528}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Authentication", "Pelican.Infrastructure.Google\Pelican.Infrastructure.Authentication.csproj", "{929220AD-AF44-4E32-8F5A-3ECC97D21528}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.HubSpot", "Pelican.Infrastructure.HubSpot\Pelican.Infrastructure.HubSpot.csproj", "{D1A91F65-9625-44CA-A1C0-99B3FFBD6266}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Presentation.GraphQL", "Pelican.Presentation.GraphQL\Pelican.Presentation.GraphQL.csproj", "{028B5717-61D7-4D0B-B36A-0245409AECF6}"
@@ -33,6 +35,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Auth.Test", "Pelican.Infrastructure.Google.Test\Pelican.Infrastructure.Auth.Test.csproj", "{2B5FA481-4D92-4010-BB71-534D9FE17BE4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Azure", "Pelican.Infrastructure.Azure\Pelican.Infrastructure.Azure.csproj", "{FFDE9AFD-35EC-4F67-A2A1-B84A0AB62E6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,6 +90,14 @@ Global
 		{2B48F1CD-B88E-4111-8341-01309A874253}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B48F1CD-B88E-4111-8341-01309A874253}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B48F1CD-B88E-4111-8341-01309A874253}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B5FA481-4D92-4010-BB71-534D9FE17BE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B5FA481-4D92-4010-BB71-534D9FE17BE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B5FA481-4D92-4010-BB71-534D9FE17BE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B5FA481-4D92-4010-BB71-534D9FE17BE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFDE9AFD-35EC-4F67-A2A1-B84A0AB62E6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFDE9AFD-35EC-4F67-A2A1-B84A0AB62E6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFDE9AFD-35EC-4F67-A2A1-B84A0AB62E6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFDE9AFD-35EC-4F67-A2A1-B84A0AB62E6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +114,8 @@ Global
 		{DA0C37CF-433B-45E4-8DAF-2205A7C8EF77} = {0200A7F9-E192-48B9-A8B8-96118BB18098}
 		{F17C8065-806F-4391-A1E6-B282B80D494D} = {0200A7F9-E192-48B9-A8B8-96118BB18098}
 		{2B48F1CD-B88E-4111-8341-01309A874253} = {0200A7F9-E192-48B9-A8B8-96118BB18098}
+		{2B5FA481-4D92-4010-BB71-534D9FE17BE4} = {0200A7F9-E192-48B9-A8B8-96118BB18098}
+		{FFDE9AFD-35EC-4F67-A2A1-B84A0AB62E6C} = {5D515F34-F1A1-48A8-B377-A8451F3765B5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C8DAB442-8E34-49C4-9368-B34D51D4E924}

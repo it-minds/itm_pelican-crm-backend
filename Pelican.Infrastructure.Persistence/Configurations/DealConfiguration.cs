@@ -13,9 +13,14 @@ internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 		builder.Property(p => p.DealStatus)
 			.HasMaxLength(StringLengths.DealStatus);
 
+		builder.Property(p => p.CurrencyCode)
+			.HasMaxLength(StringLengths.CurrencyCode);
+
+		builder.Property(p => p.HubSpotId)
+			.HasMaxLength(StringLengths.Id);
+
 		builder.Property(p => p.EndDate)
-			.HasColumnType("Date")
-			.IsRequired();
+			.HasColumnType("Date");
 
 		builder.Property(p => p.Revenue)
 			.HasColumnType("decimal(19,4)");

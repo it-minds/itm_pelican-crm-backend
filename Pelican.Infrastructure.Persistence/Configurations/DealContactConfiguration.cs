@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Infrastructure.Persistence.Configurations;
@@ -10,6 +11,14 @@ internal class DealContactConfiguration : IEntityTypeConfiguration<DealContact>
 		builder.ToTable("DealContacts");
 
 		builder.Property(p => p.IsActive)
+			.IsRequired();
+
+		builder.Property(p => p.HubSpotContactId)
+			.HasMaxLength(StringLengths.Id)
+			.IsRequired();
+
+		builder.Property(p => p.HubSpotDealId)
+			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 
 		builder.HasOne(a => a.Contact)

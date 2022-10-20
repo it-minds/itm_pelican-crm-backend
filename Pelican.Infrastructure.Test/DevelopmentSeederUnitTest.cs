@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using Moq;
 using Pelican.Application.Common.Interfaces;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Repositories;
 using Xunit;
 
 
@@ -167,7 +167,6 @@ public class DevelopmentSeederUnitTest
 		//Arrange
 		var fakeLocationRepository = new Mock<IGenericRepository<Location>>();
 		var fakeLocationsCollection = new Mock<IEnumerable<Location>>();
-
 		fakePelicanFaker.Setup(x => x.LocationFaker(It.IsAny<int>())).Returns(fakeLocationsCollection.Object);
 		fakeUnitOfWork.Setup(x => x.LocationRepository)
 			.Returns(fakeLocationRepository.Object);
@@ -185,7 +184,6 @@ public class DevelopmentSeederUnitTest
 		var fakeSupplierRepository = new Mock<IGenericRepository<Supplier>>();
 		var fakeSuppliersCollection = new Mock<IEnumerable<Supplier>>();
 		var fakeLocation = new Mock<IQueryable<Location>>();
-
 		fakePelicanFaker.Setup(x => x.SupplierFaker(It.IsAny<int>(), It.IsAny<IQueryable<Location>>())).Returns(fakeSuppliersCollection.Object);
 		fakeUnitOfWork.Setup(x => x.SupplierRepository)
 			.Returns(fakeSupplierRepository.Object);
@@ -203,7 +201,6 @@ public class DevelopmentSeederUnitTest
 		var fakeAccountManagersCollection = new Mock<IEnumerable<AccountManagerDeal>>();
 		var fakeAccountManager = new Mock<IQueryable<AccountManager>>();
 		var fakeDeal = new Mock<IQueryable<Deal>>();
-
 		fakePelicanFaker.Setup(x => x.AccountManagerDealFaker(It.IsAny<IQueryable<AccountManager>>(), It.IsAny<IQueryable<Deal>>())).Returns(fakeAccountManagersCollection.Object);
 		fakeUnitOfWork.Setup(x => x.AccountManagerDealRepository)
 			.Returns(fakeAccountManagerDealRepository.Object);

@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Application.Contacts.Queries.GetContactById;
-public class GetContactByIdQueryHandler : IRequestHandler<GetContactByIdQuery, Contact>
+public class GetContactByIdQueryHandler : IQueryHandler<GetContactByIdQuery, Contact>
 {
 	private readonly IGenericDataLoader<Contact> _dataLoader;
 	public GetContactByIdQueryHandler(IGenericDataLoader<Contact> dataLoader)

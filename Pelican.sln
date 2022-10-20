@@ -32,6 +32,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6326A8D2-2AAF-47B9-BC93-E4EE3BDC34EB}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		coverlet.runsettings = coverlet.runsettings
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Infrastructure.HubSpot.Test", "Pelican.Infrastructure.HubSpot.Test\Pelican.Infrastructure.HubSpot.Test.csproj", "{5AC14E89-2962-41EC-8383-C2EE51F2E5A1}"

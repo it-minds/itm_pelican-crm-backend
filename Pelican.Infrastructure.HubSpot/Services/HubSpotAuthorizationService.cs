@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.HubSpot.Dtos;
 using Pelican.Domain.Entities;
@@ -11,9 +10,7 @@ using Pelican.Infrastructure.HubSpot.Mapping.Auth;
 using Pelican.Infrastructure.HubSpot.Settings;
 using RestSharp;
 
-[assembly: InternalsVisibleTo("Pelican.Infrastructure.HubSpot.Test")]
 namespace Pelican.Infrastructure.HubSpot.Services;
-
 
 internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuthorizationService
 {
@@ -23,17 +20,6 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 		IOptions<HubSpotSettings> hubSpotSettings)
 		: base(hubSpotClient)
 	{
-		if (hubSpotSettings is null
-				|| hubSpotSettings.Value is null
-				|| hubSpotSettings.Value.BaseUrl is null
-				|| hubSpotSettings.Value.App is null
-				|| hubSpotSettings.Value.App.ClientId is null
-				|| hubSpotSettings.Value.RedirectUrl is null
-				|| hubSpotSettings.Value.App.ClientSecret is null)
-		{
-			throw new ArgumentNullException(nameof(hubSpotSettings));
-		}
-
 		_hubSpotSettings = hubSpotSettings.Value;
 	}
 

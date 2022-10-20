@@ -9,6 +9,8 @@ namespace Pelican.Infrastructure.HubSpot.Test.Services;
 
 public class HubSpotAccountManagerServicesTests
 {
+	private const string ID = "Id";
+
 	private readonly Mock<IHubSpotClient> _hubSpotClientMock;
 	private readonly HubSpotAccountManagerService _uut;
 	private readonly CancellationToken _cancellationToken;
@@ -46,7 +48,7 @@ public class HubSpotAccountManagerServicesTests
 		/// Arrange
 		OwnerResponse response = new()
 		{
-			Id = "Id",
+			Id = ID,
 		};
 
 		_hubSpotClientMock
@@ -98,7 +100,7 @@ public class HubSpotAccountManagerServicesTests
 			{
 					new OwnerResponse()
 					{
-						Id = "Id"
+						Id = ID,
 					},
 			},
 		};

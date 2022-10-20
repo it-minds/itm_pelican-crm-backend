@@ -9,6 +9,7 @@ namespace Pelican.Infrastructure.HubSpot.Test.Services;
 
 public class HubSpotDealServicesTests
 {
+	private const string ID = "Id";
 	private readonly Mock<IHubSpotClient> _hubSpotClientMock;
 	private readonly HubSpotDealService _uut;
 	private readonly CancellationToken _cancellationToken;
@@ -48,7 +49,7 @@ public class HubSpotDealServicesTests
 		{
 			Properties = new()
 			{
-				HubSpotObjectId = "Id",
+				HubSpotObjectId = ID,
 			},
 		};
 
@@ -103,7 +104,7 @@ public class HubSpotDealServicesTests
 				{
 					Properties = new()
 					{
-						HubSpotObjectId = "Id",
+						HubSpotObjectId = ID,
 					},
 				},
 			},

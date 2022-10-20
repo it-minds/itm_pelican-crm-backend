@@ -9,6 +9,11 @@ internal static class RestResponseExtensions
 		this RestResponse<TResponse> response,
 		Func<TResponse, TResult> mappingFunc)
 	{
+		if (response is null)
+		{
+			return Result.Failure<TResult>(Error.NullValue);
+		}
+
 		if (response.IsSuccessful && response.Data is not null)
 		{
 			TResult result = mappingFunc(response.Data);

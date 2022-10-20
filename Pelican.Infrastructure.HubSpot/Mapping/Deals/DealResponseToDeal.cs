@@ -9,10 +9,10 @@ internal static class DealResponseToDeal
 	{
 		Deal result = new(Guid.NewGuid())
 		{
-			EndDate = response.Properties?.CloseDate,
-			DealStatus = response.Properties?.Dealstage,
-			HubSpotId = response.Properties.HubSpotObjectId,
-			Revenue = response.Properties.Amount is not "" ? Convert.ToDecimal(response.Properties.Amount) : null,
+			EndDate = response.Properties!.CloseDate,
+			DealStatus = response.Properties!.Dealstage,
+			HubSpotId = response.Properties!.HubSpotObjectId,
+			Revenue = response.Properties!.Amount is not "" ? Convert.ToDecimal(response.Properties.Amount) : null,
 			HubSpotOwnerId = response.Properties.HubspotOwnerId,
 			Client = response
 				.Associations?

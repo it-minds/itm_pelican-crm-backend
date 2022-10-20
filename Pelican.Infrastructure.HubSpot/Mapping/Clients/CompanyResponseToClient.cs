@@ -1,7 +1,7 @@
 ﻿using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
 
-namespace Pelican.Infrastructure.HubSpot.Mapping;
+namespace Pelican.Infrastructure.HubSpot.Mapping.Clients;
 
 internal static class CompanyResponseToClient
 {

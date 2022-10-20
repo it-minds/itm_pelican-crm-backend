@@ -1,7 +1,7 @@
 ﻿using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 
-namespace Pelican.Infrastructure.HubSpot.Mapping;
+namespace Pelican.Infrastructure.HubSpot.Mapping.Deals;
 
 internal static class DealResponseToDeal
 {
@@ -9,8 +9,8 @@ internal static class DealResponseToDeal
 	{
 		Deal result = new(Guid.NewGuid())
 		{
-			EndDate = response.Properties.CloseDate,
-			DealStatus = response.Properties.Dealstage,
+			EndDate = response.Properties?.CloseDate,
+			DealStatus = response.Properties?.Dealstage,
 			HubSpotId = response.Properties.HubSpotObjectId,
 			Revenue = response.Properties.Amount is not "" ? Convert.ToDecimal(response.Properties.Amount) : null,
 			HubSpotOwnerId = response.Properties.HubspotOwnerId,

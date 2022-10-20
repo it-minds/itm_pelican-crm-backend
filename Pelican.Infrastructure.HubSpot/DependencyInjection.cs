@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Domain.Entities;
+using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Services;
 using Pelican.Infrastructure.HubSpot.Settings;
 
@@ -14,6 +15,8 @@ public static class DependencyInjection
 		IConfiguration configuration)
 	{
 		services.Configure<HubSpotSettings>(configuration.GetSection(nameof(HubSpotSettings)));
+
+		services.AddSingleton<IHubSpotClient, RestSharpHubSpotClient>();
 
 		services.AddSingleton<IHubSpotObjectService<AccountManager>, HubSpotAccountManagerService>();
 		services.AddSingleton<IHubSpotAuthorizationService, HubSpotAuthorizationService>();

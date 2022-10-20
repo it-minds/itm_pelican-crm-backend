@@ -1,7 +1,7 @@
 ﻿using Pelican.Application.HubSpot.Dtos;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
 
-namespace Pelican.Infrastructure.HubSpot.Mapping;
+namespace Pelican.Infrastructure.HubSpot.Mapping.Auth;
 
 internal static class GetAccessTokenResponseToRefreshAccessTokens
 {

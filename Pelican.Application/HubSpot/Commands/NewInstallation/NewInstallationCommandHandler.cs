@@ -43,7 +43,7 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 
 		if (tokensResult.IsFailure)
 		{
-			return Result.Failure(tokensResult.Error);
+			return tokensResult;
 		}
 
 		/// missing check to see if supplier is already loaded

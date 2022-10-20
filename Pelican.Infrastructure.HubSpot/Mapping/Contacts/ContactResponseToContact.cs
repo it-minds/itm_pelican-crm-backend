@@ -1,7 +1,7 @@
 ﻿using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 
-namespace Pelican.Infrastructure.HubSpot.Mapping;
+namespace Pelican.Infrastructure.HubSpot.Mapping.Contacts;
 
 internal static class ContactResponseToContact
 {

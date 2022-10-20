@@ -1,7 +1,7 @@
 ﻿using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
 
-namespace Pelican.Infrastructure.HubSpot.Mapping;
+namespace Pelican.Infrastructure.HubSpot.Mapping.AccountManagers;
 
 internal static class OwnerResponseToAccountManager
 {

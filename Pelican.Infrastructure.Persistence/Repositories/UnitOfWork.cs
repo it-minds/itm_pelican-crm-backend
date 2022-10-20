@@ -7,15 +7,16 @@ namespace Pelican.Infrastructure.Persistence.Repositories;
 public class UnitOfWork : IUnitOfWork
 {
 	private readonly IPelicanContext _pelicanContext;
-	private IGenericRepository<AccountManagerDeal> accountManagerDealRepository;
-	private IGenericRepository<AccountManager> accountManagerRepository;
-	private IGenericRepository<Client> clientRepository;
-	private IGenericRepository<Contact> contactRepository;
-	private IGenericRepository<Deal> dealRepository;
-	private IGenericRepository<Location> locationRepository;
-	private IGenericRepository<Supplier> supplierRepository;
-	private IGenericRepository<ClientContact> clientContactRepository;
-	private IGenericRepository<DealContact> dealContactRepository;
+	private IGenericRepository<AccountManagerDeal> _accountManagerDealRepository;
+	private IGenericRepository<AccountManager> _accountManagerRepository;
+	private IGenericRepository<Client> _clientRepository;
+	private IGenericRepository<Contact> _contactRepository;
+	private IGenericRepository<Deal> _dealRepository;
+	private IGenericRepository<Location> _locationRepository;
+	private IGenericRepository<Supplier> _supplierRepository;
+	private IGenericRepository<ClientContact> _clientContactRepository;
+
+
 	public IGenericRepository<AccountManagerDeal> AccountManagerDealRepository
 	{
 		get
@@ -85,22 +86,6 @@ public class UnitOfWork : IUnitOfWork
 		{
 			_clientContactRepository ??= new GenericRepository<ClientContact>(_pelicanContext);
 			return _clientContactRepository;
-		}
-	}
-	public IGenericRepository<ClientContact> ClientContactRepository
-	{
-		get
-		{
-			clientContactRepository ??= new GenericRepository<ClientContact>(_pelicanContext);
-			return clientContactRepository;
-		}
-	}
-	public IGenericRepository<DealContact> DealContactRepository
-	{
-		get
-		{
-			dealContactRepository ??= new GenericRepository<DealContact>(_pelicanContext);
-			return dealContactRepository;
 		}
 	}
 

@@ -13,7 +13,6 @@ public static class DependencyInjection
 	public static IRequestExecutorBuilder AddPresentationGraphQL(this IServiceCollection services)
 	{
 		return services.AddGraphQLServer()
-			.AddAuthorization()
 			.AddQueryType(q => q.Name("Query"))
 			.AddTypeExtension<AccountManagersQuery>()
 			.AddTypeExtension<ClientsQuery>()

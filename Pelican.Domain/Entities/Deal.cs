@@ -31,6 +31,7 @@ public class Deal : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
+
 	public Deal(Guid id) : base(id) { }
 	public Deal() { }
 

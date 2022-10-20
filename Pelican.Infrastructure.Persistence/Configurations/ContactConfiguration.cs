@@ -34,6 +34,6 @@ internal class ContactConfiguration : IEntityTypeConfiguration<Contact>
 
 		builder.HasMany(a => a.DealContacts)
 			.WithOne(a => a.Contact)
-			.HasForeignKey(a => a.ContactId);
+			.HasForeignKey(a => a.DealId);
 	}
 }

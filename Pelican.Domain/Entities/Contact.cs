@@ -31,6 +31,7 @@ public class Contact : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
+
 	public Contact(Guid id) : base(id) { }
 	public Contact() { }
 

@@ -11,8 +11,6 @@ public interface IUnitOfWork
 	public IGenericRepository<Location> LocationRepository { get; }
 	public IGenericRepository<Supplier> SupplierRepository { get; }
 	public IGenericRepository<ClientContact> ClientContactRepository { get; }
-	public IGenericRepository<DealContact> DealContactRepository { get; }
-
 	void Save();
 	Task SaveAsync(CancellationToken cancellationToken);
 }

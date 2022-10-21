@@ -80,7 +80,7 @@ public class DealResponseToDealTests
 	}
 
 	[Fact]
-	public void ToDeal_WithEmptyAssociationsList_ReturnClientWithoutDealsAndClientContacts()
+	public void ToDeal_WithNullAssociationsList_ReturnClientWithoutDealsAndClientContacts()
 	{
 		/// Arrange
 		response.Associations = new()
@@ -92,6 +92,124 @@ public class DealResponseToDealTests
 			Contacts = new()
 			{
 				AssociationList = null
+			}
+		};
+
+		/// Act
+		Deal result = response.ToDeal();
+
+		/// Assert
+		/// Assert
+		Assert.Equal(ID, result.HubSpotId);
+		Assert.Equal(DEALSTAGE, result.DealStatus);
+		Assert.Equal(DateTime.Today, result.EndDate);
+		Assert.Equal(AMOUNTDECIMAL, result.Revenue);
+		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+
+		Assert.Equal(null, result.Client);
+
+		Assert.Equal(0, result.DealContacts.Count);
+	}
+
+	[Fact]
+	public void ToDeal_WithEmptyAssociationsList_ReturnClientWithoutDealsAndClientContacts()
+	{
+		/// Arrange
+		response.Associations = new()
+		{
+			Companies = new()
+			{
+				AssociationList = new List<Association>(),
+			},
+			Contacts = new()
+			{
+				AssociationList = new List<Association>(),
+			}
+		};
+
+		/// Act
+		Deal result = response.ToDeal();
+
+		/// Assert
+		/// Assert
+		Assert.Equal(ID, result.HubSpotId);
+		Assert.Equal(DEALSTAGE, result.DealStatus);
+		Assert.Equal(DateTime.Today, result.EndDate);
+		Assert.Equal(AMOUNTDECIMAL, result.Revenue);
+		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+
+		Assert.Equal(null, result.Client);
+
+		Assert.Equal(0, result.DealContacts.Count);
+	}
+
+	[Fact]
+	public void ToDeal_WithNullAssociations_ReturnClientWithoutDealsAndClientContacts()
+	{
+		/// Arrange
+		response.Associations = new()
+		{
+			Companies = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						null,
+					},
+			},
+			Contacts = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						null,
+					},
+			}
+		};
+
+		/// Act
+		Deal result = response.ToDeal();
+
+		/// Assert
+		/// Assert
+		Assert.Equal(ID, result.HubSpotId);
+		Assert.Equal(DEALSTAGE, result.DealStatus);
+		Assert.Equal(DateTime.Today, result.EndDate);
+		Assert.Equal(AMOUNTDECIMAL, result.Revenue);
+		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+
+		Assert.Equal(null, result.Client);
+
+		Assert.Equal(0, result.DealContacts.Count);
+	}
+
+
+
+	[Fact]
+	public void ToDeal_WithAssociationsNullType_ReturnClientWithoutDealsAndClientContacts()
+	{
+		/// Arrange
+		response.Associations = new()
+		{
+			Companies = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						new()
+						{
+							Type =null,
+							Id = "2"
+						},
+					},
+			},
+			Contacts = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						new()
+						{
+							Type = null,
+							Id = "2"
+						},
+					},
 			}
 		};
 
@@ -156,7 +274,6 @@ public class DealResponseToDealTests
 
 		Assert.Equal(0, result.DealContacts.Count);
 	}
-
 
 
 	[Fact]

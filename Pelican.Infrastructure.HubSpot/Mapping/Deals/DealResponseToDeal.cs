@@ -32,7 +32,10 @@ internal static class DealResponseToDeal
 			.Associations?
 			.Contacts?
 			.AssociationList?
-			.Where(contact => contact.Type == "deal_to_contact")
+			.Where(contact =>
+				contact is not null
+				&& contact.Type is not null
+				&& contact.Type == "deal_to_contact")
 			.Select(contact => new DealContact(Guid.NewGuid())
 			{
 				DealId = result.Id,
@@ -48,7 +51,10 @@ internal static class DealResponseToDeal
 			.Associations?
 			.Companies?
 			.AssociationList?
-			.Where(company => company.Type == "deal_to_company")?
+			.Where(company =>
+				company is not null
+				&& company.Type is not null
+				&& company.Type == "deal_to_company")?
 			.Select(company => new Client(Guid.NewGuid())
 			{
 				HubSpotId = company.Id,

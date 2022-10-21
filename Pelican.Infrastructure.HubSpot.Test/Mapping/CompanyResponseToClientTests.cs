@@ -66,6 +66,37 @@ public class CompanyResponseToClientTests
 	}
 
 	[Fact]
+	public void ToClient_WithNullAssociationsList_ReturnClientWithoutDealsAndClientContacts()
+	{
+
+		/// Arrange
+		response.Associations = new()
+		{
+			Deals = new()
+			{
+				AssociationList = null
+			},
+			Contacts = new()
+			{
+				AssociationList = null
+			}
+		};
+
+		/// Act
+		Client result = response.ToClient();
+
+		/// Assert
+		Assert.Equal(SEGMENT, result.Segment);
+		Assert.Equal(NAME, result.Name);
+		Assert.Equal(LOCATION, result.OfficeLocation);
+		Assert.Equal(ID, result.HubSpotId);
+
+		Assert.Equal(0, result.Deals.Count);
+
+		Assert.Equal(0, result.ClientContacts.Count);
+	}
+
+	[Fact]
 	public void ToClient_WithEmptyAssociationsList_ReturnClientWithoutDealsAndClientContacts()
 	{
 
@@ -74,11 +105,95 @@ public class CompanyResponseToClientTests
 		{
 			Deals = new()
 			{
-				AssociationList =null
+				AssociationList = new List<Association>(),
 			},
 			Contacts = new()
 			{
-				AssociationList =null
+				AssociationList = new List<Association>(),
+			}
+		};
+
+		/// Act
+		Client result = response.ToClient();
+
+		/// Assert
+		Assert.Equal(SEGMENT, result.Segment);
+		Assert.Equal(NAME, result.Name);
+		Assert.Equal(LOCATION, result.OfficeLocation);
+		Assert.Equal(ID, result.HubSpotId);
+
+		Assert.Equal(0, result.Deals.Count);
+
+		Assert.Equal(0, result.ClientContacts.Count);
+	}
+
+
+	[Fact]
+	public void ToClient_WithNullAssociations_ReturnClientWithoutDealsAndClientContacts()
+	{
+
+		/// Arrange
+		response.Associations = new()
+		{
+			Deals = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						null,
+					},
+			},
+			Contacts = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						null,
+					},
+			}
+		};
+
+		/// Act
+		Client result = response.ToClient();
+
+		/// Assert
+		Assert.Equal(SEGMENT, result.Segment);
+		Assert.Equal(NAME, result.Name);
+		Assert.Equal(LOCATION, result.OfficeLocation);
+		Assert.Equal(ID, result.HubSpotId);
+
+		Assert.Equal(0, result.Deals.Count);
+
+		Assert.Equal(0, result.ClientContacts.Count);
+	}
+
+
+	[Fact]
+	public void ToClient_WithAssociationsNullType_ReturnClientWithoutDealsAndClientContacts()
+	{
+
+		/// Arrange
+		response.Associations = new()
+		{
+			Deals = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						new()
+						{
+							Type = null,
+							Id = "2"
+						},
+					},
+			},
+			Contacts = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						new()
+						{
+							Type = null,
+							Id = "2"
+						},
+					},
 			}
 		};
 

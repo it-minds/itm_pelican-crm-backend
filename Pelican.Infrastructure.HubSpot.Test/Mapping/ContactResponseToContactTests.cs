@@ -79,7 +79,7 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_WithEmptyAssociationsList_ReturnContactWithoutDealsAndClientContacts()
+	public void ToContact_WithNullAssociationsList_ReturnContactWithoutDealsAndClientContacts()
 	{
 
 		/// Arrange
@@ -92,6 +92,128 @@ public class ContactResponseToContactTests
 			Companies = new()
 			{
 				AssociationList = null
+			}
+		};
+
+		/// Act
+		Contact result = response.ToContact();
+
+		/// Assert
+		Assert.Equal(FIRSTNAME, result.Firstname);
+		Assert.Equal(LASTNAME, result.Lastname);
+		Assert.Equal(EMAIL, result.Email);
+		Assert.Equal(PHONE, result.PhoneNumber);
+		Assert.Equal(OBJECTID, result.HubSpotId);
+		Assert.Equal(JOBTITLE, result.JobTitle);
+		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+
+		Assert.Equal(0, result.DealContacts.Count);
+
+		Assert.Equal(0, result.ClientContacts.Count);
+	}
+
+	[Fact]
+	public void ToContact_WithEmptyAssociationsList_ReturnContactWithoutDealsAndClientContacts()
+	{
+
+		/// Arrange
+		response.Associations = new()
+		{
+			Deals = new()
+			{
+				AssociationList = new List<Association>(),
+			},
+			Companies = new()
+			{
+				AssociationList = new List<Association>(),
+			}
+		};
+
+		/// Act
+		Contact result = response.ToContact();
+
+		/// Assert
+		Assert.Equal(FIRSTNAME, result.Firstname);
+		Assert.Equal(LASTNAME, result.Lastname);
+		Assert.Equal(EMAIL, result.Email);
+		Assert.Equal(PHONE, result.PhoneNumber);
+		Assert.Equal(OBJECTID, result.HubSpotId);
+		Assert.Equal(JOBTITLE, result.JobTitle);
+		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+
+		Assert.Equal(0, result.DealContacts.Count);
+
+		Assert.Equal(0, result.ClientContacts.Count);
+	}
+
+	[Fact]
+	public void ToContact_WithNullAssociations_ReturnContactWithoutDealsAndClientContacts()
+	{
+
+		/// Arrange
+		response.Associations = new()
+		{
+			Deals = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						null,
+					},
+			},
+			Companies = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						null,
+					},
+			}
+		};
+
+		/// Act
+		Contact result = response.ToContact();
+
+		/// Assert
+		Assert.Equal(FIRSTNAME, result.Firstname);
+		Assert.Equal(LASTNAME, result.Lastname);
+		Assert.Equal(EMAIL, result.Email);
+		Assert.Equal(PHONE, result.PhoneNumber);
+		Assert.Equal(OBJECTID, result.HubSpotId);
+		Assert.Equal(JOBTITLE, result.JobTitle);
+		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+
+		Assert.Equal(0, result.DealContacts.Count);
+
+		Assert.Equal(0, result.ClientContacts.Count);
+	}
+
+	[Fact]
+	public void ToContact_WithAssociationsNulltype_ReturnContactWithoutDealsAndClientContacts()
+	{
+
+		/// Arrange
+		response.Associations = new()
+		{
+			Deals = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						new()
+						{
+							Type = null,
+							Id = "2"
+						},
+					},
+			},
+			Companies = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						new()
+						{
+							Type = null,
+							Id = "2"
+						},
+					},
 			}
 		};
 

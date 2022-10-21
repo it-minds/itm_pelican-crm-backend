@@ -19,7 +19,10 @@ internal static class CompanyResponseToClient
 			.Associations?
 			.Deals?
 			.AssociationList?
-			.Where(deal => deal.Type == "company_to_deal")?
+			.Where(deal =>
+				deal is not null
+				&& deal.Type is not null
+				&& deal.Type == "company_to_deal")?
 			.Select(deal => new Deal(Guid.NewGuid())
 			{
 				HubSpotId = deal.Id,
@@ -33,7 +36,10 @@ internal static class CompanyResponseToClient
 			.Associations?
 			.Contacts?
 			.AssociationList?
-			.Where(contact => contact.Type == "company_to_contact")?
+			.Where(contact =>
+				contact is not null
+				&& contact.Type is not null
+				&& contact.Type == "company_to_contact")?
 			.Select(contact => new ClientContact(Guid.NewGuid())
 			{
 				HubSpotContactId = contact.Id,

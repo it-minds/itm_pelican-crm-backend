@@ -87,11 +87,11 @@ public class ContactResponseToContactTests
 		{
 			Deals = new()
 			{
-				AssociationList = new List<Association>()
+				AssociationList = null
 			},
 			Companies = new()
 			{
-				AssociationList = new List<Association>()
+				AssociationList = null
 			}
 		};
 

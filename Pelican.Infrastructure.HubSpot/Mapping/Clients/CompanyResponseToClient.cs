@@ -18,7 +18,7 @@ internal static class CompanyResponseToClient
 		result.Deals = response
 			.Associations?
 			.Deals?
-			.AssociationList
+			.AssociationList?
 			.Where(deal => deal.Type == "company_to_deal")?
 			.Select(deal => new Deal(Guid.NewGuid())
 			{
@@ -26,13 +26,13 @@ internal static class CompanyResponseToClient
 				Client = result,
 				ClientId = result.Id,
 			})
-			.ToList() 
+			.ToList()
 			?? new List<Deal>();
 
 		result.ClientContacts = response
 			.Associations?
 			.Contacts?
-			.AssociationList
+			.AssociationList?
 			.Where(contact => contact.Type == "company_to_contact")?
 			.Select(contact => new ClientContact(Guid.NewGuid())
 			{
@@ -42,7 +42,7 @@ internal static class CompanyResponseToClient
 				ClientId = result.Id,
 				IsActive = true,
 			})
-			.ToList() 
+			.ToList()
 			?? new List<ClientContact>();
 
 		return result;

@@ -87,11 +87,11 @@ public class DealResponseToDealTests
 		{
 			Companies = new()
 			{
-				AssociationList = new List<Association>()
+				AssociationList = null
 			},
 			Contacts = new()
 			{
-				AssociationList = new List<Association>()
+				AssociationList = null
 			}
 		};
 

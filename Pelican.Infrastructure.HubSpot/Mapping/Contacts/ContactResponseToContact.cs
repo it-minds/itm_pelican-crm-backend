@@ -25,8 +25,7 @@ internal static class ContactResponseToContact
 			.Where(company =>
 				company is not null
 				&& company.Type is not null
-				&& company.Type == "contact_to_company"
-			)?
+				&& company.Type == "contact_to_company")
 			.Select(company => new ClientContact(Guid.NewGuid())
 			{
 				ContactId = result.Id,
@@ -44,7 +43,7 @@ internal static class ContactResponseToContact
 			.Where(deal =>
 				deal is not null
 				&& deal.Type is not null
-				&& deal.Type == "contact_to_deal")?
+				&& deal.Type == "contact_to_deal")
 			.Select(deal => new DealContact(Guid.NewGuid())
 			{
 				Contact = result,

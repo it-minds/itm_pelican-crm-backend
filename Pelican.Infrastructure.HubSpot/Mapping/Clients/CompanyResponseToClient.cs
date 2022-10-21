@@ -22,7 +22,7 @@ internal static class CompanyResponseToClient
 			.Where(deal =>
 				deal is not null
 				&& deal.Type is not null
-				&& deal.Type == "company_to_deal")?
+				&& deal.Type == "company_to_deal")
 			.Select(deal => new Deal(Guid.NewGuid())
 			{
 				HubSpotId = deal.Id,
@@ -39,7 +39,7 @@ internal static class CompanyResponseToClient
 			.Where(contact =>
 				contact is not null
 				&& contact.Type is not null
-				&& contact.Type == "company_to_contact")?
+				&& contact.Type == "company_to_contact")
 			.Select(contact => new ClientContact(Guid.NewGuid())
 			{
 				HubSpotContactId = contact.Id,

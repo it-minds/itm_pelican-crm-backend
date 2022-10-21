@@ -54,7 +54,7 @@ internal static class DealResponseToDeal
 			.Where(company =>
 				company is not null
 				&& company.Type is not null
-				&& company.Type == "deal_to_company")?
+				&& company.Type == "deal_to_company")
 			.Select(company => new Client(Guid.NewGuid())
 			{
 				HubSpotId = company.Id,

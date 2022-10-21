@@ -66,6 +66,38 @@ public class CompanyResponseToClientTests
 	}
 
 	[Fact]
+	public void ToClient_WithEmptyAssociationsList_ReturnClientWithoutDealsAndClientContacts()
+	{
+
+		/// Arrange
+		response.Associations = new()
+		{
+			Deals = new()
+			{
+				AssociationList = new List<Association>()
+			},
+			Contacts = new()
+			{
+				AssociationList = new List<Association>()
+			}
+		};
+
+		/// Act
+		Client result = response.ToClient();
+
+		/// Assert
+		Assert.Equal(SEGMENT, result.Segment);
+		Assert.Equal(NAME, result.Name);
+		Assert.Equal(LOCATION, result.OfficeLocation);
+		Assert.Equal(ID, result.HubSpotId);
+
+		Assert.Equal(0, result.Deals.Count);
+
+		Assert.Equal(0, result.ClientContacts.Count);
+	}
+
+
+	[Fact]
 	public void ToClient_WithNotMatchingAssociations_ReturnClientWithoutDealsAndClientContacts()
 	{
 

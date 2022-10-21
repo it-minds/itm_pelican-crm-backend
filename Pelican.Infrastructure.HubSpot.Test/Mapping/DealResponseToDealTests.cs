@@ -80,6 +80,38 @@ public class DealResponseToDealTests
 	}
 
 	[Fact]
+	public void ToDeal_WithEmptyAssociationsList_ReturnClientWithoutDealsAndClientContacts()
+	{
+		/// Arrange
+		response.Associations = new()
+		{
+			Companies = new()
+			{
+				AssociationList = new List<Association>()
+			},
+			Contacts = new()
+			{
+				AssociationList = new List<Association>()
+			}
+		};
+
+		/// Act
+		Deal result = response.ToDeal();
+
+		/// Assert
+		/// Assert
+		Assert.Equal(ID, result.HubSpotId);
+		Assert.Equal(DEALSTAGE, result.DealStatus);
+		Assert.Equal(DateTime.Today, result.EndDate);
+		Assert.Equal(AMOUNTDECIMAL, result.Revenue);
+		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+
+		Assert.Equal(null, result.Client);
+
+		Assert.Equal(0, result.DealContacts.Count);
+	}
+
+	[Fact]
 	public void ToDeal_WithNotMatchingAssociations_ReturnClientWithoutDealsAndClientContacts()
 	{
 		/// Arrange

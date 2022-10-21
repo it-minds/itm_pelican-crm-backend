@@ -26,7 +26,8 @@ internal static class CompanyResponseToClient
 				Client = result,
 				ClientId = result.Id,
 			})
-			.ToList() ?? new List<Deal>();
+			.ToList() 
+			?? new List<Deal>();
 
 		result.ClientContacts = response
 			.Associations?
@@ -41,7 +42,8 @@ internal static class CompanyResponseToClient
 				ClientId = result.Id,
 				IsActive = true,
 			})
-			.ToList() ?? new List<ClientContact>();
+			.ToList() 
+			?? new List<ClientContact>();
 
 		return result;
 	}

@@ -10,7 +10,7 @@ using Pelican.Presentation.Api.Contracts;
 using Pelican.Presentation.Api.Controllers;
 using Xunit;
 
-namespace Pelican.Presentation.Api.Test;
+namespace Pelican.Presentation.Api.Test.Controllers;
 
 public class HubSpotControllerTests
 {

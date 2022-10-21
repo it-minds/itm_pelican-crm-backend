@@ -1,4 +1,7 @@
-﻿namespace Pelican.Presentation.Api;
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Pelican.Presentation.Api.Test")]
+namespace Pelican.Presentation.Api;
 
 public static class DependencyInjection
 {

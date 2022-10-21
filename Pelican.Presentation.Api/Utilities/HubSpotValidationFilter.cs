@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -6,10 +7,11 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
 using Pelican.Infrastructure.HubSpot.Settings;
 
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace Pelican.Presentation.Api.Utilities;
 
 // https://developers.hubspot.com/docs/api/webhooks/validating-requests
-public sealed class HubSpotValidationFilter : IResourceFilter
+internal sealed class HubSpotValidationFilter : IResourceFilter
 {
 	private readonly ILogger<HubSpotValidationFilter> _logger;
 	private readonly HubSpotSettings _settings;

@@ -51,7 +51,7 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_WithEmptyAssociations_ReturnClientWithoutDealsAndClientContacts()
+	public void ToContact_WithEmptyAssociations_ReturnContactWithoutDealsAndClientContacts()
 	{
 
 		/// Arrange
@@ -79,7 +79,7 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_WithNotMatchingAssociations_ReturnClientWithoutDealsAndClientContacts()
+	public void ToContact_WithNotMatchingAssociations_ReturnContactWithoutDealsAndClientContacts()
 	{
 
 		/// Arrange
@@ -127,7 +127,7 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_WithAssociations_ReturnClientWithDealsAndClientContacts()
+	public void ToContact_WithAssociations_ReturnContactWithDealsAndClientContacts()
 	{
 
 		/// Arrange

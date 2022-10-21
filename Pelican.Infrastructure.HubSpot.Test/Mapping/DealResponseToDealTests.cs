@@ -51,6 +51,82 @@ public class DealResponseToDealTests
 		Assert.Equal(result.HubSpotId, result.AccountManagerDeals.First().HubSpotDealId);
 	}
 
+
+	[Fact]
+	public void ToDeal_WithEmptyAssociations_ReturnClientWithoutDealsAndClientContacts()
+	{
+
+		/// Arrange
+		response.Associations = new()
+		{
+			Companies = null,
+			Contacts = null,
+		};
+
+		/// Act
+		Deal result = response.ToDeal();
+
+		/// Assert
+		/// Assert
+		Assert.Equal(ID, result.HubSpotId);
+		Assert.Equal(DEALSTAGE, result.DealStatus);
+		Assert.Equal(DateTime.Today, result.EndDate);
+		Assert.Equal(AMOUNTDECIMAL, result.Revenue);
+		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+
+		Assert.Equal(null, result.Client);
+
+		Assert.Equal(0, result.DealContacts.Count);
+	}
+
+	[Fact]
+	public void ToDeal_WithNotMatchingAssociations_ReturnClientWithoutDealsAndClientContacts()
+	{
+		/// Arrange
+		response.Associations = new()
+		{
+			Companies = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						new()
+						{
+							Type = "deal_to_company_unlabeled",
+							Id = "2"
+						},
+					},
+			},
+			Contacts = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						new()
+						{
+							Type = "contact_to_company_unlabeled",
+							Id = "2"
+						},
+					},
+			}
+		};
+
+		/// Act
+		Deal result = response.ToDeal();
+
+		/// Assert
+		/// Assert
+		Assert.Equal(ID, result.HubSpotId);
+		Assert.Equal(DEALSTAGE, result.DealStatus);
+		Assert.Equal(DateTime.Today, result.EndDate);
+		Assert.Equal(AMOUNTDECIMAL, result.Revenue);
+		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+
+		Assert.Equal(null, result.Client);
+
+		Assert.Equal(0, result.DealContacts.Count);
+	}
+
+
+
 	[Fact]
 	public void ToDeal_WithAssociations_ReturnDealWithDealContactsAndClient()
 	{

@@ -41,6 +41,77 @@ public class CompanyResponseToClientTests
 	}
 
 	[Fact]
+	public void ToClient_WithEmptyAssociations_ReturnClientWithoutDealsAndClientContacts()
+	{
+
+		/// Arrange
+		response.Associations = new()
+		{
+			Deals = null,
+			Contacts = null,
+		};
+
+		/// Act
+		Client result = response.ToClient();
+
+		/// Assert
+		Assert.Equal(SEGMENT, result.Segment);
+		Assert.Equal(NAME, result.Name);
+		Assert.Equal(LOCATION, result.OfficeLocation);
+		Assert.Equal(ID, result.HubSpotId);
+
+		Assert.Equal(0, result.Deals.Count);
+
+		Assert.Equal(0, result.ClientContacts.Count);
+	}
+
+	[Fact]
+	public void ToClient_WithNotMatchingAssociations_ReturnClientWithoutDealsAndClientContacts()
+	{
+
+		/// Arrange
+		response.Associations = new()
+		{
+			Deals = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						new()
+						{
+							Type = "contact_to_deal_unlabeled",
+							Id = "2"
+						},
+					},
+			},
+			Contacts = new()
+			{
+				AssociationList = new List<Association>()
+					{
+						new()
+						{
+							Type = "contact_to_company_unlabeled",
+							Id = "2"
+						},
+					},
+			}
+		};
+
+		/// Act
+		Client result = response.ToClient();
+
+		/// Assert
+		Assert.Equal(SEGMENT, result.Segment);
+		Assert.Equal(NAME, result.Name);
+		Assert.Equal(LOCATION, result.OfficeLocation);
+		Assert.Equal(ID, result.HubSpotId);
+
+		Assert.Equal(0, result.Deals.Count);
+
+		Assert.Equal(0, result.ClientContacts.Count);
+	}
+
+
+	[Fact]
 	public void ToClient_WithAssociations_ReturnClientWithDealsAndClientContacts()
 	{
 		/// Arrange

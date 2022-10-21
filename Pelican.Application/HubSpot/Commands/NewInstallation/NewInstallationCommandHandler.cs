@@ -150,7 +150,7 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 					.ForEach(clientContact =>
 					{
 						Contact contact = contacts
-							.First(contact => contact.HubSpotId == clientContact.HubspotContactId);
+							.First(contact => contact.HubSpotId == clientContact.HubSpotContactId);
 
 						clientContact.Contact = contact;
 						clientContact.ContactId = contact.Id;
@@ -173,7 +173,7 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 					.ToList();
 
 				contact.ClientContacts = clientContacts
-					.Where(clientContact => clientContact.HubspotContactId == contact.HubSpotId)
+					.Where(clientContact => clientContact.HubSpotContactId == contact.HubSpotId)
 					.ToList();
 			});
 

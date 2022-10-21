@@ -8,7 +8,7 @@ internal sealed class DealProperties
 	public string Amount { get; set; } = default!;
 
 	[JsonPropertyName("closedate")]
-	public DateTime? CloseDate { get; set; } = default!;
+	public DateTime CloseDate { get; set; } = default!;
 
 	[JsonPropertyName("createdate")]
 	public string CreateDate { get; set; } = default!;

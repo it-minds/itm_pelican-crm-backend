@@ -74,6 +74,37 @@ public class HubSpotClientServicesTests
 	}
 
 	[Fact]
+	public async Task GetByIdAsync_ClientReturnsSuccessWithAssociations_ReturnSuccess()
+	{
+		/// Arrange
+		CompanyResponse response = new()
+		{
+			Properties = new()
+			{
+				HubSpotObjectId = ID,
+			},
+		};
+
+		_hubSpotClientMock
+			.Setup(client => client.GetAsync<CompanyResponse>(
+				It.IsAny<RestRequest>(),
+				_cancellationToken))
+			.ReturnsAsync(new RestResponse<CompanyResponse>()
+			{
+				IsSuccessStatusCode = true,
+				ResponseStatus = ResponseStatus.Completed,
+				Data = response
+			});
+
+		/// Act
+		var result = await _uut.GetByIdAsync("", 0, _cancellationToken);
+
+		/// Assert
+		Assert.True(result.IsSuccess);
+		Assert.Equal("Id", result.Value.HubSpotId);
+	}
+
+	[Fact]
 	public async Task GetAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		/// Arrange

@@ -14,16 +14,18 @@ internal static class DealResponseToDeal
 			HubSpotId = response.Properties!.HubSpotObjectId,
 			Revenue = response.Properties!.Amount is not "" ? Convert.ToDecimal(response.Properties.Amount) : null,
 			HubSpotOwnerId = response.Properties.HubspotOwnerId,
-			Client = response
-				.Associations?
-				.Companies?
-				.AssociationList
-				.Where(company => company.Type == "deal_to_company")?
-				.Select(company => new Client(Guid.NewGuid())
-				{
-					HubSpotId = company.Id,
-				})
-				.FirstOrDefault(),
+		};
+
+		result.AccountManagerDeals = new List<AccountManagerDeal>()
+		{
+			new AccountManagerDeal(Guid.NewGuid())
+			{
+				Deal = result,
+				DealId = result.Id,
+				HubSpotDealId = result.HubSpotId,
+				HubSpotAccountManagerId = result.HubSpotOwnerId,
+				IsActive = true,
+			}
 		};
 
 		result.DealContacts = response
@@ -46,7 +48,7 @@ internal static class DealResponseToDeal
 			.Associations?
 			.Companies?
 			.AssociationList
-			.Where(company => company.Type == "deal_to_company")
+			.Where(company => company.Type == "deal_to_company")?
 			.Select(company => new Client(Guid.NewGuid())
 			{
 				HubSpotId = company.Id,

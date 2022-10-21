@@ -35,7 +35,7 @@ internal static class CompanyResponseToClient
 			.Where(contact => contact.Type == "company_to_contact")?
 			.Select(contact => new ClientContact(Guid.NewGuid())
 			{
-				HubspotContactId = contact.Id,
+				HubSpotContactId = contact.Id,
 				HubSpotClientId = result.HubSpotId,
 				Client = result,
 				ClientId = result.Id,

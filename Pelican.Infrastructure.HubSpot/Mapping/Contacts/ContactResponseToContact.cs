@@ -26,7 +26,7 @@ internal static class ContactResponseToContact
 			.Select(company => new ClientContact(Guid.NewGuid())
 			{
 				ContactId = result.Id,
-				HubspotContactId = result.HubSpotId,
+				HubSpotContactId = result.HubSpotId,
 				Contact = result,
 				IsActive = true,
 				HubSpotClientId = company.Id,

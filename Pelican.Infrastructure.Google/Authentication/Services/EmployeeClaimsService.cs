@@ -25,7 +25,7 @@ public class EmployeeClaimsService : IEmployeeClaimsService
 			{
 				config.CreateMap<AccountManager, EmployeeClaimData>()
 				.ForMember(dest => dest.EmployeeId, opts => opts.MapFrom(src => src.Id))
-				.ForMember(dest => dest.EmployeeName, opts => opts.MapFrom(src => src.Name))
+				.ForMember(dest => dest.EmployeeName, opts => opts.MapFrom(src => src.FirstName + " " + src.LastName))
 				.ForMember(dest => dest.Company, opts => opts.MapFrom(src => src.Supplier.Name));
 			}))
 			.FirstOrDefaultAsync(cancellationToken);

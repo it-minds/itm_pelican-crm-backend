@@ -1,26 +1,69 @@
 ﻿using Pelican.Application.Common.Interfaces;
 using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Primitives;
 using Location = Pelican.Domain.Entities.Location;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
 public class UnitOfWork : IUnitOfWork
 {
 	private readonly IPelicanContext _pelicanContext;
-	private IGenericRepository<AccountManagerDeal> accountManagerDealRepository;
-	private IGenericRepository<AccountManager> accountManagerRepository;
-	private IGenericRepository<Client> clientRepository;
-	private IGenericRepository<Contact> contactRepository;
-	private IGenericRepository<Deal> dealRepository;
-	private IGenericRepository<Location> locationRepository;
-	private IGenericRepository<Supplier> supplierRepository;
-	private IGenericRepository<ClientContact> clientContactRepository;
-	private IGenericRepository<DealContact> dealContactRepository;
+	private IGenericRepository<AccountManagerDeal> _accountManagerDealRepository;
+	private IGenericRepository<AccountManager> _accountManagerRepository;
+	private IGenericRepository<Client> _clientRepository;
+	private IGenericRepository<Contact> _contactRepository;
+	private IGenericRepository<Deal> _dealRepository;
+	private IGenericRepository<Location> _locationRepository;
+	private IGenericRepository<Supplier> _supplierRepository;
+	private IGenericRepository<ClientContact> _clientContactRepository;
+	private IGenericRepository<DealContact> _dealContactRepository;
+
+	public IGenericRepository<T> GetRepository<T>() where T : Entity
+	{
+		if (typeof(T) == typeof(AccountManager))
+		{
+			return (IGenericRepository<T>)AccountManagerRepository;
+		}
+		if (typeof(T) == typeof(AccountManagerDeal))
+		{
+			return (IGenericRepository<T>)AccountManagerDealRepository;
+		}
+		if (typeof(T) == typeof(Client))
+		{
+			return (IGenericRepository<T>)ClientRepository;
+		}
+		if (typeof(T) == typeof(ClientContact))
+		{
+			return (IGenericRepository<T>)ClientContactRepository;
+		}
+		if (typeof(T) == typeof(Contact))
+		{
+			return (IGenericRepository<T>)ContactRepository;
+		}
+		if (typeof(T) == typeof(Deal))
+		{
+			return (IGenericRepository<T>)DealRepository;
+		}
+		if (typeof(T) == typeof(DealContact))
+		{
+			return (IGenericRepository<T>)DealContactRepository;
+		}
+		if (typeof(T) == typeof(Location))
+		{
+			return (IGenericRepository<T>)LocationRepository;
+		}
+		if (typeof(T) == typeof(Supplier))
+		{
+			return (IGenericRepository<T>)SupplierRepository;
+		}
+		throw new ArgumentException("Repository is not of valid Entity type");
+
+	}
 	public IGenericRepository<AccountManagerDeal> AccountManagerDealRepository
 	{
 		get
 		{
-			_accountManagerDealRepository ??= new GenericRepository<AccountManagerDeal>(_pelicanContext);
+			_accountManagerDealRepository ??= new AccountManagerDealsRepository(_pelicanContext);
 			return _accountManagerDealRepository;
 		}
 	}
@@ -29,7 +72,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_accountManagerRepository ??= new GenericRepository<AccountManager>(_pelicanContext);
+			_accountManagerRepository ??= new AccountManagerRepository(_pelicanContext);
 			return _accountManagerRepository;
 		}
 	}
@@ -38,7 +81,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_clientRepository ??= new GenericRepository<Client>(_pelicanContext);
+			_clientRepository ??= new ClientRepository(_pelicanContext);
 			return _clientRepository;
 		}
 	}
@@ -47,7 +90,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_contactRepository ??= new GenericRepository<Contact>(_pelicanContext);
+			_contactRepository ??= new ContactRepository(_pelicanContext);
 			return _contactRepository;
 		}
 	}
@@ -56,7 +99,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_dealRepository ??= new GenericRepository<Deal>(_pelicanContext);
+			_dealRepository ??= new DealRepository(_pelicanContext);
 			return _dealRepository;
 		}
 	}
@@ -65,7 +108,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_locationRepository ??= new GenericRepository<Location>(_pelicanContext);
+			_locationRepository ??= new LocationRepository(_pelicanContext);
 			return _locationRepository;
 		}
 	}
@@ -74,7 +117,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_supplierRepository ??= new GenericRepository<Supplier>(_pelicanContext);
+			_supplierRepository ??= new SupplierRepository(_pelicanContext);
 			return _supplierRepository;
 		}
 	}
@@ -83,24 +126,17 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_clientContactRepository ??= new GenericRepository<ClientContact>(_pelicanContext);
+			_clientContactRepository ??= new ClientContactsRepository(_pelicanContext);
 			return _clientContactRepository;
 		}
 	}
-	public IGenericRepository<ClientContact> ClientContactRepository
-	{
-		get
-		{
-			clientContactRepository ??= new GenericRepository<ClientContact>(_pelicanContext);
-			return clientContactRepository;
-		}
-	}
+
 	public IGenericRepository<DealContact> DealContactRepository
 	{
 		get
 		{
-			dealContactRepository ??= new GenericRepository<DealContact>(_pelicanContext);
-			return dealContactRepository;
+			_dealContactRepository ??= new DealContactsRepository(_pelicanContext);
+			return _dealContactRepository;
 		}
 	}
 

@@ -17,5 +17,6 @@ internal class LocationConfiguration : IEntityTypeConfiguration<Location>
 		builder.HasOne(a => a.Supplier)
 			.WithMany(a => a.OfficeLocations)
 			.HasForeignKey(a => a.SupplierId);
+
 	}
 }

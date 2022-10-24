@@ -9,6 +9,7 @@ namespace Pelican.Presentation.GraphQL.Contacts;
 public class ContactsQuery
 {
 	//This Query reguests all contacts from the database.
+	[UsePaging]
 	public async Task<IQueryable<Contact>> GetContacts([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
 		return await mediator.Send(new GetContactsQuery(), cancellationToken);

@@ -40,5 +40,6 @@ internal class AccountManagerConfiguration : IEntityTypeConfiguration<AccountMan
 		builder.HasMany(a => a.AccountManagerDeals)
 			.WithOne(a => a.AccountManager)
 			.HasForeignKey(a => a.AccountManagerId);
+
 	}
 }

@@ -22,9 +22,9 @@ public class Contact : Entity, ITimeTracked
 	public string? LinkedInUrl { get; set; }
 
 
-	public ICollection<ClientContact> ClientContacts { get; set; }
+	public ICollection<ClientContact> ClientContacts { get; set; } = new List<ClientContact>();
 
-	public ICollection<DealContact>? DealContacts { get; set; }
+	public ICollection<DealContact>? DealContacts { get; set; } = new List<DealContact>();
 
 
 	public long CreatedAt { get; set; }

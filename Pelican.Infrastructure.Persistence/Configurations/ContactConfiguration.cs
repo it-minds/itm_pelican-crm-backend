@@ -28,6 +28,12 @@ internal class ContactConfiguration : IEntityTypeConfiguration<Contact>
 		builder.Property(p => p.HubSpotId)
 			.HasMaxLength(StringLengths.Id);
 
+		builder.Property(p => p.HubSpotOwnerId)
+			.HasMaxLength(StringLengths.Id);
+
+		builder.Property(p => p.JobTitle)
+			.HasMaxLength(StringLengths.JobTitle);
+
 		builder.HasMany(a => a.ClientContacts)
 			.WithOne(e => e.Contact)
 			.HasForeignKey(a => a.ContactId);
@@ -35,5 +41,7 @@ internal class ContactConfiguration : IEntityTypeConfiguration<Contact>
 		builder.HasMany(a => a.DealContacts)
 			.WithOne(a => a.Contact)
 			.HasForeignKey(a => a.ContactId);
+
+
 	}
 }

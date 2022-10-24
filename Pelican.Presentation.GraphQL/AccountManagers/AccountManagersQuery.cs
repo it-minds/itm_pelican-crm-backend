@@ -8,6 +8,7 @@ namespace Pelican.Presentation.GraphQL.AccountManagers;
 public class AccountManagersQuery
 {
 	//This Query reguests all AccountManager from the database.
+	[UsePaging]
 	public async Task<IQueryable<AccountManager>> GetAccountManagers([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
 		return await mediator.Send(new GetAccountManagersQuery(), cancellationToken);

@@ -17,10 +17,10 @@ public class Client : Entity, ITimeTracked
 	public string? Classification { get; set; }
 
 
-	public ICollection<Deal>? Deals { get; set; }
+	public ICollection<Deal>? Deals { get; set; } = new List<Deal>();
 
 
-	public ICollection<ClientContact>? ClientContacts { get; set; }
+	public ICollection<ClientContact>? ClientContacts { get; set; } = new List<ClientContact>();
 
 
 	public long CreatedAt { get; set; }

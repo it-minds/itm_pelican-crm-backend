@@ -35,5 +35,7 @@ internal class ClientConfiguration : IEntityTypeConfiguration<Client>
 		builder.HasMany(a => a.Deals)
 			.WithOne(a => a.Client)
 			.HasForeignKey(a => a.ClientId);
+
+
 	}
 }

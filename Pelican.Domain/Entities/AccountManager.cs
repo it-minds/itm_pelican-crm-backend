@@ -27,7 +27,7 @@ public class AccountManager : Entity, ITimeTracked
 	public Supplier Supplier { get; set; }
 
 
-	public ICollection<AccountManagerDeal>? AccountManagerDeals { get; set; }
+	public ICollection<AccountManagerDeal>? AccountManagerDeals { get; set; } = new List<AccountManagerDeal>();
 
 
 	public long CreatedAt { get; set; }

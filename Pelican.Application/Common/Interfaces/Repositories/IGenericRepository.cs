@@ -4,6 +4,7 @@ namespace Pelican.Application.Common.Interfaces.Repositories;
 public interface IGenericRepository<T>
 {
 	IQueryable<T> FindAll();
+	IQueryable<T> FindAllWithIncludes();
 	Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 	IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);
 	Task<T> CreateAsync(T entity, CancellationToken cancellationToken);

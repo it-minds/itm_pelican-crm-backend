@@ -1,9 +1,8 @@
 ﻿using Pelican.Application;
+using Pelican.Infrastructure.Authentication;
 using Pelican.Infrastructure.HubSpot;
 using Pelican.Infrastructure.Persistence;
 using Pelican.Presentation.Api;
-using Pelican.Infrastructure.Authentication;
-using Pelican.Infrastructure.Persistence;
 using Pelican.Presentation.GraphQL;
 
 const string allowedCorsOrigins = "AllowedCorsOrigins";
@@ -16,7 +15,6 @@ builder
 	.AddCors(options => options
 		.AddPolicy(name: allowedCorsOrigins, policy => policy
 			.WithOrigins("https://localhost")));
-
 builder.Services.AddHubSpot(builder.Configuration);
 builder.Services.AddPersistince(builder.Configuration);
 builder.Services.AddApplication();

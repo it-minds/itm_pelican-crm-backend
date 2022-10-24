@@ -29,5 +29,7 @@ internal class DealContactConfiguration : IEntityTypeConfiguration<DealContact>
 		builder.HasOne(a => a.Deal)
 			.WithMany(a => a.DealContacts)
 			.HasForeignKey(a => a.DealId);
+
+
 	}
 }

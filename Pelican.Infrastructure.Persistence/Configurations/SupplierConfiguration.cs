@@ -38,5 +38,6 @@ internal class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
 		builder.HasMany(a => a.OfficeLocations)
 			.WithOne(a => a.Supplier)
 			.HasForeignKey(a => a.SupplierId);
+
 	}
 }

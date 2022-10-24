@@ -5,7 +5,7 @@ using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Primitives;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
-public class GenericRepository<T> : IGenericRepository<T> where T : Entity
+public abstract class GenericRepository<T> : IGenericRepository<T> where T : Entity
 {
 	//This Repository contains base functions that will be inherited by all specific repositories
 	protected PelicanContext PelicanContext { get; set; }
@@ -29,7 +29,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 		{
 			throw new ArgumentNullException($"{nameof(GetByIdAsync)} id must not be empty");
 		}
-		return await PelicanContext.Set<T>().FirstOrDefaultAsync(entity => entity.Id == id, cancellationToken);
+		return await PelicanContext.Set<T>().AsNoTracking().FirstOrDefaultAsync(entity => entity.Id == id, cancellationToken);
 	}
 
 	public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) => PelicanContext.Set<T>().Where(expression).AsNoTracking();
@@ -57,4 +57,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 	public void Update(T entity) => PelicanContext.Set<T>().Update(entity);
 
 	public void Delete(T entity) => PelicanContext.Set<T>().Remove(entity);
+
+	public abstract IQueryable<T> FindAllWithIncludes();
 }

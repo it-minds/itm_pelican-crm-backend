@@ -4,6 +4,7 @@ using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Primitives;
 
 namespace Pelican.Infrastructure.Persistence.DataLoader;
+
 public class GenericDataLoader<T> : BatchDataLoader<Guid, T>, IGenericDataLoader<T> where T : Entity
 {
 	private IUnitOfWork _unitOfWork;

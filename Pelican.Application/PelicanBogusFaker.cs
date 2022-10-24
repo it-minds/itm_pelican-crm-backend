@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using Pelican.Application.BogusExtension;
 using Pelican.Application.Common.Interfaces;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Enums;
@@ -13,7 +12,6 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 	public IEnumerable<AccountManager> AccountManagerFaker(int supplierCount, IQueryable<Supplier> suppliers)
 	{
 		var faker = new Faker<AccountManager>().UseSeed(1337);
-		var secondFaker = new Faker();
 		faker
 			.RuleFor(e => e.FirstName, f => f.Name.FirstName(f.Person.Gender))
 			.RuleFor(e => e.LastName, f => f.Name.LastName(f.Person.Gender))

@@ -23,23 +23,4 @@ public class GetLocationsQueryHandlerUnitTest
 		//Assert
 		unitOfWorkMock.Verify(x => x.LocationRepository.FindAllWithIncludes(), Times.Once());
 	}
-	[Fact]
-	public void TestIfWhenHandleIsCalledMultipleTimesRepositoryIsCalledMultipleTimes()
-	{
-		//Arrange
-		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var locationRepositoryMock = new Mock<IGenericRepository<Location>>();
-		unitOfWorkMock.Setup(x => x.LocationRepository).Returns(locationRepositoryMock.Object);
-		uut = new GetLocationsQueryHandler(unitOfWorkMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
-		GetLocationsQuery locationsQuery = new GetLocationsQuery();
-		//Act
-		for (int i = 0; i < 50; i++)
-		{
-			_ = uut.Handle(locationsQuery, cancellationToken);
-		}
-
-		//Assert
-		unitOfWorkMock.Verify(x => x.LocationRepository.FindAllWithIncludes(), Times.Exactly(50));
-	}
 }

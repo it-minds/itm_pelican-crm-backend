@@ -24,23 +24,4 @@ public class GetClientsQueryHandlerUnitTest
 		//Assert
 		unitOfWorkMock.Verify(x => x.ClientRepository.FindAllWithIncludes(), Times.Once());
 	}
-	[Fact]
-	public void TestIfWhenHandleIsCalledMultipleTimesRepositoryIsCalledMultipleTimes()
-	{
-		//Arrange
-		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var clientRepositoryMock = new Mock<IGenericRepository<Client>>();
-		unitOfWorkMock.Setup(x => x.ClientRepository).Returns(clientRepositoryMock.Object);
-		uut = new GetClientsQueryHandler(unitOfWorkMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
-		GetClientsQuery clientsQuery = new GetClientsQuery();
-		//Act
-		for (int i = 0; i < 50; i++)
-		{
-			_ = uut.Handle(clientsQuery, cancellationToken);
-		}
-
-		//Assert
-		unitOfWorkMock.Verify(x => x.ClientRepository.FindAllWithIncludes(), Times.Exactly(50));
-	}
 }

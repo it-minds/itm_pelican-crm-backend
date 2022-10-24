@@ -9,152 +9,133 @@ namespace Pelican.Infrastructure.Persistence.Test;
 public class UnitOfWorkUnitTest
 {
 	private IUnitOfWork uut;
+	private Mock<IPelicanContext> myPelicanContextMock;
+	private CancellationToken cancellationToken;
+	public UnitOfWorkUnitTest()
+	{
+		myPelicanContextMock = new Mock<IPelicanContext>();
+		uut = new UnitOfWork(myPelicanContextMock.Object);
+		cancellationToken = new CancellationToken();
+	}
 	//One Test
 	[Fact]
 	public void UnitOfWorlSaveIsCalledOnce_DbContextReceivesOneSaveChanges()
 	{
 		//Arrange
-		var myPelicantContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicantContextMock.Object);
+
 		//Act
 		uut.Save();
 		//Assert
-		myPelicantContextMock.Verify(x => x.SaveChanges(), Times.Once());
+		myPelicanContextMock.Verify(x => x.SaveChanges(), Times.Once());
 	}
 	//Many Test
 	[Fact]
 	public void UnitOfWorkSaveIsCalled50Times_DbContextReceives50SaveChanges()
 	{
 		//Arrange
-		var myPelicantContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicantContextMock.Object);
 		//Act
 		for (var i = 0; i < 50; i++)
 		{
 			uut.Save();
 		}
 		//Assert
-		myPelicantContextMock.Verify(x => x.SaveChanges(), Times.Exactly(50));
+		myPelicanContextMock.Verify(x => x.SaveChanges(), Times.Exactly(50));
 	}
 	//One Test
 	[Fact]
 	public async void UnitOfWorlSaveAsyncIsCalledOnce_DbContextReceivesOneSaveChanges()
 	{
 		//Arrange
-		var myPelicantContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicantContextMock.Object);
-		CancellationToken cancellation = new();
 		//Act
-		await uut.SaveAsync(cancellation);
+		await uut.SaveAsync(cancellationToken);
 		//Assert
-		myPelicantContextMock.Verify(x => x.SaveChangesAsync(cancellation), Times.Once());
+		myPelicanContextMock.Verify(x => x.SaveChangesAsync(cancellationToken), Times.Once());
 	}
 	//Many Test
 	[Fact]
 	public async void UnitOfWorkSaveAsyncIsCalled50Times_DbContextReceives50SaveChanges()
 	{
 		//Arrange
-		var myPelicantContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicantContextMock.Object);
-		CancellationToken cancellation = new();
+
 		//Act
 		for (var i = 0; i < 50; i++)
 		{
-			await uut.SaveAsync(cancellation);
+			await uut.SaveAsync(cancellationToken);
 		}
 		//Assert
-		myPelicantContextMock.Verify(x => x.SaveChangesAsync(cancellation), Times.Exactly(50));
+		myPelicanContextMock.Verify(x => x.SaveChangesAsync(cancellationToken), Times.Exactly(50));
 	}
 
 	[Fact]
 	public void UnitOfWorkAccountManagerDealRepositoryNotNull()
 	{
 		//Arrange
-		var myPelicantContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicantContextMock.Object);
 		//Act
 		//Assert
-		var ex = Assert.Throws<InvalidCastException>(() => uut.AccountManagerDealRepository);
+		Assert.Throws<InvalidCastException>(() => uut.AccountManagerDealRepository);
 	}
 	[Fact]
 	public void UnitOfWorkAccountManagerRepositoryNotNull()
 	{
 		//Arrange
-		var myPelicantContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicantContextMock.Object);
 		//Act
-
 		//Assert
-		var ex = Assert.Throws<InvalidCastException>(() => uut.AccountManagerRepository);
+		Assert.Throws<InvalidCastException>(() => uut.AccountManagerRepository);
 	}
 	[Fact]
 	public void UnitOfWorkClientRepositoryNotNull()
 	{
 		//Arrange
-		var myPelicantContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicantContextMock.Object);
 		//Act
 		//Assert
-		var ex = Assert.Throws<InvalidCastException>(() => uut.ClientRepository);
+		Assert.Throws<InvalidCastException>(() => uut.ClientRepository);
 	}
 	[Fact]
 	public void UnitOfWorkGetContactRepository()
 	{
 		//Arrange
-		var myPelicantContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicantContextMock.Object);
 		//Act
 		//Assert
-		var ex = Assert.Throws<InvalidCastException>(() => uut.ContactRepository);
+		Assert.Throws<InvalidCastException>(() => uut.ContactRepository);
 	}
 	[Fact]
 	public void UnitOfWorkGetSupplierRepository()
 	{
 		//Arrange
-		var myPelicantContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicantContextMock.Object);
 		//Act
 		//Assert
-		var ex = Assert.Throws<InvalidCastException>(() => uut.SupplierRepository);
+		Assert.Throws<InvalidCastException>(() => uut.SupplierRepository);
 	}
 	[Fact]
 	public void UnitOfWorkGetLocationRepository()
 	{
 		//Arrange
-		var myPelicantContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicantContextMock.Object);
 		//Act
 		//Assert
-		var ex = Assert.Throws<InvalidCastException>(() => uut.LocationRepository);
+		Assert.Throws<InvalidCastException>(() => uut.LocationRepository);
 	}
 	[Fact]
 	public void UnitOfWorkGetClientContactRepository()
 	{
 		//Arrange
-		var myPelicantContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicantContextMock.Object);
 		//Act
 		//Assert
-		var ex = Assert.Throws<InvalidCastException>(() => uut.ClientContactRepository);
+		Assert.Throws<InvalidCastException>(() => uut.ClientContactRepository);
 	}
 	[Fact]
 	public void UnitOfWorkGetDealContactRepository()
 	{
 		//Arrange
-		var myPelicantContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicantContextMock.Object);
 		//Act
 		//Assert
-		var ex = Assert.Throws<InvalidCastException>(() => uut.DealContactRepository);
+		Assert.Throws<InvalidCastException>(() => uut.DealContactRepository);
 	}
 	[Fact]
 	public void UnitOfWorkGetDealRepository()
 	{
 		//Arrange
-		var myPelicantContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicantContextMock.Object);
 		//Act
 		//Assert
-		var ex = Assert.Throws<InvalidCastException>(() => uut.DealRepository);
+		Assert.Throws<InvalidCastException>(() => uut.DealRepository);
 	}
 }

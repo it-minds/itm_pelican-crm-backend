@@ -22,23 +22,4 @@ public class GetContactsQueryHandlerUnitTest
 		//Assert
 		unitOfWorkMock.Verify(x => x.ContactRepository.FindAllWithIncludes(), Times.Once());
 	}
-	[Fact]
-	public void TestIfWhenHandleIsCalledMultipleTimesRepositoryIsCalledMultipleTimes()
-	{
-		//Arrange
-		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var contactRepositoryMock = new Mock<IGenericRepository<Contact>>();
-		unitOfWorkMock.Setup(x => x.ContactRepository).Returns(contactRepositoryMock.Object);
-		uut = new GetContactsQueryHandler(unitOfWorkMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
-		GetContactsQuery contactsQuery = new GetContactsQuery();
-		//Act
-		for (int i = 0; i < 50; i++)
-		{
-			_ = uut.Handle(contactsQuery, cancellationToken);
-		}
-
-		//Assert
-		unitOfWorkMock.Verify(x => x.ContactRepository.FindAllWithIncludes(), Times.Exactly(50));
-	}
 }

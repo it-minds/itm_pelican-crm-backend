@@ -1,9 +1,14 @@
-﻿namespace Pelican.Application;
+﻿using Bogus;
+using Pelican.Application.Common.Interfaces;
+using Pelican.Domain.Entities;
+using Pelican.Domain.Enums;
+
+namespace Pelican.Application;
 public class PelicanBogusFaker : IPelicanBogusFaker
 {
 	public PelicanBogusFaker() { }
 	//Creates as many dummy suppliers as inputted using rules setup here these are used to seed an empty database
-	public IEnumerable<Supplier> SupplierFaker(int count)
+	public IEnumerable<AccountManager> AccountManagerFaker(int count, IQueryable<Supplier> suppliers)
 	{
 		var faker = new Faker<AccountManager>().UseSeed(1337);
 		faker
@@ -17,7 +22,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.HubSpotId, f => f.Random.Guid().ToString())
 			.RuleFor(e => e.HubSpotUserId, f => f.Random.Long())
 			.RuleFor(e => e.Id, f => f.Random.Guid());
-		return faker.Generate(supplierCount);
+		return faker.Generate(count);
 	}
 	public IEnumerable<Supplier> SupplierFaker(int count)
 	{

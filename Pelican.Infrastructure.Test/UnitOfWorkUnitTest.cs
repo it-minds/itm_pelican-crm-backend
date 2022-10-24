@@ -1,4 +1,10 @@
-﻿namespace Pelican.Infrastructure.Persistence.Test;
+﻿using Moq;
+using Pelican.Application.Common.Interfaces;
+using Pelican.Application.Common.Interfaces.Repositories;
+using Pelican.Infrastructure.Persistence.Repositories;
+using Xunit;
+
+namespace Pelican.Infrastructure.Persistence.Test;
 
 public class UnitOfWorkUnitTest
 {

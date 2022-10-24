@@ -1,5 +1,4 @@
 ﻿using Pelican.Application;
-using Pelican.Infrastructure.Authentication;
 using Pelican.Infrastructure.HubSpot;
 using Pelican.Infrastructure.Persistence;
 using Pelican.Presentation.Api;

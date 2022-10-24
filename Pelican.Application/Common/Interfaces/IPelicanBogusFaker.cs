@@ -1,4 +1,6 @@
-﻿namespace Pelican.Application.Common.Interfaces;
+﻿using Pelican.Domain.Entities;
+
+namespace Pelican.Application.Common.Interfaces;
 public interface IPelicanBogusFaker
 {
 	public IEnumerable<AccountManager> AccountManagerFaker(int supplierCount, IQueryable<Supplier> suppliers);

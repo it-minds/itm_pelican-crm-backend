@@ -33,7 +33,7 @@ public class GetContactsQueryUnitTest
 		GetContactByIdQuery input = new GetContactByIdQuery(id);
 		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Contact(id));
 		//Act
-		var result = await uut.GetContactAsync(input, mediatorMock.Object, cancellationToken);
+		var result = await uut.GetContactAsync(input.Id, mediatorMock.Object, cancellationToken);
 		//Assert
 		Assert.Equal(id, result.Id);
 		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Once());

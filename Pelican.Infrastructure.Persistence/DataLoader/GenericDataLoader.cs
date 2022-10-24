@@ -15,7 +15,8 @@ public class GenericDataLoader<T> : BatchDataLoader<Guid, T>, IGenericDataLoader
 	protected override async Task<IReadOnlyDictionary<Guid, T>> LoadBatchAsync(IReadOnlyList<Guid> keys, CancellationToken cancellationToken)
 	{
 		return await _unitOfWork.GetRepository<T>()
-			.FindByCondition(s => keys.Contains(s.Id))
+			.FindAllWithIncludes()
+			.Where(s => keys.Contains(s.Id))
 			.ToDictionaryAsync(t => t.Id, cancellationToken);
 	}
 }

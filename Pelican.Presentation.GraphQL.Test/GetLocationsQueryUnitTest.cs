@@ -33,7 +33,7 @@ public class GetLocationsQueryUnitTest
 		GetLocationByIdQuery input = new GetLocationByIdQuery(id);
 		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Location(id));
 		//Act
-		var result = await uut.GetLocationAsync(input, mediatorMock.Object, cancellationToken);
+		var result = await uut.GetLocationAsync(input.Id, mediatorMock.Object, cancellationToken);
 		//Assert
 		Assert.Equal(id, result.Id);
 		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Once());

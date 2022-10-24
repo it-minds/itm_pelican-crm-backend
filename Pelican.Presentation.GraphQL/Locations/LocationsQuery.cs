@@ -15,8 +15,9 @@ public class LocationsQuery
 		return await mediator.Send(new GetLocationsQuery(), cancellationToken);
 	}
 	//This Query reguests a specific Location from the database.
-	public async Task<Location> GetLocationAsync(GetLocationByIdQuery input, [Service] IMediator mediator, CancellationToken cancellationToken)
+	public async Task<Location> GetLocationAsync(Guid id, [Service] IMediator mediator, CancellationToken cancellationToken)
 	{
+		var input = new GetLocationByIdQuery(id);
 		return await mediator.Send(input, cancellationToken);
 	}
 }

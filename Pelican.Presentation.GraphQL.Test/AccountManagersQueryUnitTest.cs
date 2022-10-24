@@ -33,7 +33,7 @@ public class AccountManagersQueryUnitTest
 		GetAccountManagerByIdQuery input = new GetAccountManagerByIdQuery(id);
 		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new AccountManager(id));
 		//Act
-		var result = await uut.GetAccountManagerAsync(input, mediatorMock.Object, cancellationToken);
+		var result = await uut.GetAccountManagerAsync(input.Id, mediatorMock.Object, cancellationToken);
 		//Assert
 		Assert.Equal(id, result.Id);
 		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Once);

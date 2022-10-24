@@ -15,8 +15,9 @@ public class ContactsQuery
 		return await mediator.Send(new GetContactsQuery(), cancellationToken);
 	}
 	//This Query reguests a specific Contact from the database.
-	public async Task<Contact> GetContactAsync(GetContactByIdQuery input, [Service] IMediator mediator, CancellationToken cancellationToken)
+	public async Task<Contact> GetContactAsync(Guid id, [Service] IMediator mediator, CancellationToken cancellationToken)
 	{
+		var input = new GetContactByIdQuery(id);
 		return await mediator.Send(input, cancellationToken);
 	}
 }

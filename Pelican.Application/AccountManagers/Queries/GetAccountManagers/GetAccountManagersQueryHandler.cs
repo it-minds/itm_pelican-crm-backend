@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Pelican.Application.Abstractions.Messaging;
+﻿using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
 
@@ -14,6 +13,6 @@ public class GetAccountManagersQueryHandler : IQueryHandler<GetAccountManagersQu
 	//Uses the repository for AccountManager to find all AccountManagers in the database
 	public async Task<IQueryable<AccountManager>> Handle(GetAccountManagersQuery request, CancellationToken cancellation)
 	{
-		return _repository.FindAll();
+		return _repository.FindAllWithIncludes();
 	}
 }

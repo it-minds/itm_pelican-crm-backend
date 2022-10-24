@@ -115,9 +115,9 @@ public class PelicanBogusFakerUnitTest
 		Assert.All(result,
 			item => Assert.True(Guid.TryParse(item.ContactId.ToString(), out _)));
 		Assert.All(result,
-			item => Assert.True(Guid.TryParse(item.HubSpotClientId.ToString(), out _)));
+			item => Assert.NotNull(item.HubSpotClientId.ToString()));
 		Assert.All(result,
-			item => Assert.True(Guid.TryParse(item.HubspotContactId.ToString(), out _)));
+			item => Assert.NotNull(item.HubspotContactId.ToString()));
 		Assert.All(result,
 		item => Assert.NotNull(item.IsActive));
 	}
@@ -164,7 +164,33 @@ public class PelicanBogusFakerUnitTest
 		item => Assert.NotNull(item.HubSpotOwnerId));
 	}
 	[Fact]
-	public void LocationFaker_Id_CreatedAt_AccountManagerDeals_HubSpotId_HubSpotOwnerId_NotNull()
+	public void DealContactFaker_Id_CreatedAt_DealId_ContactId_HubSpotDealId_HubSpotContactId_IsActive_NotNull()
+	{
+		//Arrange
+		//Act
+		IEnumerable<DealContact> result = uut.DealContactFaker(uut.DealFaker(1, uut.ClientFaker(1,
+			uut.LocationFaker(1, uut.SupplierFaker(1).AsQueryable()).AsQueryable())
+			.AsQueryable(), uut.AccountManagerFaker(1, uut.SupplierFaker(1).AsQueryable()).AsQueryable()).AsQueryable(),
+			uut.ContactFaker(1, uut.AccountManagerFaker(1, uut.SupplierFaker(1).AsQueryable()).AsQueryable()).AsQueryable());
+		//Assert
+		Assert.Single(result);
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
+		Assert.All(result,
+		item => Assert.NotNull(item.CreatedAt));
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.DealId.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.ContactId.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.NotNull(item.HubSpotContactId.ToString()));
+		Assert.All(result,
+			item => Assert.NotNull(item.HubSpotContactId.ToString()));
+		Assert.All(result,
+		item => Assert.NotNull(item.IsActive));
+	}
+	[Fact]
+	public void LocationFaker_Id_CreatedAt_CityName_Supplier_SupplierId_NotNull()
 	{
 		//Arrange
 		//Act

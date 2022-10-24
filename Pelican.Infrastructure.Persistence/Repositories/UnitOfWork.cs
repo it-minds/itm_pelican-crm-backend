@@ -1,8 +1,4 @@
-﻿using Pelican.Application.Common.Interfaces;
-using Pelican.Application.Common.Interfaces.Repositories;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Primitives;
-using Location = Pelican.Domain.Entities.Location;
+﻿using Location = Pelican.Domain.Entities.Location;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
 public class UnitOfWork : IUnitOfWork

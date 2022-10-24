@@ -9,17 +9,8 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : Ent
 {
 	//This Repository contains base functions that will be inherited by all specific repositories
 	protected PelicanContext PelicanContext { get; set; }
-	public GenericRepository(IPelicanContext pelicanContext)
-	{
-		try
-		{
-			PelicanContext = (PelicanContext)pelicanContext;
-		}
-		catch (InvalidCastException e)
-		{
-			throw e;
-		}
-	}
+	public GenericRepository(IPelicanContext pelicanContext) =>
+		PelicanContext = (PelicanContext)pelicanContext ?? throw new ArgumentNullException(nameof(PelicanContext));
 
 	public IQueryable<T> FindAll() => PelicanContext.Set<T>().AsNoTracking();
 

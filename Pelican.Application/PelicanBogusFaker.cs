@@ -1,15 +1,9 @@
-﻿using Bogus;
-using Pelican.Application.Common.Interfaces;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Enums;
-using Location = Pelican.Domain.Entities.Location;
-
-namespace Pelican.Application;
+﻿namespace Pelican.Application;
 public class PelicanBogusFaker : IPelicanBogusFaker
 {
 	public PelicanBogusFaker() { }
-
-	public IEnumerable<AccountManager> AccountManagerFaker(int supplierCount, IQueryable<Supplier> suppliers)
+	//Creates as many dummy suppliers as inputted using rules setup here these are used to seed an empty database
+	public IEnumerable<Supplier> SupplierFaker(int count)
 	{
 		var faker = new Faker<AccountManager>().UseSeed(1337);
 		faker

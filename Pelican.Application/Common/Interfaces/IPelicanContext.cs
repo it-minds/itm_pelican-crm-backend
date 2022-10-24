@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pelican.Domain.Entities;
 
+
 namespace Pelican.Application.Common.Interfaces;
 
 public interface IPelicanContext : IDisposable

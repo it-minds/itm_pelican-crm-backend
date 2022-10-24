@@ -1,8 +1,4 @@
-﻿using Pelican.Application.Common.Interfaces;
-using Pelican.Domain.Entities;
-using Xunit;
-
-namespace Pelican.Application.Test;
+﻿namespace Pelican.Application.Test;
 public class PelicanBogusFakerUnitTest
 {
 	private IPelicanBogusFaker uut;

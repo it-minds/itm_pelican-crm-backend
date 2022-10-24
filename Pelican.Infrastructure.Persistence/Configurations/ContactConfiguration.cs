@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Pelican.Domain;
-using Pelican.Domain.Entities;
-
-namespace Pelican.Infrastructure.Persistence.Configurations;
+﻿namespace Pelican.Infrastructure.Persistence.Configurations;
 internal class ContactConfiguration : IEntityTypeConfiguration<Contact>
 {
 	public void Configure(EntityTypeBuilder<Contact> builder)

@@ -1,7 +1,4 @@
-﻿using Pelican.Domain.Entities;
-using Pelican.Domain.Primitives;
-
-namespace Pelican.Application.Common.Interfaces.Repositories;
+﻿namespace Pelican.Application.Common.Interfaces.Repositories;
 public interface IUnitOfWork
 {
 	public IGenericRepository<AccountManagerDeal> AccountManagerDealRepository { get; }

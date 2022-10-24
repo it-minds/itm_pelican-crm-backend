@@ -24,6 +24,7 @@ public class AccountManagerDeal : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
+
 	public AccountManagerDeal(Guid id) : base(id) { }
 
 	public AccountManagerDeal() { }

@@ -20,7 +20,7 @@ public class GetAccountManagersQueryHandlerUnitTest
 		//Act
 		_ = uut.Handle(accountManagersQuery, cancellationToken);
 		//Assert
-		unitOfWorkMock.Verify(x => x.AccountManagerRepository.FindAll(), Times.Once());
+		unitOfWorkMock.Verify(x => x.AccountManagerRepository.FindAllWithIncludes(), Times.Once());
 	}
 	[Fact]
 	public void TestIfWhenHandleIsCalledMultipleTimesRepositoryIsCalledMultipleTimes()
@@ -39,6 +39,6 @@ public class GetAccountManagersQueryHandlerUnitTest
 		}
 
 		//Assert
-		unitOfWorkMock.Verify(x => x.AccountManagerRepository.FindAll(), Times.Exactly(50));
+		unitOfWorkMock.Verify(x => x.AccountManagerRepository.FindAllWithIncludes(), Times.Exactly(50));
 	}
 }

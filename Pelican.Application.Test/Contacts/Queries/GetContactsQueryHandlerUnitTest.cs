@@ -4,7 +4,7 @@ using Pelican.Application.Contacts.Queries.GetContacts;
 using Pelican.Domain.Entities;
 using Xunit;
 namespace Pelican.Application.Test.Contacts.Queries;
-public class GetContacrsQueryHandlerUnitTest
+public class GetContactsQueryHandlerUnitTest
 {
 	private GetContactsQueryHandler uut;
 	[Fact]
@@ -20,7 +20,7 @@ public class GetContacrsQueryHandlerUnitTest
 		//Act
 		_ = uut.Handle(contactsQuery, cancellationToken);
 		//Assert
-		unitOfWorkMock.Verify(x => x.ContactRepository.FindAll(), Times.Once());
+		unitOfWorkMock.Verify(x => x.ContactRepository.FindAllWithIncludes(), Times.Once());
 	}
 	[Fact]
 	public void TestIfWhenHandleIsCalledMultipleTimesRepositoryIsCalledMultipleTimes()
@@ -39,6 +39,6 @@ public class GetContacrsQueryHandlerUnitTest
 		}
 
 		//Assert
-		unitOfWorkMock.Verify(x => x.ContactRepository.FindAll(), Times.Exactly(50));
+		unitOfWorkMock.Verify(x => x.ContactRepository.FindAllWithIncludes(), Times.Exactly(50));
 	}
 }

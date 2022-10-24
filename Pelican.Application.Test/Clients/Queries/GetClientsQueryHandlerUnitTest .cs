@@ -22,7 +22,7 @@ public class GetClientsQueryHandlerUnitTest
 		//Act
 		_ = uut.Handle(client, cancellationToken);
 		//Assert
-		unitOfWorkMock.Verify(x => x.ClientRepository.FindAll(), Times.Once());
+		unitOfWorkMock.Verify(x => x.ClientRepository.FindAllWithIncludes(), Times.Once());
 	}
 	[Fact]
 	public void TestIfWhenHandleIsCalledMultipleTimesRepositoryIsCalledMultipleTimes()
@@ -41,6 +41,6 @@ public class GetClientsQueryHandlerUnitTest
 		}
 
 		//Assert
-		unitOfWorkMock.Verify(x => x.ClientRepository.FindAll(), Times.Exactly(50));
+		unitOfWorkMock.Verify(x => x.ClientRepository.FindAllWithIncludes(), Times.Exactly(50));
 	}
 }

@@ -21,7 +21,7 @@ public class GetSuppliersQueryHandlerUnitTest
 		//Act
 		_ = uut.Handle(accountManagersQuery, cancellationToken);
 		//Assert
-		unitOfWorkMock.Verify(x => x.SupplierRepository.FindAll(), Times.Once());
+		unitOfWorkMock.Verify(x => x.SupplierRepository.FindAllWithIncludes(), Times.Once());
 	}
 	[Fact]
 	public void TestIfWhenHandleIsCalledMultipleTimesRepositoryIsCalledMultipleTimes()
@@ -40,6 +40,6 @@ public class GetSuppliersQueryHandlerUnitTest
 		}
 
 		//Assert
-		unitOfWorkMock.Verify(x => x.SupplierRepository.FindAll(), Times.Exactly(50));
+		unitOfWorkMock.Verify(x => x.SupplierRepository.FindAllWithIncludes(), Times.Exactly(50));
 	}
 }

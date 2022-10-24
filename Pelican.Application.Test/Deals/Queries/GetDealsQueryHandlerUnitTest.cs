@@ -21,7 +21,7 @@ public class GetDealsQueryHandlerUnitTest
 		//Act
 		_ = uut.Handle(dealsQuery, cancellationToken);
 		//Assert
-		unitOfWorkMock.Verify(x => x.DealRepository.FindAll(), Times.Once());
+		unitOfWorkMock.Verify(x => x.DealRepository.FindAllWithIncludes(), Times.Once());
 	}
 	[Fact]
 	public void TestIfWhenHandleIsCalledMultipleTimesRepositoryIsCalledMultipleTimes()
@@ -40,6 +40,6 @@ public class GetDealsQueryHandlerUnitTest
 		}
 
 		//Assert
-		unitOfWorkMock.Verify(x => x.DealRepository.FindAll(), Times.Exactly(50));
+		unitOfWorkMock.Verify(x => x.DealRepository.FindAllWithIncludes(), Times.Exactly(50));
 	}
 }

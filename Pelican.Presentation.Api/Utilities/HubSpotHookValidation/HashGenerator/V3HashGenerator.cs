@@ -8,24 +8,25 @@ namespace Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashGenerator
 
 internal sealed class V3HashGenerator : IHashGenerator
 {
-	private readonly string _clientSecret;
 	private readonly IHashComputer _hashComputer;
 
 	public V3HashGenerator(
 		string clientSecret,
 		IHashComputerFactory hashComputerFactory)
 	{
-		_clientSecret = clientSecret;
 		_hashComputer = hashComputerFactory.CreateClientSecretHashComputer(clientSecret);
 	}
 
 	public string GenerateHash(HttpRequest request)
 	{
 		bool hasTimestamp = request.Headers.TryGetValue("X-HubSpot-Request-Timestamp", out StringValues timestamp);
+		bool hasLongTimestamp = long.TryParse(timestamp, out long longTimestamp);
+
 		if (!hasTimestamp
-			|| Convert.ToInt64(timestamp) < DateTimeOffset.Now.AddMinutes(-5).ToUnixTimeMilliseconds())
+			|| !hasLongTimestamp
+			|| longTimestamp < DateTimeOffset.Now.AddMinutes(-5).ToUnixTimeMilliseconds())
 		{
-			return "";
+			return string.Empty;
 		}
 
 		StringBuilder builder = new(request.Method);

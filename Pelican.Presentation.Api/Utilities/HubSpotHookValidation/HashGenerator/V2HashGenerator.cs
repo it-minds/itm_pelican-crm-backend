@@ -20,13 +20,13 @@ internal sealed class V2HashGenerator : IHashGenerator
 
 	public string GenerateHash(HttpRequest request)
 	{
-		var builder = new StringBuilder(_clientSecret);
+		StringBuilder builder = new(_clientSecret);
 		builder.Append(request.Method);
 		builder.Append(request.GetEncodedUrl());
 
 		if (request.ContentLength > 0)
 		{
-			var body = request.GetBody();
+			string body = request.GetBody();
 			builder.Append(body);
 		}
 

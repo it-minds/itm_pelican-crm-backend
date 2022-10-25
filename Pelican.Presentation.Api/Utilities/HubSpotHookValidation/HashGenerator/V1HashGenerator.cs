@@ -19,11 +19,11 @@ internal sealed class V1HashGenerator : IHashGenerator
 
 	public string GenerateHash(HttpRequest request)
 	{
-		var builder = new StringBuilder(_clientSecret);
+		StringBuilder builder = new(_clientSecret);
 
 		if (request.ContentLength > 0)
 		{
-			var body = request.GetBody();
+			string body = request.GetBody();
 			builder.Append(body);
 		}
 

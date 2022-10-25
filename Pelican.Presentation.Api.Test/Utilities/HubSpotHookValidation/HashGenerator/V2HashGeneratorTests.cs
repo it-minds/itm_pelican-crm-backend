@@ -6,18 +6,20 @@ using Xunit;
 
 namespace Pelican.Presentation.Api.Test.Utilities.HubSpotHookValidation.HashGenerator;
 
-public class V1HashGeneratorTests
+public class V2HashGeneratorTests
 {
 	private const string CLIENTSECRET = "secret";
+	private const string METHOD = "POST";
 	private const string BODY = "{}";
+	private const string PATH = "/path";
 
 	private readonly Mock<IHashComputerFactory> _hashComputerFactoryMock;
 	private readonly Mock<IHashComputer> _hashComputerMock;
-	private readonly V1HashGenerator _uut;
+	private readonly V2HashGenerator _uut;
 
 	private readonly HttpContext _httpContext;
 
-	public V1HashGeneratorTests()
+	public V2HashGeneratorTests()
 	{
 		_hashComputerFactoryMock = new();
 		_hashComputerMock = new();
@@ -38,9 +40,13 @@ public class V1HashGeneratorTests
 	{
 		/// Arrange
 		_httpContext.Request.ContentLength = 0;
+		_httpContext.Request.Method = METHOD;
+		_httpContext.Request.Path = PATH;
+
+		string text = $"{CLIENTSECRET}{METHOD}://{PATH}";
 
 		_hashComputerMock
-			.Setup(hashComputer => hashComputer.ComputeHash(CLIENTSECRET))
+			.Setup(hashComputer => hashComputer.ComputeHash(text))
 			.Returns("Computed Hash");
 
 		/// Act
@@ -49,7 +55,7 @@ public class V1HashGeneratorTests
 		/// Assert
 		_hashComputerMock
 			.Verify(
-				hashComputer => hashComputer.ComputeHash(CLIENTSECRET),
+				hashComputer => hashComputer.ComputeHash(text),
 				Times.Once);
 
 		Assert.Equal(
@@ -62,6 +68,8 @@ public class V1HashGeneratorTests
 	{
 		/// Arrange
 		_httpContext.Request.ContentLength = 1;
+		_httpContext.Request.Method = METHOD;
+		_httpContext.Request.Path = PATH;
 
 		MemoryStream stream = new();
 		StreamWriter writer = new(stream);
@@ -71,8 +79,10 @@ public class V1HashGeneratorTests
 
 		_httpContext.Request.Body = stream;
 
+		string text = $"{CLIENTSECRET}{METHOD}://{PATH}{BODY}";
+
 		_hashComputerMock
-			.Setup(hashComputer => hashComputer.ComputeHash($"{CLIENTSECRET}{BODY}"))
+			.Setup(hashComputer => hashComputer.ComputeHash(text))
 			.Returns("Computed Hash");
 
 		/// Act
@@ -81,7 +91,7 @@ public class V1HashGeneratorTests
 		/// Assert
 		_hashComputerMock
 			.Verify(
-				hashComputer => hashComputer.ComputeHash($"{CLIENTSECRET}{BODY}"),
+				hashComputer => hashComputer.ComputeHash(text),
 				Times.Once);
 
 		Assert.Equal(

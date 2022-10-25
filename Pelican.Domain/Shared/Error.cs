@@ -8,6 +8,8 @@ public class Error : IEquatable<Error>
 
 	public static readonly Error NotImplemented = new("Error.NotImplemented", "Called method is not implemented");
 
+	public static readonly Error AlreadyExists = new("Error.AlreadyExists", "Supplier already exists");
+
 	public Error(string code, string message)
 	{
 		Code = code;

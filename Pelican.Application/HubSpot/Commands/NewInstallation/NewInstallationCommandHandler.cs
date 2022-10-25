@@ -1,12 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Common.Interfaces.Repositories;
-using Pelican.Application.HubSpot.Dtos;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Shared;
-
-[assembly: InternalsVisibleTo("Pelican.Application.Test")]
+﻿[assembly: InternalsVisibleTo("Pelican.Application.Test")]
 namespace Pelican.Application.HubSpot.Commands.NewInstallation;
 
 internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstallationCommand>
@@ -46,12 +38,20 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 			return tokensResult;
 		}
 
-		/// missing check to see if supplier is already loaded
-
 		string accessToken = tokensResult.Value.AccessToken;
 
 		Result<Supplier> supplierResult = await _hubSpotAuthorizationService
 			.DecodeAccessTokenAsync(accessToken, cancellationToken);
+
+		if (supplierResult.IsFailure)
+		{
+			return supplierResult;
+		}
+
+		if (_unitOfWork.SupplierRepository.FindAll().Any(supplier => supplier.HubSpotId == supplierResult.Value.HubSpotId))
+		{
+			return Result.Failure(Error.AlreadyExists);
+		}
 
 		Result<List<AccountManager>> accountManagersResult = await _hubSpotAccountManagerService
 			.GetAsync(accessToken, cancellationToken);
@@ -68,7 +68,6 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 
 		if (Result.FirstFailureOrSuccess(new Result[]
 				{
-					supplierResult,
 					accountManagersResult,
 					contactsResult,
 					clientsResult,

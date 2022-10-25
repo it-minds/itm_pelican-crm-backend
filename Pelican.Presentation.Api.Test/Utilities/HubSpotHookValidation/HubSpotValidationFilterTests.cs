@@ -239,7 +239,7 @@ public class HubSpotValidationFilterTests
 			valueProviderFactories);
 
 		_hashGeneratorFactoryMock
-			.Setup(factory => factory.GetHashGenerator(9))
+			.Setup(factory => factory.CreateHashGenerator(9))
 			.Throws(new Exception("Unsupported signature version"));
 
 		/// Act
@@ -282,7 +282,7 @@ public class HubSpotValidationFilterTests
 			valueProviderFactories);
 
 		_hashGeneratorFactoryMock
-			.Setup(factory => factory.GetHashGenerator(1))
+			.Setup(factory => factory.CreateHashGenerator(1))
 			.Returns(_hashGeneratorMock.Object);
 
 		_hashGeneratorMock
@@ -345,7 +345,7 @@ public class HubSpotValidationFilterTests
 
 
 		_hashGeneratorFactoryMock
-			.Setup(factory => factory.GetHashGenerator(1))
+			.Setup(factory => factory.CreateHashGenerator(1))
 			.Returns(_hashGeneratorMock.Object);
 
 		_hashGeneratorMock
@@ -390,7 +390,7 @@ public class HubSpotValidationFilterTests
 			valueProviderFactories);
 
 		_hashGeneratorFactoryMock
-			.Setup(factory => factory.GetHashGenerator(2))
+			.Setup(factory => factory.CreateHashGenerator(2))
 			.Returns(_hashGeneratorMock.Object);
 
 		_hashGeneratorMock
@@ -453,7 +453,7 @@ public class HubSpotValidationFilterTests
 
 
 		_hashGeneratorFactoryMock
-			.Setup(factory => factory.GetHashGenerator(2))
+			.Setup(factory => factory.CreateHashGenerator(2))
 			.Returns(_hashGeneratorMock.Object);
 
 		_hashGeneratorMock
@@ -498,7 +498,7 @@ public class HubSpotValidationFilterTests
 			valueProviderFactories);
 
 		_hashGeneratorFactoryMock
-			.Setup(factory => factory.GetHashGenerator(3))
+			.Setup(factory => factory.CreateHashGenerator(3))
 			.Returns(_hashGeneratorMock.Object);
 
 		_hashGeneratorMock
@@ -561,7 +561,7 @@ public class HubSpotValidationFilterTests
 
 
 		_hashGeneratorFactoryMock
-			.Setup(factory => factory.GetHashGenerator(3))
+			.Setup(factory => factory.CreateHashGenerator(3))
 			.Returns(_hashGeneratorMock.Object);
 
 		_hashGeneratorMock

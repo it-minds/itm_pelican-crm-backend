@@ -13,7 +13,7 @@ internal sealed class HashGeneratorFactory : IHashGeneratorFactory
 		_settings = options.Value;
 	}
 
-	public IHashGenerator GetHashGenerator(int version) => version switch
+	public IHashGenerator CreateHashGenerator(int version) => version switch
 	{
 		1 => new V1HashGenerator(_settings.App.ClientSecret, new HashComputerFactory()),
 		2 => new V2HashGenerator(_settings.App.ClientSecret, new HashComputerFactory()),

@@ -2,5 +2,5 @@
 
 internal interface IHashGeneratorFactory
 {
-	IHashGenerator GetHashGenerator(int version);
+	IHashGenerator CreateHashGenerator(int version);
 }

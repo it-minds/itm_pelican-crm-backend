@@ -48,7 +48,7 @@ internal sealed class HubSpotValidationFilter : IResourceFilter
 
 		int version = int.Parse(signatureVersion.ToString().Trim('v'));
 
-		IHashGenerator hashGenerator = _hashGeneratorFactory.GetHashGenerator(version);
+		IHashGenerator hashGenerator = _hashGeneratorFactory.CreateHashGenerator(version);
 
 		string hash = hashGenerator.GenerateHash(context.HttpContext.Request);
 

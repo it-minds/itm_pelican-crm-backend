@@ -33,7 +33,7 @@ public class HashGeneratorFactoryTests
 	{
 		/// Act
 		var exception = Record.Exception(() => _uut
-			.GetHashGenerator(9));
+			.CreateHashGenerator(9));
 
 		/// Assert
 		Assert.Equal(
@@ -49,7 +49,7 @@ public class HashGeneratorFactoryTests
 	{
 		/// Act
 		var exception = Record.Exception(() => _uut
-			.GetHashGenerator(version));
+			.CreateHashGenerator(version));
 
 		/// Assert
 		Assert.Null(exception);
@@ -60,7 +60,7 @@ public class HashGeneratorFactoryTests
 	{
 		/// Act
 		var generator = _uut
-			.GetHashGenerator(1);
+			.CreateHashGenerator(1);
 
 		/// Assert
 		Assert.Equal(
@@ -73,7 +73,7 @@ public class HashGeneratorFactoryTests
 	{
 		/// Act
 		var generator = _uut
-			.GetHashGenerator(2);
+			.CreateHashGenerator(2);
 
 		/// Assert
 		Assert.Equal(
@@ -86,14 +86,11 @@ public class HashGeneratorFactoryTests
 	{
 		/// Act
 		var generator = _uut
-			.GetHashGenerator(3);
+			.CreateHashGenerator(3);
 
 		/// Assert
 		Assert.Equal(
 		 typeof(V3HashGenerator),
 		 generator.GetType());
 	}
-
-
-
 }

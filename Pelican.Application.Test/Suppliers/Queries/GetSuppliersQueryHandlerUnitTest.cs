@@ -9,7 +9,7 @@ public class GetSuppliersQueryHandlerUnitTest
 {
 	private GetSuppliersQueryHandler uut;
 	[Fact]
-	public void TestIfWhenHandleIsCalledRepositoryIsCalled()
+	public async void Test_If_When_Handle_Is_Called_Repository_Is_Called()
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -19,7 +19,7 @@ public class GetSuppliersQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		GetSuppliersQuery accountManagersQuery = new GetSuppliersQuery();
 		//Act
-		_ = uut.Handle(accountManagersQuery, cancellationToken);
+		_ = await uut.Handle(accountManagersQuery, cancellationToken);
 		//Assert
 		unitOfWorkMock.Verify(x => x.SupplierRepository.FindAllWithIncludes(), Times.Once());
 	}

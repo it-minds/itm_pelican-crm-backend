@@ -8,7 +8,7 @@ public class GetContactsQueryHandlerUnitTest
 {
 	private GetContactsQueryHandler uut;
 	[Fact]
-	public void TestIfWhenHandleIsCalledRepositoryIsCalled()
+	public async void Test_If_When_Handle_Is_Called_Repository_Is_Called()
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -18,7 +18,7 @@ public class GetContactsQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		GetContactsQuery contactsQuery = new GetContactsQuery();
 		//Act
-		_ = uut.Handle(contactsQuery, cancellationToken);
+		_ = await uut.Handle(contactsQuery, cancellationToken);
 		//Assert
 		unitOfWorkMock.Verify(x => x.ContactRepository.FindAllWithIncludes(), Times.Once());
 	}

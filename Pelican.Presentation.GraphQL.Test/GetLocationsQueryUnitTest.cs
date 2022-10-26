@@ -11,7 +11,7 @@ public class GetLocationsQueryUnitTest
 {
 	private LocationsQuery uut;
 	[Fact]
-	public void IfGetLocationsIsCalledMediatorCallsSendWithCorrectCancellationToken()
+	public void If_GetLocations_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken()
 	{
 		//Arrange
 		uut = new LocationsQuery();
@@ -23,7 +23,7 @@ public class GetLocationsQueryUnitTest
 		mediatorMock.Verify(x => x.Send(It.IsAny<GetLocationsQuery>(), cancellationToken), Times.Once());
 	}
 	[Fact]
-	public async void IfGetLocationAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
+	public async void If_GetLocationAsync_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken_And_Input()
 	{
 		//Arrange
 		uut = new LocationsQuery();

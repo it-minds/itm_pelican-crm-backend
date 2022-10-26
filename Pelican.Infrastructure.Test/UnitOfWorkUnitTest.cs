@@ -67,75 +67,92 @@ public class UnitOfWorkUnitTest
 	}
 
 	[Fact]
-	public void UnitOfWorkAccountManagerDealRepositoryNotNull()
+	public void UnitOfWorkAccountManagerDealRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
+		var exception = Record.Exception(() => uut.AccountManagerDealRepository);
 		//Assert
-		Assert.Throws<InvalidCastException>(() => uut.AccountManagerDealRepository);
+		Assert.NotNull(exception);
+		Assert.IsType<InvalidCastException>(exception);
 	}
 	[Fact]
-	public void UnitOfWorkAccountManagerRepositoryNotNull()
+	public void UnitOfWorkAccountManagerRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
+		var exception = Record.Exception(() => uut.AccountManagerRepository);
 		//Assert
-		Assert.Throws<InvalidCastException>(() => uut.AccountManagerRepository);
+		Assert.NotNull(exception);
+		Assert.IsType<InvalidCastException>(exception);
 	}
 	[Fact]
-	public void UnitOfWorkClientRepositoryNotNull()
+	public void UnitOfWorkClientRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
+		var exception = Record.Exception(() => uut.ClientRepository);
 		//Assert
-		Assert.Throws<InvalidCastException>(() => uut.ClientRepository);
+		Assert.NotNull(exception);
+		Assert.IsType<InvalidCastException>(exception);
 	}
 	[Fact]
-	public void UnitOfWorkGetContactRepository()
+	public void UnitOfWorkGetContactRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
+		var exception = Record.Exception(() => uut.ContactRepository);
 		//Assert
-		Assert.Throws<InvalidCastException>(() => uut.ContactRepository);
+		Assert.NotNull(exception);
+		Assert.IsType<InvalidCastException>(exception);
 	}
 	[Fact]
-	public void UnitOfWorkGetSupplierRepository()
+	public void UnitOfWorkGetSupplierRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
+		var exception = Record.Exception(() => uut.SupplierRepository);
 		//Assert
-		Assert.Throws<InvalidCastException>(() => uut.SupplierRepository);
+		Assert.NotNull(exception);
+		Assert.IsType<InvalidCastException>(exception);
 	}
 	[Fact]
-	public void UnitOfWorkGetLocationRepository()
+	public void UnitOfWorkGetLocationRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
+		var exception = Record.Exception(() => uut.LocationRepository);
 		//Assert
-		Assert.Throws<InvalidCastException>(() => uut.LocationRepository);
+		Assert.NotNull(exception);
+		Assert.IsType<InvalidCastException>(exception);
 	}
 	[Fact]
-	public void UnitOfWorkGetClientContactRepository()
-	{
-		//Arrange
+	public void UnitOfWorkGetClientContactRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
+	{   //Arrange
 		//Act
+		var exception = Record.Exception(() => uut.ClientContactRepository);
 		//Assert
-		Assert.Throws<InvalidCastException>(() => uut.ClientContactRepository);
+		Assert.NotNull(exception);
+		Assert.IsType<InvalidCastException>(exception);
 	}
 	[Fact]
-	public void UnitOfWorkGetDealContactRepository()
+	public void UnitOfWorkGetDealContactRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
+		var exception = Record.Exception(() => uut.DealContactRepository);
 		//Assert
-		Assert.Throws<InvalidCastException>(() => uut.DealContactRepository);
+		Assert.NotNull(exception);
+		Assert.IsType<InvalidCastException>(exception);
 	}
 	[Fact]
-	public void UnitOfWorkGetDealRepository()
+	public void UnitOfWorkGetDealRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
+		var exception = Record.Exception(() => uut.DealRepository);
 		//Assert
-		Assert.Throws<InvalidCastException>(() => uut.DealRepository);
+		Assert.NotNull(exception);
+		Assert.IsType<InvalidCastException>(exception);
 	}
 }

@@ -11,7 +11,7 @@ public class GetContactsQueryUnitTest
 {
 	private ContactsQuery uut;
 	[Fact]
-	public void IfGetContactsIsCalledMediatorCallsSendWithCorrectCancellationToken()
+	public void If_GetContacts_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken()
 	{
 		//Arrange
 		uut = new ContactsQuery();
@@ -23,7 +23,7 @@ public class GetContactsQueryUnitTest
 		mediatorMock.Verify(x => x.Send(It.IsAny<GetContactsQuery>(), cancellationToken), Times.Once());
 	}
 	[Fact]
-	public async void IfGetContactAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
+	public async void If_GetContactAsync_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken_And_Input()
 	{
 		//Arrange
 		uut = new ContactsQuery();

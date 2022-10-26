@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Pelican.Application.Common.Interfaces;
+﻿using Pelican.Application.Common.Interfaces;
 using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
 using Location = Pelican.Domain.Entities.Location;
@@ -16,6 +15,7 @@ public class DevelopmentSeeder : IDevelopmentSeeder
 		_faker = pelicanFaker;
 		cancellationToken = new CancellationToken();
 	}
+
 	public async void SeedEntireDb(int count)
 	{
 		var suppliers = SeedSuppliers(_unitOfWork, _faker, count);
@@ -30,42 +30,45 @@ public class DevelopmentSeeder : IDevelopmentSeeder
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 	}
+
 	public IQueryable<Location> SeedLocations(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Supplier> suppliers, int count)
 	{
-		var variable = unitOfWork.LocationRepository.FindAll().IgnoreAutoIncludes();
-		if (variable.Any())
-			return variable;
+		var repositoryContent = unitOfWork.LocationRepository.FindAll();
+		if (repositoryContent.Any())
+			return repositoryContent;
 		var result = pelicanFaker.LocationFaker(count, suppliers);
 		unitOfWork.LocationRepository
 			.CreateRangeAsync(result, cancellationToken);
 		return result.AsQueryable();
 	}
-	//This Method calls on the PelicanBogusFaker to give it a list of 5 Supplier entities and saves these to the database.
+
 	public IQueryable<Supplier> SeedSuppliers(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, int count)
 	{
-		var variable = unitOfWork.SupplierRepository.FindAll().IgnoreAutoIncludes();
-		if (variable.Any())
-			return variable;
+		var repositoryContent = unitOfWork.SupplierRepository.FindAll();
+		if (repositoryContent.Any())
+			return repositoryContent;
 		var result = pelicanFaker.SupplierFaker(count);
 		unitOfWork.SupplierRepository
 			.CreateRangeAsync(result, cancellationToken);
 		return result.AsQueryable();
 	}
+
 	public IQueryable<AccountManager> SeedAccountManagers(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Supplier> supplier, int count)
 	{
-		var variable = unitOfWork.AccountManagerRepository.FindAll().IgnoreAutoIncludes();
-		if (variable.Any())
-			return variable;
+		var repositoryContent = unitOfWork.AccountManagerRepository.FindAll();
+		if (repositoryContent.Any())
+			return repositoryContent;
 		var result = pelicanFaker.AccountManagerFaker(count, supplier);
 		unitOfWork.AccountManagerRepository
 			.CreateRangeAsync(result, cancellationToken);
 		return result.AsQueryable();
 	}
+
 	public IQueryable<Client> SeedClients(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Location> location, int count)
 	{
-		var variable = unitOfWork.ClientRepository.FindAll().IgnoreAutoIncludes();
-		if (variable.Any())
-			return variable;
+		var repositoryContent = unitOfWork.ClientRepository.FindAll();
+		if (repositoryContent.Any())
+			return repositoryContent;
 		var result = pelicanFaker.ClientFaker(count, location);
 		unitOfWork.ClientRepository
 			.CreateRangeAsync(result, cancellationToken);
@@ -73,9 +76,9 @@ public class DevelopmentSeeder : IDevelopmentSeeder
 	}
 	public IQueryable<Deal> SeedDeals(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Client> client, IQueryable<AccountManager> accountManagers, int count)
 	{
-		var variable = unitOfWork.DealRepository.FindAll().IgnoreAutoIncludes();
-		if (variable.Any())
-			return variable;
+		var repositoryContent = unitOfWork.DealRepository.FindAll();
+		if (repositoryContent.Any())
+			return repositoryContent;
 		var result = pelicanFaker.DealFaker(count, client, accountManagers);
 		unitOfWork.DealRepository
 			.CreateRangeAsync(result, cancellationToken);
@@ -83,22 +86,24 @@ public class DevelopmentSeeder : IDevelopmentSeeder
 
 
 	}
+
 	public IQueryable<Contact> SeedContacts(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<AccountManager> accountManagers, int count)
 	{
-		var variable = unitOfWork.ContactRepository.FindAll().IgnoreAutoIncludes();
-		if (variable.Any())
-			return variable;
+		var repositoryContent = unitOfWork.ContactRepository.FindAll();
+		if (repositoryContent.Any())
+			return repositoryContent;
 		var result = pelicanFaker.ContactFaker(count, accountManagers);
 		unitOfWork
 			.ContactRepository
 			.CreateRangeAsync(result, cancellationToken);
 		return result.AsQueryable();
 	}
+
 	public IQueryable<AccountManagerDeal> SeedAccountManagerDeals(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<AccountManager> accountManagers, IQueryable<Deal> deals)
 	{
-		var variable = unitOfWork.AccountManagerDealRepository.FindAll().IgnoreAutoIncludes();
-		if (variable.Any())
-			return variable;
+		var repositoryContent = unitOfWork.AccountManagerDealRepository.FindAll();
+		if (repositoryContent.Any())
+			return repositoryContent;
 		var result = pelicanFaker.AccountManagerDealFaker(accountManagers, deals);
 		unitOfWork.AccountManagerDealRepository
 			.CreateRangeAsync(result, cancellationToken);
@@ -106,19 +111,20 @@ public class DevelopmentSeeder : IDevelopmentSeeder
 	}
 	public IQueryable<DealContact> SeedDealContacts(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Deal> deals, IQueryable<Contact> contacts)
 	{
-		var variable = unitOfWork.DealContactRepository.FindAll().IgnoreAutoIncludes();
-		if (variable.Any())
-			return variable;
+		var repositoryContent = unitOfWork.DealContactRepository.FindAll();
+		if (repositoryContent.Any())
+			return repositoryContent;
 		var result = pelicanFaker.DealContactFaker(deals, contacts);
 		unitOfWork.DealContactRepository
 			.CreateRangeAsync(result, cancellationToken);
 		return result.AsQueryable();
 	}
+
 	public IQueryable<ClientContact> SeedClientContacts(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Client> clients, IQueryable<Contact> contacts)
 	{
-		var variable = unitOfWork.ClientContactRepository.FindAll().IgnoreAutoIncludes();
-		if (variable.Any())
-			return variable;
+		var repositoryContent = unitOfWork.ClientContactRepository.FindAll();
+		if (repositoryContent.Any())
+			return repositoryContent;
 		var result = pelicanFaker.ClientContactFaker(clients, contacts);
 		unitOfWork.ClientContactRepository
 			.CreateRangeAsync(result, cancellationToken);

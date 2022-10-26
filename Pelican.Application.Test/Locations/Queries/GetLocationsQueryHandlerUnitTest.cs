@@ -9,7 +9,7 @@ public class GetLocationsQueryHandlerUnitTest
 {
 	private GetLocationsQueryHandler uut;
 	[Fact]
-	public void TestIfWhenHandleIsCalledRepositoryIsCalled()
+	public async void Test_If_When_Handle_Is_Called_Repository_Is_Called()
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -19,7 +19,7 @@ public class GetLocationsQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		GetLocationsQuery locationsQuery = new GetLocationsQuery();
 		//Act
-		_ = uut.Handle(locationsQuery, cancellationToken);
+		_ = await uut.Handle(locationsQuery, cancellationToken);
 		//Assert
 		unitOfWorkMock.Verify(x => x.LocationRepository.FindAllWithIncludes(), Times.Once());
 	}

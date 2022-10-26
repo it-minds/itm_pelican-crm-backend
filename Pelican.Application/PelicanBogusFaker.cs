@@ -20,7 +20,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.LinkedInUrl, f => f.Internet.Url().OrNull(f))
 			.RuleFor(e => e.Supplier, f => f.PickRandom<Supplier>(suppliers))
 			.RuleFor(e => e.HubSpotId, f => f.Random.Guid().ToString())
-			.RuleFor(e => e.HubSpotUserId, f => f.Random.Long())
+			.RuleFor(e => e.HubSpotUserId, f => f.Random.Long(1))
 			.RuleFor(e => e.Id, f => f.Random.Guid());
 		return faker.Generate(count);
 	}
@@ -34,7 +34,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.Email, f => f.Person.Email.OrNull(f))
 			.RuleFor(e => e.LinkedInUrl, f => f.Internet.Url().OrNull(f))
 			.RuleFor(e => e.WebsiteUrl, f => f.Internet.Url().OrNull(f))
-			.RuleFor(e => e.HubSpotId, f => f.Random.Long())
+			.RuleFor(e => e.HubSpotId, f => f.Random.Long(1))
 			.RuleFor(e => e.RefreshToken, f => f.Random.Guid().ToString())
 			.RuleFor(e => e.Id, f => f.Random.Guid());
 		return faker.Generate(count);

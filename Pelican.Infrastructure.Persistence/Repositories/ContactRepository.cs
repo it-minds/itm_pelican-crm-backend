@@ -20,7 +20,7 @@ internal class ContactRepository : GenericRepository<Contact>
 			.ThenInclude(x => x.OfficeLocations)
 			.Include(x => x.DealContacts)
 			.ThenInclude(x => x.Deal)
-			.ThenInclude(x => x.Client)
+			.ThenInclude(x => x.Client!)
 			.ThenInclude(x => x.ClientContacts)
 			.Include(x => x.ClientContacts)
 			.ThenInclude(x => x.Client)

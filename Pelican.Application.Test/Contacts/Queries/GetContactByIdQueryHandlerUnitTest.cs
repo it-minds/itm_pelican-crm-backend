@@ -9,7 +9,7 @@ public class GetContactByIdQueryHandlerUnitTest
 {
 	private GetContactByIdQueryHandler uut;
 	[Fact]
-	public async void TestIfWhenHandleIsCalledDataLoaderIsCalledWithCorrectParameters()
+	public async void Test_If_When_Handle_Is_Called_DataLoader_Is_Called_With_Correct_Parameters()
 	{
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Contact>>();

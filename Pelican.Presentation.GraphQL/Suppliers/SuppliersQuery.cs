@@ -12,7 +12,7 @@ public class SuppliersQuery
 	public async Task<IQueryable<Supplier>> GetSuppliers([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
 
-		return (await mediator.Send(new GetSuppliersQuery(), cancellationToken));
+		return await mediator.Send(new GetSuppliersQuery(), cancellationToken);
 	}
 	//This Query reguests a specific Supplier from the database.
 	public async Task<Supplier> GetSupplierAsync(Guid id, [Service] IMediator mediator, CancellationToken cancellationToken)

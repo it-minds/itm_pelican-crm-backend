@@ -30,6 +30,7 @@ if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();
+
 }
 
 app.UseHttpsRedirection();
@@ -45,6 +46,7 @@ app.UseEndpoints(endpoints =>
 app.UseCors(allowedCorsOrigins);
 
 app.MapControllers();
+app.Services.GetRequiredService<DevelopmentSeeder>().SeedEntireDb(10);
 
 app.Run();
 

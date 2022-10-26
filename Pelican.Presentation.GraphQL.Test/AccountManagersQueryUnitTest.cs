@@ -11,7 +11,7 @@ public class AccountManagersQueryUnitTest
 {
 	private AccountManagersQuery uut;
 	[Fact]
-	public void IfGetAccountManagersIsCalledMediatorCallsSendWithCorrectCancellationToken()
+	public void If_GetAccountManagers_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken()
 	{
 		//Arrange
 		uut = new AccountManagersQuery();
@@ -23,7 +23,7 @@ public class AccountManagersQueryUnitTest
 		mediatorMock.Verify(x => x.Send(It.IsAny<GetAccountManagersQuery>(), cancellationToken), Times.Once());
 	}
 	[Fact]
-	public async void IfGetAccountManagerAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
+	public async void If_GetAccountManagerAsync_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken_And_Input()
 	{
 		//Arrange
 		uut = new AccountManagersQuery();

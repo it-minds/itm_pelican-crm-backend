@@ -20,7 +20,7 @@ public class DealRepository : GenericRepository<Deal>
 			.ThenInclude(x => x.Contact)
 			.ThenInclude(x => x.ClientContacts)
 			.ThenInclude(x => x.Client)
-			.Include(x => x.Client)
+			.Include(x => x.Client!)
 			.ThenInclude(x => x.ClientContacts)
 			.ThenInclude(x => x.Contact)
 			.ThenInclude(x => x.DealContacts);

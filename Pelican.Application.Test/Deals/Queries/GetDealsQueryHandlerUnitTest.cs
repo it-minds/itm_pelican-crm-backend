@@ -9,7 +9,7 @@ public class GetDealsQueryHandlerUnitTest
 {
 	private GetDealsQueryHandler uut;
 	[Fact]
-	public void TestIfWhenHandleIsCalledRepositoryIsCalled()
+	public async void Test_If_When_Handle_Is_Called_Repository_Is_Called()
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -19,7 +19,7 @@ public class GetDealsQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		GetDealsQuery dealsQuery = new GetDealsQuery();
 		//Act
-		_ = uut.Handle(dealsQuery, cancellationToken);
+		_ = await uut.Handle(dealsQuery, cancellationToken);
 		//Assert
 		unitOfWorkMock.Verify(x => x.DealRepository.FindAllWithIncludes(), Times.Once());
 	}

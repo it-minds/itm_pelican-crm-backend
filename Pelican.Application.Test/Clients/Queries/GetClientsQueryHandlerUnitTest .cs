@@ -10,7 +10,7 @@ public class GetClientsQueryHandlerUnitTest
 {
 	private GetClientsQueryHandler uut;
 	[Fact]
-	public void TestIfWhenHandleIsCalledRepositoryIsCalled()
+	public async void Test_If_When_Handle_Is_Called_Repository_Is_Called()
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -20,7 +20,7 @@ public class GetClientsQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		GetClientsQuery client = new GetClientsQuery();
 		//Act
-		_ = uut.Handle(client, cancellationToken);
+		_ = await uut.Handle(client, cancellationToken);
 		//Assert
 		unitOfWorkMock.Verify(x => x.ClientRepository.FindAllWithIncludes(), Times.Once());
 	}

@@ -23,7 +23,7 @@ public class SupplierRepository : GenericRepository<Supplier>
 			.Include(x => x.AccountManagers)
 			.ThenInclude(x => x.AccountManagerDeals)
 			.ThenInclude(x => x.Deal)
-			.ThenInclude(x => x.Client)
+			.ThenInclude(x => x.Client!)
 			.ThenInclude(x => x.ClientContacts)
 			.ThenInclude(x => x.Contact)
 			.ThenInclude(x => x.DealContacts);

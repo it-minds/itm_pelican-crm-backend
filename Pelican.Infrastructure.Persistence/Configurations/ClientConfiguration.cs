@@ -11,7 +11,8 @@ internal class ClientConfiguration : IEntityTypeConfiguration<Client>
 		builder.ToTable("Clients");
 
 		builder.Property(p => p.Name)
-			.HasMaxLength(StringLengths.Name);
+			.HasMaxLength(StringLengths.Name)
+			.IsRequired();
 
 		builder.Property(p => p.PictureUrl)
 			.HasMaxLength(StringLengths.Url);
@@ -26,16 +27,17 @@ internal class ClientConfiguration : IEntityTypeConfiguration<Client>
 			.HasMaxLength(StringLengths.Classification);
 
 		builder.Property(p => p.HubSpotId)
-			.HasMaxLength(StringLengths.Id);
+			.HasMaxLength(StringLengths.Id)
+			.IsRequired();
 
 		builder.HasMany(a => a.ClientContacts)
 			.WithOne(a => a.Client)
-			.HasForeignKey(a => a.ClientId);
+			.HasForeignKey(a => a.ClientId)
+			.IsRequired();
 
 		builder.HasMany(a => a.Deals)
 			.WithOne(a => a.Client)
-			.HasForeignKey(a => a.ClientId);
-
-
+			.HasForeignKey(a => a.ClientId)
+			.IsRequired();
 	}
 }

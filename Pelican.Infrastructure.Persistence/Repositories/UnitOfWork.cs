@@ -18,47 +18,28 @@ public class UnitOfWork : IUnitOfWork
 	private IGenericRepository<ClientContact> _clientContactRepository;
 	private IGenericRepository<DealContact> _dealContactRepository;
 
-	public IGenericRepository<T> GetRepository<T>() where T : Entity
+	public IGenericRepository<T> GetRepository<T>() where T : Entity => typeof(T) switch
 	{
-		if (typeof(T) == typeof(AccountManager))
-		{
-			return (IGenericRepository<T>)AccountManagerRepository;
-		}
-		if (typeof(T) == typeof(AccountManagerDeal))
-		{
-			return (IGenericRepository<T>)AccountManagerDealRepository;
-		}
-		if (typeof(T) == typeof(Client))
-		{
-			return (IGenericRepository<T>)ClientRepository;
-		}
-		if (typeof(T) == typeof(ClientContact))
-		{
-			return (IGenericRepository<T>)ClientContactRepository;
-		}
-		if (typeof(T) == typeof(Contact))
-		{
-			return (IGenericRepository<T>)ContactRepository;
-		}
-		if (typeof(T) == typeof(Deal))
-		{
-			return (IGenericRepository<T>)DealRepository;
-		}
-		if (typeof(T) == typeof(DealContact))
-		{
-			return (IGenericRepository<T>)DealContactRepository;
-		}
-		if (typeof(T) == typeof(Location))
-		{
-			return (IGenericRepository<T>)LocationRepository;
-		}
-		if (typeof(T) == typeof(Supplier))
-		{
-			return (IGenericRepository<T>)SupplierRepository;
-		}
-		throw new ArgumentException("Repository is not of valid Entity type");
-
-	}
+		Type AccountManager when AccountManager == typeof(AccountManager)
+			=> (IGenericRepository<T>)AccountManagerRepository,
+		Type AccountManagerDeal when AccountManagerDeal == typeof(AccountManagerDeal)
+			=> (IGenericRepository<T>)AccountManagerDealRepository,
+		Type ClientContacts when ClientContacts == typeof(ClientContact)
+			=> (IGenericRepository<T>)ClientContactRepository,
+		Type Client when Client == typeof(Client)
+			=> (IGenericRepository<T>)ClientRepository,
+		Type Contact when Contact == typeof(Contact)
+			=> (IGenericRepository<T>)ContactRepository,
+		Type DealContact when DealContact == typeof(DealContact)
+			=> (IGenericRepository<T>)DealContactRepository,
+		Type Deal when Deal == typeof(Deal)
+			=> (IGenericRepository<T>)DealRepository,
+		Type Location when Location == typeof(Location)
+			=> (IGenericRepository<T>)LocationRepository,
+		Type Supplier when Supplier == typeof(Supplier)
+			=> (IGenericRepository<T>)SupplierRepository,
+		_ => throw new ArgumentException("Generic Repository is not of correct Entity type", nameof(T)),
+	};
 	public IGenericRepository<AccountManagerDeal> AccountManagerDealRepository
 	{
 		get

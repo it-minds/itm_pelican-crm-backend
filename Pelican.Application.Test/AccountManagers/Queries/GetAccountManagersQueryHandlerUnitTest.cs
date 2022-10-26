@@ -8,7 +8,7 @@ public class GetAccountManagersQueryHandlerUnitTest
 {
 	private GetAccountManagersQueryHandler uut;
 	[Fact]
-	public void TestIfWhenHandleIsCalledDataLoaderIsCalledWithCorrectParameters()
+	public async void Test_If_When_Handle_Is_Called_Repository_Is_Called()
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -18,7 +18,7 @@ public class GetAccountManagersQueryHandlerUnitTest
 		CancellationToken cancellationToken = new CancellationToken();
 		GetAccountManagersQuery accountManagersQuery = new GetAccountManagersQuery();
 		//Act
-		_ = uut.Handle(accountManagersQuery, cancellationToken);
+		_ = await uut.Handle(accountManagersQuery, cancellationToken);
 		//Assert
 		unitOfWorkMock.Verify(x => x.AccountManagerRepository.FindAllWithIncludes(), Times.Once());
 	}

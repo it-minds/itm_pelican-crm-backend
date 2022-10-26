@@ -24,7 +24,7 @@ public class Deal : Entity, ITimeTracked
 
 	public ICollection<AccountManagerDeal> AccountManagerDeals { get; set; } = new List<AccountManagerDeal>();
 
-	public ICollection<DealContact>? DealContacts { get; set; } = new List<DealContact>();
+	public ICollection<DealContact> DealContacts { get; set; } = new List<DealContact>();
 
 
 	public long CreatedAt { get; set; }

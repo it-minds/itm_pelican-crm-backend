@@ -35,4 +35,41 @@ public class Deal : Entity, ITimeTracked
 	public Deal(Guid id) : base(id) { }
 	public Deal() { }
 
+
+	public Deal UpdateProperty(string propertyName, string propertyValue)
+	{
+		switch (propertyName)
+		{
+			case "closedate":
+				{
+					bool hasLongValue = long.TryParse(propertyValue, out long valueLong);
+					if (!hasLongValue)
+					{
+						throw new InvalidOperationException();
+					}
+					EndDate = new DateTime(valueLong, DateTimeKind.Utc);
+					break;
+				}
+			case "amount":
+				{
+					bool hasDecimalValue = decimal.TryParse(propertyValue, out decimal valueDecimal);
+					if (!hasDecimalValue)
+					{
+						throw new InvalidOperationException();
+					}
+					Revenue = valueDecimal;
+					break;
+				}
+			case "dealstage":
+				DealStatus = propertyValue;
+				break;
+			case "deal_currency_code":
+				CurrencyCode = propertyValue;
+				break;
+			default:
+				break;
+		}
+
+		return this;
+	}
 }

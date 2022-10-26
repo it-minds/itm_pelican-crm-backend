@@ -16,42 +16,35 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 		IHubSpotObjectService<Deal> hubSpotDealService,
 		IHubSpotAuthorizationService hubSpotAuthorizationService)
 	{
-		_unitOfWork = unitOfWork;
-		_hubSpotDealService = hubSpotDealService;
-		_hubSpotAuthorizationService = hubSpotAuthorizationService;
+		_unitOfWork = unitOfWork
+			?? throw new ArgumentNullException(nameof(unitOfWork));
+
+		_hubSpotDealService = hubSpotDealService
+			?? throw new ArgumentNullException(nameof(hubSpotDealService));
+
+		_hubSpotAuthorizationService = hubSpotAuthorizationService
+			?? throw new ArgumentNullException(nameof(hubSpotAuthorizationService));
 	}
+
 	public async Task<Result> Handle(UpdateDealCommand command, CancellationToken cancellationToken)
 	{
-		Deal? deal = _unitOfWork
+		Deal? deal = await _unitOfWork
 			.DealRepository
-			.FindByCondition(d => d.Id.ToString() == command.ObjectId.ToString())
-			.FirstOrDefault();
+			.FirstOrDefaultAsync(
+				d => d.HubSpotId == command.ObjectId.ToString(),
+				cancellationToken);
 
 		if (deal is null)
 		{
-			return await GetDealFromHubSpot(
+			return await GetDealFromHubSpotAsync(
 				command.UserId,
 				command.ObjectId,
 				cancellationToken);
 		}
 
-		switch (command.PropertyName)
-		{
-			case "closedate":
-				deal.EndDate = new DateTime(Convert.ToInt64(command.PropertyValue), DateTimeKind.Utc);
-				break;
-			case "amount":
-				deal.Revenue = Convert.ToDecimal(command.PropertyValue);
-				break;
-			case "dealstage":
-				deal.DealStatus = command.PropertyValue;
-				break;
-			case "deal_currency_code":
-				deal.CurrencyCode = command.PropertyValue;
-				break;
-			default:
-				break;
-		}
+		deal.UpdateProperty(
+			command.PropertyName,
+			command.PropertyValue);
 
 		_unitOfWork
 			.DealRepository
@@ -62,27 +55,38 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 		return Result.Success();
 	}
 
-	private async Task<Result> GetDealFromHubSpot(string userId, long objectId, CancellationToken cancellationToken)
+	private async Task<Result> GetDealFromHubSpotAsync(
+		string userId,
+		long objectId,
+		CancellationToken cancellationToken)
 	{
-		Supplier? supplier = _unitOfWork
+		Supplier? supplier = await _unitOfWork
 				.SupplierRepository
-				.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId)
-				.FirstOrDefault();
+				.FirstOrDefaultAsync(
+					supplier => supplier.HubSpotId.ToString() == userId,
+					cancellationToken);
 
-		if (supplier is null || supplier.RefreshToken is null or "")
+		if (supplier is null
+			|| string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{
 			return Result.Failure<Deal>(Error.NullValue);
 		}
 
 		Result<string> accessTokenResult = await _hubSpotAuthorizationService
-			.RefreshAccessTokenAsync(supplier.RefreshToken, cancellationToken);
+			.RefreshAccessTokenAsync(
+				supplier.RefreshToken,
+				cancellationToken);
 
 		if (accessTokenResult.IsFailure)
 		{
 			return Result.Failure<Deal>(accessTokenResult.Error);
 		}
 
-		Result<Deal> result = await _hubSpotDealService.GetByIdAsync(accessTokenResult.Value, objectId, cancellationToken);
+		Result<Deal> result = await _hubSpotDealService
+			.GetByIdAsync(
+				accessTokenResult.Value,
+				objectId,
+				cancellationToken);
 
 		if (result.IsFailure)
 		{
@@ -92,6 +96,8 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 		await _unitOfWork
 			.DealRepository
 			.CreateAsync(result.Value, cancellationToken);
+
+		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
 	}

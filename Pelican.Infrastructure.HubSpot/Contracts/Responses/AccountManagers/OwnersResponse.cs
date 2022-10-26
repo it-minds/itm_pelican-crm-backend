@@ -5,5 +5,5 @@ namespace Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
 internal sealed class OwnersResponse
 {
 	[JsonPropertyName("results")]
-	public OwnerResponse[] Results { get; set; } = default!;
+	public IEnumerable<OwnerResponse> Results { get; set; } = Enumerable.Empty<OwnerResponse>();
 }

@@ -50,8 +50,6 @@ public class HubSpotDealServicesTests
 	[Fact]
 	public async Task GetByIdAsync_ClientReturnsNull_ReturnFailureNullError()
 	{
-		const string ERROR = "testError";
-
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, _cancellationToken);
 

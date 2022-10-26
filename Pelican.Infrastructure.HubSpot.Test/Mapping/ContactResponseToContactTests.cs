@@ -12,7 +12,7 @@ public class ContactResponseToContactTests
 	private const string LASTNAME = "lname";
 	private const string EMAIL = "email";
 	private const string PHONE = "phone";
-	private const string OBJECTID = "id";
+	private const string ID = "id";
 	private const string JOBTITLE = "jobtitle";
 	private const string OWNERID = "ownerid";
 
@@ -24,14 +24,42 @@ public class ContactResponseToContactTests
 			Lastname = LASTNAME,
 			Email = EMAIL,
 			Phone = PHONE,
-			HubSpotObjectId = OBJECTID,
+			HubSpotObjectId = ID,
 			JobTitle = JOBTITLE,
 			HubSpotOwnerId = OWNERID,
 		},
 	};
 
 	[Fact]
-	public void ToContact_WithOutAssociations_ReturnContactWithEmptyDealContactsAndClientContacts()
+	public void ToContact_ResponseMissingHubSpotId_ThrowsException()
+	{
+		/// Arrange
+		ContactResponse defaultResponse = new();
+		defaultResponse.Properties.HubSpotOwnerId = OWNERID;
+
+		/// Act
+		Exception result = Record.Exception(() => defaultResponse.ToContact());
+
+		/// Assert
+		Assert.NotNull(result);
+	}
+
+	[Fact]
+	public void ToContact_ResponseMissingHubSpotOwnerId_ThrowsException()
+	{
+		/// Arrange
+		ContactResponse defaultResponse = new();
+		defaultResponse.Properties.HubSpotObjectId = ID;
+
+		/// Act
+		Exception result = Record.Exception(() => defaultResponse.ToContact());
+
+		/// Assert
+		Assert.NotNull(result);
+	}
+
+	[Fact]
+	public void ToContact_WithoutAssociations_ReturnCorrectProperties()
 	{
 		/// Act
 		Contact result = response.ToContact();
@@ -41,307 +69,109 @@ public class ContactResponseToContactTests
 		Assert.Equal(LASTNAME, result.Lastname);
 		Assert.Equal(EMAIL, result.Email);
 		Assert.Equal(PHONE, result.PhoneNumber);
-		Assert.Equal(OBJECTID, result.HubSpotId);
+		Assert.Equal(ID, result.HubSpotId);
 		Assert.Equal(JOBTITLE, result.JobTitle);
 		Assert.Equal(OWNERID, result.HubSpotOwnerId);
-
-		Assert.Equal(0, result.DealContacts.Count);
-
-		Assert.Equal(0, result.ClientContacts.Count);
 	}
 
 	[Fact]
-	public void ToContact_WithEmptyAssociations_ReturnContactWithoutDealsAndClientContacts()
+	public void ToContact_WithoutAssociations_ReturnContactWithEmptyDealContactsAndClientContacts()
 	{
+		/// Act
+		Contact result = response.ToContact();
 
+		/// Assert
+		Assert.Equal(0, result.DealContacts!.Count);
+
+		Assert.Equal(0, result.ClientContacts!.Count);
+	}
+
+	[Fact]
+	public void ToContact_WithDefaultDealsAndCompanies_ReturnContactEmptyDealContactsAndClientContacts()
+	{
 		/// Arrange
-		response.Associations = new()
+		response.Associations.Deals.AssociationList = new List<Association>()
 		{
-			Deals = null,
-			Companies = null,
+			new(),
+		};
+
+		response.Associations.Companies.AssociationList = new List<Association>()
+		{
+			new(),
 		};
 
 		/// Act
 		Contact result = response.ToContact();
 
 		/// Assert
-		Assert.Equal(FIRSTNAME, result.Firstname);
-		Assert.Equal(LASTNAME, result.Lastname);
-		Assert.Equal(EMAIL, result.Email);
-		Assert.Equal(PHONE, result.PhoneNumber);
-		Assert.Equal(OBJECTID, result.HubSpotId);
-		Assert.Equal(JOBTITLE, result.JobTitle);
-		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+		Assert.Equal(0, result.DealContacts!.Count);
 
-		Assert.Equal(0, result.DealContacts.Count);
-
-		Assert.Equal(0, result.ClientContacts.Count);
+		Assert.Equal(0, result.ClientContacts!.Count);
 	}
 
 	[Fact]
-	public void ToContact_WithNullAssociationsList_ReturnContactWithoutDealsAndClientContacts()
+	public void ToContact_WithNotMatchingAssociations_ReturnContactEmptyDealContactsAndContactContacts()
 	{
-
 		/// Arrange
-		response.Associations = new()
+		response.Associations.Deals.AssociationList = new List<Association>()
 		{
-			Deals = new()
+			new()
 			{
-				AssociationList = null
+				Type = "not_matching",
+				Id = "2"
 			},
-			Companies = new()
+		};
+
+		response.Associations.Companies.AssociationList = new List<Association>()
+		{
+			new()
 			{
-				AssociationList = null
-			}
+				Type = "not_matching",
+				Id = "2"
+			},
 		};
 
 		/// Act
 		Contact result = response.ToContact();
 
 		/// Assert
-		Assert.Equal(FIRSTNAME, result.Firstname);
-		Assert.Equal(LASTNAME, result.Lastname);
-		Assert.Equal(EMAIL, result.Email);
-		Assert.Equal(PHONE, result.PhoneNumber);
-		Assert.Equal(OBJECTID, result.HubSpotId);
-		Assert.Equal(JOBTITLE, result.JobTitle);
-		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+		Assert.Equal(0, result.DealContacts!.Count);
 
-		Assert.Equal(0, result.DealContacts.Count);
-
-		Assert.Equal(0, result.ClientContacts.Count);
+		Assert.Equal(0, result.ClientContacts!.Count);
 	}
 
 	[Fact]
-	public void ToContact_WithEmptyAssociationsList_ReturnContactWithoutDealsAndClientContacts()
+	public void ToContact_WithMatchingAssociations_ReturnContactWithDealsAndContactContacts()
 	{
-
 		/// Arrange
-		response.Associations = new()
+		response.Associations.Deals.AssociationList = new List<Association>()
 		{
-			Deals = new()
+			new()
 			{
-				AssociationList = new List<Association>(),
+				Type = "contact_to_deal",
+				Id = "1"
 			},
-			Companies = new()
+		};
+
+		response.Associations.Companies.AssociationList = new List<Association>()
+		{
+			new()
 			{
-				AssociationList = new List<Association>(),
-			}
+				Type = "contact_to_company",
+				Id = "1"
+			},
 		};
 
 		/// Act
 		Contact result = response.ToContact();
 
 		/// Assert
-		Assert.Equal(FIRSTNAME, result.Firstname);
-		Assert.Equal(LASTNAME, result.Lastname);
-		Assert.Equal(EMAIL, result.Email);
-		Assert.Equal(PHONE, result.PhoneNumber);
-		Assert.Equal(OBJECTID, result.HubSpotId);
-		Assert.Equal(JOBTITLE, result.JobTitle);
-		Assert.Equal(OWNERID, result.HubSpotOwnerId);
-
-		Assert.Equal(0, result.DealContacts.Count);
-
-		Assert.Equal(0, result.ClientContacts.Count);
-	}
-
-	[Fact]
-	public void ToContact_WithNullAssociations_ReturnContactWithoutDealsAndClientContacts()
-	{
-
-		/// Arrange
-		response.Associations = new()
-		{
-			Deals = new()
-			{
-				AssociationList = new List<Association>()
-					{
-						null,
-					},
-			},
-			Companies = new()
-			{
-				AssociationList = new List<Association>()
-					{
-						null,
-					},
-			}
-		};
-
-		/// Act
-		Contact result = response.ToContact();
-
-		/// Assert
-		Assert.Equal(FIRSTNAME, result.Firstname);
-		Assert.Equal(LASTNAME, result.Lastname);
-		Assert.Equal(EMAIL, result.Email);
-		Assert.Equal(PHONE, result.PhoneNumber);
-		Assert.Equal(OBJECTID, result.HubSpotId);
-		Assert.Equal(JOBTITLE, result.JobTitle);
-		Assert.Equal(OWNERID, result.HubSpotOwnerId);
-
-		Assert.Equal(0, result.DealContacts.Count);
-
-		Assert.Equal(0, result.ClientContacts.Count);
-	}
-
-	[Fact]
-	public void ToContact_WithAssociationsNulltype_ReturnContactWithoutDealsAndClientContacts()
-	{
-
-		/// Arrange
-		response.Associations = new()
-		{
-			Deals = new()
-			{
-				AssociationList = new List<Association>()
-					{
-						new()
-						{
-							Type = null,
-							Id = "2"
-						},
-					},
-			},
-			Companies = new()
-			{
-				AssociationList = new List<Association>()
-					{
-						new()
-						{
-							Type = null,
-							Id = "2"
-						},
-					},
-			}
-		};
-
-		/// Act
-		Contact result = response.ToContact();
-
-		/// Assert
-		Assert.Equal(FIRSTNAME, result.Firstname);
-		Assert.Equal(LASTNAME, result.Lastname);
-		Assert.Equal(EMAIL, result.Email);
-		Assert.Equal(PHONE, result.PhoneNumber);
-		Assert.Equal(OBJECTID, result.HubSpotId);
-		Assert.Equal(JOBTITLE, result.JobTitle);
-		Assert.Equal(OWNERID, result.HubSpotOwnerId);
-
-		Assert.Equal(0, result.DealContacts.Count);
-
-		Assert.Equal(0, result.ClientContacts.Count);
-	}
-
-	[Fact]
-	public void ToContact_WithNotMatchingAssociations_ReturnContactWithoutDealsAndClientContacts()
-	{
-
-		/// Arrange
-		response.Associations = new()
-		{
-			Deals = new()
-			{
-				AssociationList = new List<Association>()
-					{
-						new()
-						{
-							Type = "contact_to_deal_unlabeled",
-							Id = "2"
-						},
-					},
-			},
-			Companies = new()
-			{
-				AssociationList = new List<Association>()
-					{
-						new()
-						{
-							Type = "contact_to_company_unlabeled",
-							Id = "2"
-						},
-					},
-			}
-		};
-
-		/// Act
-		Contact result = response.ToContact();
-
-		/// Assert
-		Assert.Equal(FIRSTNAME, result.Firstname);
-		Assert.Equal(LASTNAME, result.Lastname);
-		Assert.Equal(EMAIL, result.Email);
-		Assert.Equal(PHONE, result.PhoneNumber);
-		Assert.Equal(OBJECTID, result.HubSpotId);
-		Assert.Equal(JOBTITLE, result.JobTitle);
-		Assert.Equal(OWNERID, result.HubSpotOwnerId);
-
-		Assert.Equal(0, result.DealContacts.Count);
-
-		Assert.Equal(0, result.ClientContacts.Count);
-	}
-
-	[Fact]
-	public void ToContact_WithAssociations_ReturnContactWithDealsAndClientContacts()
-	{
-
-		/// Arrange
-		response.Associations = new()
-		{
-			Deals = new()
-			{
-				AssociationList = new List<Association>()
-					{
-						new()
-						{
-							Type = "contact_to_deal",
-							Id = "1"
-						},
-						new()
-						{
-							Type = "contact_to_deal_unlabeled",
-							Id = "2"
-						},
-					},
-			},
-			Companies = new()
-			{
-				AssociationList = new List<Association>()
-					{
-						new()
-						{
-							Type = "contact_to_company",
-							Id = "1"
-						},
-						new()
-						{
-							Type = "contact_to_company_unlabeled",
-							Id = "2"
-						},
-					},
-			}
-		};
-
-		/// Act
-		Contact result = response.ToContact();
-
-		/// Assert
-		Assert.Equal(FIRSTNAME, result.Firstname);
-		Assert.Equal(LASTNAME, result.Lastname);
-		Assert.Equal(EMAIL, result.Email);
-		Assert.Equal(PHONE, result.PhoneNumber);
-		Assert.Equal(OBJECTID, result.HubSpotId);
-		Assert.Equal(JOBTITLE, result.JobTitle);
-		Assert.Equal(OWNERID, result.HubSpotOwnerId);
-
-		Assert.Equal(1, result.DealContacts.Count);
+		Assert.Equal(1, result.DealContacts!.Count);
 		Assert.Equal("1", result.DealContacts.First().HubSpotDealId);
 		Assert.Equal(result, result.DealContacts.First().Contact);
 		Assert.Equal(result.Id, result.DealContacts.First().ContactId);
-		Assert.True(result.DealContacts.First().IsActive);
 
-		Assert.Equal(1, result.ClientContacts.Count);
+		Assert.Equal(1, result.ClientContacts!.Count);
 		Assert.Equal("1", result.ClientContacts.First().HubSpotClientId);
 		Assert.Equal(result, result.ClientContacts.First().Contact);
 		Assert.Equal(result.Id, result.ClientContacts.First().ContactId);

@@ -7,6 +7,12 @@ internal static class ContactResponseToContact
 {
 	internal static Contact ToContact(this ContactResponse response)
 	{
+		if (string.IsNullOrWhiteSpace(response.Properties.HubSpotObjectId)
+			|| string.IsNullOrWhiteSpace(response.Properties.HubSpotOwnerId))
+		{
+			throw new ArgumentNullException(nameof(response));
+		}
+
 		Contact result = new(Guid.NewGuid())
 		{
 			Firstname = response.Properties.Firstname,
@@ -19,13 +25,10 @@ internal static class ContactResponseToContact
 		};
 
 		result.ClientContacts = response
-			.Associations?
-			.Companies?
-			.AssociationList?
-			.Where(company =>
-				company is not null
-				&& company.Type is not null
-				&& company.Type == "contact_to_company")
+			.Associations
+			.Companies
+			.AssociationList
+			.Where(company => company.Type == "contact_to_company")
 			.Select(company => new ClientContact(Guid.NewGuid())
 			{
 				ContactId = result.Id,
@@ -37,13 +40,10 @@ internal static class ContactResponseToContact
 			.ToList() ?? new List<ClientContact>();
 
 		result.DealContacts = response
-			.Associations?
-			.Deals?
-			.AssociationList?
-			.Where(deal =>
-				deal is not null
-				&& deal.Type is not null
-				&& deal.Type == "contact_to_deal")
+			.Associations
+			.Deals
+			.AssociationList
+			.Where(deal => deal.Type == "contact_to_deal")
 			.Select(deal => new DealContact(Guid.NewGuid())
 			{
 				Contact = result,

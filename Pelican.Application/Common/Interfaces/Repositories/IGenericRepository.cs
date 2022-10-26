@@ -4,10 +4,11 @@ namespace Pelican.Application.Common.Interfaces.Repositories;
 public interface IGenericRepository<T>
 {
 	IQueryable<T> FindAll();
-	Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+	Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 	IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);
-	Task<T> CreateAsync(T entity, CancellationToken cancellationToken);
-	Task<IEnumerable<T>> CreateRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken);
+	Task<T> CreateAsync(T entity, CancellationToken cancellationToken = default);
+	Task<IEnumerable<T>> CreateRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
+	Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default);
 	void Update(T entity);
 	void Delete(T entity);
 }

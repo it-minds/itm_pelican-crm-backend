@@ -6,13 +6,12 @@ using Xunit;
 namespace Pelican.Application.Test.Locations.Queries;
 public class GetLocationByIdQueryHandlerUnitTest
 {
-	private GetLocationByIdQueryHandler uut;
 	[Fact]
 	public async void Test_If_When_Handle_Is_Called_DataLoader_Is_Called_With_Correct_Parameters()
 	{
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Location>>();
-		uut = new GetLocationByIdQueryHandler(dataLoaderMock.Object);
+		var uut = new GetLocationByIdQueryHandler(dataLoaderMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
 		GetLocationByIdQuery getLocationByIdQuery = new GetLocationByIdQuery(guid);

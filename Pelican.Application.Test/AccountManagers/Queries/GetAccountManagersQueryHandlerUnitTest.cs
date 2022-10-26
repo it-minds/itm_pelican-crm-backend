@@ -6,7 +6,6 @@ using Xunit;
 namespace Pelican.Application.Test.AccountManagers.Queries;
 public class GetAccountManagersQueryHandlerUnitTest
 {
-	private GetAccountManagersQueryHandler uut;
 	[Fact]
 	public async void Test_If_When_Handle_Is_Called_Repository_Is_Called()
 	{
@@ -14,7 +13,7 @@ public class GetAccountManagersQueryHandlerUnitTest
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		var accountMangerRepositoryMock = new Mock<IGenericRepository<AccountManager>>();
 		unitOfWorkMock.Setup(x => x.AccountManagerRepository).Returns(accountMangerRepositoryMock.Object);
-		uut = new GetAccountManagersQueryHandler(unitOfWorkMock.Object);
+		var uut = new GetAccountManagersQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		GetAccountManagersQuery accountManagersQuery = new GetAccountManagersQuery();
 		//Act

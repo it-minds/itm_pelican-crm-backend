@@ -7,7 +7,6 @@ using Xunit;
 namespace Pelican.Application.Test.Locations.Queries;
 public class GetLocationsQueryHandlerUnitTest
 {
-	private GetLocationsQueryHandler uut;
 	[Fact]
 	public async void Test_If_When_Handle_Is_Called_Repository_Is_Called()
 	{
@@ -15,7 +14,7 @@ public class GetLocationsQueryHandlerUnitTest
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		var locationRepositoryMock = new Mock<IGenericRepository<Location>>();
 		unitOfWorkMock.Setup(x => x.LocationRepository).Returns(locationRepositoryMock.Object);
-		uut = new GetLocationsQueryHandler(unitOfWorkMock.Object);
+		var uut = new GetLocationsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		GetLocationsQuery locationsQuery = new GetLocationsQuery();
 		//Act

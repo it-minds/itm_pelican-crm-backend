@@ -7,7 +7,6 @@ using Xunit;
 namespace Pelican.Application.Test.Suppliers.Queries;
 public class GetSuppliersQueryHandlerUnitTest
 {
-	private GetSuppliersQueryHandler uut;
 	[Fact]
 	public async void Test_If_When_Handle_Is_Called_Repository_Is_Called()
 	{
@@ -15,7 +14,7 @@ public class GetSuppliersQueryHandlerUnitTest
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		var supplierRepositoryMock = new Mock<IGenericRepository<Supplier>>();
 		unitOfWorkMock.Setup(x => x.SupplierRepository).Returns(supplierRepositoryMock.Object);
-		uut = new GetSuppliersQueryHandler(unitOfWorkMock.Object);
+		var uut = new GetSuppliersQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		GetSuppliersQuery accountManagersQuery = new GetSuppliersQuery();
 		//Act

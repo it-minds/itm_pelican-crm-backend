@@ -13,6 +13,6 @@ public class GetSuppliersQueryHandler : IQueryHandler<GetSuppliersQuery, IQuerya
 	//Uses the repository for Supplier to find all Suppliers in the database
 	public async Task<IQueryable<Supplier>> Handle(GetSuppliersQuery request, CancellationToken cancellation)
 	{
-		return _repository.FindAllWithIncludes();
+		return await Task.Run(() => _repository.FindAllWithIncludes());
 	}
 }

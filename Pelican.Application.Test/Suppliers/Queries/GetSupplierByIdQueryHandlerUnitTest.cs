@@ -6,13 +6,12 @@ using Xunit;
 namespace Pelican.Application.Test.Suppliers.Queries;
 public class GetSupplierByIdQueryHandlerUnitTest
 {
-	private GetSupplierByIdQueryHandler uut;
 	[Fact]
 	public async void Test_If_When_Handle_Is_Called_DataLoader_Is_Called_With_Correct_Parameters()
 	{
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Supplier>>();
-		uut = new GetSupplierByIdQueryHandler(dataLoaderMock.Object);
+		var uut = new GetSupplierByIdQueryHandler(dataLoaderMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
 		GetSupplierByIdQuery getSupplierByIdQuery = new GetSupplierByIdQuery(guid);

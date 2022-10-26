@@ -22,7 +22,7 @@ public class AccountManagerRepository : GenericRepository<AccountManager>
 			.ThenInclude(x => x.Client)
 			.Include(x => x.AccountManagerDeals)
 			.ThenInclude(x => x.Deal)
-			.ThenInclude(x => x.Client)
+			.ThenInclude(x => x.Client!)
 			.ThenInclude(x => x.ClientContacts)
 			.ThenInclude(x => x.Contact)
 			.ThenInclude(x => x.DealContacts);

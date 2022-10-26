@@ -6,7 +6,6 @@ using Xunit;
 namespace Pelican.Application.Test.Contacts.Queries;
 public class GetContactsQueryHandlerUnitTest
 {
-	private GetContactsQueryHandler uut;
 	[Fact]
 	public async void Test_If_When_Handle_Is_Called_Repository_Is_Called()
 	{
@@ -14,7 +13,7 @@ public class GetContactsQueryHandlerUnitTest
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		var contactRepositoryMock = new Mock<IGenericRepository<Contact>>();
 		unitOfWorkMock.Setup(x => x.ContactRepository).Returns(contactRepositoryMock.Object);
-		uut = new GetContactsQueryHandler(unitOfWorkMock.Object);
+		var uut = new GetContactsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		GetContactsQuery contactsQuery = new GetContactsQuery();
 		//Act

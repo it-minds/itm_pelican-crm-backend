@@ -7,13 +7,12 @@ using Xunit;
 namespace Pelican.Application.Test.Deals.Queries;
 public class GetDealByIdQueryHandlerUnitTest
 {
-	private GetDealByIdQueryHandler uut;
 	[Fact]
 	public async void Test_If_When_Handle_Is_Called_DataLoader_Is_Called_With_Correct_Parameters()
 	{
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Deal>>();
-		uut = new GetDealByIdQueryHandler(dataLoaderMock.Object);
+		var uut = new GetDealByIdQueryHandler(dataLoaderMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
 		GetDealByIdQuery getDealByIdQuery = new GetDealByIdQuery(guid);

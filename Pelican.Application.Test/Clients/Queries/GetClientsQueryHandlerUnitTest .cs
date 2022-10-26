@@ -8,7 +8,6 @@ using Xunit;
 namespace Pelican.Application.Test.Clients.Queries;
 public class GetClientsQueryHandlerUnitTest
 {
-	private GetClientsQueryHandler uut;
 	[Fact]
 	public async void Test_If_When_Handle_Is_Called_Repository_Is_Called()
 	{
@@ -16,7 +15,7 @@ public class GetClientsQueryHandlerUnitTest
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		var clientRepositoryMock = new Mock<IGenericRepository<Client>>();
 		unitOfWorkMock.Setup(x => x.ClientRepository).Returns(clientRepositoryMock.Object);
-		uut = new GetClientsQueryHandler(unitOfWorkMock.Object);
+		var uut = new GetClientsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		GetClientsQuery client = new GetClientsQuery();
 		//Act

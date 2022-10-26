@@ -11,7 +11,6 @@ public class SuppliersQuery
 	//This Query reguests all Suppliers from the database.
 	public async Task<IQueryable<Supplier>> GetSuppliers([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
-
 		return await mediator.Send(new GetSuppliersQuery(), cancellationToken);
 	}
 	//This Query reguests a specific Supplier from the database.

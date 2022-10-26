@@ -7,19 +7,12 @@ using Xunit;
 namespace Pelican.Application.Test.AccountManagers.Queries;
 public class GetAccountManagerByIdQueryHandlerUnitTest
 {
-	private GetAccountManagerByIdQueryHandler uut;
-	private Mock<IGenericDataLoader<AccountManager>> dataLoaderMock;
-
-	public GetAccountManagerByIdQueryHandlerUnitTest()
-	{
-		dataLoaderMock = new Mock<IGenericDataLoader<AccountManager>>();
-		uut = new GetAccountManagerByIdQueryHandler(dataLoaderMock.Object);
-	}
-
 	[Fact]
 	public async void Test_If_When_Handle_Is_Called_DataLoader_Is_Called_With_Correct_Parameters()
 	{
 		//Arrange
+		var dataLoaderMock = new Mock<IGenericDataLoader<AccountManager>>();
+		var uut = new GetAccountManagerByIdQueryHandler(dataLoaderMock.Object);
 		var cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
 		GetAccountManagerByIdQuery getAccountManagerByIdQuery = new GetAccountManagerByIdQuery(guid);
@@ -31,5 +24,4 @@ public class GetAccountManagerByIdQueryHandlerUnitTest
 		dataLoaderMock.Verify(x => x.LoadAsync(guid, cancellationToken), Times.Once());
 		Assert.All(resultList, item => item.Id.Equals(guid));
 	}
-
 }

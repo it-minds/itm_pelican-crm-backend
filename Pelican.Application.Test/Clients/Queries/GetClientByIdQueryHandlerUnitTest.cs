@@ -6,13 +6,12 @@ using Xunit;
 namespace Pelican.Application.Test.Clients.Queries;
 public class GetClientByIdQueryHandlerUnitTest
 {
-	private GetClientByIdQueryHandler uut;
 	[Fact]
 	public async void Test_If_When_Handle_Is_Called_DataLoader_Is_Called_With_Correct_Parameters()
 	{
 		//Arrange
 		var dataLoaderMock = new Mock<IGenericDataLoader<Client>>();
-		uut = new GetClientByIdQueryHandler(dataLoaderMock.Object);
+		var uut = new GetClientByIdQueryHandler(dataLoaderMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		var guid = Guid.NewGuid();
 		GetClientByIdQuery getClientByIdQuery = new GetClientByIdQuery(guid);

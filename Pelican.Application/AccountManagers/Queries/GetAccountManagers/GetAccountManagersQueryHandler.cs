@@ -13,6 +13,6 @@ public class GetAccountManagersQueryHandler : IQueryHandler<GetAccountManagersQu
 	//Uses the repository for AccountManager to find all AccountManagers in the database
 	public async Task<IQueryable<AccountManager>> Handle(GetAccountManagersQuery request, CancellationToken cancellation)
 	{
-		return _repository.FindAllWithIncludes();
+		return await Task.Run(() => _repository.FindAllWithIncludes());
 	}
 }

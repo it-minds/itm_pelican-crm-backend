@@ -30,7 +30,6 @@ if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();
-
 }
 
 app.UseHttpsRedirection();
@@ -49,5 +48,3 @@ app.MapControllers();
 app.Services.GetRequiredService<DevelopmentSeeder>().SeedEntireDb(10);
 
 app.Run();
-
-

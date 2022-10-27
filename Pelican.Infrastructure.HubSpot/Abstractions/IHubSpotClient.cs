@@ -8,9 +8,9 @@ internal interface IHubSpotClient
 {
 	Task<RestResponse<TResponse>> GetAsync<TResponse>(
 		RestRequest request,
-		CancellationToken cancellationToken);
+		CancellationToken cancellationToken = default);
 
 	Task<RestResponse<TResponse>> PostAsync<TResponse>(
 		RestRequest request,
-		CancellationToken cancellationToken);
+		CancellationToken cancellationToken = default);
 }

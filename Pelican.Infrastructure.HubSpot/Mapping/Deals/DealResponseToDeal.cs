@@ -56,7 +56,7 @@ internal static class DealResponseToDeal
 				HubSpotContactId = contact.Id,
 				IsActive = true,
 			})
-			.ToList() ?? new List<DealContact>();
+			.ToList();
 
 		result.Client = response
 			.Associations

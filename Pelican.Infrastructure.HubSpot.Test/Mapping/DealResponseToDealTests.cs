@@ -1,4 +1,5 @@
 ﻿using Pelican.Domain.Entities;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Mapping.Deals;
 using Xunit;
@@ -98,7 +99,7 @@ public class DealResponseToDealTests
 	}
 
 	[Fact]
-	public void ToDeal_WithoutAssociations_ReturnContactWithEmptyDealContactsAndAccountManagerDeals()
+	public void ToDeal_WithoutAssociations_ReturnDealWithEmptyDealContactsAndAccountManagerDeals()
 	{
 		/// Act
 		Deal result = response.ToDeal();
@@ -109,97 +110,95 @@ public class DealResponseToDealTests
 		Assert.Null(result.Client!);
 	}
 
-	//[Fact]
-	//public void ToContact_WithDefaultDealsAndCompanies_ReturnContactEmptyDealContactsAndClientContacts()
-	//{
-	//	/// Arrange
-	//	response.Associations.Deals.AssociationList = new List<Association>()
-	//	{
-	//		new(),
-	//	};
+	[Fact]
+	public void ToDeal_WithDefaultAssociations_ReturnEmptyDealContactsAndClient()
+	{
+		/// arrange
+		response.Associations.Contacts.AssociationList = new List<Association>()
+		{
+			new(),
+		};
 
-	//	response.Associations.Companies.AssociationList = new List<Association>()
-	//	{
-	//		new(),
-	//	};
+		response.Associations.Companies.AssociationList = new List<Association>()
+		{
+			new(),
+		};
 
-	//	/// Act
-	//	Contact result = response.ToDeal();
+		/// act
+		Deal result = response.ToDeal();
 
-	//	/// Assert
-	//	Assert.Equal(0, result.DealContacts!.Count);
+		/// assert
+		Assert.Equal(0, result.DealContacts!.Count);
 
-	//	Assert.Equal(0, result.ClientContacts!.Count);
-	//}
+		Assert.Null(result.Client);
+	}
 
-	//[Fact]
-	//public void ToContact_WithNotMatchingAssociations_ReturnContactEmptyDealContactsAndContactContacts()
-	//{
-	//	/// Arrange
-	//	response.Associations.Deals.AssociationList = new List<Association>()
-	//	{
-	//		new()
-	//		{
-	//			Type = "not_matching",
-	//			Id = "2"
-	//		},
-	//	};
+	[Fact]
+	public void ToDeal_WithnotMatchingAssociations_ReturnEmptyDealContactsAndClient()
+	{
+		/// arrange
+		response.Associations.Contacts.AssociationList = new List<Association>()
+		{
+			new()
+			{
+				Type= "not_matching",
+				Id = "2"
+			},
+		};
 
-	//	response.Associations.Companies.AssociationList = new List<Association>()
-	//	{
-	//		new()
-	//		{
-	//			Type = "not_matching",
-	//			Id = "2"
-	//		},
-	//	};
+		response.Associations.Companies.AssociationList = new List<Association>()
+		{
+			new()
+			{
+				Type = "not_matching",
+				Id = "2"
+			},
+		};
 
-	//	/// Act
-	//	Contact result = response.ToDeal();
+		/// act
+		Deal result = response.ToDeal();
 
-	//	/// Assert
-	//	Assert.Equal(0, result.DealContacts!.Count);
+		/// assert
+		Assert.Equal(0, result.DealContacts!.Count);
 
-	//	Assert.Equal(0, result.ClientContacts!.Count);
-	//}
+		Assert.Null(result.Client);
+	}
 
-	//[Fact]
-	//public void ToContact_WithMatchingAssociations_ReturnContactWithDealsAndContactContacts()
-	//{
-	//	/// Arrange
-	//	response.Associations.Deals.AssociationList = new List<Association>()
-	//	{
-	//		new()
-	//		{
-	//			Type = "contact_to_deal",
-	//			Id = "1"
-	//		},
-	//	};
+	[Fact]
+	public void ToDeal_WithMatchingAssociations_ReturnWithDealContactsAndClient()
+	{
+		/// arrange
+		response.Associations.Contacts.AssociationList = new List<Association>()
+		{
+			new()
+			{
+				Type = "deal_to_contact",
+				Id = "1"
+			},
+		};
 
-	//	response.Associations.Companies.AssociationList = new List<Association>()
-	//	{
-	//		new()
-	//		{
-	//			Type = "contact_to_company",
-	//			Id = "1"
-	//		},
-	//	};
+		response.Associations.Companies.AssociationList = new List<Association>()
+		{
+			new()
+			{
+				Type = "deal_to_company",
+				Id = "1"
+			},
+		};
 
-	//	/// Act
-	//	Contact result = response.ToDeal();
+		/// act
+		Deal result = response.ToDeal();
 
-	//	/// Assert
-	//	Assert.Equal(1, result.DealContacts!.Count);
-	//	Assert.Equal("1", result.DealContacts.First().HubSpotDealId);
-	//	Assert.Equal(result, result.DealContacts.First().Contact);
-	//	Assert.Equal(result.Id, result.DealContacts.First().ContactId);
+		/// assert
+		Assert.Equal(1, result.DealContacts!.Count);
+		Assert.Equal("1", result.DealContacts.First().HubSpotContactId);
+		Assert.Equal(result, result.DealContacts.First().Deal);
+		Assert.Equal(result.Id, result.DealContacts.First().DealId);
+		Assert.True(result.DealContacts.First().IsActive);
 
-	//	Assert.Equal(1, result.ClientContacts!.Count);
-	//	Assert.Equal("1", result.ClientContacts.First().HubSpotClientId);
-	//	Assert.Equal(result, result.ClientContacts.First().Contact);
-	//	Assert.Equal(result.Id, result.ClientContacts.First().ContactId);
-	//	Assert.True(result.ClientContacts.First().IsActive);
-	//}
+		Assert.Equal("1", result.Client!.HubSpotId);
+		Assert.Equal(result, result.Client!.Deals!.First());
+	}
 
 
 

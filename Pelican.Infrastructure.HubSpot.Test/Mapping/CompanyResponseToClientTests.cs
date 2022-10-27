@@ -67,6 +67,8 @@ public class CompanyResponseToClientTests
 	[Fact]
 	public void ToClient_WithoutAssociations_ReturnClientWithEmptyDealsAndClientContacts()
 	{
+		/// Arrange 
+
 		/// Act
 		Client result = response.ToClient();
 

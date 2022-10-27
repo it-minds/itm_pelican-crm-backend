@@ -10,6 +10,9 @@ namespace Pelican.Infrastructure.HubSpot.Test.Services;
 public class HubSpotAccountManagerServicesTests
 {
 	private const string ID = "Id";
+	private const string EMAIL = "Email";
+	private const string FIRSTNAME = "Firstname";
+	private const string LASTNAME = "Lastname";
 
 	private readonly Mock<IHubSpotClient> _hubSpotClientMock;
 	private readonly HubSpotAccountManagerService _uut;
@@ -49,6 +52,9 @@ public class HubSpotAccountManagerServicesTests
 		OwnerResponse response = new()
 		{
 			Id = ID,
+			Email = EMAIL,
+			Firstname = FIRSTNAME,
+			Lastname = LASTNAME,
 		};
 
 		_hubSpotClientMock
@@ -101,6 +107,9 @@ public class HubSpotAccountManagerServicesTests
 				new OwnerResponse()
 				{
 					Id = ID,
+					Email = EMAIL,
+					Firstname = FIRSTNAME,
+					Lastname = LASTNAME,
 				},
 			},
 		};

@@ -2,8 +2,8 @@
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.Auth;
 
-internal static class RefreshAccessTokenResponseToString
+internal static class RefreshAccessTokenResponseToAccessToken
 {
-	internal static string ToString(this RefreshAccessTokenResponse response)
+	internal static string ToAccessToken(this RefreshAccessTokenResponse response)
 		=> response.AccessToken;
 }

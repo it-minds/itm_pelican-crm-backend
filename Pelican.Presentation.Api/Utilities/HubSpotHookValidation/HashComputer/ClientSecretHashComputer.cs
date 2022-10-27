@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashComputer;
 
 namespace Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashComputer;
 
@@ -10,7 +9,7 @@ internal sealed class ClientSecretHashComputer : IHashComputer
 
 	public ClientSecretHashComputer(string clientSecret)
 	{
-		_clientSecret = clientSecret;
+		_clientSecret = clientSecret ?? throw new ArgumentNullException(nameof(clientSecret));
 	}
 
 	public string ComputeHash(string text)

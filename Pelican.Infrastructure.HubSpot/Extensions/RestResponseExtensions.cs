@@ -16,14 +16,21 @@ internal static class RestResponseExtensions
 
 		if (response.IsSuccessful && response.Data is not null)
 		{
-			TResult result = mappingFunc(response.Data);
-
-			return Result.Success(result);
+			try
+			{
+				return Result.Success(mappingFunc(response.Data));
+			}
+			catch (Exception ex)
+			{
+				return Result.Failure<TResult>(new Error(
+					"MappingError",
+					ex.Message));
+			}
 		}
 
 		return Result.Failure<TResult>(
 				new Error(
 					response.StatusCode.ToString(),
-					response.ErrorException?.Message!));
+					response.ErrorException?.Message! ?? "Error while fetching"));
 	}
 }

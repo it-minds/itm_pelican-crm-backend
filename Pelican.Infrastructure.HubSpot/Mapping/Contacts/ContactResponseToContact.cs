@@ -7,6 +7,12 @@ internal static class ContactResponseToContact
 {
 	internal static Contact ToContact(this ContactResponse response)
 	{
+		if (string.IsNullOrWhiteSpace(response.Properties.HubSpotObjectId)
+			|| string.IsNullOrWhiteSpace(response.Properties.HubSpotOwnerId))
+		{
+			throw new ArgumentNullException(nameof(response));
+		}
+
 		Contact result = new(Guid.NewGuid())
 		{
 			Firstname = response.Properties.Firstname,
@@ -19,40 +25,34 @@ internal static class ContactResponseToContact
 		};
 
 		result.ClientContacts = response
-			.Associations?
-			.Companies?
-			.AssociationList?
-			.Where(company =>
-				company is not null
-				&& company.Type is not null
-				&& company.Type == "contact_to_company")
-			.Select(company => new ClientContact(Guid.NewGuid())
+			.Associations
+			.Companies
+			.AssociationList
+			.Where(association => association.Type == "contact_to_company")
+			.Select(association => new ClientContact(Guid.NewGuid())
 			{
 				ContactId = result.Id,
 				HubSpotContactId = result.HubSpotId,
 				Contact = result,
 				IsActive = true,
-				HubSpotClientId = company.Id,
+				HubSpotClientId = association.Id,
 			})
-			.ToList() ?? new List<ClientContact>();
+			.ToList();
 
 		result.DealContacts = response
-			.Associations?
-			.Deals?
-			.AssociationList?
-			.Where(deal =>
-				deal is not null
-				&& deal.Type is not null
-				&& deal.Type == "contact_to_deal")
-			.Select(deal => new DealContact(Guid.NewGuid())
+			.Associations
+			.Deals
+			.AssociationList
+			.Where(association => association.Type == "contact_to_deal")
+			.Select(association => new DealContact(Guid.NewGuid())
 			{
 				Contact = result,
 				ContactId = result.Id,
 				HubSpotContactId = result.HubSpotId,
-				HubSpotDealId = deal.Id,
+				HubSpotDealId = association.Id,
 				IsActive = true,
 			})
-			.ToList() ?? new List<DealContact>();
+			.ToList();
 
 		return result;
 	}

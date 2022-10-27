@@ -16,11 +16,11 @@ internal sealed class RestSharpHubSpotClient : IHubSpotClient
 
 	public async Task<RestResponse<TResponse>> GetAsync<TResponse>(
 		RestRequest request,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken = default)
 		=> await _client.ExecuteGetAsync<TResponse>(request, cancellationToken);
 
 	public async Task<RestResponse<TResponse>> PostAsync<TResponse>(
 		RestRequest request,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken = default)
 		=> await _client.ExecutePostAsync<TResponse>(request, cancellationToken);
 }

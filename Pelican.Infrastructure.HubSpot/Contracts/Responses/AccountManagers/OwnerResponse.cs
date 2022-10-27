@@ -6,13 +6,13 @@ namespace Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
 internal sealed class OwnerResponse : HubSpotResponse
 {
 	[JsonPropertyName("email")]
-	public string Email { get; set; } = default!;
+	public string Email { get; set; } = string.Empty;
 
 	[JsonPropertyName("firstName")]
-	public string Firstname { get; set; } = default!;
+	public string Firstname { get; set; } = string.Empty;
 
 	[JsonPropertyName("lastName")]
-	public string Lastname { get; set; } = default!;
+	public string Lastname { get; set; } = string.Empty;
 
 	[JsonPropertyName("userId")]
 	public long UserId { get; set; }

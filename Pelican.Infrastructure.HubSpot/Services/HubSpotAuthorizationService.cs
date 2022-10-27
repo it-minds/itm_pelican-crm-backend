@@ -69,6 +69,6 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 				cancellationToken);
 
 		return response
-			.GetResult(RefreshAccessTokenResponseToString.ToString);
+			.GetResult(RefreshAccessTokenResponseToAccessToken.ToAccessToken);
 	}
 }

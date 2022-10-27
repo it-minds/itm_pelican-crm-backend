@@ -98,10 +98,10 @@ public class HubSpotAccountManagerServicesTests
 		{
 			Results = new OwnerResponse[]
 			{
-					new OwnerResponse()
-					{
-						Id = ID,
-					},
+				new OwnerResponse()
+				{
+					Id = ID,
+				},
 			},
 		};
 

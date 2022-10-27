@@ -4,7 +4,7 @@ using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Mapping.Clients;
 using Xunit;
 
-namespace Pelican.Infrastructure.HubSpot.Test.Mapping;
+namespace Pelican.Infrastructure.HubSpot.Test.Mapping.Clients;
 public class CompanyResponseToClientTests
 {
 	private const string ID = "id";
@@ -65,21 +65,27 @@ public class CompanyResponseToClientTests
 	}
 
 	[Fact]
-	public void ToClient_WithoutAssociations_ReturnClientWithEmptyDealsAndClientContacts()
+	public void ToClient_WithoutAssociations_ReturnClientWithEmptyDeals()
 	{
-		/// Arrange 
-
 		/// Act
 		Client result = response.ToClient();
 
 		/// Assert
 		Assert.Equal(0, result.Deals!.Count);
+	}
 
+	[Fact]
+	public void ToClient_WithoutAssociations_ReturnClientWithEmptyClientContacts()
+	{
+		/// Act
+		Client result = response.ToClient();
+
+		/// Assert
 		Assert.Equal(0, result.ClientContacts!.Count);
 	}
 
 	[Fact]
-	public void ToClient_WithDefaultDealsAndContacts_ReturnClientEmptyDealsAndClientContacts()
+	public void ToClient_WithDefaultDealsAndContacts_ReturnClientEmptyDeals()
 	{
 		/// Arrange
 		response.Associations.Deals.AssociationList = new List<Association>()
@@ -97,12 +103,31 @@ public class CompanyResponseToClientTests
 
 		/// Assert
 		Assert.Equal(0, result.Deals!.Count);
+	}
 
+	[Fact]
+	public void ToClient_WithDefaultDealsAndContacts_ReturnClientEmptyClientContacts()
+	{
+		/// Arrange
+		response.Associations.Deals.AssociationList = new List<Association>()
+		{
+			new(),
+		};
+
+		response.Associations.Contacts.AssociationList = new List<Association>()
+		{
+			new(),
+		};
+
+		/// Act
+		Client result = response.ToClient();
+
+		/// Assert
 		Assert.Equal(0, result.ClientContacts!.Count);
 	}
 
 	[Fact]
-	public void ToClient_WithNotMatchingAssociations_ReturnClientEmptyDealsAndClientContacts()
+	public void ToClient_WithNotMatchingAssociations_ReturnClientEmptyDeals()
 	{
 		/// Arrange
 		response.Associations.Deals.AssociationList = new List<Association>()
@@ -128,12 +153,39 @@ public class CompanyResponseToClientTests
 
 		/// Assert
 		Assert.Equal(0, result.Deals!.Count);
+	}
 
+	[Fact]
+	public void ToClient_WithNotMatchingAssociations_ReturnClientEmptyClientContacts()
+	{
+		/// Arrange
+		response.Associations.Deals.AssociationList = new List<Association>()
+		{
+			new()
+			{
+				Type = "not_matching",
+				Id = "2"
+			},
+		};
+
+		response.Associations.Contacts.AssociationList = new List<Association>()
+		{
+			new()
+			{
+				Type = "not_matching",
+				Id = "2"
+			},
+		};
+
+		/// Act
+		Client result = response.ToClient();
+
+		/// Assert
 		Assert.Equal(0, result.ClientContacts!.Count);
 	}
 
 	[Fact]
-	public void ToClient_WithMatchingAssociations_ReturnClientWithDealsAndClientContacts()
+	public void ToClient_WithMatchingAssociations_ReturnClientWithDeals()
 	{
 		/// Arrange
 		response.Associations.Deals.AssociationList = new List<Association>()
@@ -145,6 +197,20 @@ public class CompanyResponseToClientTests
 			},
 		};
 
+		/// Act
+		Client result = response.ToClient();
+
+		/// Assert
+		Assert.Equal(1, result.Deals!.Count);
+		Assert.Equal("1", result.Deals.First().HubSpotId);
+		Assert.Equal(result, result.Deals.First().Client);
+		Assert.Equal(result.Id, result.Deals.First().ClientId);
+	}
+
+	[Fact]
+	public void ToClient_WithMatchingAssociations_ReturnClientWithClientContacts()
+	{
+		/// Arrange
 		response.Associations.Contacts.AssociationList = new List<Association>()
 		{
 			new()
@@ -158,11 +224,6 @@ public class CompanyResponseToClientTests
 		Client result = response.ToClient();
 
 		/// Assert
-		Assert.Equal(1, result.Deals!.Count);
-		Assert.Equal("1", result.Deals.First().HubSpotId);
-		Assert.Equal(result, result.Deals.First().Client);
-		Assert.Equal(result.Id, result.Deals.First().ClientId);
-
 		Assert.Equal(1, result.ClientContacts!.Count);
 		Assert.Equal("1", result.ClientContacts.First().HubSpotContactId);
 		Assert.Equal(result, result.ClientContacts.First().Client);

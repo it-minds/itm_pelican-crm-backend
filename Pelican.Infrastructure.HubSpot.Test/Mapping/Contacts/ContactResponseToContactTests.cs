@@ -4,7 +4,7 @@ using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 using Pelican.Infrastructure.HubSpot.Mapping.Contacts;
 using Xunit;
 
-namespace Pelican.Infrastructure.HubSpot.Test.Mapping;
+namespace Pelican.Infrastructure.HubSpot.Test.Mapping.Contacts;
 
 public class ContactResponseToContactTests
 {
@@ -75,19 +75,27 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_WithoutAssociations_ReturnContactWithEmptyDealContactsAndClientContacts()
+	public void ToContact_WithoutAssociations_ReturnContactWithEmptyDealContacts()
 	{
 		/// Act
 		Contact result = response.ToContact();
 
 		/// Assert
 		Assert.Equal(0, result.DealContacts!.Count);
+	}
 
+	[Fact]
+	public void ToContact_WithoutAssociations_ReturnContactWithEmptyClientContacts()
+	{
+		/// Act
+		Contact result = response.ToContact();
+
+		/// Assert
 		Assert.Equal(0, result.ClientContacts!.Count);
 	}
 
 	[Fact]
-	public void ToContact_WithDefaultDealsAndCompanies_ReturnContactEmptyDealContactsAndClientContacts()
+	public void ToContact_WithDefaultDeals_ReturnContactEmptyDealContacts()
 	{
 		/// Arrange
 		response.Associations.Deals.AssociationList = new List<Association>()
@@ -95,6 +103,17 @@ public class ContactResponseToContactTests
 			new(),
 		};
 
+		/// Act
+		Contact result = response.ToContact();
+
+		/// Assert
+		Assert.Equal(0, result.DealContacts!.Count);
+	}
+
+	[Fact]
+	public void ToContact_WithDefaultCompanies_ReturnContactEmptyClientContacts()
+	{
+		/// Arrange
 		response.Associations.Companies.AssociationList = new List<Association>()
 		{
 			new(),
@@ -104,13 +123,11 @@ public class ContactResponseToContactTests
 		Contact result = response.ToContact();
 
 		/// Assert
-		Assert.Equal(0, result.DealContacts!.Count);
-
 		Assert.Equal(0, result.ClientContacts!.Count);
 	}
 
 	[Fact]
-	public void ToContact_WithNotMatchingAssociations_ReturnContactEmptyDealContactsAndContactContacts()
+	public void ToContact_WithNotMatchingAssociations_ReturnContactEmptyDealContacts()
 	{
 		/// Arrange
 		response.Associations.Deals.AssociationList = new List<Association>()
@@ -122,6 +139,17 @@ public class ContactResponseToContactTests
 			},
 		};
 
+		/// Act
+		Contact result = response.ToContact();
+
+		/// Assert
+		Assert.Equal(0, result.DealContacts!.Count);
+	}
+
+	[Fact]
+	public void ToContact_WithNotMatchingAssociations_ReturnContactEmptyClientContacts()
+	{
+		/// Arrange
 		response.Associations.Companies.AssociationList = new List<Association>()
 		{
 			new()
@@ -135,13 +163,11 @@ public class ContactResponseToContactTests
 		Contact result = response.ToContact();
 
 		/// Assert
-		Assert.Equal(0, result.DealContacts!.Count);
-
 		Assert.Equal(0, result.ClientContacts!.Count);
 	}
 
 	[Fact]
-	public void ToContact_WithMatchingAssociations_ReturnContactWithDealsAndContactContacts()
+	public void ToContact_WithMatchingAssociations_ReturnContactWithDeals()
 	{
 		/// Arrange
 		response.Associations.Deals.AssociationList = new List<Association>()
@@ -153,6 +179,20 @@ public class ContactResponseToContactTests
 			},
 		};
 
+		/// Act
+		Contact result = response.ToContact();
+
+		/// Assert
+		Assert.Equal(1, result.DealContacts!.Count);
+		Assert.Equal("1", result.DealContacts.First().HubSpotDealId);
+		Assert.Equal(result, result.DealContacts.First().Contact);
+		Assert.Equal(result.Id, result.DealContacts.First().ContactId);
+	}
+
+	[Fact]
+	public void ToContact_WithMatchingAssociations_ReturnContactWithClientContacts()
+	{
+		/// Arrange
 		response.Associations.Companies.AssociationList = new List<Association>()
 		{
 			new()
@@ -166,11 +206,6 @@ public class ContactResponseToContactTests
 		Contact result = response.ToContact();
 
 		/// Assert
-		Assert.Equal(1, result.DealContacts!.Count);
-		Assert.Equal("1", result.DealContacts.First().HubSpotDealId);
-		Assert.Equal(result, result.DealContacts.First().Contact);
-		Assert.Equal(result.Id, result.DealContacts.First().ContactId);
-
 		Assert.Equal(1, result.ClientContacts!.Count);
 		Assert.Equal("1", result.ClientContacts.First().HubSpotClientId);
 		Assert.Equal(result, result.ClientContacts.First().Contact);

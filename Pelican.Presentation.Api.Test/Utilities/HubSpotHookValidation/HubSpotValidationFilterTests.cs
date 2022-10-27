@@ -95,7 +95,7 @@ public class HubSpotValidationFilterTests
 				It.IsAny<EventId>(),
 				It.Is<It.IsAnyType>((v, t) => true),
 				It.IsAny<Exception>(),
-				It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
+				It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
 			Times.Once());
 
 		Assert.Equal(
@@ -104,7 +104,7 @@ public class HubSpotValidationFilterTests
 
 		Assert.Equal(
 			"{ message = Unable to validate signature }",
-			((BadRequestObjectResult)resourceExecutingContext.Result).Value.ToString());
+			((BadRequestObjectResult)resourceExecutingContext.Result!).Value!.ToString());
 	}
 
 	[Fact]
@@ -146,7 +146,7 @@ public class HubSpotValidationFilterTests
 				It.IsAny<EventId>(),
 				It.Is<It.IsAnyType>((v, t) => true),
 				It.IsAny<Exception>(),
-				It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
+				It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
 			Times.Once());
 
 		Assert.Equal(
@@ -155,7 +155,7 @@ public class HubSpotValidationFilterTests
 
 		Assert.Equal(
 			"{ message = Unable to validate signature }",
-			((BadRequestObjectResult)resourceExecutingContext.Result).Value.ToString());
+			((BadRequestObjectResult)resourceExecutingContext.Result!).Value!.ToString());
 	}
 
 	[Fact]
@@ -197,7 +197,7 @@ public class HubSpotValidationFilterTests
 				It.IsAny<EventId>(),
 				It.Is<It.IsAnyType>((v, t) => true),
 				It.IsAny<Exception>(),
-				It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
+				It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
 			Times.Once());
 
 		Assert.Equal(
@@ -206,7 +206,7 @@ public class HubSpotValidationFilterTests
 
 		Assert.Equal(
 			"{ message = Unable to validate signature }",
-			((BadRequestObjectResult)resourceExecutingContext.Result).Value.ToString());
+			((BadRequestObjectResult)resourceExecutingContext.Result!).Value!.ToString());
 	}
 
 	[Fact]
@@ -302,7 +302,7 @@ public class HubSpotValidationFilterTests
 				It.IsAny<EventId>(),
 				It.Is<It.IsAnyType>((v, t) => true),
 				It.IsAny<Exception>(),
-				It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
+				It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
 			Times.Once());
 
 		Assert.Equal(
@@ -311,7 +311,7 @@ public class HubSpotValidationFilterTests
 
 		Assert.Equal(
 			"{ message = Invalid request signature }",
-			((BadRequestObjectResult)resourceExecutingContext.Result).Value.ToString());
+			((BadRequestObjectResult)resourceExecutingContext.Result!).Value!.ToString());
 	}
 
 	[Fact]
@@ -410,7 +410,7 @@ public class HubSpotValidationFilterTests
 				It.IsAny<EventId>(),
 				It.Is<It.IsAnyType>((v, t) => true),
 				It.IsAny<Exception>(),
-				It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
+				It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
 			Times.Once());
 
 		Assert.Equal(
@@ -419,7 +419,7 @@ public class HubSpotValidationFilterTests
 
 		Assert.Equal(
 			"{ message = Invalid request signature }",
-			((BadRequestObjectResult)resourceExecutingContext.Result).Value.ToString());
+			((BadRequestObjectResult)resourceExecutingContext.Result!).Value!.ToString());
 	}
 
 	[Fact]
@@ -518,7 +518,7 @@ public class HubSpotValidationFilterTests
 				It.IsAny<EventId>(),
 				It.Is<It.IsAnyType>((v, t) => true),
 				It.IsAny<Exception>(),
-				It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
+				It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
 			Times.Once());
 
 		Assert.Equal(
@@ -527,7 +527,7 @@ public class HubSpotValidationFilterTests
 
 		Assert.Equal(
 			"{ message = Invalid request signature }",
-			((BadRequestObjectResult)resourceExecutingContext.Result).Value.ToString());
+			((BadRequestObjectResult)resourceExecutingContext.Result!).Value!.ToString());
 	}
 
 	[Fact]

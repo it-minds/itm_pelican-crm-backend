@@ -7,6 +7,11 @@ internal static class OwnersResponseToAccountManagers
 {
 	internal static List<AccountManager> ToAccountManagers(this OwnersResponse responses)
 	{
+		if (responses.Results is null)
+		{
+			throw new ArgumentNullException(nameof(responses));
+		}
+
 		List<AccountManager> results = new();
 
 		foreach (OwnerResponse response in responses.Results)

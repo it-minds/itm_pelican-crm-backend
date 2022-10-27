@@ -18,7 +18,17 @@ public class SHA256HashComputerTests
 		/// Arrange
 		/// HubSpot Example
 		string clientSecret = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy";
-		string body = "[{\"eventId\":1,\"subscriptionId\":12345,\"portalId\":62515,\"occurredAt\":1564113600000,\"subscriptionType\":\"contact.creation\",\"attemptNumber\":0,\"objectId\":123,\"changeSource\":\"CRM\",\"changeFlag\":\"NEW\",\"appId\":54321}]";
+		string body = "[{" +
+			"\"eventId\":1," +
+			"\"subscriptionId\":12345," +
+			"\"portalId\":62515," +
+			"\"occurredAt\":1564113600000," +
+			"\"subscriptionType\":\"contact.creation\"," +
+			"\"attemptNumber\":0," +
+			"\"objectId\":123," +
+			"\"changeSource\":\"CRM\"," +
+			"\"changeFlag\":\"NEW\"," +
+			"\"appId\":54321}]";
 
 		string text = clientSecret + body;
 

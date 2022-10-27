@@ -28,14 +28,14 @@ internal static class ContactResponseToContact
 			.Associations
 			.Companies
 			.AssociationList
-			.Where(company => company.Type == "contact_to_company")
-			.Select(company => new ClientContact(Guid.NewGuid())
+			.Where(association => association.Type == "contact_to_company")
+			.Select(association => new ClientContact(Guid.NewGuid())
 			{
 				ContactId = result.Id,
 				HubSpotContactId = result.HubSpotId,
 				Contact = result,
 				IsActive = true,
-				HubSpotClientId = company.Id,
+				HubSpotClientId = association.Id,
 			})
 			.ToList();
 
@@ -43,13 +43,13 @@ internal static class ContactResponseToContact
 			.Associations
 			.Deals
 			.AssociationList
-			.Where(deal => deal.Type == "contact_to_deal")
-			.Select(deal => new DealContact(Guid.NewGuid())
+			.Where(association => association.Type == "contact_to_deal")
+			.Select(association => new DealContact(Guid.NewGuid())
 			{
 				Contact = result,
 				ContactId = result.Id,
 				HubSpotContactId = result.HubSpotId,
-				HubSpotDealId = deal.Id,
+				HubSpotDealId = association.Id,
 				IsActive = true,
 			})
 			.ToList();

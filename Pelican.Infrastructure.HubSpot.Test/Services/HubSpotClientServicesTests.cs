@@ -47,6 +47,7 @@ public class HubSpotClientServicesTests
 		RestResponse<CompanyResponse> restResponse = new()
 		{
 			IsSuccessStatusCode = false,
+			ErrorException = new("error")
 		};
 
 		_hubSpotClientMock

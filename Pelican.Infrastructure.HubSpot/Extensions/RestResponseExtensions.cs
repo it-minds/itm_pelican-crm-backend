@@ -31,6 +31,6 @@ internal static class RestResponseExtensions
 		return Result.Failure<TResult>(
 				new Error(
 					response.StatusCode.ToString(),
-					response.ErrorException?.Message!));
+					response.ErrorException?.Message! ?? "Error while fetching"));
 	}
 }

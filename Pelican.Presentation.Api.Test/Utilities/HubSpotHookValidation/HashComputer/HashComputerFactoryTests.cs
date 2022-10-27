@@ -18,25 +18,25 @@ public class HashComputerFactoryTests
 	public void CreateSHA256HashComputer_ReturnsTypeSHA256HashComputer()
 	{
 		/// Act
-		var generator = _uut
+		var result = _uut
 			.CreateSHA256HashComputer();
 
 		/// Assert
 		Assert.Equal(
-		 typeof(SHA256HashComputer),
-		 generator.GetType());
+			typeof(SHA256HashComputer),
+			result.GetType());
 	}
 
 	[Fact]
-	public void CreateClientSecretHashComputer_ReturnsTypeSHA256HashComputer()
+	public void CreateClientSecretHashComputer_ReturnsTypeClientSecretHashComputer()
 	{
 		/// Act
-		var generator = _uut
+		var result = _uut
 			.CreateClientSecretHashComputer(CLIENTSECRET);
 
 		/// Assert
 		Assert.Equal(
-		 typeof(ClientSecretHashComputer),
-		 generator.GetType());
+			typeof(ClientSecretHashComputer),
+			result.GetType());
 	}
 }

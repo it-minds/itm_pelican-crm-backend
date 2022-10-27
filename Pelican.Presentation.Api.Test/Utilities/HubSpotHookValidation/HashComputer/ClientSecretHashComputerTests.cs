@@ -14,6 +14,28 @@ public class ClientSecretHashComputerTests
 	}
 
 	[Fact]
+	public void Ctor_MissingArg_ThrowException()
+	{
+		/// Act
+		var result = Record.Exception(() => new ClientSecretHashComputer(null!));
+
+		/// Assert
+		Assert.NotNull(result);
+	}
+
+	[Fact]
+	public void Ctor_NoMissingArg_NoException()
+	{
+		/// Act
+		var result = Record.Exception(() => new ClientSecretHashComputer("clientSecret"));
+
+		/// Assert
+		Assert.Null(result);
+	}
+
+
+
+	[Fact]
 	public void ComputeHash()
 	{
 		/// Arrange

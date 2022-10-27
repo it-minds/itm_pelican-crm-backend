@@ -226,10 +226,12 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("HubSpotOwnerId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("JobTitle")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<long?>("LastUpdatedAt")
                         .HasColumnType("bigint");
@@ -282,7 +284,8 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("HubSpotOwnerId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<long?>("LastUpdatedAt")
                         .HasColumnType("bigint");

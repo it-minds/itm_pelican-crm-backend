@@ -11,7 +11,7 @@ public class GetDealsQueryUnitTest
 {
 	private DealsQuery uut;
 	[Fact]
-	public void IfGetDealsIsCalledMediatorCallsSendWithCorrectCancellationToken()
+	public void If_GetDeals_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken()
 	{
 		//Arrange
 		uut = new DealsQuery();
@@ -23,7 +23,7 @@ public class GetDealsQueryUnitTest
 		mediatorMock.Verify(x => x.Send(It.IsAny<GetDealsQuery>(), cancellationToken), Times.Once());
 	}
 	[Fact]
-	public async void IfGetDealAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
+	public async void If_GetDealAsync_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken_And_Input()
 	{
 		//Arrange
 		uut = new DealsQuery();
@@ -33,7 +33,7 @@ public class GetDealsQueryUnitTest
 		GetDealByIdQuery input = new GetDealByIdQuery(id);
 		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Deal(id));
 		//Act
-		var result = await uut.GetDealAsync(input, mediatorMock.Object, cancellationToken);
+		var result = await uut.GetDealAsync(input.Id, mediatorMock.Object, cancellationToken);
 		//Assert
 		Assert.Equal(id, result.Id);
 		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Once());

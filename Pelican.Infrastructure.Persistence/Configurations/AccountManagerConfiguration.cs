@@ -11,10 +11,12 @@ internal class AccountManagerConfiguration : IEntityTypeConfiguration<AccountMan
 		builder.ToTable("AccountManagers");
 
 		builder.Property(p => p.FirstName)
-			.HasMaxLength(StringLengths.Name);
+			.HasMaxLength(StringLengths.Name)
+			.IsRequired();
 
 		builder.Property(p => p.LastName)
-			.HasMaxLength(StringLengths.Name);
+			.HasMaxLength(StringLengths.Name)
+			.IsRequired();
 
 		builder.Property(p => p.PictureUrl)
 			.HasMaxLength(StringLengths.Url);
@@ -30,7 +32,8 @@ internal class AccountManagerConfiguration : IEntityTypeConfiguration<AccountMan
 			.HasMaxLength(StringLengths.PhoneNumber);
 
 		builder.Property(p => p.HubSpotId)
-			.HasMaxLength(StringLengths.Id);
+			.HasMaxLength(StringLengths.Id)
+			.IsRequired();
 
 		builder.HasOne(a => a.Supplier)
 			.WithMany(e => e.AccountManagers)

@@ -11,10 +11,12 @@ internal class ContactConfiguration : IEntityTypeConfiguration<Contact>
 		builder.ToTable("Contacts");
 
 		builder.Property(p => p.Firstname)
-			.HasMaxLength(StringLengths.Name);
+			.HasMaxLength(StringLengths.Name)
+			.IsRequired();
 
 		builder.Property(p => p.Lastname)
-			.HasMaxLength(StringLengths.Name);
+			.HasMaxLength(StringLengths.Name)
+			.IsRequired();
 
 		builder.Property(p => p.Email)
 			.HasMaxLength(StringLengths.Email);
@@ -26,14 +28,23 @@ internal class ContactConfiguration : IEntityTypeConfiguration<Contact>
 			.HasMaxLength(StringLengths.PhoneNumber);
 
 		builder.Property(p => p.HubSpotId)
+			.HasMaxLength(StringLengths.Id)
+			.IsRequired();
+
+		builder.Property(p => p.HubSpotOwnerId)
 			.HasMaxLength(StringLengths.Id);
+
+		builder.Property(p => p.JobTitle)
+			.HasMaxLength(StringLengths.JobTitle);
 
 		builder.HasMany(a => a.ClientContacts)
 			.WithOne(e => e.Contact)
-			.HasForeignKey(a => a.ContactId);
+			.HasForeignKey(a => a.ContactId)
+			.IsRequired();
 
 		builder.HasMany(a => a.DealContacts)
 			.WithOne(a => a.Contact)
-			.HasForeignKey(a => a.DealId);
+			.HasForeignKey(a => a.ContactId)
+			.IsRequired();
 	}
 }

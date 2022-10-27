@@ -11,7 +11,7 @@ public class GetSuppliersQueryUnitTest
 {
 	private SuppliersQuery uut;
 	[Fact]
-	public void IfGetSuppliersIsCalledMediatorCallsSendWithCorrectCancellationToken()
+	public void If_GetSuppliers_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken()
 	{
 		//Arrange
 		uut = new SuppliersQuery();
@@ -23,7 +23,7 @@ public class GetSuppliersQueryUnitTest
 		mediatorMock.Verify(x => x.Send(It.IsAny<GetSuppliersQuery>(), cancellationToken), Times.Once());
 	}
 	[Fact]
-	public async void IfGetSupplierAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
+	public async void If_GetSupplierAsync_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken_And_Input()
 	{
 		//Arrange
 		uut = new SuppliersQuery();
@@ -33,7 +33,7 @@ public class GetSuppliersQueryUnitTest
 		GetSupplierByIdQuery input = new GetSupplierByIdQuery(id);
 		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Supplier(id));
 		//Act
-		var result = await uut.GetSupplierAsync(input, mediatorMock.Object, cancellationToken);
+		var result = await uut.GetSupplierAsync(input.Id, mediatorMock.Object, cancellationToken);
 		//Assert
 		Assert.Equal(id, result.Id);
 		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Once());

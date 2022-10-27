@@ -13,7 +13,7 @@ public class ClientsQueryUnitTest
 	private ClientsQuery uut;
 
 	[Fact]
-	public void IfGetClientsIsCalledMediatorCallsSendWithCorrectCancellationToken()
+	public void If_GetClients_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken()
 	{
 		//Arrange
 		uut = new ClientsQuery();
@@ -25,7 +25,7 @@ public class ClientsQueryUnitTest
 		mediatorMock.Verify(x => x.Send(It.IsAny<GetClientsQuery>(), cancellationToken), Times.Once());
 	}
 	[Fact]
-	public async void IfGetClientAsyncIsCalledMediatorCallsSendWithCorrectCancellationTokenAndInput()
+	public async void If_GetClientAsync_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken_And_Input()
 	{
 		//Arrange
 		uut = new ClientsQuery();
@@ -35,7 +35,7 @@ public class ClientsQueryUnitTest
 		GetClientByIdQuery input = new GetClientByIdQuery(id);
 		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Client(id));
 		//Act
-		var result = await uut.GetClientAsync(input, mediatorMock.Object, cancellationToken);
+		var result = await uut.GetClientAsync(input.Id, mediatorMock.Object, cancellationToken);
 		//Assert
 		Assert.Equal(id, result.Id);
 		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Exactly(1));

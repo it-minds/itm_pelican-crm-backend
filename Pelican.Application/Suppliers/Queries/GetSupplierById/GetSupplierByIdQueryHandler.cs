@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Pelican.Application.Abstractions.Messaging;
+﻿using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Domain.Entities;
 

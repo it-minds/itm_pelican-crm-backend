@@ -25,7 +25,6 @@ public class PelicanContext : DbContext, IPelicanContext
 	{
 
 	}
-
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);

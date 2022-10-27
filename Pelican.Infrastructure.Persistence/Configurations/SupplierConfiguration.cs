@@ -29,14 +29,17 @@ internal class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
 			.HasMaxLength(StringLengths.Url);
 
 		builder.Property(p => p.RefreshToken)
-			.HasMaxLength(StringLengths.Token);
+			.HasMaxLength(StringLengths.Token)
+			.IsRequired();
 
 		builder.HasMany(a => a.AccountManagers)
 			.WithOne(a => a.Supplier)
-			.HasForeignKey(a => a.SupplierId);
+			.HasForeignKey(a => a.SupplierId)
+			.IsRequired();
 
 		builder.HasMany(a => a.OfficeLocations)
 			.WithOne(a => a.Supplier)
-			.HasForeignKey(a => a.SupplierId);
+			.HasForeignKey(a => a.SupplierId)
+			.IsRequired();
 	}
 }

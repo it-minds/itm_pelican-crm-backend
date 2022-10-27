@@ -6,60 +6,218 @@ namespace Pelican.Application.Test;
 public class PelicanBogusFakerUnitTest
 {
 	private IPelicanBogusFaker uut;
-	[Fact]
-	public void PelicanBogusFakerCreateSingleSupplierTest()
+	public PelicanBogusFakerUnitTest()
+	{
+		uut = new PelicanBogusFaker();
+	}
+
+	[Theory]
+	[InlineData(1)]
+	public void SupplierFaker_Id_HubSpotId_RefreshToken_NotNullEmptyOrWhiteSpace(int param)
 	{
 		//Arrange
-		uut = new PelicanBogusFaker();
 		//Act
-		IEnumerable<Supplier> result = uut.SupplierFaker(1);
+		IEnumerable<Supplier> result = uut.SupplierFaker(param);
 		//Assert
 		Assert.Single(result);
 		Assert.All(result,
-			item => Assert.NotNull(item.Name)
-			);
+			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
 		Assert.All(result,
-			item => Assert.NotNull(item.PhoneNumber)
-			);
+			item => Assert.NotEqual(default, item.HubSpotId));
 		Assert.All(result,
-			item => Assert.NotNull(item.PictureUrl)
-			);
-		Assert.All(result,
-			item => Assert.NotNull(item.PhoneNumber)
-			);
-		Assert.All(result,
-			item => Assert.NotNull(item.LinkedInUrl)
-			);
-		Assert.All(result,
-			item => Assert.NotNull(item.Email)
-			);
+			item => Assert.False(string.IsNullOrWhiteSpace(item.RefreshToken)));
 	}
-	[Fact]
-	public void PelicanBogusFakerCreateManySuppliersTest()
+
+	[Theory]
+	[InlineData(1)]
+	public void AccountManagerFaker_Id_HubSpotId_SupplierId_Supplier_FirstName_LastName_Email_NotNullEmptyOrWhiteSpace(int param)
 	{
 		//Arrange
-		uut = new PelicanBogusFaker();
+		var supplier = uut.SupplierFaker(param).AsQueryable();
 		//Act
-		IEnumerable<Supplier> result = uut.SupplierFaker(50);
+		IEnumerable<AccountManager> result = uut.AccountManagerFaker(param, supplier);
 		//Assert
-		Assert.Equal(50, result.Count());
+		Assert.Single(result);
 		Assert.All(result,
-			item => Assert.NotNull(item.Name)
-			);
+			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
 		Assert.All(result,
-			item => Assert.NotNull(item.PhoneNumber)
-			);
+			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotId)));
 		Assert.All(result,
-			item => Assert.NotNull(item.PictureUrl)
-			);
+			item => Assert.True(Guid.TryParse(item.SupplierId.ToString(), out _)));
 		Assert.All(result,
-			item => Assert.NotNull(item.PhoneNumber)
-			);
+			item => Assert.True(Guid.TryParse(item.SupplierId.ToString(), out _)));
 		Assert.All(result,
-			item => Assert.NotNull(item.LinkedInUrl)
-			);
+			item => Assert.NotNull(item.Supplier));
 		Assert.All(result,
-			item => Assert.NotNull(item.Email)
-			);
+			item => Assert.False(string.IsNullOrWhiteSpace(item.FirstName)));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.LastName)));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.Email)));
+	}
+
+	[Theory]
+	[InlineData(1)]
+	public void AccountManagerDealFaker_Id_DealId_AccountManagerId_HubSpotDealId_HubSpotAccountManagerId_IsActive_NotNullEmptyOrWhiteSpace(int param)
+	{
+		//Arrange
+		var supplier = uut.SupplierFaker(param).AsQueryable();
+		var accountManager = uut.AccountManagerFaker(param, supplier).AsQueryable();
+		var location = uut.LocationFaker(param, supplier).AsQueryable();
+		var client = uut.ClientFaker(param, location).AsQueryable();
+		var deal = uut.DealFaker(param, client, accountManager).AsQueryable();
+		//Act
+		IEnumerable<AccountManagerDeal> result = uut.AccountManagerDealFaker(accountManager, deal);
+		//Assert
+		Assert.Single(result);
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.DealId.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.AccountManagerId.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotAccountManagerId)));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotDealId)));
+	}
+
+	[Theory]
+	[InlineData(1)]
+	public void ClientFaker_Id_HubSpotId_Name_NotNullEmptyOrWhiteSpace(int param)
+	{
+		//Arrange
+		var supplier = uut.SupplierFaker(param).AsQueryable();
+		var location = uut.LocationFaker(param, supplier).AsQueryable();
+		//Act
+		IEnumerable<Client> result = uut.ClientFaker(param, location);
+		//Assert
+		Assert.Single(result);
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotId)));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.Name)));
+	}
+
+	[Theory]
+	[InlineData(1)]
+	public void ClientContactFaker_Id_ClientId_ContactId_HubSpotClientId_HubSpotContactId_NotNullEmptyOrWhiteSpace(int param)
+	{
+		//Arrange
+		var supplier = uut.SupplierFaker(param).AsQueryable();
+		var location = uut.LocationFaker(param, supplier).AsQueryable();
+		var client = uut.ClientFaker(param, location).AsQueryable();
+		var accountManager = uut.AccountManagerFaker(param, supplier).AsQueryable();
+		var contact = uut.ContactFaker(param, accountManager).AsQueryable();
+		//Act
+		IEnumerable<ClientContact> result = uut.ClientContactFaker(client, contact);
+		//Assert
+		Assert.Single(result);
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.ClientId.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.ContactId.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotClientId)));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.HubspotContactId)));
+	}
+
+	[Theory]
+	[InlineData(1)]
+	public void ContactFaker_Id_Firstname_Lastname_ClientContacts_HubSpotId_NotNullEmptyOrWhiteSpace(int param)
+	{
+		//Arrange
+		var supplier = uut.SupplierFaker(param).AsQueryable();
+		var accountManager = uut.AccountManagerFaker(param, supplier).AsQueryable();
+		//Act
+		IEnumerable<Contact> result = uut.ContactFaker(param, accountManager);
+		//Assert
+		Assert.Single(result);
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.Firstname)));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.Lastname)));
+		Assert.All(result,
+			item => Assert.NotNull(item.ClientContacts));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotId)));
+	}
+
+	[Theory]
+	[InlineData(1)]
+	public void DealFaker_Id_AccountManagerDeals_HubSpotId_HubSpotOwnerId_NotNullEmptyOrWhiteSpace(int param)
+	{
+		//Arrange
+		var supplier = uut.SupplierFaker(param).AsQueryable();
+		var location = uut.LocationFaker(param, supplier).AsQueryable();
+		var client = uut.ClientFaker(param, location).AsQueryable();
+		var accountManager = uut.AccountManagerFaker(param, supplier).AsQueryable();
+		var contact = uut.ContactFaker(param, accountManager).AsQueryable();
+		//Act
+		IEnumerable<Deal> result = uut.DealFaker(param, client, accountManager);
+		//Assert
+		Assert.Single(result);
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.NotNull(item.AccountManagerDeals));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotId)));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotOwnerId)));
+	}
+
+	[Theory]
+	[InlineData(1)]
+	public void DealContactFaker_Id_DealId_ContactId_HubSpotDealId_HubSpotContactId_IsActive_NotNullEmptyOrWhiteSpace(int param)
+	{
+		//Arrange
+		var supplier = uut.SupplierFaker(param).AsQueryable();
+		var location = uut.LocationFaker(param, supplier).AsQueryable();
+		var client = uut.ClientFaker(param, location).AsQueryable();
+		var accountManager = uut.AccountManagerFaker(param, supplier).AsQueryable();
+		var contact = uut.ContactFaker(param, accountManager).AsQueryable();
+		var deal = uut.DealFaker(param, client, accountManager).AsQueryable();
+		//Act
+		IEnumerable<DealContact> result = uut.DealContactFaker(deal, contact);
+		//Assert
+		Assert.Single(result);
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.DealId.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.ContactId.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.NotEqual(default, item.HubSpotContactId.ToString()));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotContactId)));
+	}
+
+	[Theory]
+	[InlineData(1)]
+	public void LocationFaker_Id_CityName_Supplier_SupplierId_NotNullEmptyOrWhiteSpace(int param)
+	{
+		//Arrange
+		var supplier = uut.SupplierFaker(param).AsQueryable();
+		//Act
+		IEnumerable<Location> result = uut.LocationFaker(param, supplier);
+		//Assert
+		Assert.Single(result);
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
+		Assert.All(result,
+			item => Assert.False(string.IsNullOrWhiteSpace(item.CityName)));
+		Assert.All(result,
+			item => Assert.NotNull(item.Supplier));
+		Assert.All(result,
+			item => Assert.True(Guid.TryParse(item.SupplierId.ToString(), out _))); ;
 	}
 }

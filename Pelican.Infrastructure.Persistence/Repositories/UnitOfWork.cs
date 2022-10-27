@@ -1,6 +1,7 @@
 ﻿using Pelican.Application.Common.Interfaces;
 using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Primitives;
 using Location = Pelican.Domain.Entities.Location;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
@@ -15,13 +16,35 @@ public class UnitOfWork : IUnitOfWork
 	private IGenericRepository<Location> _locationRepository;
 	private IGenericRepository<Supplier> _supplierRepository;
 	private IGenericRepository<ClientContact> _clientContactRepository;
+	private IGenericRepository<DealContact> _dealContactRepository;
 
-
+	public IGenericRepository<T> GetRepository<T>() where T : Entity => typeof(T) switch
+	{
+		Type AccountManager when AccountManager == typeof(AccountManager)
+			=> (IGenericRepository<T>)AccountManagerRepository,
+		Type AccountManagerDeal when AccountManagerDeal == typeof(AccountManagerDeal)
+			=> (IGenericRepository<T>)AccountManagerDealRepository,
+		Type ClientContacts when ClientContacts == typeof(ClientContact)
+			=> (IGenericRepository<T>)ClientContactRepository,
+		Type Client when Client == typeof(Client)
+			=> (IGenericRepository<T>)ClientRepository,
+		Type Contact when Contact == typeof(Contact)
+			=> (IGenericRepository<T>)ContactRepository,
+		Type DealContact when DealContact == typeof(DealContact)
+			=> (IGenericRepository<T>)DealContactRepository,
+		Type Deal when Deal == typeof(Deal)
+			=> (IGenericRepository<T>)DealRepository,
+		Type Location when Location == typeof(Location)
+			=> (IGenericRepository<T>)LocationRepository,
+		Type Supplier when Supplier == typeof(Supplier)
+			=> (IGenericRepository<T>)SupplierRepository,
+		_ => throw new ArgumentException("Generic Repository is not of correct Entity type", nameof(T)),
+	};
 	public IGenericRepository<AccountManagerDeal> AccountManagerDealRepository
 	{
 		get
 		{
-			_accountManagerDealRepository ??= new GenericRepository<AccountManagerDeal>(_pelicanContext);
+			_accountManagerDealRepository ??= new AccountManagerDealsRepository(_pelicanContext);
 			return _accountManagerDealRepository;
 		}
 	}
@@ -30,7 +53,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_accountManagerRepository ??= new GenericRepository<AccountManager>(_pelicanContext);
+			_accountManagerRepository ??= new AccountManagerRepository(_pelicanContext);
 			return _accountManagerRepository;
 		}
 	}
@@ -39,7 +62,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_clientRepository ??= new GenericRepository<Client>(_pelicanContext);
+			_clientRepository ??= new ClientRepository(_pelicanContext);
 			return _clientRepository;
 		}
 	}
@@ -48,7 +71,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_contactRepository ??= new GenericRepository<Contact>(_pelicanContext);
+			_contactRepository ??= new ContactRepository(_pelicanContext);
 			return _contactRepository;
 		}
 	}
@@ -57,7 +80,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_dealRepository ??= new GenericRepository<Deal>(_pelicanContext);
+			_dealRepository ??= new DealRepository(_pelicanContext);
 			return _dealRepository;
 		}
 	}
@@ -66,7 +89,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_locationRepository ??= new GenericRepository<Location>(_pelicanContext);
+			_locationRepository ??= new LocationRepository(_pelicanContext);
 			return _locationRepository;
 		}
 	}
@@ -75,7 +98,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_supplierRepository ??= new GenericRepository<Supplier>(_pelicanContext);
+			_supplierRepository ??= new SupplierRepository(_pelicanContext);
 			return _supplierRepository;
 		}
 	}
@@ -84,8 +107,17 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_clientContactRepository ??= new GenericRepository<ClientContact>(_pelicanContext);
+			_clientContactRepository ??= new ClientContactsRepository(_pelicanContext);
 			return _clientContactRepository;
+		}
+	}
+
+	public IGenericRepository<DealContact> DealContactRepository
+	{
+		get
+		{
+			_dealContactRepository ??= new DealContactsRepository(_pelicanContext);
+			return _dealContactRepository;
 		}
 	}
 

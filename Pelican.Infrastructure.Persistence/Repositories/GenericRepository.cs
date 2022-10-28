@@ -1,10 +1,4 @@
-﻿using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
-using Pelican.Application.Common.Interfaces;
-using Pelican.Application.Common.Interfaces.Repositories;
-using Pelican.Domain.Primitives;
-
-namespace Pelican.Infrastructure.Persistence.Repositories;
+﻿namespace Pelican.Infrastructure.Persistence.Repositories;
 public abstract class GenericRepository<T> : IGenericRepository<T> where T : Entity
 {
 	//This Repository contains base functions that will be inherited by all specific repositories

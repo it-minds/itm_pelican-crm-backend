@@ -48,15 +48,15 @@ public class UpdateDealCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, "0", "0", "0")]
+	[InlineData(0, 0, "0", "0")]
 	public async void Handle_DealNotFoundSupplierNotFound_ReturnsFailureErrorNullValue(
 		long objectId,
-		string userId,
+		long portalId,
 		string propertyName,
 		string propertyValue)
 	{
 		// Arrange
-		UpdateDealCommand command = new(objectId, userId, propertyName, propertyValue);
+		UpdateDealCommand command = new(objectId, portalId, propertyName, propertyValue);
 
 		SetupUnitOfWork();
 
@@ -71,7 +71,7 @@ public class UpdateDealCommandHandlerTests
 			.Setup(
 				u => u
 					.SupplierRepository
-					.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId))
+					.FindByCondition(supplier => supplier.HubSpotId == portalId))
 			.Returns(Enumerable.Empty<Supplier>().AsQueryable());
 
 		// Act
@@ -89,7 +89,7 @@ public class UpdateDealCommandHandlerTests
 			u => u
 				.SupplierRepository
 				.FindByCondition(
-					supplier => supplier.HubSpotId.ToString() == userId),
+					supplier => supplier.HubSpotId == portalId),
 			Times.Once());
 
 		Assert.True(result.IsFailure);
@@ -98,15 +98,15 @@ public class UpdateDealCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, "0", "0", "0")]
+	[InlineData(0, 0, "0", "0")]
 	public async void Handle_DealNotFoundFailsRefreshingToken_ReturnsFailure(
 		long objectId,
-		string userId,
+		long portalId,
 		string propertyName,
 		string propertyValue)
 	{
 		// Arrange
-		UpdateDealCommand command = new(objectId, userId, propertyName, propertyValue);
+		UpdateDealCommand command = new(objectId, portalId, propertyName, propertyValue);
 
 		Supplier supplier = new(Guid.NewGuid())
 		{
@@ -120,7 +120,7 @@ public class UpdateDealCommandHandlerTests
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork
 				.SupplierRepository
-				.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId))
+				.FindByCondition(supplier => supplier.HubSpotId == portalId))
 			.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		_hubSpotAuthorizationServiceMock
@@ -138,7 +138,7 @@ public class UpdateDealCommandHandlerTests
 
 		_unitOfWorkMock.Verify(
 			unitOfWork => unitOfWork.SupplierRepository.FindByCondition(
-				supplier => supplier.HubSpotId.ToString() == userId),
+				supplier => supplier.HubSpotId == portalId),
 			Times.Once());
 
 		_hubSpotAuthorizationServiceMock.Verify(
@@ -152,15 +152,15 @@ public class UpdateDealCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, "0", "0", "0")]
+	[InlineData(0, 0, "0", "0")]
 	public async void Handle_DealNotFoundSuccessFetchingFromHubSpot_ReturnsFailure(
 		long objectId,
-		string userId,
+		long portalId,
 		string propertyName,
 		string propertyValue)
 	{
 		// Arrange
-		UpdateDealCommand command = new(objectId, userId, propertyName, propertyValue);
+		UpdateDealCommand command = new(objectId, portalId, propertyName, propertyValue);
 
 		Supplier supplier = new(Guid.NewGuid())
 		{
@@ -176,7 +176,7 @@ public class UpdateDealCommandHandlerTests
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork
 				.SupplierRepository
-				.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId))
+				.FindByCondition(supplier => supplier.HubSpotId == portalId))
 			.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		_hubSpotAuthorizationServiceMock
@@ -198,7 +198,7 @@ public class UpdateDealCommandHandlerTests
 
 		_unitOfWorkMock.Verify(
 			unitOfWork => unitOfWork.SupplierRepository.FindByCondition(
-				supplier => supplier.HubSpotId.ToString() == userId),
+				supplier => supplier.HubSpotId == portalId),
 			Times.Once());
 
 		_hubSpotDealServiceMock.Verify(
@@ -210,15 +210,15 @@ public class UpdateDealCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, "0", "0", "0")]
+	[InlineData(0, 0, "0", "0")]
 	public async void Handle_DealFoundNoUpdates_ReturnsFailure(
 		long objectId,
-		string userId,
+		long portalId,
 		string propertyName,
 		string propertyValue)
 	{
 		// Arrange
-		UpdateDealCommand command = new(objectId, userId, propertyName, propertyValue);
+		UpdateDealCommand command = new(objectId, portalId, propertyName, propertyValue);
 
 		Deal deal = new(Guid.NewGuid());
 
@@ -249,15 +249,15 @@ public class UpdateDealCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, "0", "closedate", "1664958141535")]
+	[InlineData(0, 0, "closedate", "1664958141535")]
 	public async void Handle_DealFoundCloseDateUpdated_ReturnsFailure(
 		long objectId,
-		string userId,
+		long portalId,
 		string propertyName,
 		string propertyValue)
 	{
 		// Arrange
-		UpdateDealCommand command = new(objectId, userId, propertyName, propertyValue);
+		UpdateDealCommand command = new(objectId, portalId, propertyName, propertyValue);
 
 		Deal deal = new(Guid.NewGuid());
 

@@ -20,7 +20,7 @@ public class UpdateDealCommandValidatorTests
 		// Arrange
 		UpdateDealCommand command = new(
 			0,
-			string.Empty,
+			0,
 			string.Empty,
 			string.Empty);
 
@@ -29,7 +29,7 @@ public class UpdateDealCommandValidatorTests
 
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.ObjectId);
-		result.ShouldHaveValidationErrorFor(command => command.UserId);
+		result.ShouldHaveValidationErrorFor(command => command.PortalId);
 		result.ShouldHaveValidationErrorFor(command => command.PropertyName);
 		result.ShouldHaveValidationErrorFor(command => command.PropertyValue);
 	}
@@ -40,7 +40,7 @@ public class UpdateDealCommandValidatorTests
 		// Arrange
 		UpdateDealCommand command = new(
 			1,
-			"notEmpty",
+			1,
 			"notEmpty",
 			"notEmpty");
 
@@ -49,7 +49,7 @@ public class UpdateDealCommandValidatorTests
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.ObjectId);
-		result.ShouldNotHaveValidationErrorFor(command => command.UserId);
+		result.ShouldNotHaveValidationErrorFor(command => command.PortalId);
 		result.ShouldNotHaveValidationErrorFor(command => command.PropertyName);
 		result.ShouldNotHaveValidationErrorFor(command => command.PropertyValue);
 	}

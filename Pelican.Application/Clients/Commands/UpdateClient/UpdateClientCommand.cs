@@ -3,7 +3,7 @@
 namespace Pelican.Application.Clients.Commands.UpdateClient;
 public sealed record UpdateClientCommand(
 	long ObjectId,
-	string UserId,
+	long PortalId,
 	string PropertyName,
 	string PropertyValue) : ICommand;
 

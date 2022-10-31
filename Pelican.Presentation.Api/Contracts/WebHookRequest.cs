@@ -13,7 +13,6 @@ public class WebHookRequest
 	public int AttemptNumber { get; set; }
 	[JsonPropertyName("subscriptionType")]
 	public string? SubscriptionType { get; set; }
-
-	[JsonPropertyName("sourceId")]
-	public string? SourceId { get; set; }
+	[JsonPropertyName("portalId")]
+	public long PortalId { get; set; }
 }

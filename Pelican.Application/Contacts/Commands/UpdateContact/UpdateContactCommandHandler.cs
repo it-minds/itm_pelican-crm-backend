@@ -28,7 +28,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 		if (contact is null)
 		{
 			return await GetContactFromHubSpot(
-				command.UserId,
+				command.PortalId,
 				command.ObjectId,
 				cancellationToken);
 		}

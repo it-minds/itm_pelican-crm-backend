@@ -155,7 +155,7 @@ public class HubSpotControllerTests
 		// Arrange
 		List<WebHookRequest> requests = new()
 		{
-			new WebHookRequest { SubscriptionType = "deal.propertyChange", SourceId = "userId:0" }
+			new WebHookRequest { SubscriptionType = "deal.propertyChange", PortalId = 0 }
 		};
 
 		_senderMock
@@ -179,7 +179,7 @@ public class HubSpotControllerTests
 		// Arrange
 		List<WebHookRequest> requests = new()
 		{
-			new WebHookRequest { SubscriptionType = "deal.propertyChange", SourceId = "userId:0"}
+			new WebHookRequest { SubscriptionType = "deal.propertyChange", PortalId = 0}
 		};
 
 		_senderMock

@@ -30,7 +30,7 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 		if (deal is null)
 		{
 			return await GetDealFromHubSpot(
-				command.UserId,
+				command.PortalId,
 				command.ObjectId,
 				cancellationToken);
 		}
@@ -62,11 +62,11 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 		return Result.Success();
 	}
 
-	private async Task<Result> GetDealFromHubSpot(string userId, long objectId, CancellationToken cancellationToken)
+	private async Task<Result> GetDealFromHubSpot(long portalId, long objectId, CancellationToken cancellationToken)
 	{
 		Supplier? supplier = _unitOfWork
 				.SupplierRepository
-				.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId)
+				.FindByCondition(supplier => supplier.HubSpotId == portalId)
 				.FirstOrDefault();
 
 		if (supplier is null || supplier.RefreshToken is null or "")

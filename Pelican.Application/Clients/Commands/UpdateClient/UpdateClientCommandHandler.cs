@@ -9,30 +9,27 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IHubSpotObjectService<Client> _hubSpotClientService;
-	private readonly IHubSpotObjectService<ClientContact> _hubSpotClientContactService;
 	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
 	public UpdateClientCommandHandler(
 		IUnitOfWork unitOfWork,
 		IHubSpotObjectService<Client> hubSpotClientService,
-		IHubSpotAuthorizationService hubSpotAuthorizationService,
-		IHubSpotObjectService<ClientContact> hubspotClientContactService)
+		IHubSpotAuthorizationService hubSpotAuthorizationService)
 	{
 		_unitOfWork = unitOfWork;
 		_hubSpotClientService = hubSpotClientService;
 		_hubSpotAuthorizationService = hubSpotAuthorizationService;
-		_hubSpotClientContactService = hubspotClientContactService;
 	}
 	public async Task<Result> Handle(UpdateClientCommand command, CancellationToken cancellationToken)
 	{
 		Client? client = _unitOfWork
 			.ClientRepository
-			.FindByCondition(d => d.Id.ToString() == command.ObjectId.ToString())
+			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
 			.FirstOrDefault();
 
 		if (client is null)
 		{
 			return await GetClientFromHubSpot(
-				command.UserId,
+				command.PortalId,
 				command.ObjectId,
 				cancellationToken);
 		}
@@ -54,9 +51,6 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			case "num_associated_contacts":
 				client.ClientContacts = UpdateClientContacts(client);
 				break;
-			case "num_associated_deals":
-				client.Deals =
-				break;
 			default:
 				break;
 		}
@@ -70,11 +64,11 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		return Result.Success();
 	}
 
-	private async Task<Result> GetClientFromHubSpot(string userId, long objectId, CancellationToken cancellationToken)
+	private async Task<Result> GetClientFromHubSpot(long portalId, long objectId, CancellationToken cancellationToken)
 	{
 		Supplier? supplier = _unitOfWork
 				.SupplierRepository
-				.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId)
+				.FindByCondition(supplier => supplier.HubSpotId == portalId)
 				.FirstOrDefault();
 
 		if (supplier is null || supplier.RefreshToken is null or "")
@@ -100,7 +94,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		await _unitOfWork
 			.ClientRepository
 			.CreateAsync(result.Value, cancellationToken);
-
+		await _unitOfWork.SaveAsync(cancellationToken);
 		return Result.Success();
 	}
 
@@ -110,32 +104,6 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 					.ClientContactRepository
 					.FindByCondition(localClientContacts
 						=> localClientContacts.ClientId == client.Id)
-					.ToList();
-		if (client.ClientContacts is not null)
-		{
-			foreach (var item in localClientContacts)
-			{
-				if (!client.ClientContacts.Contains(item))
-				{
-					item.IsActive = false;
-				}
-			}
-			foreach (var item in client.ClientContacts)
-			{
-				if (!localClientContacts.Contains(item))
-				{
-					localClientContacts.Add(item);
-				}
-			}
-		}
-		return client.ClientContacts;
-	}
-	private ICollection<DealContact> UpdateAssociatedDealContacts(Client client)
-	{
-		ICollection<DealContact> localClientContacts = _unitOfWork
-					.con
-					.FindByCondition(localDealContacts
-						=> localDealContacts.ClientId == client.Id)
 					.ToList();
 		if (client.ClientContacts is not null)
 		{

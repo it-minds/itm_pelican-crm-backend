@@ -2,13 +2,14 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Clients.Commands.DeleteClient;
+using Pelican.Application.Clients.Commands.UpdateClient;
 using Pelican.Application.Deals.Commands.DeleteDeal;
 using Pelican.Application.Deals.Commands.UpdateDeal;
 using Pelican.Application.HubSpot.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
 using Pelican.Presentation.Api.Contracts;
-using Pelican.Presentation.Api.Utilities.HubSpotHookValidation;
 
 namespace Pelican.Presentation.Api.Controllers;
 
@@ -36,7 +37,7 @@ public sealed class HubSpotController : ApiController
 	}
 
 	[HttpPost]
-	[ServiceFilter(typeof(HubSpotValidationFilter))]
+	//[ServiceFilter(typeof(HubSpotValidationFilter))]
 	public async Task<IActionResult> Hook(
 		[FromBody] IEnumerable<WebHookRequest> requests,
 		CancellationToken cancellationToken)
@@ -69,8 +70,10 @@ public sealed class HubSpotController : ApiController
 				{
 					//"contact.deletion" => new DeleteContactPropertyCommand(request.ObjectId),
 					"deal.deletion" => new DeleteDealCommand(request.ObjectId),
+					"company.propertyChange" => new UpdateClientCommand(request.ObjectId, request.PortalId, request.PropertyName, request.PropertyValue),
+					"company.deletion" => new DeleteClientCommand(request.ObjectId),
 					//"contact.propertyChange" => new UpdateContactCommand(propertyChangeRequest.ObjectId, propertyChangeRequest.PropertyName, propertyChangeRequest.PropertyValue),
-					"deal.propertyChange" => new UpdateDealCommand(request.ObjectId, request.SourceId, request.PropertyName, request.PropertyValue),
+					"deal.propertyChange" => new UpdateDealCommand(request.ObjectId, request.PortalId, request.PropertyName, request.PropertyValue),
 					_ => null
 				};
 

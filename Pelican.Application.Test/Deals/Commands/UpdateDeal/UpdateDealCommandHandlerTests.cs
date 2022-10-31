@@ -61,7 +61,7 @@ public class UpdateDealCommandHandlerTests
 	}
 
 	[Fact]
-	public void UpdateDealCommandHandler_unitOfWorkNull_ThrowException()
+	public void UpdateDealCommandHandler_UnitOfWorkNull_ThrowException()
 	{
 		/// Act
 		Exception exceptionResult = Record.Exception(() =>

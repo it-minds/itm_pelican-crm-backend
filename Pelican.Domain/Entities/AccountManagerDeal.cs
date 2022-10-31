@@ -28,4 +28,18 @@ public class AccountManagerDeal : Entity, ITimeTracked
 	public AccountManagerDeal(Guid id) : base(id) { }
 
 	public AccountManagerDeal() { }
+
+	public static AccountManagerDeal Create(Deal deal, AccountManager accountManager)
+	{
+		return new AccountManagerDeal(Guid.NewGuid())
+		{
+			Deal = deal,
+			DealId = deal.Id,
+			HubSpotDealId = deal.HubSpotId,
+			AccountManager = accountManager,
+			AccountManagerId = accountManager.Id,
+			HubSpotAccountManagerId = accountManager.HubSpotId,
+			IsActive = true,
+		};
+	}
 }

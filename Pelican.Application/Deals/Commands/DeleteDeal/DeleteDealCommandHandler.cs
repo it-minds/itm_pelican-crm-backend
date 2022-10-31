@@ -11,7 +11,7 @@ internal sealed class DeleteDealCommandHandler : ICommandHandler<DeleteDealComma
 
 	public DeleteDealCommandHandler(IUnitOfWork unitOfWork)
 	{
-		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(IUnitOfWork));
+		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 	}
 
 	public async Task<Result> Handle(

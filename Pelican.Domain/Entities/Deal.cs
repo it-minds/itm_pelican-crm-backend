@@ -72,4 +72,31 @@ public class Deal : Entity, ITimeTracked
 
 		return this;
 	}
+
+	public Deal AttachAccountmManager(AccountManager? accountManager)
+	{
+		if (accountManager is not null)
+		{
+			AccountManagerDeals.Add(AccountManagerDeal.Create(this, accountManager));
+		}
+
+		return this;
+	}
+
+	public Deal AttachClient(Client? client)
+	{
+		Client = client;
+
+		return this;
+	}
+
+	public Deal AttandContacts(List<Contact> contacts)
+	{
+		foreach (Contact contact in contacts)
+		{
+			DealContacts.Add(DealContact.Create(this, contact));
+		}
+
+		return this;
+	}
 }

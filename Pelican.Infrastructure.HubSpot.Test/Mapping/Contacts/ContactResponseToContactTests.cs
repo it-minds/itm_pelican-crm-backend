@@ -42,6 +42,10 @@ public class ContactResponseToContactTests
 
 		/// Assert
 		Assert.NotNull(result);
+
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			result.GetType());
 	}
 
 	[Fact]
@@ -56,6 +60,10 @@ public class ContactResponseToContactTests
 
 		/// Assert
 		Assert.NotNull(result);
+
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			result.GetType());
 	}
 
 	[Fact]

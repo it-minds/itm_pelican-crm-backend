@@ -7,6 +7,11 @@ internal static class DealsResponseToDeals
 {
 	internal static List<Deal> ToDeals(this DealsResponse responses)
 	{
+		if (responses.Results is null)
+		{
+			throw new ArgumentNullException(nameof(responses));
+		}
+
 		List<Deal> results = new();
 
 		foreach (DealResponse response in responses.Results)

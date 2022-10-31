@@ -38,6 +38,10 @@ public class DealResponseToDealTests
 
 		/// Assert
 		Assert.NotNull(result);
+
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			result.GetType());
 	}
 
 	[Fact]
@@ -52,6 +56,10 @@ public class DealResponseToDealTests
 
 		/// Assert
 		Assert.NotNull(result);
+
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			result.GetType());
 	}
 
 	[Fact]
@@ -65,6 +73,10 @@ public class DealResponseToDealTests
 
 		/// Assert
 		Assert.NotNull(result);
+
+		Assert.Equal(
+			typeof(InvalidOperationException),
+			result.GetType());
 	}
 
 	[Fact]

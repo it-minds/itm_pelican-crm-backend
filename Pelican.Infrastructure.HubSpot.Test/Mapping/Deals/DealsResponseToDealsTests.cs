@@ -21,7 +21,7 @@ public class DealsResponseToDealsTests
 	readonly DealsResponse responses = new();
 
 	[Fact]
-	public void ToAccountManagers_ArgResultsNull_ThrowException()
+	public void ToDeals_ArgResultsNull_ThrowException()
 	{
 		/// Arrange
 		responses.Results = null!;
@@ -31,10 +31,14 @@ public class DealsResponseToDealsTests
 
 		/// Assert
 		Assert.NotNull(result);
+
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			result.GetType());
 	}
 
 	[Fact]
-	public void ToAccountManagers_ArgResultsNotNull_ThrowNoException()
+	public void ToDeals_ArgResultsNotNull_ThrowNoException()
 	{
 		/// Arrange 
 		responses.Results = new List<DealResponse>();
@@ -47,7 +51,7 @@ public class DealsResponseToDealsTests
 	}
 
 	[Fact]
-	public void ToAccountManagers_ArgResultsNotNullNotEmpty_ThrowNoException()
+	public void ToDeals_ArgResultsNotNullNotEmpty_ThrowNoException()
 	{
 		/// Arrange 
 		responses.Results = new List<DealResponse>() { response };
@@ -60,7 +64,7 @@ public class DealsResponseToDealsTests
 	}
 
 	[Fact]
-	public void ToAccountManagers_SingleResponse_ReturnSingle()
+	public void ToDeals_SingleResponse_ReturnSingle()
 	{
 		/// Arrange
 		responses.Results = new List<DealResponse>() { response };

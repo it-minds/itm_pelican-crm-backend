@@ -34,6 +34,10 @@ public class OwnersResponseToAccountManagersTests
 
 		/// Assert
 		Assert.NotNull(result);
+
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			result.GetType());
 	}
 
 	[Fact]

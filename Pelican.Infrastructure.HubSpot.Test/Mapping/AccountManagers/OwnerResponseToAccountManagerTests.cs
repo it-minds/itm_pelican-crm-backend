@@ -33,6 +33,10 @@ public class OwnerResponseToAccountManagerTests
 
 		/// Assert
 		Assert.NotNull(result);
+
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			result.GetType());
 	}
 
 	[Fact]
@@ -46,6 +50,10 @@ public class OwnerResponseToAccountManagerTests
 
 		/// Assert
 		Assert.NotNull(result);
+
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			result.GetType());
 	}
 
 	[Fact]
@@ -59,6 +67,10 @@ public class OwnerResponseToAccountManagerTests
 
 		/// Assert
 		Assert.NotNull(result);
+
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			result.GetType());
 	}
 
 	[Fact]
@@ -72,6 +84,10 @@ public class OwnerResponseToAccountManagerTests
 
 		/// Assert
 		Assert.NotNull(result);
+
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			result.GetType());
 	}
 
 	[Fact]

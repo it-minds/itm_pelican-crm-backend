@@ -7,7 +7,7 @@ namespace Pelican.Infrastructure.HubSpot.Test.Mapping.Auth;
 public class RefreshAccessTokenResponseToAccessTokenTests
 {
 	[Fact]
-	public void ToString_ReturnCorrectProperties()
+	public void ToAccessToken_ReturnCorrectProperties()
 	{
 		/// Arrange 
 		const string ACCESSTOKEN = "accesstoken";

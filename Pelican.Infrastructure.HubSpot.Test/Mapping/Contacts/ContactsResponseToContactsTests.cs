@@ -21,7 +21,7 @@ public class ContactsResponseToContactsTests
 	readonly ContactsResponse responses = new();
 
 	[Fact]
-	public void ToAccountManagers_ArgResultsNull_ThrowException()
+	public void ToContacts_ArgResultsNull_ThrowException()
 	{
 		/// Arrange
 		responses.Results = null!;
@@ -31,10 +31,14 @@ public class ContactsResponseToContactsTests
 
 		/// Assert
 		Assert.NotNull(result);
+
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			result.GetType());
 	}
 
 	[Fact]
-	public void ToAccountManagers_ArgResultsNotNull_ThrowNoException()
+	public void ToContacts_ArgResultsNotNull_ThrowNoException()
 	{
 		/// Arrange 
 		responses.Results = new List<ContactResponse>();
@@ -47,7 +51,7 @@ public class ContactsResponseToContactsTests
 	}
 
 	[Fact]
-	public void ToAccountManagers_ArgResultsNotNullNotEmpty_ThrowNoException()
+	public void ToContacts_ArgResultsNotNullNotEmpty_ThrowNoException()
 	{
 		/// Arrange 
 		responses.Results = new List<ContactResponse>() { response };
@@ -60,7 +64,7 @@ public class ContactsResponseToContactsTests
 	}
 
 	[Fact]
-	public void ToAccountManagers_SingleResponse_ReturnSingle()
+	public void ToContacts_SingleResponse_ReturnSingle()
 	{
 		/// Arrange
 		responses.Results = new List<ContactResponse>() { response };

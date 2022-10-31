@@ -21,7 +21,7 @@ public class CompaniesResponseToClientsTests
 	readonly CompaniesResponse responses = new();
 
 	[Fact]
-	public void ToAccountManagers_ArgResultsNull_ThrowException()
+	public void ToClients_ArgResultsNull_ThrowException()
 	{
 		/// Arrange
 		responses.Results = null!;
@@ -31,10 +31,14 @@ public class CompaniesResponseToClientsTests
 
 		/// Assert
 		Assert.NotNull(result);
+
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			result.GetType());
 	}
 
 	[Fact]
-	public void ToAccountManagers_ArgResultsNotNull_ThrowNoException()
+	public void ToClients_ArgResultsNotNull_ThrowNoException()
 	{
 		/// Arrange 
 		responses.Results = new List<CompanyResponse>();
@@ -47,7 +51,7 @@ public class CompaniesResponseToClientsTests
 	}
 
 	[Fact]
-	public void ToAccountManagers_ArgResultsNotNullNotEmpty_ThrowNoException()
+	public void ToClients_ArgResultsNotNullNotEmpty_ThrowNoException()
 	{
 		/// Arrange 
 		responses.Results = new List<CompanyResponse>() { response };
@@ -60,7 +64,7 @@ public class CompaniesResponseToClientsTests
 	}
 
 	[Fact]
-	public void ToAccountManagers_SingleResponse_ReturnSingle()
+	public void ToClients_SingleResponse_ReturnSingle()
 	{
 		/// Arrange
 		responses.Results = new List<CompanyResponse>() { response };

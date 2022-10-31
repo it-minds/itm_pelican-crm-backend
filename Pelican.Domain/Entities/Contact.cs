@@ -5,12 +5,12 @@ public class Contact : Entity, ITimeTracked
 {
 	public string HubSpotId { get; set; }
 
-	public string? HubSpotOwnerId { get; set; }
+	public string HubSpotOwnerId { get; set; }
 
 
-	public string Firstname { get; set; }
+	public string? Firstname { get; set; }
 
-	public string Lastname { get; set; }
+	public string? Lastname { get; set; }
 
 
 	public string? PhoneNumber { get; set; }
@@ -22,9 +22,9 @@ public class Contact : Entity, ITimeTracked
 	public string? LinkedInUrl { get; set; }
 
 
-	public ICollection<ClientContact> ClientContacts { get; set; }
+	public ICollection<ClientContact> ClientContacts { get; set; } = new List<ClientContact>();
 
-	public ICollection<DealContact>? DealContacts { get; set; }
+	public ICollection<DealContact> DealContacts { get; set; } = new List<DealContact>();
 
 
 	public long CreatedAt { get; set; }

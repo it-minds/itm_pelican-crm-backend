@@ -1,12 +1,10 @@
-﻿using Microsoft.Extensions.Options;
-using Pelican.Application.Abstractions.HubSpot;
+﻿using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 using Pelican.Infrastructure.HubSpot.Extensions;
-using Pelican.Infrastructure.HubSpot.Mapping;
-using Pelican.Infrastructure.HubSpot.Settings;
+using Pelican.Infrastructure.HubSpot.Mapping.Contacts;
 using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;
@@ -14,7 +12,7 @@ namespace Pelican.Infrastructure.HubSpot.Services;
 internal sealed class HubSpotContactService : HubSpotService, IHubSpotObjectService<Contact>
 {
 	public HubSpotContactService(
-		IOptions<HubSpotSettings> hubSpotSettings) : base(hubSpotSettings)
+		IHubSpotClient hubSpotClient) : base(hubSpotClient)
 	{ }
 
 	public async Task<Result<Contact>> GetByIdAsync(
@@ -26,20 +24,11 @@ internal sealed class HubSpotContactService : HubSpotService, IHubSpotObjectServ
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddContactQueryParams();
 
-		RestResponse<ContactResponse> response = await _client.ExecuteGetAsync<ContactResponse>(request, cancellationToken);
+		RestResponse<ContactResponse> response = await _hubSpotClient
+			.GetAsync<ContactResponse>(request, cancellationToken);
 
-		if (response.IsSuccessful
-			&& response.Data is not null)
-		{
-			Contact result = response.Data.ToContact();
-
-			return Result.Success(result);
-		}
-
-		return Result.Failure<Contact>(
-			new Error(
-				response.StatusCode.ToString(),
-				response.ErrorException?.Message!));
+		return response
+			.GetResult(ContactResponseToContact.ToContact);
 	}
 
 	public async Task<Result<List<Contact>>> GetAsync(
@@ -50,29 +39,10 @@ internal sealed class HubSpotContactService : HubSpotService, IHubSpotObjectServ
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddContactQueryParams();
 
-		RestResponse<ContactsResponse> response = await _client.ExecuteGetAsync<ContactsResponse>(request, cancellationToken);
+		RestResponse<ContactsResponse> response = await _hubSpotClient
+			.GetAsync<ContactsResponse>(request, cancellationToken);
 
-		if (response.IsSuccessful
-			&& response.Data is not null)
-		{
-			List<Contact> results = new();
-
-			response
-				.Data
-				.Results
-				.ToList()
-				.ForEach(contactResponse =>
-				{
-					var result = contactResponse.ToContact();
-					results.Add(result);
-				});
-
-			return Result.Success(results);
-		}
-
-		return Result.Failure<List<Contact>>(
-				new Error(
-					response.StatusCode.ToString(),
-					response.ErrorException?.Message!));
+		return response
+			.GetResult(ContactsResponseToContacts.ToContacts);
 	}
 }

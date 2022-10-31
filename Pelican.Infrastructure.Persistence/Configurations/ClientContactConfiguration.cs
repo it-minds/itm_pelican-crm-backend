@@ -17,7 +17,7 @@ internal class ClientContactConfiguration : IEntityTypeConfiguration<ClientConta
 			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 
-		builder.Property(p => p.HubspotContactId)
+		builder.Property(p => p.HubSpotContactId)
 			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 

@@ -14,8 +14,9 @@ public class SuppliersQuery
 		return await mediator.Send(new GetSuppliersQuery(), cancellationToken);
 	}
 	//This Query reguests a specific Supplier from the database.
-	public async Task<Supplier> GetSupplierAsync(GetSupplierByIdQuery input, [Service] IMediator mediator, CancellationToken cancellationToken)
+	public async Task<Supplier> GetSupplierAsync(Guid id, [Service] IMediator mediator, CancellationToken cancellationToken)
 	{
+		var input = new GetSupplierByIdQuery(id);
 		return await mediator.Send(input, cancellationToken);
 	}
 }

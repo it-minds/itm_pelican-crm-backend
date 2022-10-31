@@ -14,7 +14,6 @@ builder
 	.AddCors(options => options
 		.AddPolicy(name: allowedCorsOrigins, policy => policy
 			.WithOrigins("https://localhost")));
-
 builder.Services.AddHubSpot(builder.Configuration);
 builder.Services.AddPersistince(builder.Configuration);
 builder.Services.AddApplication();
@@ -46,7 +45,6 @@ app.UseEndpoints(endpoints =>
 app.UseCors(allowedCorsOrigins);
 
 app.MapControllers();
+app.Services.GetRequiredService<DevelopmentSeeder>().SeedEntireDb(10);
 
 app.Run();
-
-

@@ -4,41 +4,21 @@ using Pelican.Application.Contacts.Queries.GetContacts;
 using Pelican.Domain.Entities;
 using Xunit;
 namespace Pelican.Application.Test.Contacts.Queries;
-public class GetContacrsQueryHandlerUnitTest
+public class GetContactsQueryHandlerUnitTest
 {
-	private GetContactsQueryHandler uut;
 	[Fact]
-	public void TestIfWhenHandleIsCalledRepositoryIsCalled()
+	public async void Test_If_When_Handle_Is_Called_Repository_Is_Called()
 	{
 		//Arrange
 		var unitOfWorkMock = new Mock<IUnitOfWork>();
 		var contactRepositoryMock = new Mock<IGenericRepository<Contact>>();
 		unitOfWorkMock.Setup(x => x.ContactRepository).Returns(contactRepositoryMock.Object);
-		uut = new GetContactsQueryHandler(unitOfWorkMock.Object);
+		var uut = new GetContactsQueryHandler(unitOfWorkMock.Object);
 		CancellationToken cancellationToken = new CancellationToken();
 		GetContactsQuery contactsQuery = new GetContactsQuery();
 		//Act
-		_ = uut.Handle(contactsQuery, cancellationToken);
+		_ = await uut.Handle(contactsQuery, cancellationToken);
 		//Assert
-		unitOfWorkMock.Verify(x => x.ContactRepository.FindAll(), Times.Once());
-	}
-	[Fact]
-	public void TestIfWhenHandleIsCalledMultipleTimesRepositoryIsCalledMultipleTimes()
-	{
-		//Arrange
-		var unitOfWorkMock = new Mock<IUnitOfWork>();
-		var contactRepositoryMock = new Mock<IGenericRepository<Contact>>();
-		unitOfWorkMock.Setup(x => x.ContactRepository).Returns(contactRepositoryMock.Object);
-		uut = new GetContactsQueryHandler(unitOfWorkMock.Object);
-		CancellationToken cancellationToken = new CancellationToken();
-		GetContactsQuery contactsQuery = new GetContactsQuery();
-		//Act
-		for (int i = 0; i < 50; i++)
-		{
-			_ = uut.Handle(contactsQuery, cancellationToken);
-		}
-
-		//Assert
-		unitOfWorkMock.Verify(x => x.ContactRepository.FindAll(), Times.Exactly(50));
+		unitOfWorkMock.Verify(x => x.ContactRepository.FindAllWithIncludes(), Times.Once());
 	}
 }

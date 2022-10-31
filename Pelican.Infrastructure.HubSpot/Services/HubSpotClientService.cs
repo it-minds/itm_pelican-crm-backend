@@ -1,12 +1,10 @@
-﻿using Microsoft.Extensions.Options;
-using Pelican.Application.Abstractions.HubSpot;
+﻿using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
 using Pelican.Infrastructure.HubSpot.Extensions;
-using Pelican.Infrastructure.HubSpot.Mapping;
-using Pelican.Infrastructure.HubSpot.Settings;
+using Pelican.Infrastructure.HubSpot.Mapping.Clients;
 using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;
@@ -14,8 +12,8 @@ namespace Pelican.Infrastructure.HubSpot.Services;
 internal sealed class HubSpotClientService : HubSpotService, IHubSpotObjectService<Client>
 {
 	public HubSpotClientService(
-		IOptions<HubSpotSettings> hubSpotSettings)
-		: base(hubSpotSettings)
+		IHubSpotClient hubSpotClient)
+		: base(hubSpotClient)
 	{ }
 
 	public async Task<Result<Client>> GetByIdAsync(
@@ -27,21 +25,11 @@ internal sealed class HubSpotClientService : HubSpotService, IHubSpotObjectServi
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddCompanyQueryParams();
 
-		RestResponse<CompanyResponse> response = await _client
-			.ExecuteGetAsync<CompanyResponse>(request, cancellationToken);
+		RestResponse<CompanyResponse> response = await _hubSpotClient
+			.GetAsync<CompanyResponse>(request, cancellationToken);
 
-		if (response.IsSuccessful
-			&& response.Data is not null)
-		{
-			Client result = response.Data.ToClient();
-
-			return Result.Success(result);
-		}
-
-		return Result.Failure<Client>(
-			new Error(
-				response.StatusCode.ToString(),
-				response.ErrorException?.Message!));
+		return response
+			.GetResult(CompanyResponseToClient.ToClient);
 	}
 
 	public async Task<Result<List<Client>>> GetAsync(
@@ -52,30 +40,10 @@ internal sealed class HubSpotClientService : HubSpotService, IHubSpotObjectServi
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddCompanyQueryParams();
 
-		RestResponse<CompaniesResponse> response = await _client
-			.ExecuteGetAsync<CompaniesResponse>(request, cancellationToken);
+		RestResponse<CompaniesResponse> response = await _hubSpotClient
+			.GetAsync<CompaniesResponse>(request, cancellationToken);
 
-		if (response.IsSuccessful
-			&& response.Data is not null)
-		{
-			List<Client> results = new();
-
-			response
-				.Data
-				.Results
-				.ToList()
-				.ForEach(contactResponse =>
-				{
-					var result = contactResponse.ToClient();
-					results.Add(result);
-				});
-
-			return Result.Success(results);
-		}
-
-		return Result.Failure<List<Client>>(
-				new Error(
-					response.StatusCode.ToString(),
-					response.ErrorException?.Message!));
+		return response
+			.GetResult(CompaniesResponseToClients.ToClients);
 	}
 }

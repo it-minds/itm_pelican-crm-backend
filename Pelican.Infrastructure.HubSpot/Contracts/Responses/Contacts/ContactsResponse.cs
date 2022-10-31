@@ -5,5 +5,5 @@ namespace Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 internal sealed class ContactsResponse
 {
 	[JsonPropertyName("results")]
-	public IEnumerable<ContactResponse> Results { get; set; } = default!;
+	public IEnumerable<ContactResponse> Results { get; set; } = Enumerable.Empty<ContactResponse>();
 }

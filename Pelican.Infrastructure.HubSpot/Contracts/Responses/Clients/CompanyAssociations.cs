@@ -6,8 +6,8 @@ namespace Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
 internal sealed class CompanyAssociations
 {
 	[JsonPropertyName("deals")]
-	public Associations? Deals { get; set; } = default!;
+	public Associations Deals { get; set; } = new();
 
 	[JsonPropertyName("contacts")]
-	public Associations? Contacts { get; set; } = default!;
+	public Associations Contacts { get; set; } = new();
 }

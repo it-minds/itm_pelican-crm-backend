@@ -1,12 +1,18 @@
 ﻿using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
 
-namespace Pelican.Infrastructure.HubSpot.Mapping;
+namespace Pelican.Infrastructure.HubSpot.Mapping.Clients;
 
 internal static class CompanyResponseToClient
 {
 	internal static Client ToClient(this CompanyResponse response)
 	{
+		if (string.IsNullOrWhiteSpace(response.Properties.HubSpotObjectId)
+			|| string.IsNullOrWhiteSpace(response.Properties.Name))
+		{
+			throw new ArgumentNullException(nameof(response));
+		}
+
 		Client result = new(Guid.NewGuid())
 		{
 			Name = response.Properties.Name,
@@ -16,32 +22,32 @@ internal static class CompanyResponseToClient
 		};
 
 		result.Deals = response
-			.Associations?
-			.Deals?
+			.Associations
+			.Deals
 			.AssociationList
-			.Where(deal => deal.Type == "company_to_deal")?
-			.Select(deal => new Deal(Guid.NewGuid())
+			.Where(association => association.Type == "company_to_deal")
+			.Select(association => new Deal(Guid.NewGuid())
 			{
-				HubSpotId = deal.Id,
+				HubSpotId = association.Id,
 				Client = result,
 				ClientId = result.Id,
 			})
-			.ToList() ?? new List<Deal>();
+			.ToList();
 
 		result.ClientContacts = response
-			.Associations?
-			.Contacts?
+			.Associations
+			.Contacts
 			.AssociationList
-			.Where(contact => contact.Type == "company_to_contact")?
-			.Select(contact => new ClientContact(Guid.NewGuid())
+			.Where(association => association.Type == "company_to_contact")
+			.Select(association => new ClientContact(Guid.NewGuid())
 			{
-				HubspotContactId = contact.Id,
+				HubSpotContactId = association.Id,
 				HubSpotClientId = result.HubSpotId,
 				Client = result,
 				ClientId = result.Id,
 				IsActive = true,
 			})
-			.ToList() ?? new List<ClientContact>();
+			.ToList();
 
 		return result;
 	}

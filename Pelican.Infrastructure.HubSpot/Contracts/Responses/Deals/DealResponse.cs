@@ -6,8 +6,8 @@ namespace Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 internal sealed class DealResponse : HubSpotResponse
 {
 	[JsonPropertyName("properties")]
-	public DealProperties Properties { get; set; } = default!;
+	public DealProperties Properties { get; set; } = new();
 
 	[JsonPropertyName("associations")]
-	public DealAssociations? Associations { get; set; } = default!;
+	public DealAssociations Associations { get; set; } = new();
 }

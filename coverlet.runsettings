@@ -4,8 +4,14 @@
     <DataCollectors>
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
-          <Format>cobertura</Format>          
-          <Exclude>[*.Persistence]*Migrations*,[*.Persistence]*Configurations*, [*]*DependencyInjection,[*Api]*Program</Exclude> [Assembly-Filter]Type-Filter
+          <Format>cobertura</Format>
+          <Exclude>
+            [*.Persistence]*Migrations*,
+            [*.Persistence]*Configurations*,
+            [*]*DependencyInjection,
+            [*Api]*Program,
+            [*HubSpot]*RestSharpHubSpotClient
+          </Exclude> [Assembly-Filter]Type-Filter
           <SingleHit>false</SingleHit>
           <UseSourceLink>true</UseSourceLink>
           <IncludeTestAssembly>false</IncludeTestAssembly>

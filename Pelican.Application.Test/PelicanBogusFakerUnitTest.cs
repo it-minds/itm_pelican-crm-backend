@@ -5,7 +5,7 @@ using Xunit;
 namespace Pelican.Application.Test;
 public class PelicanBogusFakerUnitTest
 {
-	private IPelicanBogusFaker uut;
+	private readonly IPelicanBogusFaker uut;
 	public PelicanBogusFakerUnitTest()
 	{
 		uut = new PelicanBogusFaker();
@@ -124,7 +124,7 @@ public class PelicanBogusFakerUnitTest
 		Assert.All(result,
 			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotClientId)));
 		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.HubspotContactId)));
+			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotContactId)));
 	}
 
 	[Theory]

@@ -131,7 +131,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.IsActive, prob >= 20)
 			.RuleFor(e => e.Id, f => f.Random.Guid())
 			.RuleFor(e => e.HubSpotClientId, f => f.PickRandom<Client>(clients).HubSpotId)
-			.RuleFor(e => e.HubspotContactId, f => f.PickRandom<Contact>(contacts).HubSpotId);
+			.RuleFor(e => e.HubSpotContactId, f => f.PickRandom<Contact>(contacts).HubSpotId);
 		return faker.Generate(clients.Count());
 	}
 }

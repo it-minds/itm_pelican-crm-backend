@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.HubSpot.Dtos;
 using Pelican.Domain.Entities;
@@ -7,20 +6,22 @@ using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
 using Pelican.Infrastructure.HubSpot.Extensions;
-using Pelican.Infrastructure.HubSpot.Mapping;
+using Pelican.Infrastructure.HubSpot.Mapping.Auth;
 using Pelican.Infrastructure.HubSpot.Settings;
 using RestSharp;
 
-[assembly: InternalsVisibleTo("Pelican.Infrastructure.HubSpot.Test")]
 namespace Pelican.Infrastructure.HubSpot.Services;
-
 
 internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuthorizationService
 {
+	private readonly HubSpotSettings _hubSpotSettings;
 	public HubSpotAuthorizationService(
+		IHubSpotClient hubSpotClient,
 		IOptions<HubSpotSettings> hubSpotSettings)
-		: base(hubSpotSettings)
-	{ }
+		: base(hubSpotClient)
+	{
+		_hubSpotSettings = hubSpotSettings.Value;
+	}
 
 	public async Task<Result<RefreshAccessTokens>> AuthorizeUserAsync(
 		string code,
@@ -32,21 +33,11 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 			.AddQueryParameter("code", code, false)
 			.AddQueryParameter("grant_type", "authorization_code", false);
 
-		RestResponse<GetAccessTokenResponse> response = await _client
-			.ExecutePostAsync<GetAccessTokenResponse>(request, cancellationToken);
+		RestResponse<GetAccessTokenResponse> response = await _hubSpotClient
+			.PostAsync<GetAccessTokenResponse>(request, cancellationToken);
 
-		if (response.IsSuccessful
-			&& response.Data is not null)
-		{
-			RefreshAccessTokens result = response.Data.ToRefreshAccessTokens();
-
-			return Result.Success(result);
-		}
-
-		return Result.Failure<RefreshAccessTokens>(
-			new Error(
-				response.StatusCode.ToString(),
-				response.ErrorException?.Message!));
+		return response
+			.GetResult(GetAccessTokenResponseToRefreshAccessTokens.ToRefreshAccessTokens);
 	}
 
 	public async Task<Result<Supplier>> DecodeAccessTokenAsync(
@@ -55,21 +46,11 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 	{
 		RestRequest request = new RestRequest($"oauth/v1/access-tokens/{accessToken}");
 
-		RestResponse<AccessTokenResponse> response =
-			await _client.ExecuteGetAsync<AccessTokenResponse>(request, cancellationToken);
+		RestResponse<AccessTokenResponse> response = await _hubSpotClient
+			.GetAsync<AccessTokenResponse>(request, cancellationToken);
 
-		if (response.IsSuccessful
-			&& response.Data is not null)
-		{
-			Supplier result = response.Data.ToSupplier();
-
-			return Result.Success(result);
-		}
-
-		return Result.Failure<Supplier>(
-			new Error(
-				response.StatusCode.ToString(),
-				response.ErrorException?.Message!));
+		return response
+			.GetResult(AccessTokenResponseToSupplier.ToSupplier);
 	}
 
 	public async Task<Result<string>> RefreshAccessTokenAsync(
@@ -82,22 +63,12 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 			.AddQueryParameter("grant_type", "refresh_token", false)
 			.AddQueryParameter("refresh_token", refreshToken, false);
 
-		RestResponse<RefreshAccessTokenResponse> response = await _client
-			.ExecutePostAsync<RefreshAccessTokenResponse>(
+		RestResponse<RefreshAccessTokenResponse> response = await _hubSpotClient
+			.PostAsync<RefreshAccessTokenResponse>(
 				request,
 				cancellationToken);
 
-		if (response.IsSuccessful
-			&& response.Data is not null)
-		{
-			string result = response.Data.AccessToken;
-
-			return Result.Success(result);
-		}
-
-		return Result.Failure<string>(
-			new Error(
-				response.StatusCode.ToString(),
-				response.ErrorException?.Message!));
+		return response
+			.GetResult(RefreshAccessTokenResponseToAccessToken.ToAccessToken);
 	}
 }

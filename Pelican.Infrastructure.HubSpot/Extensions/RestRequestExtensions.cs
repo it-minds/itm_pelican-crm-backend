@@ -3,7 +3,7 @@ using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Extensions;
 
-public static class RestRequestExtensions
+internal static class RestRequestExtensions
 {
 	public static RestRequest AddDealQueryParams(this RestRequest request) => request
 			.AddQueryParameter("associations", "companies", false)

@@ -2,16 +2,16 @@
 
 namespace Pelican.Infrastructure.HubSpot.Abstractions;
 
-public class HubSpotResponse
+internal abstract class HubSpotResponse
 {
 	[JsonPropertyName("id")]
-	public string Id { get; set; } = default!;
+	public string Id { get; set; } = string.Empty;
 
 	[JsonPropertyName("createdAt")]
-	public string CreatedAt { get; set; } = default!;
+	public string CreatedAt { get; set; } = string.Empty;
 
 	[JsonPropertyName("updatedAt")]
-	public string UpdatedAt { get; set; } = default!;
+	public string UpdatedAt { get; set; } = string.Empty;
 
 	[JsonPropertyName("archived")]
 	public bool Archived { get; set; }

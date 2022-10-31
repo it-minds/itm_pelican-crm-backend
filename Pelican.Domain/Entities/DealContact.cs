@@ -29,4 +29,18 @@ public class DealContact : Entity, ITimeTracked
 	public DealContact(Guid id) : base(id) { }
 
 	public DealContact() { }
+
+	public static DealContact Create(Deal deal, Contact contact)
+	{
+		return new DealContact(Guid.NewGuid())
+		{
+			Deal = deal,
+			DealId = deal.Id,
+			HubSpotDealId = deal.HubSpotId,
+			Contact = contact,
+			ContactId = contact.Id,
+			HubSpotContactId = contact.HubSpotId,
+			IsActive = true,
+		};
+	}
 }

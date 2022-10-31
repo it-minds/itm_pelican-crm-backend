@@ -19,6 +19,27 @@ public class DeleteDealCommandHandlerTests
 		_cancellationToken = new();
 	}
 
+
+	[Fact]
+	public void DeleteDealCommandHandler_UnitOfWorkNull_ThrowException()
+	{
+		/// Act
+		Exception exceptionResult = Record.Exception(() =>
+			new DeleteDealCommandHandler(
+				null!));
+
+		/// Assert
+		Assert.NotNull(exceptionResult);
+
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			exceptionResult.GetType());
+
+		Assert.Equal(
+			"Value cannot be null. (Parameter 'unitOfWork')",
+			exceptionResult.Message);
+	}
+
 	[Fact]
 	public async void Handle_DealNotFound_ReturnsSuccess()
 	{

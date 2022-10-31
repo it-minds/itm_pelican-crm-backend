@@ -14,6 +14,6 @@ public class WebHookRequest
 	[JsonPropertyName("subscriptionType")]
 	public string? SubscriptionType { get; set; }
 
-	[JsonPropertyName("sourceId")]
-	public string? SourceId { get; set; }
+	[JsonPropertyName("portalId")]
+	public long PortalId { get; set; }
 }

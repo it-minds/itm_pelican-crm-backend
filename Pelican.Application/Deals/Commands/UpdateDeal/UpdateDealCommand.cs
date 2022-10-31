@@ -3,6 +3,6 @@
 namespace Pelican.Application.Deals.Commands.UpdateDeal;
 public sealed record UpdateDealCommand(
 	long ObjectId,
-	string UserId,
+	long SupplierHubSpotId,
 	string PropertyName,
 	string PropertyValue) : ICommand;

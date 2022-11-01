@@ -31,6 +31,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			return await GetClientFromHubSpot(
 				command.PortalId,
 				command.ObjectId,
+				command.PropertyName,
 				cancellationToken);
 		}
 
@@ -49,8 +50,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 				client.Website = command.PropertyValue;
 				break;
 			case "num_associated_contacts":
-				client.ClientContacts = UpdateClientContacts(client);
-				break;
+				return await UpdateClientContacts(client, command.PortalId, command.ObjectId, command.PropertyName, cancellationToken);
 			default:
 				break;
 		}
@@ -64,7 +64,40 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		return Result.Success();
 	}
 
-	private async Task<Result> GetClientFromHubSpot(long portalId, long objectId, CancellationToken cancellationToken)
+	private async Task<Result> GetClientFromHubSpot(long portalId, long objectId, string propertyName, CancellationToken cancellationToken)
+	{
+		Supplier? supplier = _unitOfWork
+				.SupplierRepository
+				.FindByCondition(supplier => supplier.HubSpotId == portalId)
+				.FirstOrDefault();
+
+		if (supplier is null || supplier.RefreshToken is null or "")
+		{
+			return Result.Failure<Client>(Error.NullValue);
+		}
+
+		Result<string> accessTokenResult = await _hubSpotAuthorizationService
+			.RefreshAccessTokenAsync(supplier.RefreshToken, cancellationToken);
+
+		if (accessTokenResult.IsFailure)
+		{
+			return Result.Failure<Client>(accessTokenResult.Error);
+		}
+
+		Result<Client> result = await _hubSpotClientService.GetByIdAsync(accessTokenResult.Value, objectId, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return Result.Failure<Client>(result.Error);
+		}
+		await _unitOfWork
+			.ClientRepository
+			.CreateAsync(result.Value, cancellationToken);
+		await _unitOfWork.SaveAsync(cancellationToken);
+		return Result.Success();
+	}
+
+	private async Task<Result> UpdateClientContacts(Client localClient, long portalId, long objectId, string propertyName, CancellationToken cancellationToken)
 	{
 		Supplier? supplier = _unitOfWork
 				.SupplierRepository
@@ -91,37 +124,20 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			return Result.Failure<Client>(result.Error);
 		}
 
-		await _unitOfWork
-			.ClientRepository
-			.CreateAsync(result.Value, cancellationToken);
-		await _unitOfWork.SaveAsync(cancellationToken);
-		return Result.Success();
-	}
-
-	private ICollection<ClientContact> UpdateClientContacts(Client client)
-	{
-		ICollection<ClientContact> localClientContacts = _unitOfWork
-					.ClientContactRepository
-					.FindByCondition(localClientContacts
-						=> localClientContacts.ClientId == client.Id)
-					.ToList();
-		if (client.ClientContacts is not null)
+		if (localClient is not null)
 		{
-			foreach (var item in localClientContacts)
+			foreach (var item in localClient.ClientContacts)
 			{
-				if (!client.ClientContacts.Contains(item))
+				if (!result.Value.ClientContacts.Contains(item))
 				{
 					item.IsActive = false;
 				}
 			}
-			foreach (var item in client.ClientContacts)
-			{
-				if (!localClientContacts.Contains(item))
-				{
-					localClientContacts.Add(item);
-				}
-			}
+			_unitOfWork
+				.ClientRepository
+				.Update(localClient);
+			await _unitOfWork.SaveAsync(cancellationToken);
 		}
-		return client.ClientContacts;
+		return Result.Success();
 	}
 }

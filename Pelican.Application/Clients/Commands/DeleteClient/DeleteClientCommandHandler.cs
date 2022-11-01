@@ -19,7 +19,7 @@ internal sealed class DeleteClientCommandHandler : ICommandHandler<DeleteClientC
 	{
 		Client? client = _unitOfWork
 			.ClientRepository
-			.FindByCondition(d => d.Id.ToString() == command.ObjectId.ToString())
+			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
 			.FirstOrDefault();
 
 		if (client is null)

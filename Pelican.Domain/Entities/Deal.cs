@@ -73,30 +73,66 @@ public class Deal : Entity, ITimeTracked
 		return this;
 	}
 
-	public Deal AttachAccountmManager(AccountManager? accountManager)
+
+	public Deal FillOutAssociations(AccountManager? accountManager, Client? client, List<Contact>? contacts)
 	{
-		if (accountManager is not null)
+		FillOutAccountmManager(accountManager);
+		Client = client;
+		FillOutDealContacts(contacts);
+
+		return this;
+	}
+
+	public void FillOutAccountmManager(AccountManager? accountManager)
+	{
+		if (accountManager is null)
+		{
+			return;
+		}
+
+		AccountManagerDeal? oldRelation = AccountManagerDeals
+			.FirstOrDefault(a => a.IsActive == true);
+
+		if (oldRelation is null)
 		{
 			AccountManagerDeals.Add(AccountManagerDeal.Create(this, accountManager));
+			return;
 		}
 
-		return this;
-	}
-
-	public Deal AttachClient(Client? client)
-	{
-		Client = client;
-
-		return this;
-	}
-
-	public Deal AttandContacts(List<Contact> contacts)
-	{
-		foreach (Contact contact in contacts)
+		if (oldRelation.HubSpotAccountManagerId != accountManager.HubSpotId)
 		{
-			DealContacts.Add(DealContact.Create(this, contact));
+			oldRelation.Deactivate();
+
+			AccountManagerDeals.Add(AccountManagerDeal.Create(this, accountManager));
+		}
+		else
+		{
+			oldRelation.AccountManager = accountManager;
+			oldRelation.AccountManagerId = accountManager.Id;
+		}
+	}
+
+	private void FillOutDealContacts(List<Contact>? contacts)
+	{
+		if (contacts is null)
+		{
+			DealContacts.Clear();
+			return;
 		}
 
-		return this;
+		foreach (DealContact dealContact in DealContacts)
+		{
+			Contact? matchingContact = contacts
+				.FirstOrDefault(contact => contact.HubSpotId == dealContact.HubSpotContactId);
+
+			if (matchingContact is null)
+			{
+				DealContacts.Remove(dealContact);
+				continue;
+			}
+
+			dealContact.Contact = matchingContact;
+			dealContact.ContactId = matchingContact.Id;
+		}
 	}
 }

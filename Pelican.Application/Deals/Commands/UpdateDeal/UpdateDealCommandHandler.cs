@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Abstractions.HubSpot;
+﻿using Microsoft.EntityFrameworkCore;
+using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
@@ -31,9 +32,11 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 	{
 		Deal? deal = await _unitOfWork
 			.DealRepository
-			.FirstOrDefaultAsync(
-				d => d.HubSpotId == command.ObjectId.ToString(),
-				cancellationToken);
+			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
+			.Include(d => d.AccountManagerDeals)
+			.Include(d => d.Client)
+			.Include(d => d.DealContacts)
+			.FirstOrDefaultAsync(cancellationToken);
 
 		if (deal is null)
 		{
@@ -43,13 +46,9 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 				cancellationToken);
 		}
 
-		if (command.PropertyName == "num_associated_contacts")
+		if (command.PropertyName == "hs_all_owner_ids")
 		{
-
-		}
-		else if (command.PropertyName == "hs_all_owner_ids")
-		{
-
+			await UpdateAccountManagerDeal(deal, command.PropertyValue);
 		}
 		else
 		{
@@ -65,6 +64,15 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
+	}
+
+	private async Task UpdateAccountManagerDeal(Deal deal, string acccuntManagerHubSpotId)
+	{
+		AccountManager? accountManager = await _unitOfWork.
+			AccountManagerRepository
+			.FirstOrDefaultAsync(a => a.HubSpotId == acccuntManagerHubSpotId);
+
+		deal.FillOutAccountmManager(accountManager);
 	}
 
 	private async Task<Result> GetDealFromHubSpotAsync(
@@ -90,10 +98,7 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 			return Result.Failure<Deal>(result.Error);
 		}
 
-		Deal deal = result.Value;
-		deal = await AddAccountManagerAsync(deal, cancellationToken);
-		deal = await AddClientAsync(deal, cancellationToken);
-		deal = AddContacts(deal);
+		Deal deal = await FillOutDealAssociations(result.Value, cancellationToken);
 
 		await _unitOfWork
 			.DealRepository
@@ -102,6 +107,40 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
+	}
+
+	private async Task<Deal> FillOutDealAssociations(Deal deal, CancellationToken cancellationToken)
+	{
+		AccountManager? accountManager = await _unitOfWork
+			.AccountManagerRepository
+			.FirstOrDefaultAsync(a => a.HubSpotId == deal.HubSpotOwnerId, cancellationToken);
+
+		List<Contact>? contacts = new();
+
+		foreach (DealContact dc in deal.DealContacts)
+		{
+			Contact? concact = await _unitOfWork
+				.ContactRepository
+				.FirstOrDefaultAsync(c => c.HubSpotId == dc.HubSpotContactId);
+
+			if (concact is not null)
+			{
+				contacts.Add(concact);
+			}
+		}
+
+		Client? client = null;
+
+		if (deal.Client is not null)
+		{
+			client = await _unitOfWork
+				.ClientRepository
+				.FirstOrDefaultAsync(c => c.HubSpotId == deal.Client.HubSpotId, cancellationToken);
+		}
+
+		deal.FillOutAssociations(accountManager, client, contacts);
+
+		return deal;
 	}
 
 	private async Task<Result<string>> GetAccessTokenAsync(
@@ -126,43 +165,5 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 				cancellationToken);
 
 		return accessTokenResult;
-	}
-
-	private Deal AddContacts(
-		Deal deal)
-	{
-		List<Contact>? contacts = _unitOfWork
-			.ContactRepository
-			.FindByCondition(c => deal.DealContacts.Any(contact => contact.Id == c.Id))
-			.ToList();
-
-		return deal.AttandContacts(contacts);
-	}
-
-	private async Task<Deal> AddAccountManagerAsync(
-		Deal deal,
-		CancellationToken cancellationToken = default)
-	{
-		AccountManager? accountManager = await _unitOfWork
-			.AccountManagerRepository
-			.FirstOrDefaultAsync(a => a.HubSpotId == deal.HubSpotOwnerId, cancellationToken);
-
-		return deal.AttachAccountmManager(accountManager);
-	}
-
-	private async Task<Deal> AddClientAsync(
-		Deal deal,
-		CancellationToken cancellationToken = default)
-	{
-		if (deal.Client is null)
-		{
-			return deal;
-		}
-
-		Client? client = await _unitOfWork
-			.ClientRepository
-			.FirstOrDefaultAsync(c => c.HubSpotId == deal.Client.HubSpotId, cancellationToken);
-
-		return deal.AttachClient(client);
 	}
 }

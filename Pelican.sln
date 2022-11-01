@@ -34,7 +34,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		coverlet.runsettings = coverlet.runsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Infrastructure.HubSpot.Test", "Pelican.Infrastructure.HubSpot.Test\Pelican.Infrastructure.HubSpot.Test.csproj", "{5AC14E89-2962-41EC-8383-C2EE51F2E5A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.HubSpot.Test", "Pelican.Infrastructure.HubSpot.Test\Pelican.Infrastructure.HubSpot.Test.csproj", "{5AC14E89-2962-41EC-8383-C2EE51F2E5A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure Configuration", "Azure Configuration", "{31B9FF90-4E98-4453-927C-30AA4698BEA3}"
+	ProjectSection(SolutionItems) = preProject
+		Azure Configuration\.terraform.lock.hcl = Azure Configuration\.terraform.lock.hcl
+		Azure Configuration\main.tf = Azure Configuration\main.tf
+		Azure Configuration\terraform.tfstate = Azure Configuration\terraform.tfstate
+		Azure Configuration\terraform.tfstate.backup = Azure Configuration\terraform.tfstate.backup
+		Azure Configuration\variables.tf = Azure Configuration\variables.tf
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

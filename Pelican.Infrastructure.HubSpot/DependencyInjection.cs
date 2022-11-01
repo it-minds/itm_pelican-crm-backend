@@ -3,9 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Settings;
 using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Services;
-using Pelican.Infrastructure.HubSpot.Settings;
 
 [assembly: InternalsVisibleTo("Pelican.Infrastructure.HubSpot.Test")]
 namespace Pelican.Infrastructure.HubSpot;

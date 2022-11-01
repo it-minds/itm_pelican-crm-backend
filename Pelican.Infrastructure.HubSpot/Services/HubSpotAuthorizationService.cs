@@ -2,12 +2,12 @@
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.HubSpot.Dtos;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Settings;
 using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
 using Pelican.Infrastructure.HubSpot.Extensions;
 using Pelican.Infrastructure.HubSpot.Mapping.Auth;
-using Pelican.Infrastructure.HubSpot.Settings;
 using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;

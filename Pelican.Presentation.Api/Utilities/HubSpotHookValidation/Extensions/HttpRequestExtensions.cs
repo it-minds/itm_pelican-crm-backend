@@ -1,4 +1,6 @@
-﻿namespace Pelican.Presentation.Api.Utilities.HubSpotHookValidation.Extensions;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Pelican.Presentation.Api.Utilities.HubSpotHookValidation.Extensions;
 
 internal static class HttpRequestExtensions
 {

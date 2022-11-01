@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using Moq;
+using Pelican.Domain.Settings;
 using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
 using Pelican.Infrastructure.HubSpot.Services;
-using Pelican.Infrastructure.HubSpot.Settings;
 using RestSharp;
 using Xunit;
 

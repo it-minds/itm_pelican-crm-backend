@@ -1,4 +1,5 @@
 ﻿using HotChocolate.Execution.Configuration;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Pelican.Presentation.GraphQL.AccountManagers;
 using Pelican.Presentation.GraphQL.Clients;
@@ -25,4 +26,13 @@ public static class DependencyInjection
 			.AddSorting();
 	}
 
+	public static WebApplication UseGraphQL(this WebApplication app)
+	{
+		app.UseEndpoints(endpoints =>
+		{
+			endpoints.MapGraphQL();
+		});
+
+		return app;
+	}
 }

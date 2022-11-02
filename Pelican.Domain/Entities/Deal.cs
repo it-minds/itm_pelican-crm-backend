@@ -14,7 +14,7 @@ public class Deal : Entity, ITimeTracked
 
 	public string? DealStatus { get; set; }
 
-	public DateTime EndDate { get; set; }
+	public DateTime? EndDate { get; set; }
 
 
 	public Guid? ClientId { get; set; }
@@ -53,8 +53,7 @@ public class Deal : Entity, ITimeTracked
 				}
 			case "amount":
 				{
-					bool hasDecimalValue = decimal.TryParse(propertyValue, out decimal valueDecimal);
-					if (!hasDecimalValue)
+					if (!decimal.TryParse(propertyValue, out decimal valueDecimal))
 					{
 						throw new InvalidOperationException();
 					}

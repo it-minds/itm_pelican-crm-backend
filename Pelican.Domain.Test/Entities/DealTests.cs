@@ -90,7 +90,7 @@ public class DealTests
 
 		string name = "amount";
 
-		string stringValue = "10.4";
+		string stringValue = value.ToString();
 
 		Deal inputDeal = new(Guid.NewGuid());
 

@@ -6,11 +6,11 @@ terraform {
     }
   }
   backend "azurerm" {
-        resource_group_name  = "Aarhus-Pelican-App"
-        storage_account_name = "pelicanazurestorage"
-        container_name       = "tfstate-container"
-        key                  = "terraform.tfstate"
-    }
+    resource_group_name  = "Aarhus-Pelican-App"
+    storage_account_name = "pelicanazurestorage"
+    container_name       = "tfstate-container"
+    key                  = "terraform.tfstate"
+  }
 }
 
 provider "azurerm" {
@@ -58,6 +58,15 @@ resource "azurerm_service_plan" "pelican-appserviceplan" {
 }
 resource "azurerm_linux_web_app" "pelican-linux-web-app" {
   name                = "pelican-linux-web-app"
+  resource_group_name = var.resourceGroupName
+  location            = var.azureLocation
+  service_plan_id     = azurerm_service_plan.pelican-appserviceplan.id
+
+  site_config {}
+}
+
+resource "azurerm_linux_web_app" "pelican-linux-frontend-app" {
+  name                = "pelican-linux-frontend-app"
   resource_group_name = var.resourceGroupName
   location            = var.azureLocation
   service_plan_id     = azurerm_service_plan.pelican-appserviceplan.id

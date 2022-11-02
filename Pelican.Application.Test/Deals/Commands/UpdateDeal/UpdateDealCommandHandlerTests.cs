@@ -310,10 +310,87 @@ public class UpdateDealCommandHandlerTests
 	}
 
 	[Fact]
+	public async void Handle_DealFoundAssociationUpdated_ReturnsSuccess()
+	{
+		// Arrange
+		Deal deal = new(Guid.NewGuid());
+
+		SetupRepositoryMocks(deal, null);
+
+		UpdateDealCommand command = new(1, 1, "hs_all_owner_ids", "123");
+
+		_accountManagerRepositoryMock
+			.Setup(a => a.FirstOrDefaultAsync(It.IsAny<Expression<Func<AccountManager, bool>>>(), default))
+			.ReturnsAsync(new AccountManager());
+
+		// Act
+		Result result = await _uut.Handle(_command, default);
+
+		// Assert
+		_dealRepositoryMock
+			.Verify(
+				x => x.FindByCondition(
+					It.IsAny<Expression<Func<Deal, bool>>>()),
+				Times.Once());
+
+		_dealRepositoryMock
+			.Verify(
+				x => x.Update(deal),
+				Times.Once());
+
+		_unitOfWorkMock.Verify(
+			x => x.SaveAsync(default),
+			Times.Once());
+
+		Assert.True(result.IsSuccess);
+
+		Assert.Equal(Error.None, result.Error);
+	}
+
+	[Fact]
 	public async void Handle_DealFoundPropertyUpdated_ReturnsSuccess()
 	{
 		// Arrange
 		Deal deal = new(Guid.NewGuid());
+
+		SetupRepositoryMocks(deal, null);
+
+		// Act
+		Result result = await _uut.Handle(_command, default);
+
+		// Assert
+		_dealRepositoryMock
+			.Verify(
+				x => x.FindByCondition(
+					It.IsAny<Expression<Func<Deal, bool>>>()),
+				Times.Once());
+
+		_dealRepositoryMock
+			.Verify(
+				x => x.Update(deal),
+				Times.Once());
+
+		_unitOfWorkMock.Verify(
+			x => x.SaveAsync(default),
+			Times.Once());
+
+		Assert.True(result.IsSuccess);
+
+		Assert.Equal(Error.None, result.Error);
+	}
+
+	[Fact]
+	public async void Handle_DealFoundWithAssociationsPropertyUpdated_ReturnsSuccess()
+	{
+		// Arrange
+		Deal deal = new(Guid.NewGuid())
+		{
+			Client = new Client(),
+			DealContacts = new List<DealContact>()
+			{
+				new DealContact(),
+			},
+		};
 
 		SetupRepositoryMocks(deal, null);
 

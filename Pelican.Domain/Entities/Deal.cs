@@ -47,7 +47,7 @@ public class Deal : Entity, ITimeTracked
 					{
 						throw new InvalidOperationException();
 					}
-					DateTime date = DateTimeOffset.FromUnixTimeMilliseconds(value).ToLocalTime().Date;
+					DateTime date = DateTimeOffset.FromUnixTimeMilliseconds(value).Date;
 					EndDate = date;
 					break;
 				}
@@ -58,7 +58,7 @@ public class Deal : Entity, ITimeTracked
 					{
 						throw new InvalidOperationException();
 					}
-					Revenue = valueDecimal / 10;
+					Revenue = valueDecimal;
 					break;
 				}
 			case "dealstage":

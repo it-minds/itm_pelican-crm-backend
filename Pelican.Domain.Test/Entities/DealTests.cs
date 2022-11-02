@@ -44,9 +44,9 @@ public class DealTests
 	public void UpdateProperty_EndDateUpdated_ReturnsUpdatedDeal()
 	{
 		/// Arrange
-		DateTime date = new(2022, 11, 1);
+		DateTime date = new(2022, 11, 25);
 
-		long ticks = 1667257200000; //Timestamp in milliseconds ((localtime) Tuesday, November 1, 2022)
+		long ticks = 1669382373249; //Timestamp in milliseconds Friday, November 25, 2022 1:19:33.249 PM
 
 		string name = "closedate";
 

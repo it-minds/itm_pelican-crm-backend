@@ -14,7 +14,7 @@ public class Deal : Entity, ITimeTracked
 
 	public string? DealStatus { get; set; }
 
-	public DateTime? EndDate { get; set; }
+	public DateTime EndDate { get; set; }
 
 
 	public Guid? ClientId { get; set; }
@@ -42,12 +42,13 @@ public class Deal : Entity, ITimeTracked
 		{
 			case "closedate":
 				{
-					bool hasLongValue = long.TryParse(propertyValue, out long valueLong);
+					bool hasLongValue = long.TryParse(propertyValue, out long value);
 					if (!hasLongValue)
 					{
 						throw new InvalidOperationException();
 					}
-					EndDate = new DateTime(valueLong, DateTimeKind.Utc);
+					DateTime date = DateTimeOffset.FromUnixTimeMilliseconds(value).ToLocalTime().Date;
+					EndDate = date;
 					break;
 				}
 			case "amount":
@@ -57,7 +58,7 @@ public class Deal : Entity, ITimeTracked
 					{
 						throw new InvalidOperationException();
 					}
-					Revenue = valueDecimal;
+					Revenue = valueDecimal / 10;
 					break;
 				}
 			case "dealstage":
@@ -72,7 +73,6 @@ public class Deal : Entity, ITimeTracked
 
 		return this;
 	}
-
 
 	public Deal FillOutAssociations(AccountManager? accountManager, Client? client, List<Contact>? contacts)
 	{

@@ -5,7 +5,7 @@ namespace Pelican.Domain.Test.Entities;
 public class DealTests
 {
 	[Fact]
-	public void UpdateProperty_NoUpdates_ReturnInputDeal()
+	public void UpdateProperty_NoUpdates_ThrowsNoException()
 	{
 		/// Arrange
 		string name = "";
@@ -15,12 +15,10 @@ public class DealTests
 		Deal inputDeal = new(Guid.NewGuid());
 
 		/// Act
-		Deal returnDeal = inputDeal.UpdateProperty(name, value);
+		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
 
 		/// Assert
-		Assert.Equal(
-			inputDeal,
-			returnDeal);
+		Assert.Null(exceptionResult);
 	}
 
 	[Fact]
@@ -46,24 +44,23 @@ public class DealTests
 	public void UpdateProperty_EndDateUpdated_ReturnsUpdatedDeal()
 	{
 		/// Arrange
-		long value = 1666690255141;
+		DateTime date = new(2022, 11, 1);
+
+		long ticks = 1667257200000; //Timestamp in milliseconds ((localtime) Tuesday, November 1, 2022)
 
 		string name = "closedate";
 
-		string stringValue = value.ToString();
+		string value = ticks.ToString();
 
 		Deal inputDeal = new(Guid.NewGuid());
 
-		Deal updatedDeal = inputDeal;
-		updatedDeal.EndDate = new DateTime(value, DateTimeKind.Utc);
-
 		/// Act
-		Deal returnDeal = inputDeal.UpdateProperty(name, stringValue);
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
 
 		/// Assert
 		Assert.Equal(
-			updatedDeal,
-			returnDeal);
+			date,
+			returnDeal.EndDate);
 	}
 
 	[Fact]
@@ -93,20 +90,17 @@ public class DealTests
 
 		string name = "amount";
 
-		string stringValue = value.ToString();
+		string stringValue = "10.4";
 
 		Deal inputDeal = new(Guid.NewGuid());
-
-		Deal updatedDeal = inputDeal;
-		updatedDeal.Revenue = value;
 
 		/// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, stringValue);
 
 		/// Assert
 		Assert.Equal(
-			updatedDeal,
-			returnDeal);
+			value,
+			returnDeal.Revenue);
 	}
 
 	[Fact]
@@ -119,16 +113,13 @@ public class DealTests
 
 		Deal inputDeal = new(Guid.NewGuid());
 
-		Deal updatedDeal = inputDeal;
-		updatedDeal.DealStatus = value;
-
 		/// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
 
 		/// Assert
 		Assert.Equal(
-			updatedDeal,
-			returnDeal);
+			value,
+			returnDeal.DealStatus);
 	}
 
 	[Fact]
@@ -141,15 +132,12 @@ public class DealTests
 
 		Deal inputDeal = new(Guid.NewGuid());
 
-		Deal updatedDeal = inputDeal;
-		updatedDeal.CurrencyCode = value;
-
 		/// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
 
 		/// Assert
 		Assert.Equal(
-			updatedDeal,
-			returnDeal);
+			value,
+			returnDeal.CurrencyCode);
 	}
 }

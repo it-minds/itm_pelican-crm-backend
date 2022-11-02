@@ -30,13 +30,13 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 
 	public async Task<Result> Handle(UpdateDealCommand command, CancellationToken cancellationToken = default)
 	{
-		Deal? deal = await _unitOfWork
+		Deal? deal = _unitOfWork
 			.DealRepository
 			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
 			.Include(d => d.AccountManagerDeals)
 			.Include(d => d.Client)
 			.Include(d => d.DealContacts)
-			.FirstOrDefaultAsync(cancellationToken);
+			.FirstOrDefault();
 
 		if (deal is null)
 		{

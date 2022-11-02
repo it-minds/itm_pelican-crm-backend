@@ -40,7 +40,7 @@ public class UpdateDealCommandValidatorTests
 		// Arrange
 		UpdateDealCommand command = new(
 			1,
-			0,
+			1,
 			"notEmpty",
 			"notEmpty");
 

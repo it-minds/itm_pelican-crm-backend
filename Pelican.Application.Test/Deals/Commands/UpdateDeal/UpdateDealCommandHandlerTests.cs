@@ -79,8 +79,8 @@ public class UpdateDealCommandHandlerTests
 	{
 		_dealRepositoryMock
 			.Setup(x => x
-				.FirstOrDefaultAsync(It.IsAny<Expression<Func<Deal, bool>>>(), default))
-			.ReturnsAsync(deal);
+				.FindByCondition(It.IsAny<Expression<Func<Deal, bool>>>()))
+			.Returns(deal is null ? Enumerable.Empty<Deal>().AsQueryable() : new List<Deal>() { deal }.AsQueryable());
 
 		_supplierRepositoryMock
 			.Setup(x => x
@@ -169,7 +169,7 @@ public class UpdateDealCommandHandlerTests
 		// Assert
 		_dealRepositoryMock
 			.Verify(x => x
-				.FirstOrDefaultAsync(It.IsAny<Expression<Func<Deal, bool>>>(), default),
+				.FindByCondition(It.IsAny<Expression<Func<Deal, bool>>>()),
 				Times.Once());
 
 		_supplierRepositoryMock
@@ -315,10 +315,7 @@ public class UpdateDealCommandHandlerTests
 		// Arrange
 		Deal deal = new(Guid.NewGuid());
 
-		_dealRepositoryMock
-			.Setup(x => x
-				.FirstOrDefaultAsync(It.IsAny<Expression<Func<Deal, bool>>>(), default))
-			.ReturnsAsync(deal);
+		SetupRepositoryMocks(deal, null);
 
 		// Act
 		Result result = await _uut.Handle(_command, default);
@@ -326,14 +323,14 @@ public class UpdateDealCommandHandlerTests
 		// Assert
 		_dealRepositoryMock
 			.Verify(
-				x => x.FirstOrDefaultAsync(
-					It.IsAny<Expression<Func<Deal, bool>>>(), default),
+				x => x.FindByCondition(
+					It.IsAny<Expression<Func<Deal, bool>>>()),
 				Times.Once());
 
 		_dealRepositoryMock
 			.Verify(
-				x => x.Update(deal)
-				, Times.Once());
+				x => x.Update(deal),
+				Times.Once());
 
 		_unitOfWorkMock.Verify(
 			x => x.SaveAsync(default),

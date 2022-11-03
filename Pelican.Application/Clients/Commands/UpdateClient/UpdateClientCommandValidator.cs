@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
 
 namespace Pelican.Application.Clients.Commands.UpdateClient;
-internal class UpdateClientCommandValidator
+
+internal sealed class UpdateClientCommandValidator : AbstractValidator<UpdateClientCommand>
 {
+	public UpdateClientCommandValidator()
+	{
+		RuleFor(command => command.ObjectId).NotEmpty();
+		RuleFor(command => command.PropertyName).NotEmpty();
+		RuleFor(command => command.PropertyValue).NotEmpty();
+		RuleFor(command => command.PortalId).NotEmpty();
+	}
 }

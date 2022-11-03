@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Abstractions.HubSpot;
+﻿using Microsoft.EntityFrameworkCore;
+using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
@@ -24,6 +25,8 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		Client? client = _unitOfWork
 			.ClientRepository
 			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
+			.Include(x => x.ClientContacts)
+			.ThenInclude(x => x.Contact)
 			.FirstOrDefault();
 
 		if (client is null)
@@ -123,20 +126,16 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		{
 			return Result.Failure<Client>(result.Error);
 		}
-
-		if (localClient is not null)
+		foreach (var item in localClient.ClientContacts)
 		{
-			foreach (var item in localClient.ClientContacts)
+			if (!result.Value.ClientContacts.Any(c => c.HubSpotClientId == item.HubSpotClientId && c.HubSpotContactId == item.HubSpotContactId))
 			{
-				if (!result.Value.ClientContacts.Contains(item))
-				{
-					item.IsActive = false;
-				}
+				item.IsActive = false;
+				_unitOfWork
+					.ClientRepository
+					.Update(localClient);
+				await _unitOfWork.SaveAsync(cancellationToken);
 			}
-			_unitOfWork
-				.ClientRepository
-				.Update(localClient);
-			await _unitOfWork.SaveAsync(cancellationToken);
 		}
 		return Result.Success();
 	}

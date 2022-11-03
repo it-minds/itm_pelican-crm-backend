@@ -52,4 +52,20 @@ public class AccountManagerDealTests
 
 		Assert.True(result.IsActive);
 	}
+
+	[Fact]
+	public void Deactivate()
+	{
+		// Arrange
+		AccountManagerDeal accountManagerDeal = new(Guid.NewGuid())
+		{
+			IsActive = true,
+		};
+
+		// Act
+		accountManagerDeal.Deactivate();
+
+		// Assert
+		Assert.False(accountManagerDeal.IsActive);
+	}
 }

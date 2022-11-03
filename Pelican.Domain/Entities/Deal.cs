@@ -126,12 +126,15 @@ public class Deal : Entity, ITimeTracked
 
 			if (matchingContact is null)
 			{
-				DealContacts.Remove(dealContact);
 				continue;
 			}
 
 			dealContact.Contact = matchingContact;
 			dealContact.ContactId = matchingContact.Id;
 		}
+
+		DealContacts = DealContacts
+			.Where(dc => dc.Contact is not null)
+			.ToList();
 	}
 }

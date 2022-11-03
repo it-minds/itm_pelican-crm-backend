@@ -9,7 +9,7 @@
 		}
 	},
 	"profiles": {
-		"Pelican.Presentation.Api": {
+		"Pelican.App": {
 			"commandName": "Project",
 			"dotnetRunMessages": true,
 			"launchBrowser": true,

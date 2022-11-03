@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Reflection.Metadata;
-using NetArchTest.Rules;
+﻿using NetArchTest.Rules;
 using Xunit;
-using Pelican.Application;
 
 namespace Pelican.Architecture.Test;
 
@@ -18,7 +14,7 @@ public class ProjectReferencesTests
 	private const string PRESENTATIION_GRAPHQL_NAMESPACE = "Pelican.Presentation.GraphQL";
 
 	[Fact]
-	public void Domain_NoProjectReferences()
+	public void Domain_ShouldNotDependOn()
 	{
 		// Arrange
 		var assembly = typeof(Domain.DependencyInjection).Assembly;
@@ -45,7 +41,7 @@ public class ProjectReferencesTests
 	}
 
 	[Fact]
-	public void Application_NoProjectReferences()
+	public void Application_ShouldNotDependOn()
 	{
 		// Arrange
 		var assembly = typeof(Application.DependencyInjection).Assembly;
@@ -69,12 +65,12 @@ public class ProjectReferencesTests
 		// Assert
 		Assert.True(result.IsSuccessful);
 	}
-	
+
 	[Fact]
-	public void InfrastructureHubSpot_NoProjectReferences()
+	public void InfrastructureHubSpot_ShouldNotDependOn()
 	{
 		// Arrange
-		var assembly = typeof(Application.DependencyInjection).Assembly;
+		var assembly = typeof(Infrastructure.HubSpot.DependencyInjection).Assembly;
 
 		var otherNamespaces = new[]
 		{
@@ -94,12 +90,12 @@ public class ProjectReferencesTests
 		// Assert
 		Assert.True(result.IsSuccessful);
 	}
-	
+
 	[Fact]
-	public void InfrastructurePersistence_NoProjectReferences()
+	public void InfrastructurePersistence_ShouldNotDependOn()
 	{
 		// Arrange
-		var assembly = typeof(Application.DependencyInjection).Assembly;
+		var assembly = typeof(Infrastructure.Persistence.DependencyInjection).Assembly;
 
 		var otherNamespaces = new[]
 		{
@@ -119,12 +115,12 @@ public class ProjectReferencesTests
 		// Assert
 		Assert.True(result.IsSuccessful);
 	}
-	
+
 	[Fact]
-	public void PresentationApi_NoProjectReferences()
+	public void PresentationApi_ShouldNotDependOn()
 	{
 		// Arrange
-		var assembly = typeof(Application.DependencyInjection).Assembly;
+		var assembly = typeof(Presentation.Api.DependencyInjection).Assembly;
 
 		var otherNamespaces = new[]
 		{
@@ -144,12 +140,12 @@ public class ProjectReferencesTests
 		// Assert
 		Assert.True(result.IsSuccessful);
 	}
-	
+
 	[Fact]
-	public void PresentationGraphQL_NoProjectReferences()
+	public void PresentationGraphQL_ShouldNotDependOn()
 	{
 		// Arrange
-		var assembly = typeof(Application.DependencyInjection).Assembly;
+		var assembly = typeof(Presentation.GraphQL.DependencyInjection).Assembly;
 
 		var otherNamespaces = new[]
 		{

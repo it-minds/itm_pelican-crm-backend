@@ -34,7 +34,6 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			return await GetClientFromHubSpot(
 				command.PortalId,
 				command.ObjectId,
-				command.PropertyName,
 				cancellationToken);
 		}
 
@@ -67,7 +66,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		return Result.Success();
 	}
 
-	private async Task<Result> GetClientFromHubSpot(long portalId, long objectId, string propertyName, CancellationToken cancellationToken)
+	private async Task<Result> GetClientFromHubSpot(long portalId, long objectId, CancellationToken cancellationToken)
 	{
 		Supplier? supplier = _unitOfWork
 				.SupplierRepository
@@ -128,15 +127,17 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		}
 		foreach (var item in localClient.ClientContacts)
 		{
-			if (!result.Value.ClientContacts.Any(c => c.HubSpotClientId == item.HubSpotClientId && c.HubSpotContactId == item.HubSpotContactId))
+			if (!result.Value.ClientContacts.Any(c => c.HubSpotClientId == item.HubSpotClientId && c.HubSpotContactId == item.HubSpotContactId)
+				|| result.Value.ClientContacts.Any(c => c.HubSpotClientId == null || c.HubSpotClientId == item.HubSpotContactId))
 			{
 				item.IsActive = false;
-				_unitOfWork
-					.ClientRepository
-					.Update(localClient);
-				await _unitOfWork.SaveAsync(cancellationToken);
+
 			}
 		}
+		_unitOfWork
+					.ClientRepository
+					.Update(localClient);
+		await _unitOfWork.SaveAsync(cancellationToken);
 		return Result.Success();
 	}
 }

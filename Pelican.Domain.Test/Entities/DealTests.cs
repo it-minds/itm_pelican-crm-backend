@@ -395,4 +395,38 @@ public class DealTests
 			newAccountManager,
 			inputDeal.AccountManagerDeals.First(a => a.AccountManager == newAccountManager).AccountManager);
 	}
+
+	[Fact]
+	public void FillOutAccountmManager_SameAccountMaangerDealAlreadyExists_NewAccountManagerAdded()
+	{
+		/// Arrange
+		Deal inputDeal = new(Guid.NewGuid());
+
+		AccountManager? oldAccountManager = new(Guid.NewGuid())
+		{
+			HubSpotId = "old",
+		};
+
+		inputDeal.AccountManagerDeals = new List<AccountManagerDeal>()
+		{
+			AccountManagerDeal.Create(inputDeal,oldAccountManager),
+		};
+
+		AccountManager? newAccountManager = new(Guid.NewGuid())
+		{
+			HubSpotId = "old",
+		};
+
+		/// Act
+		inputDeal.FillOutAccountmManager(newAccountManager);
+
+		/// Assert
+		Assert.Equal(
+			1,
+			inputDeal.AccountManagerDeals.Count);
+
+		Assert.Equal(
+			newAccountManager,
+			inputDeal.AccountManagerDeals.First(a => a.AccountManager == newAccountManager).AccountManager);
+	}
 }

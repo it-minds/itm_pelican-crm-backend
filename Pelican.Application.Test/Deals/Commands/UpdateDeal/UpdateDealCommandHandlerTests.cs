@@ -324,7 +324,7 @@ public class UpdateDealCommandHandlerTests
 			.ReturnsAsync(new AccountManager());
 
 		// Act
-		Result result = await _uut.Handle(_command, default);
+		Result result = await _uut.Handle(command, default);
 
 		// Assert
 		_dealRepositoryMock

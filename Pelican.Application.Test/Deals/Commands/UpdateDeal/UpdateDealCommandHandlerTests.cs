@@ -252,7 +252,7 @@ public class UpdateDealCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_DealNotFoundSuccessFetchingFromHubSpot_ReturnsSuccess()
+	public async void Handle_DealNotFoundSuccessFetchingFromHubSpot_NewDealSavedReturnsSuccess()
 	{
 		// Arrange
 		Deal? existingDeal = null;
@@ -283,15 +283,83 @@ public class UpdateDealCommandHandlerTests
 				.FirstOrDefaultAsync(It.IsAny<Expression<Func<AccountManager, bool>>>(), default))
 			.ReturnsAsync((AccountManager?)null);
 
+		// Act
+		Result result = await _uut.Handle(_command, default);
+
+		// Assert
+		_dealRepositoryMock
+			.Verify(x => x.CreateAsync(newDeal, default),
+			Times.Once());
+
+		_unitOfWorkMock
+			.Verify(x => x.SaveAsync(default));
+
+		Assert.True(result.IsSuccess);
+
+		Assert.Equal(result.Error, Error.None);
+	}
+
+	[Fact]
+	public async void Handle_DealNotFoundSuccessFetchingFromHubSpotWithAssociations_ReturnsSuccess()
+	{
+		// Arrange
+		Deal? existingDeal = null;
+
+		Supplier existingSupplier = new(Guid.NewGuid())
+		{
+			RefreshToken = TOKEN,
+		};
+		Contact existingContact = new(Guid.NewGuid())
+		{
+			HubSpotId = "contactHubSpotId",
+		};
+
+		Client existingClient = new(Guid.NewGuid())
+		{
+			HubSpotId = "clientHubSpotId",
+		};
+
+		SetupRepositoryMocks(existingDeal, existingSupplier);
+
+		Deal newDeal = new(Guid.NewGuid())
+		{
+			HubSpotOwnerId = "ownerid",
+			HubSpotId = "hubspotid",
+		};
+
+		newDeal.DealContacts = new List<DealContact>()
+		{
+			new DealContact(Guid.NewGuid())
+			{
+				Deal = newDeal,
+				DealId = newDeal.Id,
+				HubSpotDealId = newDeal.HubSpotId,
+				HubSpotContactId = existingContact.HubSpotId,
+			}
+		};
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(service => service.RefreshAccessTokenAsync(It.IsAny<string>(), default))
+			.ReturnsAsync(Result.Success(TOKEN));
+
+		_hubSpotDealServiceMock
+			.Setup(service => service.GetByIdAsync(TOKEN, _command.ObjectId, default))
+			.ReturnsAsync(Result.Success(newDeal));
+
+		_accountManagerRepositoryMock
+			.Setup(x => x
+				.FirstOrDefaultAsync(It.IsAny<Expression<Func<AccountManager, bool>>>(), default))
+			.ReturnsAsync((AccountManager?)null);
+
 		_clientRepositoryMock
 			.Setup(x => x
 				.FirstOrDefaultAsync(It.IsAny<Expression<Func<Client, bool>>>(), default))
-			.ReturnsAsync((Client?)null);
+			.ReturnsAsync(existingClient);
 
 		_contactRepositoryMock
 			.Setup(x => x
 				.FindByCondition(It.IsAny<Expression<Func<Contact, bool>>>()))
-			.Returns(new List<Contact>().AsQueryable());
+			.Returns(new List<Contact>() { existingContact }.AsQueryable());
 
 		// Act
 		Result result = await _uut.Handle(_command, default);
@@ -380,7 +448,7 @@ public class UpdateDealCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_DealFoundWithAssociationsPropertyUpdated_ReturnsSuccess()
+	public async void Handle_DealFoundWithAssociationsUpdated_ReturnsSuccess()
 	{
 		// Arrange
 		Deal deal = new(Guid.NewGuid())

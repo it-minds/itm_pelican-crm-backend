@@ -174,13 +174,37 @@ public class HubSpotControllerTests
 	}
 
 	[Fact]
-	public async void Hook_ReceivingOneDealPropertyChangeRequestResultFailure_OneCommandSendReturnsBadRequest()
+	public async void Hook_ReceivingOneDealPropertyChangeRequestWithEmptyNameAndValueResultFailure_OneCommandSendReturnsBadRequest()
 	{
 		// Arrange
 		List<WebHookRequest> requests = new()
 		{
 			new WebHookRequest { SubscriptionType = "deal.propertyChange", PortalId=0}
 		};
+
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), _cancellationToken))
+			.ReturnsAsync(Result.Failure(new Error("0", "fail")));
+
+		// Act
+		IActionResult result = await _uut.Hook(requests, _cancellationToken);
+
+		// Assert
+		_senderMock.Verify(s => s.Send(It.IsAny<ICommand>(), _cancellationToken), Times.Once());
+
+		_senderMock.Verify(s => s.Send(It.IsAny<UpdateDealCommand>(), _cancellationToken), Times.Once());
+
+		Assert.IsType<BadRequestObjectResult>(result);
+	}
+
+	[Fact]
+	public async void Hook_ReceivingOneDealPropertyChangeRequestResultFailure_OneCommandSendReturnsBadRequest()
+	{
+		// Arrange
+		List<WebHookRequest> requests = new()
+		{
+			new WebHookRequest { SubscriptionType = "deal.propertyChange", PortalId=0, PropertyName="propertyName", PropertyValue="newValue"}
+			};
 
 		_senderMock
 			.Setup(s => s.Send(It.IsAny<ICommand>(), _cancellationToken))

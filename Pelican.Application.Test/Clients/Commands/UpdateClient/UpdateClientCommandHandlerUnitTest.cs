@@ -153,14 +153,6 @@ public class UpdateClientCommandHandlerTests
 			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
 			.Returns(new List<Supplier> { supplier }.AsQueryable());
 
-		_hubSpotAuthorizationServiceMock.Setup(service => service
-			.RefreshAccessTokenAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success("token"));
-
-		_hubSpotClientServiceMock.Setup(service => service
-			.GetByIdAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Failure<Client>(Error.NullValue));
-
 		// Act
 		Result result = await _uut.Handle(command, _cancellationToken);
 
@@ -531,11 +523,6 @@ public class UpdateClientCommandHandlerTests
 				.SupplierRepository
 				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
 				.Returns(new List<Supplier> { supplier }.AsQueryable());
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service
-				.RefreshAccessTokenAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync("");
 
 		// Act
 		Result result = await _uut.Handle(command, _cancellationToken);

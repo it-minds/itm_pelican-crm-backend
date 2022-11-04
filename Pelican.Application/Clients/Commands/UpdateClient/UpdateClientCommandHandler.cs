@@ -127,8 +127,8 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		}
 		foreach (var item in localClient.ClientContacts)
 		{
-			if (!result.Value.ClientContacts.Any(c => c.HubSpotClientId == item.HubSpotClientId && c.HubSpotContactId == item.HubSpotContactId)
-				|| result.Value.ClientContacts.Any(c => c.HubSpotClientId == null || c.HubSpotContactId == null))
+			if (result.Value.ClientContacts.Any(c => c.HubSpotClientId == null || c.HubSpotContactId == null)
+				|| !result.Value.ClientContacts.Any(c => c.HubSpotClientId == item.HubSpotClientId && c.HubSpotContactId == item.HubSpotContactId))
 			{
 				item.IsActive = false;
 			}

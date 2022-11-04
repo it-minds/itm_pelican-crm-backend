@@ -18,6 +18,20 @@ public class DeleteClientCommandHandlerUnitTest
 		cancellation = new();
 	}
 	[Fact]
+	public void UnitOfWorkNull_ThrowsArgumentNullexception()
+	{
+		// Arrange
+		//Act
+		Exception exception = Record.Exception(() =>
+		new DeleteClientCommandHandler(null!));
+		//Assert
+		Assert.Equal(typeof(ArgumentNullException), exception.GetType());
+
+		Assert.Equal("Value cannot be null. (Parameter 'IUnitOfWork')", exception.Message);
+
+	}
+
+	[Fact]
 	public async void Handle_ClientNotFound_ReturnsSuccess()
 	{
 		//Arrange

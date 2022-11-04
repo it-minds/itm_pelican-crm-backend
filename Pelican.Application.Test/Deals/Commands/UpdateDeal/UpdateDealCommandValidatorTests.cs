@@ -15,7 +15,7 @@ public class UpdateDealCommandValidatorTests
 	}
 
 	[Fact]
-	public void UpdateDealCommandCommandValidator_EmptyString_ReturnsError()
+	public void UpdateDealCommandValidator_EmptyString_ReturnsError()
 	{
 		// Arrange
 		UpdateDealCommand command = new(
@@ -35,7 +35,7 @@ public class UpdateDealCommandValidatorTests
 	}
 
 	[Fact]
-	public void UpdateDealCommandCommandValidator_NoEmptyStrings_ReturnsNoError()
+	public void UpdateDealCommandValidator_NoEmptyStrings_ReturnsNoError()
 	{
 		// Arrange
 		UpdateDealCommand command = new(

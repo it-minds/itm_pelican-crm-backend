@@ -130,7 +130,48 @@ public class UpdateClientCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, "0", "0")]
-	public async void Handle_ClientNotFoundClientNotFoundOnHubSpot_ReturnsFailure(
+	public async void Handle_ClientNotFoundSupplierRefreshTokenIsEmptyStringOnHubSpot_ReturnsFailure(
+		long objectId,
+		long portalId,
+		string propertyName,
+		string propertyValue)
+	{
+		// Arrange
+		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+
+		Supplier supplier = new(Guid.NewGuid())
+		{
+			RefreshToken = "",
+		};
+
+		_unitOfWorkMock.Setup(unitOfWork => unitOfWork.ClientRepository
+				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+				.Returns(Enumerable.Empty<Client>().AsQueryable());
+
+		_unitOfWorkMock.Setup(unitOfWork => unitOfWork
+			.SupplierRepository
+			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+			.Returns(new List<Supplier> { supplier }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock.Setup(service => service
+			.RefreshAccessTokenAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success("token"));
+
+		_hubSpotClientServiceMock.Setup(service => service
+			.GetByIdAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<Client>(Error.NullValue));
+
+		// Act
+		Result result = await _uut.Handle(command, _cancellationToken);
+
+		// Assert
+		_unitOfWorkMock.Verify(x => x.SupplierRepository.FindByCondition(s => s.HubSpotId == portalId));
+		Assert.True(result.IsFailure);
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+	[Theory]
+	[InlineData(0, 0, "0", "0")]
+	public async void Handle_ClientNotFoundFoundOnHubSpot_ReturnsFailure(
 		long objectId,
 		long portalId,
 		string propertyName,
@@ -384,6 +425,7 @@ public class UpdateClientCommandHandlerTests
 
 		Assert.Equal(Error.None, result.Error);
 	}
+
 	[Theory]
 	[InlineData(0, 0, "num_associated_contacts", "0")]
 	public async void Handle_ClientFoundNumAssociatedContactNotUpdatedSupplierNotFound_ReturnsFailure(
@@ -460,6 +502,49 @@ public class UpdateClientCommandHandlerTests
 		Assert.Equal("0", result.Error.Code);
 		Assert.Equal("error", result.Error.Message);
 	}
+
+	[Theory]
+	[InlineData(0, 0, "num_associated_contacts", "0")]
+	public async void Handle_ClientFoundNumAssociatedContactNotUpdatedSupplierRefreshTokenIsEmptyStringOnHubSpot_ReturnsFailure(
+		long objectId,
+		long portalId,
+		string propertyName,
+		string propertyValue)
+	{
+		// Arrange
+		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+
+		Client Client = new(Guid.NewGuid());
+
+		Supplier supplier = new(Guid.NewGuid())
+		{
+			RefreshToken = "",
+		};
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork.ClientRepository
+			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.Returns(new List<Client> { Client }.AsQueryable());
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.SupplierRepository
+				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+				.Returns(new List<Supplier> { supplier }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(service => service
+				.RefreshAccessTokenAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync("");
+
+		// Act
+		Result result = await _uut.Handle(command, _cancellationToken);
+
+		// Assert
+		_unitOfWorkMock.Verify(x => x.SupplierRepository.FindByCondition(s => s.HubSpotId == portalId));
+		Assert.True(result.IsFailure);
+		Assert.Equal(Error.NullValue, result.Error);
+	}
 	[Theory]
 	[InlineData(0, 0, "num_associated_contacts", "0")]
 	public async void Handle_ClientFoundNumAssociatedContactNotUpdated_ReturnsFailure(
@@ -506,20 +591,9 @@ public class UpdateClientCommandHandlerTests
 		Assert.True(result.IsFailure);
 		Assert.Equal(Error.NullValue, result.Error);
 	}
-	[Theory]
-	[InlineData(0, 0, "num_associated_contacts", "0")]
-	public async void Handle_ClientFoundNumAssociatedContactUpdatedButNoClientContactsInClientExisted_ReturnsSuccess(
-		long objectId,
-		long portalId,
-		string propertyName,
-		string propertyValue)
-	{
-		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
 
-		Client Client = new(Guid.NewGuid());
-		Client ClientHubSpot = new(Guid.NewGuid());
-		ClientContact clientContactHubSpot = new(Guid.NewGuid());
-		ClientHubSpot.ClientContacts.Add(clientContactHubSpot);
+	private void MockSetupForNumAssociatedContactsCaseSuccess(Client client, Client HubSpotClient)
+	{
 		Supplier supplier = new(Guid.NewGuid())
 		{
 			RefreshToken = "token",
@@ -528,7 +602,7 @@ public class UpdateClientCommandHandlerTests
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork.ClientRepository
 			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
-			.Returns(new List<Client> { Client }.AsQueryable());
+			.Returns(new List<Client> { client }.AsQueryable());
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork
@@ -543,8 +617,24 @@ public class UpdateClientCommandHandlerTests
 
 		_hubSpotClientServiceMock.Setup(service => service
 			.GetByIdAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
-			.ReturnsAsync(ClientHubSpot);
+			.ReturnsAsync(HubSpotClient);
+	}
 
+	[Theory]
+	[InlineData(0, 0, "num_associated_contacts", "0")]
+	public async void Handle_ClientFoundNumAssociatedContactUpdatedButNoClientContactsInClientExisted_ReturnsSuccessAndEmptyClientContacts(
+		long objectId,
+		long portalId,
+		string propertyName,
+		string propertyValue)
+	{
+		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+
+		Client Client = new(Guid.NewGuid());
+		Client ClientHubSpot = new(Guid.NewGuid());
+		ClientContact clientContactHubSpot = new(Guid.NewGuid());
+		ClientHubSpot.ClientContacts.Add(clientContactHubSpot);
+		MockSetupForNumAssociatedContactsCaseSuccess(Client, ClientHubSpot);
 		// Act
 		Result result = await _uut.Handle(command, _cancellationToken);
 		//Assert
@@ -580,30 +670,7 @@ public class UpdateClientCommandHandlerTests
 			HubSpotContactId = Guid.NewGuid().ToString()
 		};
 		ClientHubSpot.ClientContacts.Add(clientContactHubSpot);
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "token",
-		};
-
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
-			.Returns(new List<Client> { client }.AsQueryable());
-
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork
-				.SupplierRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
-				.Returns(new List<Supplier> { supplier }.AsQueryable());
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service
-				.RefreshAccessTokenAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success("token"));
-
-		_hubSpotClientServiceMock.Setup(service => service
-			.GetByIdAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
-			.ReturnsAsync(ClientHubSpot);
+		MockSetupForNumAssociatedContactsCaseSuccess(client, ClientHubSpot);
 
 		// Act
 		Result result = await _uut.Handle(command, _cancellationToken);
@@ -614,69 +681,10 @@ public class UpdateClientCommandHandlerTests
 		Assert.True(result.IsSuccess);
 		Assert.Equal(Error.None, result.Error);
 	}
+
 	[Theory]
 	[InlineData(0, 0, "num_associated_contacts", "0")]
-	public async void Handle_ClientFoundNumAssociatedContactUpdatedButClientContactsHubSpotContactIdInClientNotTheSameAsInHubSpotClient_ReturnsSuccess(
-		long objectId,
-		long portalId,
-		string propertyName,
-		string propertyValue)
-	{
-		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
-
-		Client client = new(Guid.NewGuid());
-		ClientContact clientContact = new()
-		{
-			IsActive = true,
-			HubSpotClientId = Guid.NewGuid().ToString(),
-			HubSpotContactId = Guid.NewGuid().ToString()
-		};
-		client.ClientContacts.Add(clientContact);
-
-		Client ClientHubSpot = new(Guid.NewGuid());
-		ClientContact clientContactHubSpot = new()
-		{
-			HubSpotClientId = client.ClientContacts.First().HubSpotClientId,
-			HubSpotContactId = Guid.NewGuid().ToString()
-		};
-		ClientHubSpot.ClientContacts.Add(clientContactHubSpot);
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "token",
-		};
-
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
-			.Returns(new List<Client> { client }.AsQueryable());
-
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork
-				.SupplierRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
-				.Returns(new List<Supplier> { supplier }.AsQueryable());
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service
-				.RefreshAccessTokenAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success("token"));
-
-		_hubSpotClientServiceMock.Setup(service => service
-			.GetByIdAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
-			.ReturnsAsync(ClientHubSpot);
-
-		// Act
-		Result result = await _uut.Handle(command, _cancellationToken);
-		//Assert
-		Assert.False(client.ClientContacts.First().IsActive);
-		_unitOfWorkMock.Verify(x => x.ClientRepository.Update(client));
-		_unitOfWorkMock.Verify(x => x.SaveAsync(_cancellationToken), Times.Once());
-		Assert.True(result.IsSuccess);
-		Assert.Equal(Error.None, result.Error);
-	}
-	[Theory]
-	[InlineData(0, 0, "num_associated_contacts", "0")]
-	public async void Handle_ClientFoundNumAssociatedContactUpdatedButClientContactsHubSpotClientIdInClientNotTheSameAsInHubSpotClient_ReturnsSuccess(
+	public async void Handle_ClientFoundNumAssociatedContactUpdatedButClientContactsHubSpotClientIdInClientNotTheSameAsInHubSpotClient_ReturnsSuccessAndClientContactIsActiveSetFalse(
 		long objectId,
 		long portalId,
 		string propertyName,
@@ -700,31 +708,8 @@ public class UpdateClientCommandHandlerTests
 			HubSpotContactId = client.ClientContacts.First().HubSpotClientId
 		};
 		ClientHubSpot.ClientContacts.Add(clientContactHubSpot);
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "token",
-		};
 
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
-			.Returns(new List<Client> { client }.AsQueryable());
-
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork
-				.SupplierRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
-				.Returns(new List<Supplier> { supplier }.AsQueryable());
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service
-				.RefreshAccessTokenAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success("token"));
-
-		_hubSpotClientServiceMock.Setup(service => service
-			.GetByIdAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
-			.ReturnsAsync(ClientHubSpot);
-
+		MockSetupForNumAssociatedContactsCaseSuccess(client, ClientHubSpot);
 		// Act
 		Result result = await _uut.Handle(command, _cancellationToken);
 		//Assert
@@ -734,6 +719,78 @@ public class UpdateClientCommandHandlerTests
 		Assert.True(result.IsSuccess);
 		Assert.Equal(Error.None, result.Error);
 	}
+
+	[Theory]
+	[InlineData(0, 0, "num_associated_contacts", "0")]
+	public async void Handle_ClientFoundNumAssociatedContactCaseButClientContactsHubSpotContactIdInClientNull_ReturnsSuccess(
+		long objectId,
+		long portalId,
+		string propertyName,
+		string propertyValue)
+	{
+		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+
+		Client client = new(Guid.NewGuid());
+		ClientContact clientContact = new()
+		{
+			IsActive = true,
+			HubSpotClientId = Guid.NewGuid().ToString()
+		};
+		client.ClientContacts.Add(clientContact);
+
+		Client ClientHubSpot = new(Guid.NewGuid());
+		ClientContact clientContactHubSpot = new()
+		{
+			HubSpotClientId = client.ClientContacts.First().HubSpotClientId,
+			HubSpotContactId = client.ClientContacts.First().HubSpotClientId
+		};
+		ClientHubSpot.ClientContacts.Add(clientContactHubSpot);
+		MockSetupForNumAssociatedContactsCaseSuccess(client, ClientHubSpot);
+
+		Result result = await _uut.Handle(command, _cancellationToken);
+		//Assert
+		Assert.False(client.ClientContacts.First().IsActive);
+		_unitOfWorkMock.Verify(x => x.ClientRepository.Update(client));
+		_unitOfWorkMock.Verify(x => x.SaveAsync(_cancellationToken), Times.Once());
+		Assert.True(result.IsSuccess);
+		Assert.Equal(Error.None, result.Error);
+	}
+	[Theory]
+	[InlineData(0, 0, "num_associated_contacts", "0")]
+	public async void Handle_ClientFoundNumAssociatedContactCaseButClientContactsHubSpotClientIdInClientNull_ReturnsSuccess(
+		long objectId,
+		long portalId,
+		string propertyName,
+		string propertyValue)
+	{
+		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+
+		Client client = new(Guid.NewGuid());
+		ClientContact clientContact = new()
+		{
+			IsActive = true,
+			HubSpotContactId = Guid.NewGuid().ToString()
+		};
+		client.ClientContacts.Add(clientContact);
+
+		Client ClientHubSpot = new(Guid.NewGuid());
+		ClientContact clientContactHubSpot = new()
+		{
+			HubSpotClientId = client.ClientContacts.First().HubSpotClientId,
+			HubSpotContactId = client.ClientContacts.First().HubSpotClientId
+		};
+		ClientHubSpot.ClientContacts.Add(clientContactHubSpot);
+		MockSetupForNumAssociatedContactsCaseSuccess(client, ClientHubSpot);
+
+		Result result = await _uut.Handle(command, _cancellationToken);
+		//Assert
+		Assert.False(client.ClientContacts.First().IsActive);
+		_unitOfWorkMock.Verify(x => x.ClientRepository.Update(client));
+		_unitOfWorkMock.Verify(x => x.SaveAsync(_cancellationToken), Times.Once());
+		Assert.True(result.IsSuccess);
+		Assert.Equal(Error.None, result.Error);
+	}
+
 	[Theory]
 	[InlineData(0, 0, "num_associated_contacts", "0")]
 	public async void Handle_ClientFoundNumAssociatedContactUpdatedClientContactsInClientSameAsInHubSpotClient_ReturnsSuccess(
@@ -760,30 +817,8 @@ public class UpdateClientCommandHandlerTests
 			HubSpotContactId = client.ClientContacts.First().HubSpotContactId
 		};
 		ClientHubSpot.ClientContacts.Add(clientContactHubSpot);
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "token",
-		};
 
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
-			.Returns(new List<Client> { client }.AsQueryable());
-
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork
-				.SupplierRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
-				.Returns(new List<Supplier> { supplier }.AsQueryable());
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service
-				.RefreshAccessTokenAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success("token"));
-
-		_hubSpotClientServiceMock.Setup(service => service
-			.GetByIdAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
-			.ReturnsAsync(ClientHubSpot);
+		MockSetupForNumAssociatedContactsCaseSuccess(client, ClientHubSpot);
 
 		// Act
 		Result result = await _uut.Handle(command, _cancellationToken);

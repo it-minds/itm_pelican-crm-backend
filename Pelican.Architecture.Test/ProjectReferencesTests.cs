@@ -13,7 +13,7 @@ public class ProjectReferencesTests
 	private const string PRESENTATIION_GRAPHQL_NAMESPACE = "Pelican.Presentation.GraphQL";
 
 	[Fact]
-	public void Domain_ShouldNotDependOn()
+	public void Domain_ShouldNotDependOn_IsSuccessful()
 	{
 		// Arrange
 		var assembly = typeof(Domain.DependencyInjection).Assembly;
@@ -40,7 +40,7 @@ public class ProjectReferencesTests
 	}
 
 	[Fact]
-	public void Application_ShouldNotDependOn()
+	public void Application_ShouldNotDependOn_IsSuccessful()
 	{
 		// Arrange
 		var assembly = typeof(Application.DependencyInjection).Assembly;
@@ -66,7 +66,7 @@ public class ProjectReferencesTests
 	}
 
 	[Fact]
-	public void InfrastructureHubSpot_ShouldNotDependOn()
+	public void InfrastructureHubSpot_ShouldNotDependOn_IsSuccessful()
 	{
 		// Arrange
 		var assembly = typeof(Infrastructure.HubSpot.DependencyInjection).Assembly;
@@ -91,7 +91,7 @@ public class ProjectReferencesTests
 	}
 
 	[Fact]
-	public void InfrastructurePersistence_ShouldNotDependOn()
+	public void InfrastructurePersistence_ShouldNotDependOn_IsSuccessful()
 	{
 		// Arrange
 		var assembly = typeof(Infrastructure.Persistence.DependencyInjection).Assembly;
@@ -116,7 +116,7 @@ public class ProjectReferencesTests
 	}
 
 	[Fact]
-	public void PresentationApi_ShouldNotDependOn()
+	public void PresentationApi_ShouldNotDependOn_IsSuccessful()
 	{
 		// Arrange
 		var assembly = typeof(Presentation.Api.DependencyInjection).Assembly;
@@ -141,7 +141,7 @@ public class ProjectReferencesTests
 	}
 
 	[Fact]
-	public void PresentationGraphQL_ShouldNotDependOn()
+	public void PresentationGraphQL_ShouldNotDependOn_IsSuccessful()
 	{
 		// Arrange
 		var assembly = typeof(Presentation.GraphQL.DependencyInjection).Assembly;

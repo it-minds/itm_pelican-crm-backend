@@ -85,7 +85,7 @@ public class UpdateClientCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, "0", "0")]
-	public async void Handle_ClientNotFoundFailsRefreshingToken_ReturnsFailure(
+	public async void Handle_ClientNotFoundFailsRefreshingToken_ReturnsFailureAndErrorCode0AndErrorMessageError(
 		long objectId,
 		long portalId,
 		string propertyName,
@@ -192,7 +192,7 @@ public class UpdateClientCommandHandlerTests
 	}
 	[Theory]
 	[InlineData(0, 0, "0", "0")]
-	public async void Handle_ClientNotFoundFoundOnHubSpot_ReturnsFailure(
+	public async void Handle_ClientNotFoundFailureFetchingFromClientHubSpot_ReturnsFailure(
 		long objectId,
 		long portalId,
 		string propertyName,
@@ -236,7 +236,7 @@ public class UpdateClientCommandHandlerTests
 	}
 	[Theory]
 	[InlineData(0, 0, "0", "0")]
-	public async void Handle_ClientNotFoundSuccessFetchingFromHubSpot_ReturnsSuccess(
+	public async void Handle_ClientNotFoundSuccessFetchingClientFromHubSpot_ReturnsSuccess(
 		long objectId,
 		long portalId,
 		string propertyName,
@@ -279,7 +279,7 @@ public class UpdateClientCommandHandlerTests
 	}
 	[Theory]
 	[InlineData(0, 0, "0", "0")]
-	public async void Handle_ClientPropertyNameDoesNotMatchAnyCase_ReturnsSuccess(
+	public async void Handle_ClientFoundButPropertyNameDoesNotMatchAnyCase_ReturnsSuccess(
 		long objectId,
 		long portalId,
 		string propertyName,
@@ -311,7 +311,7 @@ public class UpdateClientCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, "name", "TestCompanyName")]
-	public async void Handle_ClientFoundNameUpdated_ReturnsSuccess(
+	public async void Handle_ClientFoundNameUpdated_ReturnsSuccessAndClientWasUpdated(
 		long objectId,
 		long portalId,
 		string propertyName,
@@ -345,7 +345,7 @@ public class UpdateClientCommandHandlerTests
 	}
 	[Theory]
 	[InlineData(0, 0, "industry", "TestIndustry")]
-	public async void Handle_ClientFoundIndustryUpdated_ReturnsSuccess(
+	public async void Handle_ClientFoundIndustryUpdated_ReturnsSuccessAndClientWasUpdated(
 		long objectId,
 		long portalId,
 		string propertyName,
@@ -380,7 +380,7 @@ public class UpdateClientCommandHandlerTests
 	}
 	[Theory]
 	[InlineData(0, 0, "website", "www.testUrl.com")]
-	public async void Handle_ClientFoundWebsiteUpdated_ReturnsSuccess(
+	public async void Handle_ClientFoundWebsiteUpdated_ReturnsSuccessAndClientWasUpdated(
 		long objectId,
 		long portalId,
 		string propertyName,
@@ -414,7 +414,7 @@ public class UpdateClientCommandHandlerTests
 	}
 	[Theory]
 	[InlineData(0, 0, "city", "TestCity")]
-	public async void Handle_ClientFoundCityUpdated_ReturnsSuccess(
+	public async void Handle_ClientFoundCityUpdated_ReturnsSuccessAndClientWasUpdated(
 		long objectId,
 		long portalId,
 		string propertyName,
@@ -479,51 +479,6 @@ public class UpdateClientCommandHandlerTests
 
 		Assert.Equal(Error.NullValue, result.Error);
 	}
-	[Theory]
-	[InlineData(0, 0, "num_associated_contacts", "0")]
-	public async void Handle_ClientFoundNumAssociatedContactNotUpdatedAccessTokenNotRefreshed_ReturnsFailure(
-		long objectId,
-		long portalId,
-		string propertyName,
-		string propertyValue)
-	{
-		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
-
-		Client Client = new(Guid.NewGuid());
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "token",
-		};
-
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
-			.Returns(new List<Client> { Client }.AsQueryable());
-
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork
-				.SupplierRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
-				.Returns(new List<Supplier> { supplier }.AsQueryable());
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service
-				.RefreshAccessTokenAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Failure<string>(new Error("0", "error")));
-
-		// Act
-		Result result = await _uut.Handle(command, _cancellationToken);
-		//Assert
-		_hubSpotAuthorizationServiceMock.Verify(service => service
-			.RefreshAccessTokenAsync(It.IsAny<string>(), _cancellationToken), Times.Once());
-
-		Assert.True(result.IsFailure);
-
-		Assert.Equal("0", result.Error.Code);
-		Assert.Equal("error", result.Error.Message);
-	}
-
 	[Theory]
 	[InlineData(0, 0, "num_associated_contacts", "0")]
 	public async void Handle_ClientFoundNumAssociatedContactNotUpdatedSupplierRefreshTokenIsEmptyStringOnHubSpot_ReturnsFailure(
@@ -597,7 +552,51 @@ public class UpdateClientCommandHandlerTests
 	}
 	[Theory]
 	[InlineData(0, 0, "num_associated_contacts", "0")]
-	public async void Handle_ClientFoundNumAssociatedContactNotUpdated_ReturnsFailure(
+	public async void Handle_ClientFoundNumAssociatedContactNotUpdatedAccessTokenNotRefreshed_ReturnsFailure(
+		long objectId,
+		long portalId,
+		string propertyName,
+		string propertyValue)
+	{
+		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+
+		Client Client = new(Guid.NewGuid());
+
+		Supplier supplier = new(Guid.NewGuid())
+		{
+			RefreshToken = "token",
+		};
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork.ClientRepository
+			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.Returns(new List<Client> { Client }.AsQueryable());
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.SupplierRepository
+				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+				.Returns(new List<Supplier> { supplier }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(service => service
+				.RefreshAccessTokenAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(Result.Failure<string>(new Error("0", "error")));
+
+		// Act
+		Result result = await _uut.Handle(command, _cancellationToken);
+		//Assert
+		_hubSpotAuthorizationServiceMock.Verify(service => service
+			.RefreshAccessTokenAsync(It.IsAny<string>(), _cancellationToken), Times.Once());
+
+		Assert.True(result.IsFailure);
+
+		Assert.Equal("0", result.Error.Code);
+		Assert.Equal("error", result.Error.Message);
+	}
+	[Theory]
+	[InlineData(0, 0, "num_associated_contacts", "0")]
+	public async void Handle_ClientFoundNumAssociatedContactNotUpdatedClientOnHubSpotNotFound_ReturnsFailure(
 		long objectId,
 		long portalId,
 		string propertyName,

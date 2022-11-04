@@ -6,7 +6,6 @@ namespace Pelican.Architecture.Test;
 public class ProjectReferencesTests
 {
 	private const string APP_NAMESPACE = "Pelican.App";
-	private const string DOMAIN_NAMESPACE = "Pelican.Domain";
 	private const string APPLICATION_NAMESPACE = "Pelican.Application";
 	private const string INFRASTRUCTURE_HUBSPOT_NAMESPACE = "Pelican.Infrastructure.HubSpot";
 	private const string INFRASTRUCTURE_PERSISTENCE_NAMESPACE = "Pelican.Infrastructure.Persistence";
@@ -33,7 +32,7 @@ public class ProjectReferencesTests
 		var result = Types
 			.InAssembly(assembly)
 			.ShouldNot()
-			.HaveDependencyOnAll(otherNamespaces)
+			.HaveDependencyOnAny(otherNamespaces)
 			.GetResult();
 
 		// Assert
@@ -59,7 +58,7 @@ public class ProjectReferencesTests
 		var result = Types
 			.InAssembly(assembly)
 			.ShouldNot()
-			.HaveDependencyOnAll(otherNamespaces)
+			.HaveDependencyOnAny(otherNamespaces)
 			.GetResult();
 
 		// Assert
@@ -84,7 +83,7 @@ public class ProjectReferencesTests
 		var result = Types
 			.InAssembly(assembly)
 			.ShouldNot()
-			.HaveDependencyOnAll(otherNamespaces)
+			.HaveDependencyOnAny(otherNamespaces)
 			.GetResult();
 
 		// Assert
@@ -109,7 +108,7 @@ public class ProjectReferencesTests
 		var result = Types
 			.InAssembly(assembly)
 			.ShouldNot()
-			.HaveDependencyOnAll(otherNamespaces)
+			.HaveDependencyOnAny(otherNamespaces)
 			.GetResult();
 
 		// Assert
@@ -134,7 +133,7 @@ public class ProjectReferencesTests
 		var result = Types
 			.InAssembly(assembly)
 			.ShouldNot()
-			.HaveDependencyOnAll(otherNamespaces)
+			.HaveDependencyOnAny(otherNamespaces)
 			.GetResult();
 
 		// Assert
@@ -159,7 +158,7 @@ public class ProjectReferencesTests
 		var result = Types
 			.InAssembly(assembly)
 			.ShouldNot()
-			.HaveDependencyOnAll(otherNamespaces)
+			.HaveDependencyOnAny(otherNamespaces)
 			.GetResult();
 
 		// Assert

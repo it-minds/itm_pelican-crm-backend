@@ -32,7 +32,7 @@ public class UpdateClientCommandValidatorUnitTest
 	}
 
 	[Fact]
-	public void UpdateClientCommandCommandValidator_NoEmptyOrDefaultInput_ReturnsNoError()
+	public void UpdateClientCommandCommandValidator_NoEmptyNorDefaultInput_ReturnsNoError()
 	{
 		// Arrange
 		UpdateClientCommand command = new(

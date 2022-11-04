@@ -1,4 +1,5 @@
 ﻿using Pelican.Application;
+using Pelican.Domain;
 using Pelican.Infrastructure.HubSpot;
 using Pelican.Infrastructure.Persistence;
 using Pelican.Presentation.Api;
@@ -6,7 +7,8 @@ using Pelican.Presentation.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHubSpot(builder.Configuration);
+builder.Services.AddDomain(builder.Configuration);
+builder.Services.AddHubSpot();
 builder.Services.AddPersistince(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddApi();

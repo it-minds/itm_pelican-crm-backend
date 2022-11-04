@@ -73,7 +73,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 				.FindByCondition(supplier => supplier.HubSpotId == portalId)
 				.FirstOrDefault();
 
-		if (supplier is null || supplier.RefreshToken is null or "")
+		if (supplier is null || supplier.RefreshToken is null || supplier.RefreshToken == "")
 		{
 			return Result.Failure<Client>(Error.NullValue);
 		}
@@ -106,7 +106,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 				.FindByCondition(supplier => supplier.HubSpotId == portalId)
 				.FirstOrDefault();
 
-		if (supplier is null || supplier.RefreshToken is null or "")
+		if (supplier is null || supplier.RefreshToken is null || supplier.RefreshToken == "")
 		{
 			return Result.Failure<Client>(Error.NullValue);
 		}

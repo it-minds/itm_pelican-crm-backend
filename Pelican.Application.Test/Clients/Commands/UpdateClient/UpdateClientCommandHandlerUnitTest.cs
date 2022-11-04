@@ -163,6 +163,35 @@ public class UpdateClientCommandHandlerTests
 	}
 	[Theory]
 	[InlineData(0, 0, "0", "0")]
+	public async void Handle_ClientNotFoundSupplierRefreshTokenIsNullOnHubSpot_ReturnsFailure(
+		long objectId,
+		long portalId,
+		string propertyName,
+		string propertyValue)
+	{
+		// Arrange
+		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+
+		Supplier supplier = new(Guid.NewGuid());
+		_unitOfWorkMock.Setup(unitOfWork => unitOfWork.ClientRepository
+				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+				.Returns(Enumerable.Empty<Client>().AsQueryable());
+
+		_unitOfWorkMock.Setup(unitOfWork => unitOfWork
+			.SupplierRepository
+			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+			.Returns(new List<Supplier> { supplier }.AsQueryable());
+
+		// Act
+		Result result = await _uut.Handle(command, _cancellationToken);
+
+		// Assert
+		_unitOfWorkMock.Verify(x => x.SupplierRepository.FindByCondition(s => s.HubSpotId == portalId));
+		Assert.True(result.IsFailure);
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+	[Theory]
+	[InlineData(0, 0, "0", "0")]
 	public async void Handle_ClientNotFoundFoundOnHubSpot_ReturnsFailure(
 		long objectId,
 		long portalId,
@@ -512,6 +541,40 @@ public class UpdateClientCommandHandlerTests
 		{
 			RefreshToken = "",
 		};
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork.ClientRepository
+			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.Returns(new List<Client> { Client }.AsQueryable());
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.SupplierRepository
+				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+				.Returns(new List<Supplier> { supplier }.AsQueryable());
+
+		// Act
+		Result result = await _uut.Handle(command, _cancellationToken);
+
+		// Assert
+		_unitOfWorkMock.Verify(x => x.SupplierRepository.FindByCondition(s => s.HubSpotId == portalId));
+		Assert.True(result.IsFailure);
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+	[Theory]
+	[InlineData(0, 0, "num_associated_contacts", "0")]
+	public async void Handle_ClientFoundNumAssociatedContactNotUpdatedSupplierRefreshTokenNullOnHubSpot_ReturnsFailure(
+		long objectId,
+		long portalId,
+		string propertyName,
+		string propertyValue)
+	{
+		// Arrange
+		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+
+		Client Client = new(Guid.NewGuid());
+
+		Supplier supplier = new(Guid.NewGuid());
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork.ClientRepository

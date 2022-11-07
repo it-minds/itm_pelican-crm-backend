@@ -65,8 +65,8 @@ resource "azurerm_linux_web_app" "pelican-linux-web-app" {
   site_config {}
 }
 
-resource "azurerm_static_site" "pelican-frontend-site" {
-  name                = "pelican-frontend-site"
+resource "azurerm_static_site" "itm-pelican-crm-frontend" {
+  name                = "itm-pelican-crm-frontend"
   resource_group_name = var.resourceGroupName
   location            = "West Europe"
 }

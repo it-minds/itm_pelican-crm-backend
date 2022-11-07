@@ -8,14 +8,14 @@ using Xunit;
 namespace Pelican.Application.Test.Clients.Commands.DeleteClient;
 public class DeleteClientCommandHandlerUnitTest
 {
-	private DeleteClientCommandHandler uut;
-	private Mock<IUnitOfWork> fakeUnitOfWork;
-	private CancellationToken cancellation;
+	private readonly DeleteClientCommandHandler _uut;
+	private readonly Mock<IUnitOfWork> _fakeUnitOfWork;
+	private readonly CancellationToken _cancellation;
 	public DeleteClientCommandHandlerUnitTest()
 	{
-		fakeUnitOfWork = new();
-		uut = new(fakeUnitOfWork.Object);
-		cancellation = new();
+		_fakeUnitOfWork = new();
+		_uut = new(_fakeUnitOfWork.Object);
+		_cancellation = new();
 	}
 	[Fact]
 	public void UnitOfWorkNull_ThrowsArgumentNullexception()
@@ -36,22 +36,22 @@ public class DeleteClientCommandHandlerUnitTest
 	{
 		//Arrange
 		DeleteClientCommand deleteClientCommand = new(1);
-		fakeUnitOfWork.Setup(x => x
+		_fakeUnitOfWork.Setup(x => x
 			.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
 			.Returns(Enumerable.Empty<Client>().AsQueryable());
 		//Act
-		var result = await uut.Handle(deleteClientCommand, cancellation);
+		var result = await _uut.Handle(deleteClientCommand, _cancellation);
 		//Assert
-		fakeUnitOfWork.Verify(x => x.SaveAsync(cancellation), Times.Never());
+		_fakeUnitOfWork.Verify(x => x.SaveAsync(_cancellation), Times.Never());
 
-		fakeUnitOfWork
+		_fakeUnitOfWork
 			.Verify(
 				unitOfWork => unitOfWork.ClientRepository
 					.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()),
 			Times.Once());
 
-		fakeUnitOfWork
+		_fakeUnitOfWork
 			.Verify(
 				unitOfWork => unitOfWork.ClientRepository.Delete(It.IsAny<Client>()),
 				Times.Never());
@@ -66,7 +66,7 @@ public class DeleteClientCommandHandlerUnitTest
 		//Arrange
 		DeleteClientCommand deleteClientCommand = new(1);
 		Client client = new();
-		fakeUnitOfWork.Setup(x => x
+		_fakeUnitOfWork.Setup(x => x
 			.ClientRepository
 			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client>
@@ -75,18 +75,18 @@ public class DeleteClientCommandHandlerUnitTest
 			}.AsQueryable());
 
 		//Act
-		var result = await uut.Handle(deleteClientCommand, cancellation);
+		var result = await _uut.Handle(deleteClientCommand, _cancellation);
 
 		//Assert
-		fakeUnitOfWork.Verify(x => x.SaveAsync(cancellation), Times.Once());
+		_fakeUnitOfWork.Verify(x => x.SaveAsync(_cancellation), Times.Once());
 
-		fakeUnitOfWork
+		_fakeUnitOfWork
 			.Verify(
 				unitOfWork => unitOfWork.ClientRepository
 					.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()),
 			Times.Once());
 
-		fakeUnitOfWork
+		_fakeUnitOfWork
 			.Verify(
 				unitOfWork => unitOfWork.ClientRepository.Delete(It.IsAny<Client>()),
 				Times.Once());

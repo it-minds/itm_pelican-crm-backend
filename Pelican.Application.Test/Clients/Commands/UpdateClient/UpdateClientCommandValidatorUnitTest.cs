@@ -5,13 +5,13 @@ using Xunit;
 namespace Pelican.Application.Test.Clients.Commands.UpdateClient;
 public class UpdateClientCommandValidatorUnitTest
 {
-	private UpdateClientCommandValidator _uut;
+	private readonly UpdateClientCommandValidator _uut;
 	public UpdateClientCommandValidatorUnitTest()
 	{
 		_uut = new();
 	}
 	[Fact]
-	public void UpdateClientCommandCommandValidator_EmptyOrDefaultInputs_ReturnsError()
+	public void UpdateClientCommandValidator_EmptyOrDefaultInputs_ReturnsError()
 	{
 		// Arrange
 		UpdateClientCommand command = new(
@@ -32,7 +32,7 @@ public class UpdateClientCommandValidatorUnitTest
 	}
 
 	[Fact]
-	public void UpdateClientCommandCommandValidator_NoEmptyNorDefaultInput_ReturnsNoError()
+	public void UpdateClientCommandValidator_NoEmptyNorDefaultInput_ReturnsNoError()
 	{
 		// Arrange
 		UpdateClientCommand command = new(

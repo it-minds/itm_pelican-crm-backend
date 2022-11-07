@@ -10,7 +10,7 @@ internal sealed class DeleteClientCommandHandler : ICommandHandler<DeleteClientC
 
 	public DeleteClientCommandHandler(IUnitOfWork unitOfWork)
 	{
-		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(IUnitOfWork));
+		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 	}
 
 	public async Task<Result> Handle(

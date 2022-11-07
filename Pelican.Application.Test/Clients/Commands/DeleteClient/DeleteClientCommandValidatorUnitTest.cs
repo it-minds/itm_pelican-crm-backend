@@ -12,7 +12,7 @@ public class DeleteClientCommandValidatorUnitTest
 	}
 
 	[Fact]
-	public void DeleteClientCommandCommandValidator_EmptyId_ReturnsError()
+	public void DeleteClientCommandValidator_EmptyId_ReturnsError()
 	{
 		// Arrange
 		DeleteClientCommand command = new(0);
@@ -24,24 +24,13 @@ public class DeleteClientCommandValidatorUnitTest
 		result.ShouldHaveValidationErrorFor(command => command.ObjectId);
 	}
 
-	[Fact]
-	public void DeleteClientCommandCommandValidator_NoEmptyId_ReturnsNoError()
+	[Theory]
+	[InlineData(long.MaxValue)]
+	[InlineData(long.MinValue)]
+	public void DeleteClientCommandValidator_NoEmptyId_ReturnsNoError(long objecId)
 	{
 		// Arrange
-		DeleteClientCommand command = new(long.MaxValue);
-
-		// Act
-		TestValidationResult<DeleteClientCommand> result = _uut.TestValidate(command);
-
-		// Assert
-		result.ShouldNotHaveValidationErrorFor(command => command.ObjectId);
-	}
-
-	[Fact]
-	public void DeleteClientCommandCommandValidator_NegativeIdValue_ReturnsNoError()
-	{
-		// Arrange
-		DeleteClientCommand command = new(long.MinValue);
+		DeleteClientCommand command = new(objecId);
 
 		// Act
 		TestValidationResult<DeleteClientCommand> result = _uut.TestValidate(command);

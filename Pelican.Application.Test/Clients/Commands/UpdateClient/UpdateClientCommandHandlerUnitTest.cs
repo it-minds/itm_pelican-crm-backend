@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System.Linq.Expressions;
+using Moq;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Clients.Commands.UpdateClient;
 using Pelican.Application.Common.Interfaces.Repositories;
@@ -58,12 +59,12 @@ public class UpdateClientCommandHandlerTests
 
 		_unitOfWorkMock.Setup(u => u
 				.ClientRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+					.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 				.Returns(Enumerable.Empty<Client>().AsQueryable());
 
 		_unitOfWorkMock.Setup(u => u
 				.SupplierRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+					.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 				.Returns(Enumerable.Empty<Supplier>().AsQueryable());
 
 		// Act
@@ -71,12 +72,12 @@ public class UpdateClientCommandHandlerTests
 
 		// Assert
 		_unitOfWorkMock.Verify(unitOfWork => unitOfWork.ClientRepository
-				.FindByCondition(Client => Client.HubSpotId == command.ObjectId.ToString()),
+					.FindByCondition(Client => Client.HubSpotId == command.ObjectId.ToString()),
 				Times.Once());
 
 		_unitOfWorkMock.Verify(unitOfWork => unitOfWork.SupplierRepository
-			.FindByCondition(supplier => supplier.HubSpotId == portalId)
-			, Times.Once());
+				.FindByCondition(supplier => supplier.HubSpotId == portalId),
+			Times.Once());
 
 		Assert.True(result.IsFailure);
 
@@ -101,13 +102,13 @@ public class UpdateClientCommandHandlerTests
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+				.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(Enumerable.Empty<Client>().AsQueryable());
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork
 				.SupplierRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+					.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 				.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		_hubSpotAuthorizationServiceMock
@@ -145,12 +146,12 @@ public class UpdateClientCommandHandlerTests
 		};
 
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork.ClientRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
-				.Returns(Enumerable.Empty<Client>().AsQueryable());
+			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
+			.Returns(Enumerable.Empty<Client>().AsQueryable());
 
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork
 			.SupplierRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 			.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		// Act
@@ -174,12 +175,12 @@ public class UpdateClientCommandHandlerTests
 
 		Supplier supplier = new(Guid.NewGuid());
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork.ClientRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+				.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 				.Returns(Enumerable.Empty<Client>().AsQueryable());
 
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork
 			.SupplierRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 			.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		// Act
@@ -207,12 +208,12 @@ public class UpdateClientCommandHandlerTests
 		};
 
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork.ClientRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+				.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 				.Returns(Enumerable.Empty<Client>().AsQueryable());
 
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork
 			.SupplierRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 			.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		_hubSpotAuthorizationServiceMock.Setup(service => service
@@ -253,12 +254,12 @@ public class UpdateClientCommandHandlerTests
 		Client Client = new(Guid.NewGuid());
 
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork.ClientRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+				.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 				.Returns(Enumerable.Empty<Client>().AsQueryable());
 
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork
 			.SupplierRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 			.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		_hubSpotAuthorizationServiceMock.Setup(service => service
@@ -291,7 +292,7 @@ public class UpdateClientCommandHandlerTests
 		Client Client = new(Guid.NewGuid());
 
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client> { Client }.AsQueryable());
 
 		// Act
@@ -326,7 +327,7 @@ public class UpdateClientCommandHandlerTests
 		updatedClient.Name = command.PropertyValue;
 
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client> { Client }.AsQueryable());
 
 		// Act
@@ -360,7 +361,7 @@ public class UpdateClientCommandHandlerTests
 		updatedClient.Segment = command.PropertyValue;
 
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork.ClientRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+				.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 				.Returns(new List<Client> { Client }.AsQueryable());
 
 		// Act
@@ -395,7 +396,7 @@ public class UpdateClientCommandHandlerTests
 		updatedClient.Segment = command.PropertyValue;
 
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client> { Client }.AsQueryable());
 
 		// Act
@@ -429,7 +430,7 @@ public class UpdateClientCommandHandlerTests
 		updatedClient.OfficeLocation = command.PropertyValue;
 
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client> { Client }.AsQueryable());
 
 		// Act
@@ -460,12 +461,12 @@ public class UpdateClientCommandHandlerTests
 		Client Client = new(Guid.NewGuid());
 
 		_unitOfWorkMock.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client> { Client }.AsQueryable());
 
 		_unitOfWorkMock.Setup(u => u
 				.SupplierRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+				.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 				.Returns(Enumerable.Empty<Supplier>().AsQueryable());
 
 		// Act
@@ -499,13 +500,13 @@ public class UpdateClientCommandHandlerTests
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client> { Client }.AsQueryable());
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork
 				.SupplierRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+				.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 				.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		// Act
@@ -533,13 +534,13 @@ public class UpdateClientCommandHandlerTests
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client> { Client }.AsQueryable());
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork
 				.SupplierRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+				.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 				.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		// Act
@@ -569,13 +570,13 @@ public class UpdateClientCommandHandlerTests
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client> { Client }.AsQueryable());
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork
 				.SupplierRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+				.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 				.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		_hubSpotAuthorizationServiceMock
@@ -612,13 +613,13 @@ public class UpdateClientCommandHandlerTests
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client> { Client }.AsQueryable());
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork
 				.SupplierRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+				.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 				.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		_hubSpotAuthorizationServiceMock
@@ -650,13 +651,13 @@ public class UpdateClientCommandHandlerTests
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client> { client }.AsQueryable());
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork
 				.SupplierRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Supplier, bool>>>()))
+				.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 				.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		_hubSpotAuthorizationServiceMock

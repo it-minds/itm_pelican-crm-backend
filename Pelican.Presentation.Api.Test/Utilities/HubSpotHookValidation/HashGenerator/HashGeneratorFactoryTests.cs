@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Moq;
-using Pelican.Infrastructure.HubSpot.Settings;
+using Pelican.Domain.Settings;
 using Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashGenerator;
 using Xunit;
 

@@ -45,6 +45,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure Configuration", "Azur
 		Azure Configuration\variables.tf = Azure Configuration\variables.tf
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.App", "Pelican.App\Pelican.App.csproj", "{C0EEA71F-ED07-4036-B88B-D803B1111760}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Architecture.Test", "Pelican.Architecture.Test\Pelican.Architecture.Test.csproj", "{AEBC9E99-6912-45B1-9E83-706CF546A110}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +99,14 @@ Global
 		{5AC14E89-2962-41EC-8383-C2EE51F2E5A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AC14E89-2962-41EC-8383-C2EE51F2E5A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AC14E89-2962-41EC-8383-C2EE51F2E5A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0EEA71F-ED07-4036-B88B-D803B1111760}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0EEA71F-ED07-4036-B88B-D803B1111760}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0EEA71F-ED07-4036-B88B-D803B1111760}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0EEA71F-ED07-4036-B88B-D803B1111760}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEBC9E99-6912-45B1-9E83-706CF546A110}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEBC9E99-6912-45B1-9E83-706CF546A110}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEBC9E99-6912-45B1-9E83-706CF546A110}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEBC9E99-6912-45B1-9E83-706CF546A110}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,6 +123,8 @@ Global
 		{F17C8065-806F-4391-A1E6-B282B80D494D} = {0200A7F9-E192-48B9-A8B8-96118BB18098}
 		{2B48F1CD-B88E-4111-8341-01309A874253} = {0200A7F9-E192-48B9-A8B8-96118BB18098}
 		{5AC14E89-2962-41EC-8383-C2EE51F2E5A1} = {0200A7F9-E192-48B9-A8B8-96118BB18098}
+		{C0EEA71F-ED07-4036-B88B-D803B1111760} = {5D515F34-F1A1-48A8-B377-A8451F3765B5}
+		{AEBC9E99-6912-45B1-9E83-706CF546A110} = {0200A7F9-E192-48B9-A8B8-96118BB18098}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C8DAB442-8E34-49C4-9368-B34D51D4E924}

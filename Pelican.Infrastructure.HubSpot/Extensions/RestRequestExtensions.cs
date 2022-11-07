@@ -1,4 +1,4 @@
-﻿using Pelican.Infrastructure.HubSpot.Settings;
+﻿using Pelican.Domain.Settings;
 using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Extensions;

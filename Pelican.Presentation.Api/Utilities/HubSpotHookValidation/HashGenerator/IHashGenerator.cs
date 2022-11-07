@@ -1,4 +1,6 @@
-﻿namespace Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashGenerator;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashGenerator;
 
 internal interface IHashGenerator
 {

@@ -1,7 +1,9 @@
 ﻿using HotChocolate.Execution.Configuration;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Pelican.Application;
 using Pelican.Application.Common.Interfaces;
 using Pelican.Application.Common.Interfaces.DataLoaders;
@@ -34,5 +36,15 @@ public static class DependencyInjection
 			.AddDataLoader<IGenericDataLoader<Location>, GenericDataLoader<Location>>()
 			.AddDataLoader<IGenericDataLoader<Supplier>, GenericDataLoader<Supplier>>();
 		return builder;
+	}
+
+	public static WebApplication UsePersistence(this WebApplication app)
+	{
+		if (app.Environment.IsDevelopment())
+		{
+			app.Services.GetRequiredService<DevelopmentSeeder>().SeedEntireDb(10);
+		}
+
+		return app;
 	}
 }

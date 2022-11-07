@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.AspNetCore.Http;
 using Pelican.Presentation.Api.Utilities.HubSpotHookValidation.Extensions;
 using Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashComputer;
 

@@ -1,4 +1,4 @@
-﻿namespace Pelican.Infrastructure.HubSpot.Settings;
+﻿namespace Pelican.Domain.Settings;
 
 public sealed class HubSpotAppSettings
 {

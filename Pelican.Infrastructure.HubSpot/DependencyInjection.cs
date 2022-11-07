@@ -1,11 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Services;
-using Pelican.Infrastructure.HubSpot.Settings;
 
 [assembly: InternalsVisibleTo("Pelican.Infrastructure.HubSpot.Test")]
 namespace Pelican.Infrastructure.HubSpot;
@@ -13,18 +11,8 @@ namespace Pelican.Infrastructure.HubSpot;
 public static class DependencyInjection
 {
 	public static IServiceCollection AddHubSpot(
-		this IServiceCollection services,
-		IConfiguration configuration)
+		this IServiceCollection services)
 	{
-		IConfigurationSection hubSpotSettings = configuration.GetSection(nameof(HubSpotSettings));
-
-		if (hubSpotSettings is null)
-		{
-			throw new ArgumentNullException(nameof(hubSpotSettings));
-		}
-
-		services.Configure<HubSpotSettings>(hubSpotSettings);
-
 		services.AddSingleton<IHubSpotClient, RestSharpHubSpotClient>();
 
 		services.AddSingleton<IHubSpotObjectService<AccountManager>, HubSpotAccountManagerService>();

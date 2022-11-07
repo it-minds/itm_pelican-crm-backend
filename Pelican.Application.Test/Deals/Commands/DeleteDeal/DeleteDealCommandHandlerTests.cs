@@ -29,8 +29,6 @@ public class DeleteDealCommandHandlerTests
 				null!));
 
 		/// Assert
-		Assert.NotNull(exceptionResult);
-
 		Assert.Equal(
 			typeof(ArgumentNullException),
 			exceptionResult.GetType());

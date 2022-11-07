@@ -45,7 +45,7 @@ public class Deal : Entity, ITimeTracked
 					bool hasLongValue = long.TryParse(propertyValue, out long value);
 					if (!hasLongValue)
 					{
-						throw new InvalidOperationException();
+						throw new InvalidOperationException("Invalid date format");
 					}
 					DateTime date = DateTimeOffset.FromUnixTimeMilliseconds(value).Date;
 					EndDate = date;
@@ -55,7 +55,7 @@ public class Deal : Entity, ITimeTracked
 				{
 					if (!decimal.TryParse(propertyValue, out decimal valueDecimal))
 					{
-						throw new InvalidOperationException();
+						throw new InvalidOperationException("Invalid amount format");
 					}
 					Revenue = valueDecimal;
 					break;
@@ -67,7 +67,7 @@ public class Deal : Entity, ITimeTracked
 				CurrencyCode = propertyValue;
 				break;
 			default:
-				break;
+				throw new InvalidOperationException("Invalid field");
 		}
 
 		return this;
@@ -75,14 +75,14 @@ public class Deal : Entity, ITimeTracked
 
 	public Deal FillOutAssociations(AccountManager? accountManager, Client? client, List<Contact>? contacts)
 	{
-		FillOutAccountmManager(accountManager);
+		FillOutAccountManager(accountManager);
 		Client = client;
 		FillOutDealContacts(contacts);
 
 		return this;
 	}
 
-	public void FillOutAccountmManager(AccountManager? accountManager)
+	public void FillOutAccountManager(AccountManager? accountManager)
 	{
 		if (accountManager is null)
 		{

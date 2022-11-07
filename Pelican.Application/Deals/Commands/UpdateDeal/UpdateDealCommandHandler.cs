@@ -72,7 +72,7 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 			AccountManagerRepository
 			.FirstOrDefaultAsync(a => a.HubSpotId == acccuntManagerHubSpotId);
 
-		deal.FillOutAccountmManager(accountManager);
+		deal.FillOutAccountManager(accountManager);
 	}
 
 	private async Task<Result> GetDealFromHubSpotAsync(
@@ -119,13 +119,13 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 
 		foreach (DealContact dc in deal.DealContacts)
 		{
-			Contact? concact = await _unitOfWork
+			Contact? contact = await _unitOfWork
 				.ContactRepository
 				.FirstOrDefaultAsync(c => c.HubSpotId == dc.HubSpotContactId);
 
-			if (concact is not null)
+			if (contact is not null)
 			{
-				contacts.Add(concact);
+				contacts.Add(contact);
 			}
 		}
 

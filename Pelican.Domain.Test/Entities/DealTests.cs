@@ -18,11 +18,17 @@ public class DealTests
 		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
 
 		/// Assert
-		Assert.Null(exceptionResult);
+		Assert.Equal(
+			typeof(InvalidOperationException),
+			exceptionResult.GetType());
+
+		Assert.Equal(
+			"Invalid field",
+			exceptionResult.Message);
 	}
 
 	[Fact]
-	public void UpdateProperty_EndDateUpdatedInvalidValueFormat_ThrowsException()
+	public void UpdateProperty_EndDateUpdatedInvalidValueFormat_ThrowsInvalidOperationException()
 	{
 		/// Arrange
 		string name = "closedate";
@@ -38,6 +44,10 @@ public class DealTests
 		Assert.Equal(
 			typeof(InvalidOperationException),
 			exceptionResult.GetType());
+
+		Assert.Equal(
+			"Invalid date format",
+			exceptionResult.Message);
 	}
 
 	[Fact]
@@ -64,7 +74,7 @@ public class DealTests
 	}
 
 	[Fact]
-	public void UpdateProperty_RevenueUpdatedInvalidValueFormat_ThrowsException()
+	public void UpdateProperty_RevenueUpdatedInvalidValueFormat_ThrowsInvalidOperationException()
 	{
 		/// Arrange
 		string name = "amount";
@@ -80,6 +90,10 @@ public class DealTests
 		Assert.Equal(
 			typeof(InvalidOperationException),
 			exceptionResult.GetType());
+
+		Assert.Equal(
+			"Invalid amount format",
+			exceptionResult.Message);
 	}
 
 	[Fact]
@@ -181,7 +195,7 @@ public class DealTests
 		// Assert
 		Assert.Equal(
 			0,
-			inputDeal.AccountManagerDeals.Count);
+			inputDeal.DealContacts.Count);
 	}
 
 	[Fact]
@@ -314,7 +328,7 @@ public class DealTests
 	}
 
 	[Fact]
-	public void FillOutAccountmManager_EmptyAccountManangerDeals_NewAccountManagerAdded()
+	public void FillOutAccountManager_EmptyAccountManangerDeals_NewAccountManagerAdded()
 	{
 		/// Arrange
 		Deal inputDeal = new(Guid.NewGuid());
@@ -322,7 +336,7 @@ public class DealTests
 		AccountManager? accountManager = new(Guid.NewGuid());
 
 		/// Act
-		inputDeal.FillOutAccountmManager(accountManager);
+		inputDeal.FillOutAccountManager(accountManager);
 
 		/// Assert
 		Assert.Equal(
@@ -335,7 +349,7 @@ public class DealTests
 	}
 
 	[Fact]
-	public void FillOutAccountmManager_AccountMaangerDealExists_OldAccountManagerDeactivated()
+	public void FillOutAccountManager_AccountManagerDealExists_OldAccountManagerDeactivated()
 	{
 		// Arrange
 		Deal inputDeal = new(Guid.NewGuid());
@@ -356,14 +370,14 @@ public class DealTests
 		};
 
 		/// Act
-		inputDeal.FillOutAccountmManager(newAccountManager);
+		inputDeal.FillOutAccountManager(newAccountManager);
 
 		/// Assert
 		Assert.False(inputDeal.AccountManagerDeals.First(a => a.AccountManager == oldAccountManager).IsActive);
 	}
 
 	[Fact]
-	public void FillOutAccountmManager_AccountMaangerDealExists_NewAccountManagerAdded()
+	public void FillOutAccountManager_AccountManagerDealExists_NewAccountManagerAdded()
 	{
 		/// Arrange
 		Deal inputDeal = new(Guid.NewGuid());
@@ -384,7 +398,7 @@ public class DealTests
 		};
 
 		/// Act
-		inputDeal.FillOutAccountmManager(newAccountManager);
+		inputDeal.FillOutAccountManager(newAccountManager);
 
 		/// Assert
 		Assert.Equal(
@@ -397,7 +411,7 @@ public class DealTests
 	}
 
 	[Fact]
-	public void FillOutAccountmManager_SameAccountMaangerDealAlreadyExists_NewAccountManagerAdded()
+	public void FillOutAccountManager_SameAccountMaangerDealAlreadyExists_NewAccountManagerAdded()
 	{
 		/// Arrange
 		Deal inputDeal = new(Guid.NewGuid());
@@ -418,7 +432,7 @@ public class DealTests
 		};
 
 		/// Act
-		inputDeal.FillOutAccountmManager(newAccountManager);
+		inputDeal.FillOutAccountManager(newAccountManager);
 
 		/// Assert
 		Assert.Equal(

@@ -8,6 +8,7 @@ using Pelican.Application.HubSpot.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
 using Pelican.Presentation.Api.Contracts;
+using Pelican.Presentation.Api.Utilities.HubSpotHookValidation;
 
 namespace Pelican.Presentation.Api.Controllers;
 
@@ -35,7 +36,7 @@ public sealed class HubSpotController : ApiController
 	}
 
 	[HttpPost]
-	//[ServiceFilter(typeof(HubSpotValidationFilter))]
+	[ServiceFilter(typeof(HubSpotValidationFilter))]
 	public async Task<IActionResult> Hook(
 		[FromBody] IEnumerable<WebHookRequest> requests,
 		CancellationToken cancellationToken)
@@ -66,8 +67,13 @@ public sealed class HubSpotController : ApiController
 			{
 				ICommand? command = request.SubscriptionType switch
 				{
-					"deal.deletion" => new DeleteDealCommand(request.ObjectId),
-					"deal.propertyChange" => new UpdateDealCommand(request.ObjectId, request.PortalId, request.PropertyName ?? string.Empty, request.PropertyValue ?? string.Empty),
+					"deal.deletion" => new DeleteDealCommand(
+						request.ObjectId),
+					"deal.propertyChange" => new UpdateDealCommand(
+						request.ObjectId,
+						request.PortalId,
+						request.PropertyName,
+						request.PropertyValue),
 					_ => null
 				};
 

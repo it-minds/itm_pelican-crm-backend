@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System.Linq.Expressions;
+using Moq;
 using Pelican.Application.Clients.Commands.DeleteClient;
 using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
@@ -21,13 +22,15 @@ public class DeleteClientCommandHandlerUnitTest
 	public void UnitOfWorkNull_ThrowsArgumentNullexception()
 	{
 		// Arrange
+
 		//Act
 		Exception exception = Record.Exception(() =>
 		new DeleteClientCommandHandler(null!));
+
 		//Assert
 		Assert.Equal(typeof(ArgumentNullException), exception.GetType());
 
-		Assert.Equal("Value cannot be null. (Parameter 'IUnitOfWork')", exception.Message);
+		Assert.Equal("Value cannot be null. (Parameter 'unitOfWork')", exception.Message);
 
 	}
 
@@ -38,23 +41,25 @@ public class DeleteClientCommandHandlerUnitTest
 		DeleteClientCommand deleteClientCommand = new(1);
 		_fakeUnitOfWork.Setup(x => x
 			.ClientRepository
-				.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+				.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(Enumerable.Empty<Client>().AsQueryable());
+
 		//Act
 		var result = await _uut.Handle(deleteClientCommand, _cancellation);
-		//Assert
-		_fakeUnitOfWork.Verify(x => x.SaveAsync(_cancellation), Times.Never());
 
+		//Assert
 		_fakeUnitOfWork
 			.Verify(
 				unitOfWork => unitOfWork.ClientRepository
-					.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()),
-			Times.Once());
+					.FindByCondition(d => d.HubSpotId == deleteClientCommand.ObjectId.ToString()),
+				Times.Once());
 
 		_fakeUnitOfWork
 			.Verify(
 				unitOfWork => unitOfWork.ClientRepository.Delete(It.IsAny<Client>()),
 				Times.Never());
+
+		_fakeUnitOfWork.Verify(unitofwork => unitofwork.SaveAsync(_cancellation), Times.Never());
 
 		Assert.True(result.IsSuccess);
 		Assert.Equal(Error.None, result.Error);
@@ -68,7 +73,7 @@ public class DeleteClientCommandHandlerUnitTest
 		Client client = new();
 		_fakeUnitOfWork.Setup(x => x
 			.ClientRepository
-			.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()))
+			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client>
 			{
 				client
@@ -78,18 +83,18 @@ public class DeleteClientCommandHandlerUnitTest
 		var result = await _uut.Handle(deleteClientCommand, _cancellation);
 
 		//Assert
-		_fakeUnitOfWork.Verify(x => x.SaveAsync(_cancellation), Times.Once());
-
 		_fakeUnitOfWork
-			.Verify(
-				unitOfWork => unitOfWork.ClientRepository
-					.FindByCondition(It.IsAny<System.Linq.Expressions.Expression<Func<Client, bool>>>()),
-			Times.Once());
-
-		_fakeUnitOfWork
-			.Verify(
-				unitOfWork => unitOfWork.ClientRepository.Delete(It.IsAny<Client>()),
+		.Verify(
+		unitOfWork => unitOfWork.ClientRepository
+					.FindByCondition(d => d.HubSpotId == deleteClientCommand.ObjectId.ToString()),
 				Times.Once());
+
+		_fakeUnitOfWork
+			.Verify(
+				unitOfWork => unitOfWork.ClientRepository.Delete(client),
+				Times.Once());
+
+		_fakeUnitOfWork.Verify(unitofwork => unitofwork.SaveAsync(_cancellation), Times.Once());
 
 		Assert.True(result.IsSuccess);
 		Assert.Equal(Error.None, result.Error);

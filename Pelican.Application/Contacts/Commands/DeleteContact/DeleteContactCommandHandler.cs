@@ -16,7 +16,7 @@ internal sealed class DeleteContactCommandHandler : ICommandHandler<DeleteContac
 
 	public async Task<Result> Handle(
 		DeleteContactCommand command,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken = default)
 	{
 		Contact? contact = _unitOfWork
 			.ContactRepository

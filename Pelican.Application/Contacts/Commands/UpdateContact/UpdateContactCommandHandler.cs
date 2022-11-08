@@ -1,11 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Common.Interfaces.Repositories;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Shared;
-
-namespace Pelican.Application.Contacts.Commands.UpdateContact;
+﻿namespace Pelican.Application.Contacts.Commands.UpdateContact;
 
 internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContactCommand>
 {
@@ -18,17 +11,20 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 		_unitOfWork = unitOfWork;
 		_hubSpotContactService = hubSpotContactService;
 	}
-	public async Task<Result> Handle(UpdateContactCommand command, CancellationToken cancellationToken)
+	public async Task<Result> Handle(
+		UpdateContactCommand command,
+		CancellationToken cancellationToken = default)
 	{
-		Contact? contact = _unitOfWork
+		Contact? contact = await _unitOfWork
 			.ContactRepository
-			.FindByCondition(contact => contact.Id.ToString() == command.ObjectId.ToString())
-			.FirstOrDefault();
+			.FirstOrDefaultAsync(
+				contact => contact.HubSpotId == command.ObjectId.ToString(),
+				cancellationToken);
 
 		if (contact is null)
 		{
 			return await GetContactFromHubSpot(
-				command.PortalId,
+				command.SupplierHubSpotId,
 				command.ObjectId,
 				cancellationToken);
 		}
@@ -72,19 +68,26 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 		return Result.Success();
 	}
 
-	private async Task<Result> GetContactFromHubSpot(string userId, long objectId, CancellationToken cancellationToken)
+	private async Task<Result> GetContactFromHubSpot(
+		long supplierHubSpotId,
+		long objectId,
+		CancellationToken cancellationToken = default)
 	{
 		Supplier? supplier = await _unitOfWork
-				.SupplierRepository
-				.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId)
-				.FirstOrDefaultAsync();
+			.SupplierRepository
+			.FirstOrDefaultAsync(
+				supplier => supplier.HubSpotId == supplierHubSpotId,
+				cancellationToken);
 
 		if (supplier is null)
 		{
 			return Result.Failure<Contact>(Error.NullValue);
 		}
 
-		Result<Contact> result = await _hubSpotContactService.GetByIdAsync(supplier.RefreshToken, objectId, cancellationToken);
+		Result<Contact> result = await _hubSpotContactService.GetByIdAsync(
+			supplier.RefreshToken,
+			objectId,
+			cancellationToken);
 
 		if (result.IsFailure)
 		{
@@ -93,7 +96,9 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 
 		await _unitOfWork
 			.ContactRepository
-			.CreateAsync(result.Value, cancellationToken);
+			.CreateAsync(
+				result.Value,
+				cancellationToken);
 
 		return Result.Success();
 	}

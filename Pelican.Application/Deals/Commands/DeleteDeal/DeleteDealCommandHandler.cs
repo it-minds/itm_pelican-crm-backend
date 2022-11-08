@@ -18,10 +18,9 @@ internal sealed class DeleteDealCommandHandler : ICommandHandler<DeleteDealComma
 		DeleteDealCommand command,
 		CancellationToken cancellationToken)
 	{
-		Deal? deal = _unitOfWork
+		Deal? deal = await _unitOfWork
 			.DealRepository
-			.FindByCondition(d => d.Id.ToString() == command.ObjectId.ToString())
-			.FirstOrDefault();
+			.FirstOrDefaultAsync(d => d.HubSpotId == command.ObjectId.ToString(), cancellationToken);
 
 		if (deal is null)
 		{

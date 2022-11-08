@@ -860,7 +860,6 @@ public class UpdateClientCommandHandlerTests
 		Contact contact = new(Guid.NewGuid())
 		{
 			HubSpotId = Guid.NewGuid().ToString()
-
 		};
 		ClientContact clientContactHubSpot = new(Guid.NewGuid())
 		{
@@ -960,6 +959,13 @@ public class UpdateClientCommandHandlerTests
 		Client client = new(Guid.NewGuid())
 		{
 			ClientContacts = new List<ClientContact>()
+			{
+				new ClientContact()
+				{
+					HubSpotClientId= Guid.NewGuid().ToString(),
+					HubSpotContactId= Guid.NewGuid().ToString(),
+				}
+			}
 		};
 
 		Client clientHubSpot = new(Guid.NewGuid());

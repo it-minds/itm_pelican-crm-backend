@@ -104,11 +104,6 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			}
 		}
 		result.Value.ClientContacts = result.Value.ClientContacts.Where(x => x.Contact is not null).ToList();
-
-		if (result.IsFailure)
-		{
-			return Result.Failure<Client>(result.Error);
-		}
 		await _unitOfWork
 		.ClientRepository
 			.CreateAsync(result.Value, cancellationToken);

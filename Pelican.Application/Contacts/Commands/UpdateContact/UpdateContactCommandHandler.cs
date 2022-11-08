@@ -4,13 +4,22 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IHubSpotObjectService<Contact> _hubSpotContactService;
+	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
 	public UpdateContactCommandHandler(
 		IUnitOfWork unitOfWork,
-		IHubSpotObjectService<Contact> hubSpotContactService)
+		IHubSpotObjectService<Contact> hubSpotContactService,
+		IHubSpotAuthorizationService hubSpotAuthorizationService)
 	{
-		_unitOfWork = unitOfWork;
-		_hubSpotContactService = hubSpotContactService;
+		_unitOfWork = unitOfWork
+			?? throw new ArgumentNullException(nameof(unitOfWork));
+
+		_hubSpotContactService = hubSpotContactService
+			?? throw new ArgumentNullException(nameof(hubSpotContactService));
+
+		_hubSpotAuthorizationService = hubSpotAuthorizationService
+			?? throw new ArgumentNullException(nameof(hubSpotAuthorizationService));
 	}
+
 	public async Task<Result> Handle(
 		UpdateContactCommand command,
 		CancellationToken cancellationToken = default)
@@ -29,35 +38,9 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 				cancellationToken);
 		}
 
-		switch (command.PropertyName)
-		{
-			case "firstname":
-				contact.Firstname = command.PropertyValue;
-				break;
-			case "lastname":
-				contact.Lastname = command.PropertyValue;
-				break;
-			case "email":
-				contact.Email = command.PropertyValue;
-				break;
-			case "phone":
-			case "mobilephone":
-				contact.PhoneNumber = command.PropertyValue;
-				break;
-			case "company":
-				var oldClientContactRelation = contact
-					.ClientContacts
-					.FirstOrDefault(clientContact
-						=> clientContact.Id.ToString() == command.ObjectId.ToString()
-						|| clientContact.IsActive is true);
-				if (oldClientContactRelation is not null)
-				{
-					oldClientContactRelation.IsActive = false;
-				}
-				break;
-			default:
-				break;
-		}
+		contact.UpdateProperty(
+			command.PropertyName,
+			command.PropertyValue);
 
 		_unitOfWork
 			.ContactRepository
@@ -73,25 +56,21 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 		long objectId,
 		CancellationToken cancellationToken = default)
 	{
-		Supplier? supplier = await _unitOfWork
-			.SupplierRepository
-			.FirstOrDefaultAsync(
-				supplier => supplier.HubSpotId == supplierHubSpotId,
-				cancellationToken);
+		Result<string> accessTokenResult = await GetAccessTokenAsync(supplierHubSpotId, cancellationToken);
 
-		if (supplier is null)
+		if (accessTokenResult.IsFailure)
 		{
-			return Result.Failure<Contact>(Error.NullValue);
+			return accessTokenResult;
 		}
 
 		Result<Contact> result = await _hubSpotContactService.GetByIdAsync(
-			supplier.RefreshToken,
+			accessTokenResult.Value,
 			objectId,
 			cancellationToken);
 
 		if (result.IsFailure)
 		{
-			return Result.Failure<Contact>(result.Error);
+			return result;
 		}
 
 		await _unitOfWork
@@ -101,5 +80,29 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 				cancellationToken);
 
 		return Result.Success();
+	}
+
+	private async Task<Result<string>> GetAccessTokenAsync(
+		long supplierHubSpotId,
+		CancellationToken cancellationToken = default)
+	{
+		Supplier? supplier = await _unitOfWork
+				.SupplierRepository
+				.FirstOrDefaultAsync(
+					supplier => supplier.HubSpotId == supplierHubSpotId,
+					cancellationToken);
+
+		if (supplier is null
+			|| string.IsNullOrWhiteSpace(supplier.RefreshToken))
+		{
+			return Result.Failure<string>(Error.NullValue);
+		}
+
+		Result<string> accessTokenResult = await _hubSpotAuthorizationService
+			.RefreshAccessTokenAsync(
+				supplier.RefreshToken,
+				cancellationToken);
+
+		return accessTokenResult;
 	}
 }

@@ -84,7 +84,7 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 
 		if (accessTokenResult.IsFailure)
 		{
-			return Result.Failure<Deal>(accessTokenResult.Error);
+			return accessTokenResult;
 		}
 
 		Result<Deal> result = await _hubSpotDealService
@@ -95,7 +95,7 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 
 		if (result.IsFailure)
 		{
-			return Result.Failure<Deal>(result.Error);
+			return result;
 		}
 
 		Deal deal = await FillOutDealAssociations(result.Value, cancellationToken);
@@ -161,7 +161,7 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 
 		Result<string> accessTokenResult = await _hubSpotAuthorizationService
 			.RefreshAccessTokenAsync(
-		supplier.RefreshToken,
+				supplier.RefreshToken,
 				cancellationToken);
 
 		return accessTokenResult;

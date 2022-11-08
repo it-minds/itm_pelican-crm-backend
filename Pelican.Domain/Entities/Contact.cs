@@ -19,8 +19,6 @@ public class Contact : Entity, ITimeTracked
 
 	public string? JobTitle { get; set; }
 
-	public string? LinkedInUrl { get; set; }
-
 
 	public ICollection<ClientContact> ClientContacts { get; set; } = new List<ClientContact>();
 
@@ -35,4 +33,31 @@ public class Contact : Entity, ITimeTracked
 	public Contact(Guid id) : base(id) { }
 	public Contact() { }
 
+
+	public virtual Contact UpdateProperty(string propertyName, string propertyValue)
+	{
+		switch (propertyName)
+		{
+			case "firstname":
+				Firstname = propertyValue;
+				break;
+			case "lastname":
+				Lastname = propertyValue;
+				break;
+			case "email":
+				Email = propertyValue;
+				break;
+			case "phone":
+			case "mobilephone":
+				PhoneNumber = propertyValue;
+				break;
+			case "jobtitle":
+				JobTitle = propertyValue;
+				break;
+			default:
+				throw new InvalidOperationException("Invalid field");
+		}
+
+		return this;
+	}
 }

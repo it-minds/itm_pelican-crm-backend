@@ -1,18 +1,4 @@
-﻿using System.Collections.Concurrent;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Clients.Commands.DeleteClient;
-using Pelican.Application.Clients.Commands.UpdateClient;
-using Pelican.Application.Deals.Commands.DeleteDeal;
-using Pelican.Application.Deals.Commands.UpdateDeal;
-using Pelican.Application.HubSpot.Commands.NewInstallation;
-using Pelican.Domain.Shared;
-using Pelican.Presentation.Api.Abstractions;
-using Pelican.Presentation.Api.Contracts;
-using Pelican.Presentation.Api.Utilities.HubSpotHookValidation;
-
-namespace Pelican.Presentation.Api.Controllers;
+﻿namespace Pelican.Presentation.Api.Controllers;
 
 [Route("[controller]")]
 //[EnableCors("HubSpot")]
@@ -27,10 +13,11 @@ public sealed class HubSpotController : ApiController
 		string code,
 		CancellationToken cancellationToken)
 	{
-		NewInstallationCommand newInstallation = new(
-			code);
+		NewInstallationCommand newInstallation = new(code);
 
-		Result result = await Sender.Send(newInstallation, cancellationToken);
+		Result result = await Sender.Send(
+			newInstallation,
+			cancellationToken);
 
 		return result.IsSuccess
 			? Redirect("https://it-minds.dk/")
@@ -40,16 +27,18 @@ public sealed class HubSpotController : ApiController
 	[HttpPost]
 	[ServiceFilter(typeof(HubSpotValidationFilter))]
 	public async Task<IActionResult> Hook(
-		[FromBody] IEnumerable<WebHookRequest> requests,
+		[FromBody] IReadOnlyCollection<WebHookRequest> requests,
 		CancellationToken cancellationToken)
 	{
 		List<Result> results = new();
-		IEnumerable<ICommand> commands = ConvertToCommands(requests);
+		IReadOnlyCollection<ICommand> commands = requests.ConvertToCommands();
 
 		foreach (ICommand command in commands)
 		{
 			results.Add(
-				await Sender.Send(command, cancellationToken));
+				await Sender.Send(
+					command,
+					cancellationToken));
 		}
 
 		Result result = Result.FirstFailureOrSuccess(results.ToArray());
@@ -57,42 +46,6 @@ public sealed class HubSpotController : ApiController
 		return result.IsSuccess
 			? Ok()
 			: BadRequest(result.Error);
-	}
-
-	private static IEnumerable<ICommand> ConvertToCommands(IEnumerable<WebHookRequest> requests)
-	{
-		BlockingCollection<ICommand> commands = new();
-
-		requests
-			.AsParallel()
-			.ForAll(request =>
-			{
-				ICommand? command = request.SubscriptionType switch
-				{
-					"deal.deletion" => new DeleteDealCommand(
-						request.ObjectId),
-					"deal.propertyChange" => new UpdateDealCommand(
-						request.ObjectId,
-						request.PortalId,
-						request.PropertyName,
-						request.PropertyValue),
-					"company.deletion" => new DeleteClientCommand(
-					request.ObjectId),
-					"company.propertyChange" => new UpdateClientCommand(
-						request.ObjectId,
-						request.PortalId,
-						request.PropertyName,
-						request.PropertyValue),
-					_ => null
-				};
-
-				if (command is not null)
-				{
-					commands.Add(command);
-				}
-			});
-
-		return commands;
 	}
 }
 

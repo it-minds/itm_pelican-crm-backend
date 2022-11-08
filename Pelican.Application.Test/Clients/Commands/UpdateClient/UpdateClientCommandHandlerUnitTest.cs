@@ -718,42 +718,7 @@ public class UpdateClientCommandHandlerTests
 		Assert.True(result.IsFailure);
 		Assert.Equal(Error.NullValue, result.Error);
 	}
-	[Theory]
-	[InlineData(0, 0, "num_associated_contacts", "0")]
-	public async void Handle_ClientFoundNumAssociatedContactNotUpdatedSupplierRefreshTokenNullOnHubSpot_ReturnsFailure(
-		long objectId,
-		long portalId,
-		string propertyName,
-		string propertyValue)
-	{
-		// Arrange
-		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
 
-		Client client = new(Guid.NewGuid());
-
-		Supplier supplier = new(Guid.NewGuid());
-
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.ClientRepository
-				.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
-			.Returns(new List<Client> { client }.AsQueryable());
-
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.SupplierRepository
-				.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
-			.Returns(new List<Supplier> { supplier }.AsQueryable());
-
-		// Act
-		Result result = await _uut.Handle(command, _cancellationToken);
-
-		// Assert
-		_unitOfWorkMock
-			.Verify(x => x.SupplierRepository
-					.FindByCondition(s => s.HubSpotId == portalId),
-				Times.Once());
-		Assert.True(result.IsFailure);
-		Assert.Equal(Error.NullValue, result.Error);
-	}
 	[Theory]
 	[InlineData(0, 0, "num_associated_contacts", "0")]
 	public async void Handle_ClientFoundNumAssociatedContactNotUpdatedAccessTokenNotRefreshed_ReturnsFailure(
@@ -926,7 +891,7 @@ public class UpdateClientCommandHandlerTests
 	}
 	[Theory]
 	[InlineData(0, 0, "num_associated_contacts", "0")]
-	public async void Handle_ClientFoundNumAssociatedContactUpdatedButClientContactsInClientDontInHubSpotClient_ReturnsSuccessAndIsActiveSetFalse(
+	public async void Handle_ClientFoundNumAssociatedContactUpdatedButClientContactsInClientNotInHubSpotClient_ReturnsSuccessAndIsActiveSetFalse(
 		long objectId,
 		long portalId,
 		string propertyName,
@@ -937,6 +902,13 @@ public class UpdateClientCommandHandlerTests
 		Client client = new(Guid.NewGuid())
 		{
 			ClientContacts = new List<ClientContact>()
+			{
+				new ClientContact
+				{
+					HubSpotContactId = Guid.NewGuid().ToString(),
+					HubSpotClientId = Guid.NewGuid().ToString()
+				}
+			}
 		};
 
 		Client ClientHubSpot = new(Guid.NewGuid());
@@ -947,8 +919,8 @@ public class UpdateClientCommandHandlerTests
 		client.ClientContacts.Add(new(Guid.NewGuid())
 		{
 			Contact = contact,
-			HubSpotContactId = Guid.NewGuid().ToString(),
-			HubSpotClientId = Guid.NewGuid().ToString()
+			HubSpotContactId = client.ClientContacts.First().HubSpotContactId,
+			HubSpotClientId = client.ClientContacts.First().HubSpotClientId
 		});
 
 		MockSetupForNumAssociatedContactsCaseSuccess(client, ClientHubSpot, contact);

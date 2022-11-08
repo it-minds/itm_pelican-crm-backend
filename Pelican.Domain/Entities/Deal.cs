@@ -36,7 +36,7 @@ public class Deal : Entity, ITimeTracked
 	public Deal() { }
 
 
-	public Deal UpdateProperty(string propertyName, string propertyValue)
+	public virtual Deal UpdateProperty(string propertyName, string propertyValue)
 	{
 		switch (propertyName)
 		{
@@ -73,7 +73,7 @@ public class Deal : Entity, ITimeTracked
 		return this;
 	}
 
-	public Deal FillOutAssociations(AccountManager? accountManager, Client? client, List<Contact>? contacts)
+	public virtual Deal FillOutAssociations(AccountManager? accountManager, Client? client, List<Contact>? contacts)
 	{
 		FillOutAccountManager(accountManager);
 		Client = client;
@@ -82,7 +82,7 @@ public class Deal : Entity, ITimeTracked
 		return this;
 	}
 
-	public void FillOutAccountManager(AccountManager? accountManager)
+	public virtual void FillOutAccountManager(AccountManager? accountManager)
 	{
 		if (accountManager is null)
 		{

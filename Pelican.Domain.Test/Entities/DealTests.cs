@@ -328,6 +328,19 @@ public class DealTests
 	}
 
 	[Fact]
+	public void FillOutAccountManager_AccountManangerNull_ThrowsNoException()
+	{
+		/// Arrange
+		Deal inputDeal = new(Guid.NewGuid());
+
+		/// Act
+		var result = Record.Exception(() => inputDeal.FillOutAccountManager(null));
+
+		/// Assert
+		Assert.Null(result);
+	}
+
+	[Fact]
 	public void FillOutAccountManager_EmptyAccountManangerDeals_NewAccountManagerAdded()
 	{
 		/// Arrange

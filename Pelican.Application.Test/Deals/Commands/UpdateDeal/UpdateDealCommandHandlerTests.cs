@@ -152,10 +152,7 @@ public class UpdateDealCommandHandlerTests
 		// Arrange
 		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
-		Deal? existingDeal = null;
-		Supplier? existingSupplier = null;
-
-		SetupRepositoryMocks(existingDeal, existingSupplier);
+		SetupRepositoryMocks(null, null);
 
 		// Act
 		Result result = await _uut.Handle(command, default);
@@ -180,8 +177,6 @@ public class UpdateDealCommandHandlerTests
 		// Arrange
 		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
-		Deal? existingDeal = null;
-
 		Supplier existingSupplier = new(Guid.NewGuid())
 		{
 			RefreshToken = TOKEN,
@@ -189,7 +184,7 @@ public class UpdateDealCommandHandlerTests
 
 		Error error = new("0", "error");
 
-		SetupRepositoryMocks(existingDeal, existingSupplier);
+		SetupRepositoryMocks(null, existingSupplier);
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
@@ -215,14 +210,12 @@ public class UpdateDealCommandHandlerTests
 		// Arrange
 		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
-		Deal? existingDeal = null;
-
 		Supplier existingSupplier = new(Guid.NewGuid())
 		{
 			RefreshToken = TOKEN,
 		};
 
-		SetupRepositoryMocks(existingDeal, existingSupplier);
+		SetupRepositoryMocks(null, existingSupplier);
 
 		Error error = new("0", "error");
 
@@ -255,20 +248,20 @@ public class UpdateDealCommandHandlerTests
 		// Arrange
 		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
-		Deal? existingDeal = null;
-
 		Supplier existingSupplier = new(Guid.NewGuid())
 		{
 			RefreshToken = TOKEN,
 		};
 
-		SetupRepositoryMocks(existingDeal, existingSupplier);
+		SetupRepositoryMocks(null, existingSupplier);
 
-		Deal newDeal = new(Guid.NewGuid())
-		{
-			HubSpotOwnerId = "ownerid",
-			HubSpotId = "hubspotid",
-		};
+		Mock<Deal> newDealMock = new();
+		newDealMock.Object.HubSpotId = "hubspotId";
+		newDealMock.Object.HubSpotOwnerId = "ownerId";
+
+		newDealMock
+			.Setup(d => d.FillOutAssociations(It.IsAny<AccountManager>(), It.IsAny<Client>(), It.IsAny<List<Contact>>()))
+			.Returns(newDealMock.Object);
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
@@ -278,7 +271,7 @@ public class UpdateDealCommandHandlerTests
 		_hubSpotDealServiceMock
 			.Setup(service => service
 				.GetByIdAsync(It.IsAny<string>(), It.IsAny<long>(), default))
-			.ReturnsAsync(Result.Success(newDeal));
+			.ReturnsAsync(Result.Success(newDealMock.Object));
 
 		_accountManagerRepositoryMock
 			.Setup(x => x
@@ -290,7 +283,7 @@ public class UpdateDealCommandHandlerTests
 
 		// Assert
 		_dealRepositoryMock.Verify(
-			x => x.CreateAsync(newDeal, default),
+			x => x.CreateAsync(newDealMock.Object, default),
 			Times.Once);
 
 		_unitOfWorkMock.Verify(
@@ -308,8 +301,6 @@ public class UpdateDealCommandHandlerTests
 		// Arrange
 		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
-		Deal? existingDeal = null;
-
 		Supplier existingSupplier = new(Guid.NewGuid())
 		{
 			RefreshToken = TOKEN,
@@ -324,25 +315,26 @@ public class UpdateDealCommandHandlerTests
 			HubSpotId = "clientHubSpotId",
 		};
 
-		SetupRepositoryMocks(existingDeal, existingSupplier);
+		SetupRepositoryMocks(null, existingSupplier);
 
-		Deal newDeal = new(Guid.NewGuid())
-		{
-			HubSpotOwnerId = "ownerid",
-			HubSpotId = "hubspotid",
-			Client = existingClient,
-		};
-
-		newDeal.DealContacts = new List<DealContact>()
+		Mock<Deal> newDealMock = new();
+		newDealMock.Object.HubSpotId = "hubspotId";
+		newDealMock.Object.HubSpotOwnerId = "ownerId";
+		newDealMock.Object.Client = existingClient;
+		newDealMock.Object.DealContacts = new List<DealContact>()
 		{
 			new DealContact(Guid.NewGuid())
 			{
-				Deal = newDeal,
-				DealId = newDeal.Id,
-				HubSpotDealId = newDeal.HubSpotId,
+				Deal = newDealMock.Object,
+				DealId = newDealMock.Object.Id,
+				HubSpotDealId = newDealMock.Object.HubSpotId,
 				HubSpotContactId = existingContact.HubSpotId,
 			}
 		};
+
+		newDealMock
+			.Setup(d => d.FillOutAssociations(It.IsAny<AccountManager>(), It.IsAny<Client>(), It.IsAny<List<Contact>>()))
+			.Returns(newDealMock.Object);
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
@@ -352,7 +344,7 @@ public class UpdateDealCommandHandlerTests
 		_hubSpotDealServiceMock
 			.Setup(service => service
 				.GetByIdAsync(It.IsAny<string>(), It.IsAny<long>(), default))
-			.ReturnsAsync(Result.Success(newDeal));
+			.ReturnsAsync(Result.Success(newDealMock.Object));
 
 		_accountManagerRepositoryMock
 			.Setup(x => x
@@ -374,7 +366,7 @@ public class UpdateDealCommandHandlerTests
 
 		// Assert
 		_dealRepositoryMock.Verify(
-			x => x.CreateAsync(newDeal, default),
+			x => x.CreateAsync(newDealMock.Object, default),
 			Times.Once);
 
 		_unitOfWorkMock.Verify(
@@ -410,23 +402,24 @@ public class UpdateDealCommandHandlerTests
 
 		SetupRepositoryMocks(existingDeal, existingSupplier);
 
-		Deal newDeal = new(Guid.NewGuid())
-		{
-			HubSpotOwnerId = "ownerid",
-			HubSpotId = "hubspotid",
-			Client = existingClient,
-		};
-
-		newDeal.DealContacts = new List<DealContact>()
+		Mock<Deal> newDealMock = new();
+		newDealMock.Object.HubSpotId = "hubspotId";
+		newDealMock.Object.HubSpotOwnerId = "ownerId";
+		newDealMock.Object.Client = existingClient;
+		newDealMock.Object.DealContacts = new List<DealContact>()
 		{
 			new DealContact(Guid.NewGuid())
 			{
-				Deal = newDeal,
-				DealId = newDeal.Id,
-				HubSpotDealId = newDeal.HubSpotId,
+				Deal = newDealMock.Object,
+				DealId = newDealMock.Object.Id,
+				HubSpotDealId = newDealMock.Object.HubSpotId,
 				HubSpotContactId = existingContact.HubSpotId,
 			}
 		};
+
+		newDealMock
+			.Setup(d => d.FillOutAssociations(It.IsAny<AccountManager>(), It.IsAny<Client>(), It.IsAny<List<Contact>>()))
+			.Returns(newDealMock.Object);
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
@@ -436,7 +429,7 @@ public class UpdateDealCommandHandlerTests
 		_hubSpotDealServiceMock
 			.Setup(service => service
 				.GetByIdAsync(It.IsAny<string>(), It.IsAny<long>(), default))
-			.ReturnsAsync(Result.Success(newDeal));
+			.ReturnsAsync(Result.Success(newDealMock.Object));
 
 		_accountManagerRepositoryMock
 			.Setup(x => x
@@ -458,7 +451,7 @@ public class UpdateDealCommandHandlerTests
 
 		// Assert
 		_dealRepositoryMock.Verify(
-			x => x.CreateAsync(newDeal, default),
+			x => x.CreateAsync(newDealMock.Object, default),
 			Times.Once);
 
 		_unitOfWorkMock.Verify(
@@ -474,11 +467,11 @@ public class UpdateDealCommandHandlerTests
 	public async void Handle_DealFoundAccountManagerAssociationUpdated_ReturnsSuccess()
 	{
 		// Arrange
-		Deal deal = new(Guid.NewGuid());
+		Mock<Deal> dealMock = new(Guid.NewGuid());
 
-		SetupRepositoryMocks(deal, null);
+		SetupRepositoryMocks(dealMock.Object, null);
 
-		UpdateDealCommand command = new(1, 1, "hs_all_owner_ids", "123");
+		UpdateDealCommand command = new(1, 1, "hs_all_owner_ids", EMPTY_PROPERTYVALUE);
 
 		_accountManagerRepositoryMock
 			.Setup(a => a
@@ -495,7 +488,7 @@ public class UpdateDealCommandHandlerTests
 			Times.Once);
 
 		_dealRepositoryMock.Verify(
-			x => x.Update(deal),
+			x => x.Update(dealMock.Object),
 			Times.Once);
 
 		_unitOfWorkMock.Verify(
@@ -511,50 +504,15 @@ public class UpdateDealCommandHandlerTests
 	public async void Handle_DealFoundPropertyUpdated_ReturnsSuccess()
 	{
 		// Arrange
-		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, "dealstage", EMPTY_PROPERTYVALUE);
+		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
-		Deal deal = new(Guid.NewGuid());
+		Mock<Deal> dealMock = new();
 
-		SetupRepositoryMocks(deal, null);
+		dealMock
+			.Setup(d => d.UpdateProperty(It.IsAny<string>(), It.IsAny<string>()))
+			.Returns(dealMock.Object);
 
-		// Act
-		Result result = await _uut.Handle(command, default);
-
-		// Assert
-		_dealRepositoryMock.Verify(
-			x => x.FindByCondition(
-				d => d.HubSpotId == command.ObjectId.ToString()),
-			Times.Once);
-
-		_dealRepositoryMock.Verify(
-			x => x.Update(deal),
-			Times.Once);
-
-		_unitOfWorkMock.Verify(
-			x => x.SaveAsync(default),
-			Times.Once);
-
-		Assert.True(result.IsSuccess);
-
-		Assert.Equal(Error.None, result.Error);
-	}
-
-	[Fact]
-	public async void Handle_DealFoundWithDealContactAssociationsUpdated_ReturnsSuccess()
-	{
-		// Arrange
-		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, "dealstage", EMPTY_PROPERTYVALUE);
-
-		Deal deal = new(Guid.NewGuid())
-		{
-			Client = new Client(),
-			DealContacts = new List<DealContact>()
-			{
-				new DealContact(),
-			},
-		};
-
-		SetupRepositoryMocks(deal, null);
+		SetupRepositoryMocks(dealMock.Object, null);
 
 		// Act
 		Result result = await _uut.Handle(command, default);
@@ -566,7 +524,7 @@ public class UpdateDealCommandHandlerTests
 			Times.Once);
 
 		_dealRepositoryMock.Verify(
-			x => x.Update(deal),
+			x => x.Update(dealMock.Object),
 			Times.Once);
 
 		_unitOfWorkMock.Verify(

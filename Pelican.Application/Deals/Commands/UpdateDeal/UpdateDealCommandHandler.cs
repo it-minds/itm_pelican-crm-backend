@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Abstractions.HubSpot;
+﻿using Microsoft.EntityFrameworkCore;
+using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
@@ -11,46 +12,49 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IHubSpotObjectService<Deal> _hubSpotDealService;
 	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
+
 	public UpdateDealCommandHandler(
 		IUnitOfWork unitOfWork,
 		IHubSpotObjectService<Deal> hubSpotDealService,
 		IHubSpotAuthorizationService hubSpotAuthorizationService)
 	{
-		_unitOfWork = unitOfWork;
-		_hubSpotDealService = hubSpotDealService;
-		_hubSpotAuthorizationService = hubSpotAuthorizationService;
+		_unitOfWork = unitOfWork
+			?? throw new ArgumentNullException(nameof(unitOfWork));
+
+		_hubSpotDealService = hubSpotDealService
+			?? throw new ArgumentNullException(nameof(hubSpotDealService));
+
+		_hubSpotAuthorizationService = hubSpotAuthorizationService
+			?? throw new ArgumentNullException(nameof(hubSpotAuthorizationService));
 	}
-	public async Task<Result> Handle(UpdateDealCommand command, CancellationToken cancellationToken)
+
+	public async Task<Result> Handle(UpdateDealCommand command, CancellationToken cancellationToken = default)
 	{
 		Deal? deal = _unitOfWork
 			.DealRepository
-			.FindByCondition(d => d.Id.ToString() == command.ObjectId.ToString())
+			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
+			.Include(d => d.AccountManagerDeals)
+			.Include(d => d.Client)
+			.Include(d => d.DealContacts)
 			.FirstOrDefault();
 
 		if (deal is null)
 		{
-			return await GetDealFromHubSpot(
-				command.UserId,
+			return await GetDealFromHubSpotAsync(
+				command.SupplierHubSpotId,
 				command.ObjectId,
 				cancellationToken);
 		}
 
-		switch (command.PropertyName)
+		if (command.PropertyName == "hs_all_owner_ids")
 		{
-			case "closedate":
-				deal.EndDate = new DateTime(Convert.ToInt64(command.PropertyValue), DateTimeKind.Utc);
-				break;
-			case "amount":
-				deal.Revenue = Convert.ToDecimal(command.PropertyValue);
-				break;
-			case "dealstage":
-				deal.DealStatus = command.PropertyValue;
-				break;
-			case "deal_currency_code":
-				deal.CurrencyCode = command.PropertyValue;
-				break;
-			default:
-				break;
+			await UpdateAccountManagerDeal(deal, command.PropertyValue);
+		}
+		else
+		{
+			deal.UpdateProperty(
+				command.PropertyName,
+				command.PropertyValue);
 		}
 
 		_unitOfWork
@@ -62,37 +66,104 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 		return Result.Success();
 	}
 
-	private async Task<Result> GetDealFromHubSpot(string userId, long objectId, CancellationToken cancellationToken)
+	private async Task UpdateAccountManagerDeal(Deal deal, string acccuntManagerHubSpotId)
 	{
-		Supplier? supplier = _unitOfWork
-				.SupplierRepository
-				.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId)
-				.FirstOrDefault();
+		AccountManager? accountManager = await _unitOfWork.
+			AccountManagerRepository
+			.FirstOrDefaultAsync(a => a.HubSpotId == acccuntManagerHubSpotId);
 
-		if (supplier is null || supplier.RefreshToken is null or "")
-		{
-			return Result.Failure<Deal>(Error.NullValue);
-		}
+		deal.FillOutAccountManager(accountManager);
+	}
 
-		Result<string> accessTokenResult = await _hubSpotAuthorizationService
-			.RefreshAccessTokenAsync(supplier.RefreshToken, cancellationToken);
+	private async Task<Result> GetDealFromHubSpotAsync(
+		long supplierHubSpotId,
+		long objectId,
+		CancellationToken cancellationToken)
+	{
+		Result<string> accessTokenResult = await GetAccessTokenAsync(supplierHubSpotId, cancellationToken);
 
 		if (accessTokenResult.IsFailure)
 		{
 			return Result.Failure<Deal>(accessTokenResult.Error);
 		}
 
-		Result<Deal> result = await _hubSpotDealService.GetByIdAsync(accessTokenResult.Value, objectId, cancellationToken);
+		Result<Deal> result = await _hubSpotDealService
+			.GetByIdAsync(
+				accessTokenResult.Value,
+				objectId,
+				cancellationToken);
 
 		if (result.IsFailure)
 		{
 			return Result.Failure<Deal>(result.Error);
 		}
 
+		Deal deal = await FillOutDealAssociations(result.Value, cancellationToken);
+
 		await _unitOfWork
 			.DealRepository
-			.CreateAsync(result.Value, cancellationToken);
+			.CreateAsync(deal, cancellationToken);
+
+		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
+	}
+
+	private async Task<Deal> FillOutDealAssociations(Deal deal, CancellationToken cancellationToken)
+	{
+		AccountManager? accountManager = await _unitOfWork
+			.AccountManagerRepository
+			.FirstOrDefaultAsync(a => a.HubSpotId == deal.HubSpotOwnerId, cancellationToken);
+
+		List<Contact>? contacts = new();
+
+		foreach (DealContact dc in deal.DealContacts)
+		{
+			Contact? contact = await _unitOfWork
+				.ContactRepository
+				.FirstOrDefaultAsync(c => c.HubSpotId == dc.HubSpotContactId);
+
+			if (contact is not null)
+			{
+				contacts.Add(contact);
+			}
+		}
+
+		Client? client = null;
+
+		if (deal.Client is not null)
+		{
+			client = await _unitOfWork
+				.ClientRepository
+				.FirstOrDefaultAsync(c => c.HubSpotId == deal.Client.HubSpotId, cancellationToken);
+		}
+
+		deal.FillOutAssociations(accountManager, client, contacts);
+
+		return deal;
+	}
+
+	private async Task<Result<string>> GetAccessTokenAsync(
+		long supplierHubSpotId,
+		CancellationToken cancellationToken = default)
+	{
+		Supplier? supplier = await _unitOfWork
+				.SupplierRepository
+				.FirstOrDefaultAsync(
+					supplier => supplier.HubSpotId == supplierHubSpotId,
+					cancellationToken);
+
+		if (supplier is null
+			|| string.IsNullOrWhiteSpace(supplier.RefreshToken))
+		{
+			return Result.Failure<string>(Error.NullValue);
+		}
+
+		Result<string> accessTokenResult = await _hubSpotAuthorizationService
+			.RefreshAccessTokenAsync(
+		supplier.RefreshToken,
+				cancellationToken);
+
+		return accessTokenResult;
 	}
 }

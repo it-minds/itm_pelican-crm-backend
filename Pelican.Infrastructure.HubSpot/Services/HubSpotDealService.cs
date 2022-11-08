@@ -20,7 +20,7 @@ internal sealed class HubSpotDealService : HubSpotService, IHubSpotObjectService
 		long id,
 		CancellationToken cancellationToken)
 	{
-		RestRequest request = new RestRequest($"crm/v4/objects/contacts/{id}")
+		RestRequest request = new RestRequest($"crm/v4/objects/deals/{id}")
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddDealQueryParams();
 

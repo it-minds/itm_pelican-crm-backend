@@ -67,10 +67,13 @@ public sealed class HubSpotController : ApiController
 			{
 				ICommand? command = request.SubscriptionType switch
 				{
-					//"contact.deletion" => new DeleteContactPropertyCommand(request.ObjectId),
-					"deal.deletion" => new DeleteDealCommand(request.ObjectId),
-					//"contact.propertyChange" => new UpdateContactCommand(propertyChangeRequest.ObjectId, propertyChangeRequest.PropertyName, propertyChangeRequest.PropertyValue),
-					"deal.propertyChange" => new UpdateDealCommand(request.ObjectId, request.SourceId, request.PropertyName, request.PropertyValue),
+					"deal.deletion" => new DeleteDealCommand(
+						request.ObjectId),
+					"deal.propertyChange" => new UpdateDealCommand(
+						request.ObjectId,
+						request.PortalId,
+						request.PropertyName,
+						request.PropertyValue),
 					_ => null
 				};
 

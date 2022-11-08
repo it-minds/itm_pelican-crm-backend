@@ -1,19 +1,23 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Pelican.Presentation.Api.Contracts;
-public class WebHookRequest
+public record WebHookRequest
 {
 	[JsonPropertyName("objectId")]
 	public long ObjectId { get; set; }
+
 	[JsonPropertyName("propertyName")]
-	public string? PropertyName { get; set; }
+	public string PropertyName { get; set; } = string.Empty;
+
 	[JsonPropertyName("propertyValue")]
-	public string? PropertyValue { get; set; }
+	public string PropertyValue { get; set; } = string.Empty;
+
 	[JsonPropertyName("attemptNumber")]
 	public int AttemptNumber { get; set; }
-	[JsonPropertyName("subscriptionType")]
-	public string? SubscriptionType { get; set; }
 
-	[JsonPropertyName("sourceId")]
-	public string? SourceId { get; set; }
+	[JsonPropertyName("subscriptionType")]
+	public string SubscriptionType { get; set; } = string.Empty;
+
+	[JsonPropertyName("portalId")]
+	public long PortalId { get; set; }
 }

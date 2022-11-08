@@ -9,7 +9,7 @@
             [*.Persistence]*Migrations*,
             [*.Persistence]*Configurations*,
             [*]*DependencyInjection,
-            [*Api]*Program,
+            [*App]*Program,
             [*HubSpot]*RestSharpHubSpotClient
           </Exclude> [Assembly-Filter]Type-Filter
           <SingleHit>false</SingleHit>

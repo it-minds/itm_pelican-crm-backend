@@ -1,4 +1,5 @@
-﻿using Pelican.Application;
+﻿using Azure.Identity;
+using Pelican.Application;
 using Pelican.Domain;
 using Pelican.Infrastructure.HubSpot;
 using Pelican.Infrastructure.Persistence;
@@ -9,9 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDomain(builder.Configuration);
 builder.Services.AddHubSpot();
-builder.Services.AddPersistince(builder.Configuration);
+builder.Services.AddPersistince(builder.Configuration, builder.Environment.IsProduction());
 builder.Services.AddApplication();
 builder.Services.AddApi();
+builder.Configuration.AddAzureKeyVault(
+			new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"),
+			new DefaultAzureCredential());
 
 //Adding GraphQl Specific extensions and services.
 builder.Services

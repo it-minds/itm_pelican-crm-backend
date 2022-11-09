@@ -88,7 +88,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.LinkedInUrl, f => f.Internet.Url().OrNull(f))
 			.RuleFor(e => e.JobTitle, f => f.Name.JobTitle().OrNull(f))
 			.RuleFor(e => e.HubSpotId, f => f.Random.Guid().ToString())
-			.RuleFor(e => e.HubSpotOwnerId, f => f.PickRandom<AccountManager>(accountManagers).HubSpotId.OrNull(f))
+			.RuleFor(e => e.HubSpotOwnerId, f => f.PickRandom<AccountManager>(accountManagers).HubSpotId)
 			.RuleFor(e => e.Id, f => f.Random.Guid());
 		return faker.Generate(count);
 	}

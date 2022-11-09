@@ -2,6 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Clients.Commands.DeleteClient;
+using Pelican.Application.Clients.Commands.UpdateClient;
 using Pelican.Application.Deals.Commands.DeleteDeal;
 using Pelican.Application.Deals.Commands.UpdateDeal;
 using Pelican.Application.HubSpot.Commands.NewInstallation;
@@ -70,6 +72,13 @@ public sealed class HubSpotController : ApiController
 					"deal.deletion" => new DeleteDealCommand(
 						request.ObjectId),
 					"deal.propertyChange" => new UpdateDealCommand(
+						request.ObjectId,
+						request.PortalId,
+						request.PropertyName,
+						request.PropertyValue),
+					"company.deletion" => new DeleteClientCommand(
+					request.ObjectId),
+					"company.propertyChange" => new UpdateClientCommand(
 						request.ObjectId,
 						request.PortalId,
 						request.PropertyName,

@@ -34,19 +34,6 @@ public class UpdateDealCommandHandlerTests
 		_cancellationToken = new();
 	}
 
-	private void SetupUnitOfWork()
-	{
-		_unitOfWorkMock
-			.Setup(
-				u => u.DealRepository)
-			.Returns(_dealRepositoryMock.Object);
-
-		_unitOfWorkMock
-			.Setup(
-				u => u.SupplierRepository)
-			.Returns(_supplierRepositoryMock.Object);
-	}
-
 	[Theory]
 	[InlineData(0, 0, "0", "0")]
 	public async void Handle_DealNotFoundSupplierNotFound_ReturnsFailureErrorNullValue(
@@ -57,8 +44,6 @@ public class UpdateDealCommandHandlerTests
 	{
 		// Arrange
 		UpdateDealCommand command = new(objectId, portalId, propertyName, propertyValue);
-
-		SetupUnitOfWork();
 
 		_unitOfWorkMock
 			.Setup(

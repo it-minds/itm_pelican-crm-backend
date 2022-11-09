@@ -73,6 +73,10 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 			return result;
 		}
 
+		Contact contact = FillOutContactAssociationsAsync(
+			result.Value,
+			cancellationToken);
+
 		await _unitOfWork
 			.ContactRepository
 			.CreateAsync(
@@ -80,6 +84,35 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 				cancellationToken);
 
 		return Result.Success();
+	}
+
+	private Contact FillOutContactAssociationsAsync(Contact contact, CancellationToken cancellationToken)
+	{
+		IEnumerable<Deal> deals = contact
+		.DealContacts
+		.Select(async dc => await _unitOfWork
+		  	.DealRepository
+			.FirstOrDefaultAsync(
+				d => d.HubSpotId == dc.Deal.HubSpotId,
+				cancellationToken)
+		)
+		.Select(dTask => dTask.Result)
+		.Where(d => d is not null)!;
+
+		IEnumerable<Client> clients = contact
+		.ClientContacts
+		.Select(async cc => await _unitOfWork
+		  	.ClientRepository
+			.FirstOrDefaultAsync(
+				c => c.HubSpotId == cc.Client.HubSpotId,
+				cancellationToken)
+		)
+		.Select(cTask => cTask.Result)
+		.Where(c => c is not null)!;
+
+		contact.FillOutAssociations(clients, deals);
+
+		return contact;
 	}
 
 	private async Task<Result<string>> GetAccessTokenAsync(

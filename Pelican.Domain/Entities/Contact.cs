@@ -54,11 +54,38 @@ public class Contact : Entity, ITimeTracked
 			case "jobtitle":
 				JobTitle = propertyValue;
 				break;
+			case "hs_all_owner_ids":
+				HubSpotOwnerId = propertyValue;
+				break;
 			default:
 				throw new InvalidOperationException("Invalid field");
 		}
 
 		return this;
+	}
+
+	public virtual void UpdateDealContacts(ICollection<DealContact>? currectHubSpotDealContacts)
+	{
+		if (currectHubSpotDealContacts is null)
+		{
+			return;
+		}
+
+		foreach (DealContact dealContact in DealContacts.Where(dc => dc.IsActive))
+		{
+			if (!currectHubSpotDealContacts.Any(currectHubSpotDealContact => currectHubSpotDealContact.HubSpotDealId == dealContact.HubSpotDealId))
+			{
+				dealContact.Deactivate();
+			}
+		}
+
+		foreach (DealContact dealContact in currectHubSpotDealContacts)
+		{
+			if (!DealContacts.Any(dc => dc.HubSpotDealId == dealContact.HubSpotDealId && dc.IsActive))
+			{
+				DealContacts.Add(dealContact);
+			}
+		}
 	}
 
 	public virtual Contact FillOutAssociations(IEnumerable<Client>? clients, IEnumerable<Deal>? deals)

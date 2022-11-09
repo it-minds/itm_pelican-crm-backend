@@ -35,12 +35,10 @@ internal class ClientConfiguration : IEntityTypeConfiguration<Client>
 
 		builder.HasMany(a => a.ClientContacts)
 			.WithOne(a => a.Client)
-			.HasForeignKey(a => a.ClientId)
-			.IsRequired();
+			.HasForeignKey(a => a.ClientId);
 
 		builder.HasMany(a => a.Deals)
 			.WithOne(a => a.Client)
-			.HasForeignKey(a => a.ClientId)
-			.IsRequired();
+			.HasForeignKey(a => a.ClientId);
 	}
 }

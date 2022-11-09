@@ -15,7 +15,7 @@ public class DeleteDealCommandValidatorTests
 	}
 
 	[Fact]
-	public void UpdateDealCommandCommandValidator_EmptyId_ReturnsError()
+	public void UpdateDealCommandValidator_EmptyId_ReturnsError()
 	{
 		// Arrange
 		DeleteDealCommand command = new(0);
@@ -28,7 +28,7 @@ public class DeleteDealCommandValidatorTests
 	}
 
 	[Fact]
-	public void UpdateDealCommandCommandValidator_NoEmptyId_ReturnsNoError()
+	public void UpdateDealCommandValidator_NoEmptyId_ReturnsNoError()
 	{
 		// Arrange
 		DeleteDealCommand command = new(1);

@@ -15,7 +15,7 @@ public class UpdateDealCommandValidatorTests
 	}
 
 	[Fact]
-	public void UpdateDealCommandCommandValidator_EmptyString_ReturnsError()
+	public void UpdateDealCommandValidator_EmptyStringOrDefaultValue_ReturnsError()
 	{
 		// Arrange
 		UpdateDealCommand command = new(
@@ -29,13 +29,13 @@ public class UpdateDealCommandValidatorTests
 
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.ObjectId);
-		result.ShouldHaveValidationErrorFor(command => command.PortalId);
+		result.ShouldHaveValidationErrorFor(command => command.SupplierHubSpotId);
 		result.ShouldHaveValidationErrorFor(command => command.PropertyName);
 		result.ShouldHaveValidationErrorFor(command => command.PropertyValue);
 	}
 
 	[Fact]
-	public void UpdateDealCommandCommandValidator_NoEmptyStrings_ReturnsNoError()
+	public void UpdateDealCommandValidator_NoEmptyStringsOrDefaultValues_ReturnsNoError()
 	{
 		// Arrange
 		UpdateDealCommand command = new(
@@ -49,7 +49,7 @@ public class UpdateDealCommandValidatorTests
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.ObjectId);
-		result.ShouldNotHaveValidationErrorFor(command => command.PortalId);
+		result.ShouldNotHaveValidationErrorFor(command => command.SupplierHubSpotId);
 		result.ShouldNotHaveValidationErrorFor(command => command.PropertyName);
 		result.ShouldNotHaveValidationErrorFor(command => command.PropertyValue);
 	}

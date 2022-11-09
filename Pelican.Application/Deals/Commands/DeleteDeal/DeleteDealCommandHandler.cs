@@ -11,17 +11,16 @@ internal sealed class DeleteDealCommandHandler : ICommandHandler<DeleteDealComma
 
 	public DeleteDealCommandHandler(IUnitOfWork unitOfWork)
 	{
-		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(IUnitOfWork));
+		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 	}
 
 	public async Task<Result> Handle(
 		DeleteDealCommand command,
 		CancellationToken cancellationToken)
 	{
-		Deal? deal = _unitOfWork
+		Deal? deal = await _unitOfWork
 			.DealRepository
-			.FindByCondition(d => d.Id.ToString() == command.ObjectId.ToString())
-			.FirstOrDefault();
+			.FirstOrDefaultAsync(d => d.HubSpotId == command.ObjectId.ToString(), cancellationToken);
 
 		if (deal is null)
 		{

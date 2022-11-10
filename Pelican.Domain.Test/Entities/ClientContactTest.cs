@@ -3,18 +3,18 @@ using Xunit;
 
 namespace Pelican.Domain.Test.Entities;
 
-public class DealContactTests
+public class ClientContactTest
 {
 	[Fact]
 	public void Create_ReturnCorrectProperties()
 	{
 		// Arrange 
-		const string DEAL_HUBSPOTID = "dealhubspotid";
+		const string CLIENT_HUBSPOTID = "clienthubspotid";
 		const string CONTACT_HUBSPOTID = "contacthubspotid";
 
-		Deal deal = new(Guid.NewGuid())
+		Client client = new(Guid.NewGuid())
 		{
-			HubSpotId = DEAL_HUBSPOTID,
+			HubSpotId = CLIENT_HUBSPOTID,
 		};
 
 		Contact contact = new(Guid.NewGuid())
@@ -23,20 +23,20 @@ public class DealContactTests
 		};
 
 		// Act
-		var result = DealContact.Create(deal, contact);
+		var result = ClientContact.Create(client, contact);
 
 		// Assert
 		Assert.Equal(
-			deal,
-			result.Deal);
+			client,
+			result.Client);
 
 		Assert.Equal(
-			deal.Id,
-			result.DealId);
+			client.Id,
+			result.ClientId);
 
 		Assert.Equal(
-			DEAL_HUBSPOTID,
-			result.HubSpotDealId);
+			CLIENT_HUBSPOTID,
+			result.HubSpotClientId);
 
 		Assert.Equal(
 			contact,

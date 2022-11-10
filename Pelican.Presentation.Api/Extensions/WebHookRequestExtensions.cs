@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Clients.Commands.DeleteClient;
+using Pelican.Application.Clients.Commands.UpdateClient;
 using Pelican.Application.Contacts.Commands.DeleteContact;
 using Pelican.Application.Contacts.Commands.UpdateContact;
 using Pelican.Application.Deals.Commands.DeleteDeal;
@@ -29,12 +31,19 @@ internal static class WebHookRequestExtensions
 						request.ObjectId),
 					"deal.deletion" => new DeleteDealCommand(
 						request.ObjectId),
+					"company.deletion" => new DeleteClientCommand(
+						request.ObjectId),
 					"contact.propertyChange" => new UpdateContactCommand(
 						request.ObjectId,
 						request.PortalId,
 						request.PropertyName,
 						request.PropertyValue),
 					"deal.propertyChange" => new UpdateDealCommand(
+						request.ObjectId,
+						request.PortalId,
+						request.PropertyName,
+						request.PropertyValue),
+					"company.propertyChange" => new UpdateClientCommand(
 						request.ObjectId,
 						request.PortalId,
 						request.PropertyName,

@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Contacts.Commands.DeleteContact;
+﻿using Pelican.Application.Clients.Commands.DeleteClient;
+using Pelican.Application.Contacts.Commands.DeleteContact;
 using Pelican.Application.Contacts.Commands.UpdateContact;
 using Pelican.Application.Deals.Commands.DeleteDeal;
 using Pelican.Application.Deals.Commands.UpdateDeal;
@@ -109,7 +110,31 @@ public class WebHookRequestExtensionsTests
 	}
 
 	[Fact]
-	public void ConvertToCommands_SubscriptionTypeContactPropertyChange_ReturnDeleteContactCommand()
+	public void ConvertToCommands_SubscriptionTypeCompanyDeletion_ReturnDeleteClientCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest = new()
+		{
+			SubscriptionType = "company.deletion",
+			ObjectId = OBJECT_ID,
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest,
+		};
+
+		// Act 
+		var result = WebHookRequestExtensions.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Equal(
+			OBJECT_ID,
+			((DeleteClientCommand)result.First()).ObjectId);
+	}
+
+	[Fact]
+	public void ConvertToCommands_SubscriptionTypeContactPropertyChange_ReturnUpdateContactCommand()
 	{
 		// Arrange
 		WebHookRequest webHookRequest = new()
@@ -145,12 +170,48 @@ public class WebHookRequestExtensionsTests
 	}
 
 	[Fact]
-	public void ConvertToCommands_SubscriptionTypeDealPropertyChange_ReturnDeleteDealCommand()
+	public void ConvertToCommands_SubscriptionTypeDealPropertyChange_ReturnUpdateDealCommand()
 	{
 		// Arrange
 		WebHookRequest webHookRequest = new()
 		{
 			SubscriptionType = "deal.propertyChange",
+			ObjectId = OBJECT_ID,
+			PortalId = PORTAL_ID,
+			PropertyName = PROPERTY_NAME,
+			PropertyValue = PROPERTY_VALUE,
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest,
+		};
+
+		// Act 
+		var result = WebHookRequestExtensions.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Equal(
+			OBJECT_ID,
+			((UpdateDealCommand)result.First()).ObjectId);
+		Assert.Equal(
+			PORTAL_ID,
+			((UpdateDealCommand)result.First()).SupplierHubSpotId);
+		Assert.Equal(
+			PROPERTY_NAME,
+			((UpdateDealCommand)result.First()).PropertyName);
+		Assert.Equal(
+			PROPERTY_VALUE,
+			((UpdateDealCommand)result.First()).PropertyValue);
+	}
+
+	[Fact]
+	public void ConvertToCommands_SubscriptionTypeCompanyPropertyChange_ReturnUpdateClientCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest = new()
+		{
+			SubscriptionType = "company.propertyChange",
 			ObjectId = OBJECT_ID,
 			PortalId = PORTAL_ID,
 			PropertyName = PROPERTY_NAME,

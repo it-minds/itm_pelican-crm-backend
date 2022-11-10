@@ -1,4 +1,6 @@
-﻿namespace Pelican.Application.Contacts.Commands.UpdateContact;
+﻿using FluentValidation;
+
+namespace Pelican.Application.Contacts.Commands.UpdateContact;
 
 internal sealed class UpdateContactCommandValidator : AbstractValidator<UpdateContactCommand>
 {

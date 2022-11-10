@@ -1,4 +1,14 @@
-﻿namespace Pelican.Presentation.Api.Controllers;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.HubSpot.Commands.NewInstallation;
+using Pelican.Domain.Shared;
+using Pelican.Presentation.Api.Abstractions;
+using Pelican.Presentation.Api.Contracts;
+using Pelican.Presentation.Api.Extensions;
+using Pelican.Presentation.Api.Utilities.HubSpotHookValidation;
+
+namespace Pelican.Presentation.Api.Controllers;
 
 [Route("[controller]")]
 //[EnableCors("HubSpot")]
@@ -13,11 +23,10 @@ public sealed class HubSpotController : ApiController
 		string code,
 		CancellationToken cancellationToken)
 	{
-		NewInstallationCommand newInstallation = new(code);
+		NewInstallationCommand newInstallation = new(
+			code);
 
-		Result result = await Sender.Send(
-			newInstallation,
-			cancellationToken);
+		Result result = await Sender.Send(newInstallation, cancellationToken);
 
 		return result.IsSuccess
 			? Redirect("https://it-minds.dk/")
@@ -36,9 +45,7 @@ public sealed class HubSpotController : ApiController
 		foreach (ICommand command in commands)
 		{
 			results.Add(
-				await Sender.Send(
-					command,
-					cancellationToken));
+				await Sender.Send(command, cancellationToken));
 		}
 
 		Result result = Result.FirstFailureOrSuccess(results.ToArray());

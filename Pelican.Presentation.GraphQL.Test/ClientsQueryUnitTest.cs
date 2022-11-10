@@ -22,7 +22,7 @@ public class ClientsQueryUnitTest
 		//Act
 		_ = uut.GetClients(mediatorMock.Object, cancellationToken);
 		//Assert
-		mediatorMock.Verify(x => x.Send(It.IsAny<GetClientsQuery>(), cancellationToken), Times.Exactly(2));
+		mediatorMock.Verify(x => x.Send(It.IsAny<GetClientsQuery>(), cancellationToken), Times.Once());
 	}
 	[Fact]
 	public async void If_GetClientAsync_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken_And_Input()
@@ -38,6 +38,6 @@ public class ClientsQueryUnitTest
 		var result = await uut.GetClientAsync(input.Id, mediatorMock.Object, cancellationToken);
 		//Assert
 		Assert.Equal(id, result.Id);
-		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Exactly(1));
+		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Once());
 	}
 }

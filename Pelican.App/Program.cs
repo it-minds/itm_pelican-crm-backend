@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDomain(builder.Configuration);
 builder.Services.AddHubSpot();
-builder.Services.AddPersistince(builder.Configuration);
+builder.Services.AddPersistince(builder.Configuration, builder.Environment.IsProduction());
 builder.Services.AddApplication();
 builder.Services.AddApi();
 

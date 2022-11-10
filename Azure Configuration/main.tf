@@ -61,6 +61,9 @@ resource "azurerm_linux_web_app" "pelican-linux-web-app" {
   resource_group_name = var.resourceGroupName
   location            = var.azureLocation
   service_plan_id     = azurerm_service_plan.pelican-appserviceplan.id
+  identity {
+    type = "SystemAssigned"
+  }
 
   site_config {}
 }

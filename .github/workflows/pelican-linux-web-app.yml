@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - feature/plcn-106-SetupOfDatabase
+
 env:
   AZURE_WEBAPP_NAME: pelican-linux-web-app
   AZURE_WEBAPP_PACKAGE_PATH: Pelican.App/published

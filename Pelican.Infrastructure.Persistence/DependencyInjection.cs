@@ -1,4 +1,6 @@
-﻿using HotChocolate.Execution.Configuration;
+﻿using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using HotChocolate.Execution.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,11 +19,16 @@ namespace Pelican.Infrastructure.Persistence;
 public static class DependencyInjection
 {
 	//This depedency injection allows persistence to be added as a service in program.
-	public static IServiceCollection AddPersistince(this IServiceCollection services, IConfiguration configuration)
+	public static IServiceCollection AddPersistince(this IServiceCollection services, IConfiguration configuration, bool isProduction)
 	{
-		services.AddDbContextFactory<PelicanContext>(
-			o => o.UseSqlServer(configuration.GetConnectionString("myLocalDb"),
-			b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)));
+		if (isProduction)
+		{
+			AddDevDb(services, configuration);
+		}
+		else
+		{
+			AddLocalDb(services, configuration);
+		}
 		services.AddTransient<IUnitOfWork>(_ => new UnitOfWork(_.GetRequiredService<IDbContextFactory<PelicanContext>>().CreateDbContext()));
 		services.AddTransient<IPelicanBogusFaker, PelicanBogusFaker>();
 		services.AddTransient<DevelopmentSeeder>();
@@ -46,5 +53,22 @@ public static class DependencyInjection
 		}
 
 		return app;
+	}
+	private static IServiceCollection AddLocalDb(this IServiceCollection services, IConfiguration configuration)
+	{
+		services.AddDbContextFactory<PelicanContext>(
+			o => o.UseSqlServer(configuration.GetConnectionString("myLocalDb"),
+			b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)));
+		return services;
+	}
+	private static IServiceCollection AddDevDb(this IServiceCollection services, IConfiguration configuration)
+	{
+		string keyVaultName = configuration["KeyVaultName"];
+		var kvUri = "https://" + keyVaultName + ".vault.azure.net";
+		var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
+		services.AddDbContextFactory<PelicanContext>(
+			o => o.UseSqlServer(client.GetSecret(configuration["PelicanMsSQLSecret"]).Value.Value,
+			b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)));
+		return services;
 	}
 }

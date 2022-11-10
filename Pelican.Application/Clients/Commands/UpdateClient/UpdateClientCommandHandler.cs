@@ -39,7 +39,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			return await GetClientFromHubSpot(
 				command.PortalId, accessTokenResult.Value, cancellationToken);
 		}
-
+		Console.WriteLine("Right Befor property switch Q Q Q Q Q Q Q Q Q Q Q Q Q Q");
 		switch (command.PropertyName)
 		{
 			case "name":
@@ -74,7 +74,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		.SupplierRepository
 				.FindByCondition(supplier => supplier.HubSpotId == portalId)
 				.FirstOrDefault();
-
+		Console.WriteLine("Trying to get accessToken");
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{
 			return Result.Failure<string>(Error.NullValue);

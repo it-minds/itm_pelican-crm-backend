@@ -11,6 +11,7 @@ public class ClientsQuery
 	[UsePaging]
 	public async Task<IQueryable<Client>> GetClients([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
+		Console.WriteLine("Test");
 		return await mediator.Send(new GetClientsQuery(), cancellationToken);
 	}
 	//This Query reguests a specific Client from the database.

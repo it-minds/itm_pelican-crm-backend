@@ -17,9 +17,10 @@ public class ClientsQuery
 			await mediator.Send(new GetClientsQuery(), cancellationToken);
 			Console.WriteLine("Got a client");
 		}
-		catch
+		catch (Exception ex)
 		{
-			Console.WriteLine("Error");
+			Console.WriteLine(ex.Message);
+			Console.WriteLine(ex.StackTrace);
 		}
 		var client = await mediator.Send(new GetClientsQuery(), cancellationToken);
 		return client;

@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace Pelican.Application.Contacts.Commands.UpdateContact;
+namespace Pelican.Application.Clients.Commands.UpdateClient;
 
-internal sealed class UpdateContactCommandValidator : AbstractValidator<UpdateContactCommand>
+internal sealed class UpdateClientCommandValidator : AbstractValidator<UpdateClientCommand>
 {
-	public UpdateContactCommandValidator()
+	public UpdateClientCommandValidator()
 	{
 		RuleFor(command => command.ObjectId).NotEmpty();
 		RuleFor(command => command.PropertyName).NotEmpty();

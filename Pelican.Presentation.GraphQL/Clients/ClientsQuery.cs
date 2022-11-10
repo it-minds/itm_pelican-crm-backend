@@ -7,12 +7,23 @@ namespace Pelican.Presentation.GraphQL.Clients;
 [ExtendObjectType("Query")]
 public class ClientsQuery
 {
+	private Task<IQueryable<Client>> _client;
 	//This Query reguests all Clients from the database.
 	[UsePaging]
 	public async Task<IQueryable<Client>> GetClients([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
 		Console.WriteLine("GetClients");
-		return await mediator.Send(new GetClientsQuery(), cancellationToken);
+		try
+		{
+			_client = (Task<IQueryable<Client>>)await mediator.Send(new GetClientsQuery(), cancellationToken);
+			Console.WriteLine("Got a client");
+		}
+		catch
+		{
+			Console.WriteLine("Error");
+		}
+		var client = await mediator.Send(new GetClientsQuery(), cancellationToken);
+		return client;
 	}
 	//This Query reguests a specific Client from the database.
 	public async Task<Client> GetClientAsync(Guid id, [Service] IMediator mediator, CancellationToken cancellationToken)

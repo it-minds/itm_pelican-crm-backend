@@ -36,6 +36,7 @@ public static class DependencyInjection
 		//{
 		app.UseSwagger();
 		app.UseSwaggerUI();
+
 		//}
 
 		app.UseHttpsRedirection();

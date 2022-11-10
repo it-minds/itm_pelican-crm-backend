@@ -27,7 +27,7 @@ public static class DependencyInjection
 		//}
 		//else
 		//{
-		AddLocalDb(services, configuration);
+		//AddLocalDb(services, configuration);
 		//}
 		services.AddTransient<IUnitOfWork>(_ => new UnitOfWork(_.GetRequiredService<IDbContextFactory<PelicanContext>>().CreateDbContext()));
 		services.AddTransient<IPelicanBogusFaker, PelicanBogusFaker>();

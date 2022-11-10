@@ -11,7 +11,6 @@ public class ClientRepository : GenericRepository<Client>
 
 	public override IQueryable<Client> FindAllWithIncludes()
 	{
-		Console.WriteLine("FindAllWithIncludesForClient");
 		var client = PelicanContext.Set<Client>().AsNoTracking()
 			.Include(x => x.ClientContacts)
 			.ThenInclude(x => x.Contact)
@@ -30,7 +29,6 @@ public class ClientRepository : GenericRepository<Client>
 			.ThenInclude(x => x.AccountManager)
 			.ThenInclude(x => x.Supplier)
 			.ThenInclude(x => x.OfficeLocations);
-		Console.WriteLine(client.FirstOrDefault().Name);
 		return client;
 	}
 }

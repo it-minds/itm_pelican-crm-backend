@@ -22,7 +22,7 @@ public class ClientsQueryUnitTest
 		//Act
 		_ = uut.GetClients(mediatorMock.Object, cancellationToken);
 		//Assert
-		mediatorMock.Verify(x => x.Send(It.IsAny<GetClientsQuery>(), cancellationToken), Times.Once());
+		mediatorMock.Verify(x => x.Send(It.IsAny<GetClientsQuery>(), cancellationToken), Times.Exactly(2));
 	}
 	[Fact]
 	public async void If_GetClientAsync_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken_And_Input()

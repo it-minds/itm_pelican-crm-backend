@@ -8,10 +8,15 @@ using Pelican.Presentation.Api.Contracts;
 
 namespace Pelican.Presentation.Api.Extensions;
 
-public static class WebHookRequestExtensions
+internal static class WebHookRequestExtensions
 {
-	public static IReadOnlyCollection<ICommand> ConvertToCommands(this IReadOnlyCollection<WebHookRequest> requests)
+	internal static IReadOnlyCollection<ICommand> ConvertToCommands(this IReadOnlyCollection<WebHookRequest>? requests)
 	{
+		if (requests is null)
+		{
+			return new List<ICommand>();
+		}
+
 		BlockingCollection<ICommand> commands = new();
 
 		requests

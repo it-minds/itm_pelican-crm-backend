@@ -11,7 +11,6 @@ using Pelican.Presentation.Api.Controllers;
 using Xunit;
 
 namespace Pelican.Presentation.Api.Test.Controllers;
-
 public class HubSpotControllerTests
 {
 	private const long OBJECT_ID = 0;

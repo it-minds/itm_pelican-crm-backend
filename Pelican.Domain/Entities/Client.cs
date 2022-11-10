@@ -14,9 +14,8 @@ public class Client : Entity, ITimeTracked
 
 	public string? OfficeLocation { get; set; }
 
-	public string? Website { get; set; }
-
 	public string? Classification { get; set; }
+
 
 	public ICollection<Deal> Deals { get; set; } = new List<Deal>();
 
@@ -27,7 +26,7 @@ public class Client : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 
 	public long? LastUpdatedAt { get; set; }
-
+	public string Website { get; set; }
 
 	public Client(Guid id) : base(id) { }
 

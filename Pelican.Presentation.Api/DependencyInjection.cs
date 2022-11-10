@@ -11,7 +11,7 @@ namespace Pelican.Presentation.Api;
 public static class DependencyInjection
 {
 	const string ALLOWED_CORS_ORIGINS = "AllowedCorsOrigins";
-	
+
 	public static IServiceCollection AddApi(this IServiceCollection services)
 	{
 		services.AddCors(options => options
@@ -51,4 +51,3 @@ public static class DependencyInjection
 		return app;
 	}
 }
-

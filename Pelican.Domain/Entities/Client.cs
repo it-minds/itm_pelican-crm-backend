@@ -14,8 +14,9 @@ public class Client : Entity, ITimeTracked
 
 	public string? OfficeLocation { get; set; }
 
-	public string? Classification { get; set; }
+	public string? Website { get; set; }
 
+	public string? Classification { get; set; }
 
 	public ICollection<Deal> Deals { get; set; } = new List<Deal>();
 

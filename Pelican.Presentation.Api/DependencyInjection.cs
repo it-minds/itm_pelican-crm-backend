@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Pelican.Presentation.Api.Utilities.HubSpotHookValidation;
 using Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashGenerator;
 
@@ -31,13 +32,12 @@ public static class DependencyInjection
 
 	public static WebApplication UseApi(this WebApplication app)
 	{
-		// Configure the HTTP request pipeline.
-		//if (app.Environment.IsDevelopment())
-		//{
-		app.UseSwagger();
-		app.UseSwaggerUI();
-
-		//}
+		//Configure the HTTP request pipeline.
+		if (app.Environment.IsDevelopment())
+		{
+			app.UseSwagger();
+			app.UseSwaggerUI();
+		}
 
 		app.UseHttpsRedirection();
 		app.UseRouting();

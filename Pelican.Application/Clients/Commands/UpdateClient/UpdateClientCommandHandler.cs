@@ -28,6 +28,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			.ClientRepository
 			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
 			.Include(x => x.ClientContacts)
+			.ThenInclude(x => x.Contact)
 			.FirstOrDefault();
 		Console.WriteLine("\n CLient " + client?.Name + "\n");
 

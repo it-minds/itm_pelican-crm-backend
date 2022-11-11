@@ -43,7 +43,8 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			return await GetClientFromHubSpot(
 				command.PortalId, accessTokenResult.Value, cancellationToken);
 		}
-		Console.WriteLine("\n Right Before property switch Q Q Q Q Q Q Q Q Q Q Q Q Q Q \n ");
+		Console.WriteLine("\n Right Before property switch Q Q Q Q Q Q Q Q Q Q Q Q Q Q \n" +
+			+command.ObjectId);
 		switch (command.PropertyName)
 		{
 			case "name":
@@ -78,7 +79,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		.SupplierRepository
 				.FindByCondition(supplier => supplier.HubSpotId == portalId)
 				.FirstOrDefault();
-		Console.WriteLine("Trying to get accessToken with supplier id" + portalId.ToString());
+		Console.WriteLine("Trying to get accessToken with supplier id" + portalId.ToString() + "    ");
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{
 			Console.WriteLine("SupplierWas null when trying to get an access token");
@@ -121,7 +122,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		return Result.Success();
 	}
 
-	private async Task<Result> UpdateClientContacts(Client localClient, long portalId, long objectId, CancellationToken cancellationToken)
+	private async Task<Result> UpdateClientContacts(Client localClient, long objectId, long portalId, CancellationToken cancellationToken)
 	{
 		Console.WriteLine("Trying to updateclientcontact");
 		Result<string> accessTokenResult = GetAccessToken(portalId, cancellationToken).Result;

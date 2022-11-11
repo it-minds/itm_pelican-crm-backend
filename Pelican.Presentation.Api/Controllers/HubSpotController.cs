@@ -5,18 +5,21 @@ using Pelican.Application.HubSpot.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
 using Pelican.Presentation.Api.Contracts;
-using Pelican.Presentation.Api.Extensions;
+using Pelican.Presentation.Api.Mapping;
 using Pelican.Presentation.Api.Utilities.HubSpotHookValidation;
 
 namespace Pelican.Presentation.Api.Controllers;
 
 [Route("[controller]")]
 //[EnableCors("HubSpot")]
-public sealed class HubSpotController : ApiController
+internal sealed class HubSpotController : ApiController
 {
-	public HubSpotController(ISender sender)
-		: base(sender)
-	{ }
+	private readonly IRequestToCommandMapper _mapper;
+
+	public HubSpotController(
+		ISender sender,
+		IRequestToCommandMapper requestToCommandMapper)
+		: base(sender) => _mapper = requestToCommandMapper;
 
 	[HttpGet]
 	public async Task<IActionResult> NewInstallation(
@@ -40,7 +43,12 @@ public sealed class HubSpotController : ApiController
 		CancellationToken cancellationToken)
 	{
 		List<Result> results = new();
-		IReadOnlyCollection<ICommand> commands = requests.ConvertToCommands();
+		IReadOnlyCollection<ICommand> commands = _mapper.ConvertToCommands(requests);
+
+		if (commands.Count == 0)
+		{
+			return Ok();
+		}
 
 		foreach (ICommand command in commands)
 		{

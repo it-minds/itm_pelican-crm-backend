@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Deals.Commands.DeleteDeal;
-using Pelican.Application.Deals.Commands.UpdateDeal;
+using Pelican.Application.Contacts.Commands.DeleteContact;
 using Pelican.Application.HubSpot.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Contracts;
 using Pelican.Presentation.Api.Controllers;
+using Pelican.Presentation.Api.Mapping;
 using Xunit;
 
 namespace Pelican.Presentation.Api.Test.Controllers;
@@ -20,11 +20,13 @@ public class HubSpotControllerTests
 
 	private readonly HubSpotController _uut;
 	private readonly Mock<ISender> _senderMock;
+	private readonly Mock<IRequestToCommandMapper> _mapperMock;
 
 	public HubSpotControllerTests()
 	{
 		_senderMock = new();
-		_uut = new(_senderMock.Object);
+		_mapperMock = new();
+		_uut = new(_senderMock.Object, _mapperMock.Object);
 	}
 
 	[Theory]
@@ -74,74 +76,73 @@ public class HubSpotControllerTests
 		Assert.IsType<BadRequestObjectResult>(result);
 	}
 
+
 	[Fact]
-	public async void Hook_ReceivingEmptyBody_NoCommandsSendReturnsOk()
+	public async void Hook_ReceivedRequestSendToMapper_MapperCalledWithArg()
 	{
 		// Arrange
-		List<WebHookRequest> requests = new();
+		List<WebHookRequest> requests = new()
+		{
+			new(),
+		};
+
+		_mapperMock
+			.Setup(mapper => mapper
+				.ConvertToCommands(It.IsAny<IReadOnlyCollection<WebHookRequest>>()))
+			.Returns(new List<ICommand>());
 
 		// Act
 		IActionResult result = await _uut.Hook(requests, default);
 
 		// Assert
+		_mapperMock.Verify(
+			s => s.ConvertToCommands(requests),
+			Times.Once);
+	}
+
+
+	[Fact]
+	public async void Hook_EmptyCommandCollectionFromMapper_NoCommandsSendReturnsOk()
+	{
+		// Arrange
+		_mapperMock
+			.Setup(mapper => mapper
+				.ConvertToCommands(It.IsAny<IReadOnlyCollection<WebHookRequest>>()))
+			.Returns(new List<ICommand>());
+
+		// Act
+		IActionResult result = await _uut.Hook(null!, default);
+
+		// Assert
 		_senderMock.Verify(
-			s => s.Send(It.IsAny<ICommand>(), default),
+			s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()),
 			Times.Never);
 
 		Assert.IsType<OkResult>(result);
 	}
 
 	[Fact]
-	public async void Hook_ReceivingOneUnhandledRequest_NoCommandsSendReturnsOk()
+	public async void Hook_ReceivingOneCommandRequestResultSuccess_OneCommandSendReturnsOk()
 	{
 		// Arrange
-		List<WebHookRequest> requests = new()
-		{
-			new()
-			{
-				SubscriptionType = "HelloWorld"
-			}
-		};
+		ICommand command = new DeleteContactCommand(OBJECT_ID);
+
+		_mapperMock
+			.Setup(mapper => mapper
+				.ConvertToCommands(It.IsAny<IReadOnlyCollection<WebHookRequest>>()))
+			.Returns(new List<ICommand>() { new DeleteContactCommand(OBJECT_ID) });
 
 		_senderMock
-			.Setup(s => s.Send(It.IsAny<ICommand>(), default))
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success);
 
 		// Act
-		IActionResult result = await _uut.Hook(requests, default);
-
-		// Assert
-		_senderMock.Verify(
-			s => s.Send(It.IsAny<ICommand>(), default),
-			Times.Never);
-
-		Assert.IsType<OkResult>(result);
-	}
-
-	[Fact]
-	public async void Hook_ReceivingOneDealDeletionRequestResultSuccess_OneCommandSendReturnsOk()
-	{
-		// Arrange
-		List<WebHookRequest> requests = new()
-		{
-			new()
-			{
-				SubscriptionType = "deal.deletion",
-				ObjectId = OBJECT_ID,
-			}
-		};
-
-		_senderMock
-			.Setup(s => s.Send(It.IsAny<ICommand>(), default))
-			.ReturnsAsync(Result.Success);
-
-		// Act
-		IActionResult result = await _uut.Hook(requests, default);
+		IActionResult result = await _uut.Hook(null!, default);
 
 		// Assert
 		_senderMock.Verify(
 			s => s.Send(
-				It.Is<DeleteDealCommand>(c => c.ObjectId == OBJECT_ID),
+				command,
 				default),
 			Times.Once);
 
@@ -149,138 +150,29 @@ public class HubSpotControllerTests
 	}
 
 	[Fact]
-	public async void Hook_ReceivingOneDealDeletionRequestResultFailure_OneCommandSendReturnsBadRequest()
+	public async void Hook_ReceivingOneCommandRequestResultFailure_OneCommandSendReturnsBadRequest()
 	{
 		// Arrange
-		List<WebHookRequest> requests = new()
-		{
-			new()
-			{
-				SubscriptionType = "deal.deletion",
-				ObjectId = OBJECT_ID,
-			},
-		};
+		ICommand command = new DeleteContactCommand(OBJECT_ID);
+
+		_mapperMock
+			.Setup(mapper => mapper
+				.ConvertToCommands(It.IsAny<IReadOnlyCollection<WebHookRequest>>()))
+			.Returns(new List<ICommand>() { new DeleteContactCommand(OBJECT_ID) });
+
+		Error error = Error.NullValue;
 
 		_senderMock
-			.Setup(s => s.Send(It.IsAny<ICommand>(), default))
-			.ReturnsAsync(Result.Failure(new Error("0", "fail")));
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure(error));
 
 		// Act
-		IActionResult result = await _uut.Hook(requests, default);
+		IActionResult result = await _uut.Hook(null!, default);
 
 		// Assert
 		_senderMock.Verify(
 			s => s.Send(
-				It.Is<DeleteDealCommand>(c => c.ObjectId == OBJECT_ID),
-				default),
-			Times.Once);
-
-		Assert.IsType<BadRequestObjectResult>(result);
-	}
-
-	[Fact]
-	public async void Hook_ReceivingOneDealPropertyChangeRequestResultSuccess_OneCommandSendReturnsOk()
-	{
-		// Arrange
-		List<WebHookRequest> requests = new()
-		{
-			new()
-			{
-				SubscriptionType = "deal.propertyChange",
-				ObjectId=OBJECT_ID,
-				PortalId=PORTAL_ID,
-				PropertyName=PROPERTY_NAME,
-				PropertyValue=PROPERTY_VALUE,
-			}
-		};
-
-		_senderMock
-			.Setup(s => s.Send(It.IsAny<ICommand>(), default))
-			.ReturnsAsync(Result.Success);
-
-		// Act
-		IActionResult result = await _uut.Hook(requests, default);
-
-		// Assert
-		_senderMock.Verify(
-			s => s.Send(
-				It.Is<UpdateDealCommand>(c =>
-					c.ObjectId == OBJECT_ID
-					&& c.SupplierHubSpotId == PORTAL_ID
-					&& c.PropertyName == PROPERTY_NAME
-					&& c.PropertyValue == PROPERTY_VALUE),
-				default),
-			Times.Once);
-
-		Assert.IsType<OkResult>(result);
-	}
-
-	[Fact]
-	public async void Hook_ReceivingOneDealPropertyChangeRequestWithEmptyNameAndValueResultFailure_OneCommandSendReturnsBadRequest()
-	{
-		// Arrange
-		List<WebHookRequest> requests = new()
-		{
-			new()
-			{
-				SubscriptionType = "deal.propertyChange",
-				ObjectId=OBJECT_ID,
-				PortalId=PORTAL_ID
-			}
-		};
-
-		_senderMock
-			.Setup(s => s.Send(It.IsAny<ICommand>(), default))
-			.ReturnsAsync(Result.Failure(new Error("0", "fail")));
-
-		// Act
-		IActionResult result = await _uut.Hook(requests, default);
-
-		// Assert
-		_senderMock.Verify(
-			s => s.Send(
-				It.Is<UpdateDealCommand>(c =>
-					c.ObjectId == OBJECT_ID
-					&& c.SupplierHubSpotId == PORTAL_ID
-					&& c.PropertyName == string.Empty
-					&& c.PropertyValue == string.Empty),
-				default),
-			Times.Once);
-
-		Assert.IsType<BadRequestObjectResult>(result);
-	}
-
-	[Fact]
-	public async void Hook_ReceivingOneDealPropertyChangeRequestResultFailure_OneCommandSendReturnsBadRequest()
-	{
-		// Arrange
-		List<WebHookRequest> requests = new()
-		{
-			new()
-			{
-				SubscriptionType = "deal.propertyChange",
-				ObjectId=OBJECT_ID,
-				PortalId=PORTAL_ID,
-				PropertyName=PROPERTY_NAME,
-				PropertyValue=PROPERTY_VALUE,
-			}
-		};
-
-		_senderMock
-			.Setup(s => s.Send(It.IsAny<ICommand>(), default))
-			.ReturnsAsync(Result.Failure(new Error("0", "fail")));
-
-		// Act
-		IActionResult result = await _uut.Hook(requests, default);
-
-		// Assert
-		_senderMock.Verify(
-			s => s.Send(
-				It.Is<UpdateDealCommand>(c =>
-					c.ObjectId == OBJECT_ID
-					&& c.SupplierHubSpotId == PORTAL_ID
-					&& c.PropertyName == PROPERTY_NAME
-					&& c.PropertyValue == PROPERTY_VALUE),
+				command,
 				default),
 			Times.Once);
 

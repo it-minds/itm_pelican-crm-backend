@@ -28,10 +28,12 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			.Include(x => x.ClientContacts)
 			.ThenInclude(x => x.Contact)
 			.FirstOrDefault();
+		Console.WriteLine("CLient " + client.Name);
 
 		if (client is null)
 		{
 			Result<string> accessTokenResult = GetAccessToken(command.PortalId, cancellationToken).Result;
+			Console.WriteLine("Got an access token" + accessTokenResult.Value.First());
 			if (accessTokenResult.IsFailure)
 			{
 				return Result.Failure(accessTokenResult.Error);
@@ -39,7 +41,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			return await GetClientFromHubSpot(
 				command.PortalId, accessTokenResult.Value, cancellationToken);
 		}
-		Console.WriteLine("Right Befor property switch Q Q Q Q Q Q Q Q Q Q Q Q Q Q");
+		Console.WriteLine("Right Before property switch Q Q Q Q Q Q Q Q Q Q Q Q Q Q");
 		switch (command.PropertyName)
 		{
 			case "name":
@@ -86,6 +88,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		{
 			return Result.Failure<string>(accessTokenResult.Error);
 		}
+		Console.WriteLine("Got an access token " + accessTokenResult);
 		return accessTokenResult;
 	}
 

@@ -81,13 +81,17 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		Console.WriteLine("Trying to get accessToken");
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{
+			Console.WriteLine("SupplierWas null when trying to get an access token");
 			return Result.Failure<string>(Error.NullValue);
 		}
+		Console.WriteLine("Got an access token");
 
 		Result<string> accessTokenResult = await _hubSpotAuthorizationService
 			.RefreshAccessTokenAsync(supplier.RefreshToken, cancellationToken);
 		if (accessTokenResult.IsFailure)
 		{
+			Console.WriteLine("access token failure");
+
 			return Result.Failure<string>(accessTokenResult.Error);
 		}
 		Console.WriteLine("Got an access token " + accessTokenResult);
@@ -119,6 +123,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 
 	private async Task<Result> UpdateClientContacts(Client localClient, long portalId, long objectId, CancellationToken cancellationToken)
 	{
+		Console.WriteLine("Trying to updateclientcontact");
 		Result<string> accessTokenResult = GetAccessToken(portalId, cancellationToken).Result;
 		if (accessTokenResult.IsFailure)
 		{

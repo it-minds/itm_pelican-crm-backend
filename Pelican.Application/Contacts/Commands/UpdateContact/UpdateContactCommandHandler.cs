@@ -57,10 +57,11 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 	{
 		if (command.PropertyName == "num_associated_deals")
 		{
-			Result<Contact> result = await UpdateDealContacts(
+			Result<Contact> result = await UpdateDealContactsAsync(
 				contact,
 				command.SupplierHubSpotId,
-				command.ObjectId);
+				command.ObjectId,
+				cancellationToken);
 
 			if (result.IsFailure)
 			{
@@ -83,7 +84,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 		return Result.Success();
 	}
 
-	private async Task<Result<Contact>> UpdateDealContacts(
+	private async Task<Result<Contact>> UpdateDealContactsAsync(
 		Contact contact,
 		long supplierHubSpotId,
 		long contactHubSpotId,
@@ -119,7 +120,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 			return result;
 		}
 
-		Contact contact = FillOutContactAssociations(result.Value);
+		FillOutContactAssociations(result.Value);
 
 		await _unitOfWork
 			.ContactRepository

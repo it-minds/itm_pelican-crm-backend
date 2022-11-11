@@ -22,13 +22,15 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 	}
 	public async Task<Result> Handle(UpdateClientCommand command, CancellationToken cancellationToken)
 	{
+		Console.WriteLine("Before ClientRrepository call.");
+
 		Client? client = _unitOfWork
 			.ClientRepository
 			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
 			.Include(x => x.ClientContacts)
 			.ThenInclude(x => x.Contact)
 			.FirstOrDefault();
-		Console.WriteLine("CLient " + client.Name);
+		Console.WriteLine("CLient " + client?.Name);
 
 		if (client is null)
 		{

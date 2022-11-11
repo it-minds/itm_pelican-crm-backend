@@ -26,7 +26,7 @@ public class Client : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 
 	public long? LastUpdatedAt { get; set; }
-	public string Website { get; set; }
+	public string? Website { get; set; }
 
 	public Client(Guid id) : base(id) { }
 

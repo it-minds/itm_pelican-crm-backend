@@ -22,7 +22,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 	}
 	public async Task<Result> Handle(UpdateClientCommand command, CancellationToken cancellationToken)
 	{
-		Console.WriteLine("Before ClientRrepository call.");
+		Console.WriteLine("\n Before ClientRrepository call.\n ");
 
 		Client? client = _unitOfWork
 			.ClientRepository
@@ -30,12 +30,12 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			.Include(x => x.ClientContacts)
 			.ThenInclude(x => x.Contact)
 			.FirstOrDefault();
-		Console.WriteLine("CLient " + client?.Name);
+		Console.WriteLine("\n CLient " + client?.Name + "\n");
 
 		if (client is null)
 		{
 			Result<string> accessTokenResult = GetAccessToken(command.PortalId, cancellationToken).Result;
-			Console.WriteLine("Got an access token" + accessTokenResult.Value.First());
+			Console.WriteLine("\n Got an access token \n");
 			if (accessTokenResult.IsFailure)
 			{
 				return Result.Failure(accessTokenResult.Error);
@@ -43,7 +43,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			return await GetClientFromHubSpot(
 				command.PortalId, accessTokenResult.Value, cancellationToken);
 		}
-		Console.WriteLine("Right Before property switch Q Q Q Q Q Q Q Q Q Q Q Q Q Q");
+		Console.WriteLine("\n Right Before property switch Q Q Q Q Q Q Q Q Q Q Q Q Q Q \n ");
 		switch (command.PropertyName)
 		{
 			case "name":
@@ -97,6 +97,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 	private async Task<Result> GetClientFromHubSpot(long objectId, string accessToken, CancellationToken cancellationToken)
 	{
 		Result<Client> result = await _hubSpotClientService.GetByIdAsync(accessToken, objectId, cancellationToken);
+		Console.WriteLine("\n Getting a client form Hubspot \n");
 		if (result.IsFailure)
 			return result;
 		foreach (var item in result.Value.ClientContacts)

@@ -78,7 +78,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		.SupplierRepository
 				.FindByCondition(supplier => supplier.HubSpotId == portalId)
 				.FirstOrDefault();
-		Console.WriteLine("Trying to get accessToken");
+		Console.WriteLine("Trying to get accessToken with supplier id" + portalId.ToString());
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{
 			Console.WriteLine("SupplierWas null when trying to get an access token");

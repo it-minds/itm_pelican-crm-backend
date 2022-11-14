@@ -12,27 +12,25 @@ public static class DependencyInjection
 		this IServiceCollection services,
 		IConfiguration configuration, bool isProduction)
 	{
-		HubSpotSettings hubSpotSettings;
-		IConfiguration configurationSettings;
+		IConfiguration hubSpotSettings;
 		if (isProduction)
 		{
 			string keyVaultName = configuration["KeyVaultName"];
 			var kvUri = "https://" + keyVaultName + ".vault.azure.net";
 			var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
-			hubSpotSettings = configuration.GetSection("HubSpotDemoSettings").Get<HubSpotSettings>();
-			configurationSettings = configuration.GetSection("HubSpotDemoSettings");
-			configurationSettings["HubSpotClientId"] = client.GetSecret(hubSpotSettings.App.ClientId).Value.Value;
-			configurationSettings["HubSpotClientSecret"] = client.GetSecret(hubSpotSettings.App.ClientSecret).Value.Value;
+			hubSpotSettings = configuration.GetSection("HubSpotDemoSettings");
+			hubSpotSettings["HubSpotClientId"] = client.GetSecret("HubSpotAppClientID").Value.Value;
+			hubSpotSettings["HubSpotClientSecret"] = client.GetSecret("HubSpotAppClientSecret").Value.Value;
 		}
 		else
 		{
-			configurationSettings = configuration.GetSection("HubSpotDevSettings");
+			hubSpotSettings = configuration.GetSection("HubSpotDevSettings");
 		}
-		if (configurationSettings is null)
+		if (hubSpotSettings is null)
 		{
-			throw new NullReferenceException(nameof(configurationSettings));
+			throw new NullReferenceException(nameof(hubSpotSettings));
 		}
-		services.Configure<HubSpotSettings>(configurationSettings);
+		services.Configure<HubSpotSettings>(hubSpotSettings);
 		return services;
 	}
 }

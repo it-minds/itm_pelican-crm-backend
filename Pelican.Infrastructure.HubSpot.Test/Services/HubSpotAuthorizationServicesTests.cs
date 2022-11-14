@@ -37,8 +37,8 @@ public class HubSpotAuthorizationServicesTests
 				App = new HubSpotAppSettings()
 				{
 					AppId = APPID,
-					ClientId = CLIENTID,
-					ClientSecret = CLIENTSECRET,
+					HubSpotClientId = CLIENTID,
+					HubSpotClientSecret = CLIENTSECRET,
 				},
 			});
 

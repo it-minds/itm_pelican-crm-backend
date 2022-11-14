@@ -21,7 +21,7 @@ public class HashGeneratorFactoryTests
 			{
 				App = new HubSpotAppSettings()
 				{
-					ClientSecret = "clientsecret",
+					HubSpotClientSecret = "clientsecret",
 				}
 			});
 

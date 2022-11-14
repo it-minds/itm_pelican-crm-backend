@@ -16,7 +16,9 @@ public static class DependencyInjection
 	{
 		services.AddCors(options => options
 			.AddPolicy(name: ALLOWED_CORS_ORIGINS, policy => policy
-				.WithOrigins("https://localhost")));
+				.WithOrigins(
+					"https://localhost",
+					"http://localhost")));
 
 		services.AddScoped<IHashGeneratorFactory, HashGeneratorFactory>();
 

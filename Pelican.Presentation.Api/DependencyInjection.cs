@@ -32,7 +32,7 @@ public static class DependencyInjection
 
 	public static WebApplication UseApi(this WebApplication app)
 	{
-		// Configure the HTTP request pipeline.
+		//Configure the HTTP request pipeline.
 		if (app.Environment.IsDevelopment())
 		{
 			app.UseSwagger();

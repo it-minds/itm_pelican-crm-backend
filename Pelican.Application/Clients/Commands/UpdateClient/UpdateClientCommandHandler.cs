@@ -39,7 +39,6 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			return await GetClientFromHubSpot(
 				command.PortalId, accessTokenResult.Value, cancellationToken);
 		}
-
 		switch (command.PropertyName)
 		{
 			case "name":
@@ -74,7 +73,6 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		.SupplierRepository
 				.FindByCondition(supplier => supplier.HubSpotId == portalId)
 				.FirstOrDefault();
-
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{
 			return Result.Failure<string>(Error.NullValue);
@@ -111,7 +109,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		return Result.Success();
 	}
 
-	private async Task<Result> UpdateClientContacts(Client localClient, long portalId, long objectId, CancellationToken cancellationToken)
+	private async Task<Result> UpdateClientContacts(Client localClient, long objectId, long portalId, CancellationToken cancellationToken)
 	{
 		Result<string> accessTokenResult = GetAccessToken(portalId, cancellationToken).Result;
 		if (accessTokenResult.IsFailure)

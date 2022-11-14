@@ -67,7 +67,6 @@ public sealed class HubSpotController : ApiController
 			.AsParallel()
 			.ForAll(request =>
 			{
-				Console.WriteLine("Enters Rquest WOWOWOWOWOWOWOWOWOWOW");
 				ICommand? command = request.SubscriptionType switch
 				{
 					"deal.deletion" => new DeleteDealCommand(

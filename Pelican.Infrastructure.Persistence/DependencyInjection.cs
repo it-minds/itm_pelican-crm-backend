@@ -66,7 +66,6 @@ public static class DependencyInjection
 		string keyVaultName = configuration["KeyVaultName"];
 		var kvUri = "https://" + keyVaultName + ".vault.azure.net";
 		var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
-		Console.WriteLine(client.GetSecret(configuration["PelicanMsSQLSecret"]).Value.Value);
 		services.AddDbContextFactory<PelicanContext>(
 			o => o.UseSqlServer(client.GetSecret(configuration["PelicanMsSQLSecret"]).Value.Value,
 			b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)));

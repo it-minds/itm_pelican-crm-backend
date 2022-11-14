@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pelican.Domain.Settings;
 
@@ -8,17 +10,29 @@ public static class DependencyInjection
 {
 	public static IServiceCollection AddDomain(
 		this IServiceCollection services,
-		IConfiguration configuration)
+		IConfiguration configuration, bool isProduction)
 	{
-		IConfigurationSection hubSpotSettings = configuration.GetSection(nameof(HubSpotSettings));
-
-		if (hubSpotSettings is null)
+		HubSpotSettings hubSpotSettings;
+		IConfiguration configurationSettings;
+		if (isProduction)
 		{
-			throw new NullReferenceException(nameof(hubSpotSettings));
+			string keyVaultName = configuration["KeyVaultName"];
+			var kvUri = "https://" + keyVaultName + ".vault.azure.net";
+			var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
+			hubSpotSettings = configuration.GetSection("HubSpotDemoSettings").Get<HubSpotSettings>();
+			configurationSettings = configuration.GetSection("HubSpotDemoSettings");
+			configurationSettings["HubSpotClientId"] = client.GetSecret(hubSpotSettings.App.ClientId).Value.Value;
+			configurationSettings["HubSpotClientSecret"] = client.GetSecret(hubSpotSettings.App.ClientSecret).Value.Value;
 		}
-
-		services.Configure<HubSpotSettings>(hubSpotSettings);
-
+		else
+		{
+			configurationSettings = configuration.GetSection("HubSpotDevSettings");
+		}
+		if (configurationSettings is null)
+		{
+			throw new NullReferenceException(nameof(configurationSettings));
+		}
+		services.Configure<HubSpotSettings>(configurationSettings);
 		return services;
 	}
 }

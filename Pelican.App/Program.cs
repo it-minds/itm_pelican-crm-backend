@@ -7,7 +7,7 @@ using Pelican.Presentation.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDomain(builder.Configuration);
+builder.Services.AddDomain(builder.Configuration, builder.Environment.IsProduction());
 builder.Services.AddHubSpot();
 builder.Services.AddPersistince(builder.Configuration);
 builder.Services.AddApplication();

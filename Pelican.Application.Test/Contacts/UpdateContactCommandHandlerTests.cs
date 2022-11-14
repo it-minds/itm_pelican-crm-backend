@@ -14,6 +14,8 @@ public class UpdateContactCommandHandlerTests
 	private readonly Mock<IHubSpotObjectService<Contact>> _hubSpotContactServiceMock = new();
 	private readonly Mock<IHubSpotAuthorizationService> _hubSpotAuthorizationServiceMock = new();
 
+	private readonly Mock<SupplierRepository> _supplierReposor
+
 	private const long OBJECT_ID = 0;
 	private const long SUPPLIER_HUBSPOT_ID = 0;
 	private const string NAME = "name";
@@ -31,6 +33,10 @@ public class UpdateContactCommandHandlerTests
 			_unitOfWorkMock.Object,
 			_hubSpotContactServiceMock.Object,
 			_hubSpotAuthorizationServiceMock.Object);
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork.SupplierRepository)
+			.Returns()
 	}
 
 	[Fact]
@@ -73,13 +79,11 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public void Handle_ClientNotFoundFetchingAccessTokenFailed_ReturnsFailure()
+	public void Handle_ClientNotFoundSupplierNotFound_ReturnsFailure()
 	{
 		// Arrange
-
-
-		//_hubSpotAuthorizationServiceMock
-		//	.Setup(service=>service.
+		_unitOfWorkMock
+			.Setup(unitOfWork=> unitOfWork.)
 
 
 		// Act

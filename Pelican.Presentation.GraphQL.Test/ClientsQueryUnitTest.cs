@@ -38,6 +38,6 @@ public class ClientsQueryUnitTest
 		var result = await uut.GetClientAsync(input.Id, mediatorMock.Object, cancellationToken);
 		//Assert
 		Assert.Equal(id, result.Id);
-		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Exactly(1));
+		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Once());
 	}
 }

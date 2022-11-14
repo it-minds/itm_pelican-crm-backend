@@ -22,20 +22,16 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 	}
 	public async Task<Result> Handle(UpdateClientCommand command, CancellationToken cancellationToken)
 	{
-		Console.WriteLine("\n Before ClientRrepository call.\n ");
-
 		Client? client = _unitOfWork
 			.ClientRepository
 			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
 			.Include(x => x.ClientContacts)
 			.ThenInclude(x => x.Contact)
 			.FirstOrDefault();
-		Console.WriteLine("\n CLient " + client?.Name + "\n");
 
 		if (client is null)
 		{
 			Result<string> accessTokenResult = GetAccessToken(command.PortalId, cancellationToken).Result;
-			Console.WriteLine("\n Got an access token \n");
 			if (accessTokenResult.IsFailure)
 			{
 				return Result.Failure(accessTokenResult.Error);
@@ -43,8 +39,6 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			return await GetClientFromHubSpot(
 				command.PortalId, accessTokenResult.Value, cancellationToken);
 		}
-		Console.WriteLine("\n Right Before property switch Q Q Q Q Q Q Q Q Q Q Q Q Q Q \n" +
-			+command.ObjectId);
 		switch (command.PropertyName)
 		{
 			case "name":
@@ -79,30 +73,23 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		.SupplierRepository
 				.FindByCondition(supplier => supplier.HubSpotId == portalId)
 				.FirstOrDefault();
-		Console.WriteLine("Trying to get accessToken with supplier id" + portalId.ToString() + "    ");
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{
-			Console.WriteLine("SupplierWas null when trying to get an access token");
 			return Result.Failure<string>(Error.NullValue);
 		}
-		Console.WriteLine("Got an access token");
 
 		Result<string> accessTokenResult = await _hubSpotAuthorizationService
 			.RefreshAccessTokenAsync(supplier.RefreshToken, cancellationToken);
 		if (accessTokenResult.IsFailure)
 		{
-			Console.WriteLine("access token failure");
-
 			return Result.Failure<string>(accessTokenResult.Error);
 		}
-		Console.WriteLine("Got an access token " + accessTokenResult);
 		return accessTokenResult;
 	}
 
 	private async Task<Result> GetClientFromHubSpot(long objectId, string accessToken, CancellationToken cancellationToken)
 	{
 		Result<Client> result = await _hubSpotClientService.GetByIdAsync(accessToken, objectId, cancellationToken);
-		Console.WriteLine("\n Getting a client form Hubspot \n");
 		if (result.IsFailure)
 			return result;
 		foreach (var item in result.Value.ClientContacts)
@@ -124,7 +111,6 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 
 	private async Task<Result> UpdateClientContacts(Client localClient, long objectId, long portalId, CancellationToken cancellationToken)
 	{
-		Console.WriteLine("Trying to updateclientcontact");
 		Result<string> accessTokenResult = GetAccessToken(portalId, cancellationToken).Result;
 		if (accessTokenResult.IsFailure)
 		{

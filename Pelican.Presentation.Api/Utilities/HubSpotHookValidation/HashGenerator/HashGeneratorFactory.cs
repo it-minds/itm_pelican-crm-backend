@@ -15,9 +15,9 @@ internal sealed class HashGeneratorFactory : IHashGeneratorFactory
 
 	public IHashGenerator CreateHashGenerator(int version) => version switch
 	{
-		1 => new V1HashGenerator(_settings.App.HubSpotClientSecret, new HashComputerFactory()),
-		2 => new V2HashGenerator(_settings.App.HubSpotClientSecret, new HashComputerFactory()),
-		3 => new V3HashGenerator(_settings.App.HubSpotClientSecret, new HashComputerFactory()),
+		1 => new V1HashGenerator(_settings.App.ClientSecret, new HashComputerFactory()),
+		2 => new V2HashGenerator(_settings.App.ClientSecret, new HashComputerFactory()),
+		3 => new V3HashGenerator(_settings.App.ClientSecret, new HashComputerFactory()),
 		_ => throw new Exception("Unsupported signature version")
 	};
 }

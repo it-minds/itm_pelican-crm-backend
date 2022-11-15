@@ -19,8 +19,8 @@ public static class DependencyInjection
 			var kvUri = "https://" + keyVaultName + ".vault.azure.net";
 			var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
 			hubSpotSettings = configuration.GetRequiredSection("HubSpotDemoSettings");
-			hubSpotSettings["App:HubSpotClientId"] = client.GetSecret("HubSpotAppClientID").Value.Value;
-			hubSpotSettings["App:HubSpotClientSecret"] = client.GetSecret("HubSpotAppClientSecret").Value.Value;
+			hubSpotSettings["App:ClientId"] = client.GetSecret("HubSpotAppClientID").Value.Value;
+			hubSpotSettings["App:ClientSecret"] = client.GetSecret("HubSpotAppClientSecret").Value.Value;
 		}
 		else
 		{

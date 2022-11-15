@@ -33,9 +33,9 @@ internal static class RestRequestExtensions
 			.AddQueryParameter("properties", "city", false);
 
 	public static RestRequest AddCommonAuthorizationQueryParams(this RestRequest request, HubSpotSettings hubSpotSettings) => request
-			.AddQueryParameter("client_secret", hubSpotSettings.App.HubSpotClientSecret, false)
+			.AddQueryParameter("client_secret", hubSpotSettings.App.ClientSecret, false)
 			.AddQueryParameter("redirect_uri", hubSpotSettings.RedirectUrl, false)
-			.AddQueryParameter("client_id", hubSpotSettings.App!.HubSpotClientId, false);
+			.AddQueryParameter("client_id", hubSpotSettings.App!.ClientId, false);
 
 	public static RestRequest AddAuthorizationHeaders(this RestRequest request) => request
 			.AddHeader("Content-Type", "application/x-www-form-urlencoded")

@@ -1,4 +1,6 @@
 ﻿namespace Pelican.Domain.Entities;
+
+using HotChocolate;
 using Pelican.Domain.Primitives;
 
 public class AccountManagerDeal : Entity, ITimeTracked
@@ -29,6 +31,7 @@ public class AccountManagerDeal : Entity, ITimeTracked
 
 	public AccountManagerDeal() { }
 
+	[GraphQLIgnore]
 	public static AccountManagerDeal Create(Deal deal, AccountManager accountManager)
 	{
 		return new AccountManagerDeal(Guid.NewGuid())
@@ -42,7 +45,7 @@ public class AccountManagerDeal : Entity, ITimeTracked
 			IsActive = true,
 		};
 	}
-
+	[GraphQLIgnore]
 	public void Deactivate()
 	{
 		IsActive = false;

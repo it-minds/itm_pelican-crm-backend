@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Primitives;
+﻿using HotChocolate;
+using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
 
@@ -30,6 +31,7 @@ public class DealContact : Entity, ITimeTracked
 
 	public DealContact() { }
 
+	[GraphQLIgnore]
 	public static DealContact Create(Deal deal, Contact contact)
 	{
 		return new DealContact(Guid.NewGuid())

@@ -74,50 +74,6 @@ public class DealTests
 	}
 
 	[Fact]
-	public void UpdateProperty_RevenueUpdatedInvalidValueFormat_ThrowsInvalidOperationException()
-	{
-		/// Arrange
-		string name = "amount";
-
-		string value = "hello";
-
-		Deal inputDeal = new(Guid.NewGuid());
-
-		/// Act
-		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
-
-		/// Assert
-		Assert.Equal(
-			typeof(InvalidOperationException),
-			exceptionResult.GetType());
-
-		Assert.Equal(
-			"Invalid amount format",
-			exceptionResult.Message);
-	}
-
-	[Fact]
-	public void UpdateProperty_RevenueUpdated_ReturnsUpdatedDeal()
-	{
-		/// Arrange
-		decimal value = (decimal)10.4;
-
-		string name = "amount";
-
-		string stringValue = value.ToString();
-
-		Deal inputDeal = new(Guid.NewGuid());
-
-		/// Act
-		Deal returnDeal = inputDeal.UpdateProperty(name, stringValue);
-
-		/// Assert
-		Assert.Equal(
-			value,
-			returnDeal.Revenue);
-	}
-
-	[Fact]
 	public void UpdateProperty_DealStatusUpdated_ReturnsUpdatedDeal()
 	{
 		/// Arrange
@@ -134,25 +90,6 @@ public class DealTests
 		Assert.Equal(
 			value,
 			returnDeal.DealStatus);
-	}
-
-	[Fact]
-	public void UpdateProperty_CurrencyCodeUpdated_ReturnsUpdatedDeal()
-	{
-		/// Arrange
-		string name = "deal_currency_code";
-
-		string value = "newCurrencyCode";
-
-		Deal inputDeal = new(Guid.NewGuid());
-
-		/// Act
-		Deal returnDeal = inputDeal.UpdateProperty(name, value);
-
-		/// Assert
-		Assert.Equal(
-			value,
-			returnDeal.CurrencyCode);
 	}
 
 	[Fact]

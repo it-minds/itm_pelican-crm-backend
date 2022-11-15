@@ -18,7 +18,6 @@ internal static class CompanyResponseToClient
 			Name = response.Properties.Name,
 			HubSpotId = response.Properties.HubSpotObjectId,
 			OfficeLocation = response.Properties.City,
-			Segment = response.Properties.Industry,
 		};
 
 		result.Deals = response

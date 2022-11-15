@@ -1,7 +1,6 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Clients.Commands.DeleteClient;
 using Pelican.Application.Clients.Commands.UpdateClient;
-using Pelican.Application.Contacts.Commands.DeleteContact;
 using Pelican.Application.Contacts.Commands.UpdateContact;
 using Pelican.Application.Deals.Commands.DeleteDeal;
 using Pelican.Application.Deals.Commands.UpdateDeal;
@@ -24,8 +23,6 @@ internal sealed class WebHookRequestsToCommands : IRequestToCommandMapper
 		{
 			commands.Add(request.SubscriptionType switch
 			{
-				"contact.deletion" => new DeleteContactCommand(
-					request.ObjectId),
 				"deal.deletion" => new DeleteDealCommand(
 					request.ObjectId),
 				"company.deletion" => new DeleteClientCommand(

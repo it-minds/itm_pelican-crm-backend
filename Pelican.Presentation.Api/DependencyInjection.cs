@@ -16,10 +16,14 @@ public static class DependencyInjection
 	public static IServiceCollection AddApi(this IServiceCollection services)
 	{
 		services.AddCors(options => options
-			.AddPolicy(name: ALLOWED_CORS_ORIGINS, policy => policy
-				.WithOrigins(
-					"https://localhost",
-					"http://localhost")));
+			.AddPolicy(
+				ALLOWED_CORS_ORIGINS,
+				policy => policy
+					.WithOrigins(
+						"https://localhost",
+						"http://localhost")
+					.AllowAnyHeader()
+					.AllowAnyMethod()));
 
 		services.AddScoped<IHashGeneratorFactory, HashGeneratorFactory>();
 

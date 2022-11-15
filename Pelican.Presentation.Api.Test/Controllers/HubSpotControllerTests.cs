@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Contacts.Commands.DeleteContact;
+using Pelican.Application.Deals.Commands.DeleteDeal;
 using Pelican.Application.HubSpot.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Contracts;
@@ -125,12 +125,12 @@ public class HubSpotControllerTests
 	public async void Hook_ReceivingOneCommandRequestResultSuccess_OneCommandSendReturnsOk()
 	{
 		// Arrange
-		ICommand command = new DeleteContactCommand(OBJECT_ID);
+		ICommand command = new DeleteDealCommand(OBJECT_ID);
 
 		_mapperMock
 			.Setup(mapper => mapper
 				.ConvertToCommands(It.IsAny<IReadOnlyCollection<WebHookRequest>>()))
-			.Returns(new List<ICommand>() { new DeleteContactCommand(OBJECT_ID) });
+			.Returns(new List<ICommand>() { new DeleteDealCommand(OBJECT_ID) });
 
 		_senderMock
 			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
@@ -153,12 +153,12 @@ public class HubSpotControllerTests
 	public async void Hook_ReceivingOneCommandRequestResultFailure_OneCommandSendReturnsBadRequest()
 	{
 		// Arrange
-		ICommand command = new DeleteContactCommand(OBJECT_ID);
+		ICommand command = new DeleteDealCommand(OBJECT_ID);
 
 		_mapperMock
 			.Setup(mapper => mapper
 				.ConvertToCommands(It.IsAny<IReadOnlyCollection<WebHookRequest>>()))
-			.Returns(new List<ICommand>() { new DeleteContactCommand(OBJECT_ID) });
+			.Returns(new List<ICommand>() { new DeleteDealCommand(OBJECT_ID) });
 
 		Error error = Error.NullValue;
 

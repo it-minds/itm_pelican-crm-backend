@@ -1,6 +1,5 @@
 ﻿using Pelican.Application.Clients.Commands.DeleteClient;
 using Pelican.Application.Clients.Commands.UpdateClient;
-using Pelican.Application.Contacts.Commands.DeleteContact;
 using Pelican.Application.Contacts.Commands.UpdateContact;
 using Pelican.Application.Deals.Commands.DeleteDeal;
 using Pelican.Application.Deals.Commands.UpdateDeal;
@@ -63,30 +62,6 @@ public class WebHookRequestsToCommandsTests
 		Assert.Equal(
 			"Receiving unhandled event",
 			result.Message);
-	}
-
-	[Fact]
-	public void ConvertToCommands_SubscriptionTypeContactDeletion_ReturnDeleteContactCommand()
-	{
-		// Arrange
-		WebHookRequest webHookRequest = new()
-		{
-			SubscriptionType = "contact.deletion",
-			ObjectId = OBJECT_ID,
-		};
-
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
-		{
-			webHookRequest,
-		};
-
-		// Act 
-		var result = _uut.ConvertToCommands(webHookRequests);
-
-		// Assert
-		Assert.Equal(
-			OBJECT_ID,
-			((DeleteContactCommand)result.First()).ObjectId);
 	}
 
 	[Fact]

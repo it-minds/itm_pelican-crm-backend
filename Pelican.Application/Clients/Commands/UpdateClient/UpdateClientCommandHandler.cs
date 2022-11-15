@@ -47,9 +47,6 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			case "city":
 				client.OfficeLocation = command.PropertyValue;
 				break;
-			case "industry":
-				client.Segment = command.PropertyValue;
-				break;
 			case "website":
 				client.Website = command.PropertyValue;
 				break;

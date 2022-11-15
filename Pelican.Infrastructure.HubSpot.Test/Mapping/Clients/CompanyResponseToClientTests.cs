@@ -66,7 +66,6 @@ public class CompanyResponseToClientTests
 		Client result = response.ToClient();
 
 		/// Assert
-		Assert.Equal(SEGMENT, result.Segment);
 		Assert.Equal(NAME, result.Name);
 		Assert.Equal(LOCATION, result.OfficeLocation);
 		Assert.Equal(ID, result.HubSpotId);

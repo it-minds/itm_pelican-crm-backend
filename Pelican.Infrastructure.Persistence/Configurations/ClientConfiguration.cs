@@ -20,14 +20,8 @@ internal class ClientConfiguration : IEntityTypeConfiguration<Client>
 		builder.Property(p => p.OfficeLocation)
 			.HasMaxLength(StringLengths.OfficeLocation);
 
-		builder.Property(p => p.Segment)
-			.HasMaxLength(StringLengths.Industry);
-
 		builder.Property(p => p.Website)
 			.HasMaxLength(StringLengths.Url);
-
-		builder.Property(p => p.Classification)
-			.HasMaxLength(StringLengths.Classification);
 
 		builder.Property(p => p.HubSpotId)
 			.HasMaxLength(StringLengths.Id)

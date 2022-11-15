@@ -71,9 +71,8 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.Name, f => f.Name.FullName(f.Person.Gender))
 			.RuleFor(e => e.PictureUrl, f => f.Image.PicsumUrl().OrNull(f))
 			.RuleFor(e => e.OfficeLocation, f => f.PickRandom<Location>(locations).CityName.OrNull(f))
-			.RuleFor(e => e.Segment, f => f.PickRandom<Segment>().ToString().OrNull(f))
-			.RuleFor(e => e.Classification, f => f.PickRandom<ClientStatus>().ToString().OrNull(f))
 			.RuleFor(e => e.HubSpotId, f => f.Random.Guid().ToString())
+			.RuleFor(e => e.Website, f => f.Internet.Url().OrNull(f))
 			.RuleFor(e => e.Id, f => f.Random.Guid());
 		return faker.Generate(count);
 	}

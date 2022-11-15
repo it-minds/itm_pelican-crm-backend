@@ -531,43 +531,6 @@ public class UpdateClientCommandHandlerTests
 		Assert.Equal(Error.None, result.Error);
 	}
 	[Theory]
-	[InlineData(0, 0, "industry", "TestIndustry")]
-	public async void Handle_ClientFoundIndustryUpdated_ReturnsSuccessAndClientWasUpdated(
-		long objectId,
-		long portalId,
-		string propertyName,
-		string propertyValue)
-	{
-		// Arrange
-		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
-
-		Client client = new(Guid.NewGuid());
-
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork.ClientRepository
-				.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
-			.Returns(new List<Client> { client }.AsQueryable());
-
-		// Act
-		Result result = await _uut.Handle(command, _cancellationToken);
-
-		// Assert
-		Assert.Equal(command.PropertyValue, client.Segment);
-
-		_unitOfWorkMock
-			.Verify(unitOfWork => unitOfWork.ClientRepository
-					.Update(It.IsAny<Client>()),
-				Times.Once());
-
-		_unitOfWorkMock
-				.Verify(unitOfWork => unitOfWork
-			.SaveAsync(_cancellationToken), Times.Once());
-
-		Assert.True(result.IsSuccess);
-
-		Assert.Equal(Error.None, result.Error);
-	}
-	[Theory]
 	[InlineData(0, 0, "website", "www.testUrl.com")]
 	public async void Handle_ClientFoundWebsiteUpdated_ReturnsSuccessAndClientWasUpdated(
 		long objectId,

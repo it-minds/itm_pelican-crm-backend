@@ -90,7 +90,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ClientNotFoundSupplierNotFound_ContactAndSupplierRepositoriesCalled()
+	public async void Handle_ContactNotFoundSupplierNotFound_ContactAndSupplierRepositoriesCalled()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -125,7 +125,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ClientNotFoundSupplierNotFound_ReturnsFailure()
+	public async void Handle_ContactNotFoundSupplierNotFound_ReturnsFailure()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -154,7 +154,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ClientNotFoundRefreshTokenEmpty_ReturnsFailure()
+	public async void Handle_ContactNotFoundRefreshTokenEmpty_ReturnsFailure()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -185,7 +185,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ClientNotFoundFailedRefreshingAccessToken_HubSpotAuthServiceCalled()
+	public async void Handle_ContactNotFoundFailedRefreshingAccessToken_HubSpotAuthServiceCalled()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -225,7 +225,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ClientNotFoundFailedRefreshingAccessToken_ReturnsFailure()
+	public async void Handle_ContactNotFoundFailedRefreshingAccessToken_ReturnsFailure()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -264,7 +264,7 @@ public class UpdateContactCommandHandlerTests
 			result.Error);
 	}
 	[Fact]
-	public async void Handle_ClientNotFoundFailedFetchingContactFromHubSpot_HubSpotContactServiceCalled()
+	public async void Handle_ContactNotFoundFailedFetchingContactFromHubSpot_HubSpotContactServiceCalled()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -314,7 +314,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ClientNotFoundFailedFetchingContactFromHubSpot_ReturnsFailure()
+	public async void Handle_ContactNotFoundFailedFetchingContactFromHubSpot_ReturnsFailure()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -363,7 +363,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ClientNotFoundFetchingContactWithoutAssociations_FillOutAssociationCalled()
+	public async void Handle_ContactNotFoundFetchingContactWithoutAssociations_FillOutAssociationCalled()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -414,7 +414,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ClientNotFoundFetchingContactWithoutAssociations_DealAndClientRepositoriesNotCalled()
+	public async void Handle_ContactNotFoundFetchingContactWithoutAssociations_DealAndClientRepositoriesNotCalled()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -471,7 +471,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ClientNotFoundFetchingContactWithoutAssociations_UnitOfWorkCreateAndSaveCalled()
+	public async void Handle_ContactNotFoundFetchingContactWithoutAssociations_UnitOfWorkCreateAndSaveCalled()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -526,7 +526,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ClientNotFoundFetchingContactWithoutAssociations_ReturnsSuccess()
+	public async void Handle_ContactNotFoundFetchingContactWithoutAssociations_ReturnsSuccess()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -573,7 +573,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ClientNotFoundFetchingContactWithAssociations_DealsAndClientLoadedFromRepositories()
+	public async void Handle_ContactNotFoundFetchingContactWithAssociations_DealsAndClientLoadedFromRepositories()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -635,7 +635,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ClientNotFoundFetchingContactWithAssociations_UnitOfWorkCreateAndSaveCalled()
+	public async void Handle_ContactNotFoundFetchingContactWithAssociations_UnitOfWorkCreateAndSaveCalled()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -728,7 +728,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ClientNotFoundFetchingContactWithAssociations_ReturnsSuccess()
+	public async void Handle_ContactNotFoundFetchingContactWithAssociations_ReturnsSuccess()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -780,7 +780,303 @@ public class UpdateContactCommandHandlerTests
 		Assert.True(result.IsSuccess);
 	}
 
+	[Fact]
+	public async void Handle_ContactFoundFirstnameUpdated_ContactUpdatePropertyCalled()
+	{
+		// Arrange
+		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
 
+		Mock<Contact> contactMock = new();
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contactMock.Object);
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		// Assert
+		contactMock.Verify(
+			c => c.UpdateProperty(NAME, VALUE),
+			Times.Once);
+	}
+
+	[Fact]
+	public async void Handle_ContactFoundFirstnameUpdated_ContactRepoUpdateCalled()
+	{
+		// Arrange
+		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+
+		Mock<Contact> contactMock = new();
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contactMock.Object);
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		// Assert
+		_contactRepositoryMock.Verify(
+			repo => repo.Update(contactMock.Object),
+			Times.Once);
+	}
+
+	[Fact]
+	public async void Handle_ContactFoundFirstnameUpdated_UnitOfWordSaveCalled()
+	{
+		// Arrange
+		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+
+		Mock<Contact> contactMock = new();
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contactMock.Object);
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		// Assert
+		_unitOfWorkMock.Verify(
+			u => u.SaveAsync(default),
+			Times.Once);
+	}
+
+	[Fact]
+	public async void Handle_ContactFoundFirstnameUpdated_ReturnsSuccess()
+	{
+		// Arrange
+		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+
+		Mock<Contact> contactMock = new();
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contactMock.Object);
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		// Assert
+		Assert.True(result.IsSuccess);
+	}
+
+	[Fact]
+	public async void Handle_ContactFoundDealAssociationsUpdatedFailedFetchingFromHubSpot_ReturnsFailure()
+	{
+		// Arrange
+		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
+
+		Supplier supplier = new(Guid.NewGuid())
+		{
+			RefreshToken = "not_empty"
+		};
+
+		string accessToken = "accessToken";
+
+		Mock<Contact> contactMock = new();
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contactMock.Object);
+
+		_supplierRepositoryMock
+			.Setup(x => x.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Supplier, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(supplier);
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(service => service.RefreshAccessTokenAsync(
+				It.IsAny<string>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(accessToken));
+
+		_hubSpotContactServiceMock
+			.Setup(service => service.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<Contact>(Error.NullValue));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		// Assert
+		Assert.True(result.IsFailure);
+
+		Assert.Equal(
+			Error.NullValue,
+			result.Error);
+	}
+
+	[Fact]
+	public async void Handle_ContactFoundDealAssociationsUpdatedFailedFetchingFromHubSpot_UpdateDealContactsNotCalled()
+	{
+		// Arrange
+		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
+
+		Supplier supplier = new(Guid.NewGuid())
+		{
+			RefreshToken = "not_empty"
+		};
+
+		string accessToken = "accessToken";
+
+		Mock<Contact> contactMock = new();
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contactMock.Object);
+
+		_supplierRepositoryMock
+			.Setup(x => x.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Supplier, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(supplier);
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(service => service.RefreshAccessTokenAsync(
+				It.IsAny<string>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(accessToken));
+
+		_hubSpotContactServiceMock
+			.Setup(service => service.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<Contact>(Error.NullValue));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		// Assert
+		contactMock.Verify(
+			c => c.UpdateDealContacts(It.IsAny<List<DealContact>>()),
+			Times.Never);
+	}
+
+	[Fact]
+	public async void Handle_ContactFoundDealAssociationsUpdatedSuccessFetchingFromHubSpot_UpdateDealContactsCalled()
+	{
+		// Arrange
+		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
+
+		Supplier supplier = new(Guid.NewGuid())
+		{
+			RefreshToken = "not_empty"
+		};
+
+		string accessToken = "accessToken";
+
+		Mock<Contact> contactMock = new();
+
+		List<DealContact> dealContactsFromHubSpot = new List<DealContact>() { new() };
+		Contact contactFromHubSpot = new()
+		{
+			DealContacts = dealContactsFromHubSpot,
+		};
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contactMock.Object);
+
+		_supplierRepositoryMock
+			.Setup(x => x.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Supplier, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(supplier);
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(service => service.RefreshAccessTokenAsync(
+				It.IsAny<string>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(accessToken));
+
+		_hubSpotContactServiceMock
+			.Setup(service => service.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(contactFromHubSpot));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		// Assert
+		contactMock.Verify(
+			c => c.UpdateDealContacts(dealContactsFromHubSpot),
+			Times.Once);
+	}
+
+	[Fact]
+	public async void Handle_ContactFoundDealAssociationsUpdatedSuccessFetchingFromHubSpot_ReturnSuccess()
+	{
+		// Arrange
+		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
+
+		Supplier supplier = new(Guid.NewGuid())
+		{
+			RefreshToken = "not_empty"
+		};
+
+		string accessToken = "accessToken";
+
+		Mock<Contact> contactMock = new();
+
+		List<DealContact> dealContactsFromHubSpot = new List<DealContact>() { new() };
+		Contact contactFromHubSpot = new()
+		{
+			DealContacts = dealContactsFromHubSpot,
+		};
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contactMock.Object);
+
+		_supplierRepositoryMock
+			.Setup(x => x.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Supplier, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(supplier);
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(service => service.RefreshAccessTokenAsync(
+				It.IsAny<string>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(accessToken));
+
+		_hubSpotContactServiceMock
+			.Setup(service => service.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(contactFromHubSpot));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		// Assert
+		Assert.True(result.IsSuccess);
+	}
 
 
 

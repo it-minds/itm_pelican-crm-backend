@@ -9,6 +9,5 @@ public static class StringLengths
 	public const int DealStatus = 200;
 	public const int OfficeLocation = 200;
 	public const int Token = 500;
-	public const int CurrencyCode = 100;
 	public const int Id = 100;
 }

@@ -13,21 +13,11 @@ internal static class DealResponseToDeal
 			throw new ArgumentNullException(nameof(response));
 		}
 
-		bool hasAmount = !string.IsNullOrWhiteSpace(response.Properties.Amount);
-		bool hasDecimalAmount = decimal.TryParse(response.Properties.Amount, out decimal decimalAmount);
-
-		if (hasAmount
-			&& !hasDecimalAmount)
-		{
-			throw new InvalidOperationException($"nameof(response.Properties.Amount) cant be parsed to decimal");
-		}
-
 		Deal result = new(Guid.NewGuid())
 		{
 			EndDate = response.Properties.CloseDate,
 			DealStatus = response.Properties.Dealstage,
 			HubSpotId = response.Properties.HubSpotObjectId,
-			Revenue = hasAmount ? decimalAmount : null,
 			HubSpotOwnerId = response.Properties.HubSpotOwnerId,
 		};
 

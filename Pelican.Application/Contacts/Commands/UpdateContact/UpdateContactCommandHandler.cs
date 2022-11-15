@@ -120,7 +120,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 			return result;
 		}
 
-		FillOutContactAssociations(result.Value);
+		await FillOutContactAssociationsAsync(result.Value, cancellationToken);
 
 		await _unitOfWork
 			.ContactRepository
@@ -133,25 +133,41 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 		return Result.Success();
 	}
 
-	private Contact FillOutContactAssociations(Contact contact)
+	private async Task<Contact> FillOutContactAssociationsAsync(
+		Contact contact,
+		CancellationToken cancellationToken = default)
 	{
-		IEnumerable<Deal> deals = contact
-		.DealContacts
-		.Select(async dc => await _unitOfWork
-		  	.DealRepository
-			.FirstOrDefaultAsync(d => d.HubSpotId == dc.Deal.HubSpotId)
-		)
-		.Select(dTask => dTask.Result)
-		.Where(d => d is not null)!;
+		List<Deal> deals = new();
 
-		IEnumerable<Client> clients = contact
-		.ClientContacts
-		.Select(async cc => await _unitOfWork
-		  	.ClientRepository
-			.FirstOrDefaultAsync(c => c.HubSpotId == cc.Client.HubSpotId)
-		)
-		.Select(cTask => cTask.Result)
-		.Where(c => c is not null)!;
+		foreach (DealContact dealContact in contact.DealContacts)
+		{
+			Deal? deal = await _unitOfWork
+				.DealRepository
+				.FirstOrDefaultAsync(
+					d => d.HubSpotId == dealContact.Deal.HubSpotId,
+					cancellationToken);
+
+			if (deal is not null)
+			{
+				deals.Add(deal);
+			}
+		}
+
+		List<Client> clients = new();
+
+		foreach (ClientContact clientContact in contact.ClientContacts)
+		{
+			Client? client = await _unitOfWork
+				.ClientRepository
+				.FirstOrDefaultAsync(
+					c => c.HubSpotId == clientContact.Client.HubSpotId,
+					cancellationToken);
+
+			if (client is not null)
+			{
+				clients.Add(client);
+			}
+		}
 
 		contact.FillOutAssociations(clients, deals);
 

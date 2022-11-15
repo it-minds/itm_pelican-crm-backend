@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Pelican.Application\Pelican.Application.csproj" />
-    <ProjectReference Include="..\Pelican.Infrastructure.Persistence\Pelican.Infrastructure.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

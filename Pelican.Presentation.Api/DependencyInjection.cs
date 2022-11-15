@@ -19,9 +19,7 @@ public static class DependencyInjection
 			.AddPolicy(
 				ALLOWED_CORS_ORIGINS,
 				policy => policy
-					.WithOrigins(
-						"https://localhost",
-						"http://localhost")
+					.AllowAnyOrigin()
 					.AllowAnyHeader()
 					.AllowAnyMethod()));
 

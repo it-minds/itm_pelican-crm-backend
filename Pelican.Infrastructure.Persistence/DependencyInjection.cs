@@ -1,4 +1,19 @@
-﻿using Location = Pelican.Domain.Entities.Location;
+﻿using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using HotChocolate.Execution.Configuration;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Pelican.Application;
+using Pelican.Application.Common.Interfaces;
+using Pelican.Application.Common.Interfaces.DataLoaders;
+using Pelican.Application.Common.Interfaces.Repositories;
+using Pelican.Domain.Entities;
+using Pelican.Infrastructure.Persistence.DataLoader;
+using Pelican.Infrastructure.Persistence.Repositories;
+using Location = Pelican.Domain.Entities.Location;
 
 namespace Pelican.Infrastructure.Persistence;
 public static class DependencyInjection

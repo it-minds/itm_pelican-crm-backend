@@ -7,7 +7,7 @@ using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Xunit;
 
-namespace Pelican.Application.Test.Contacts;
+namespace Pelican.Application.Test.Contacts.Commands.UpdateContact;
 public class UpdateContactCommandHandlerTests
 {
 	private readonly UpdateContactCommandHandler _uut;

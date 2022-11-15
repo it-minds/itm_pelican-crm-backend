@@ -2,7 +2,7 @@
 using Pelican.Application.Contacts.Commands.UpdateContact;
 using Xunit;
 
-namespace Pelican.Application.Test.Contacts;
+namespace Pelican.Application.Test.Contacts.Commands.UpdateContact;
 
 public class UpdateContactCommandValidatorTests
 {

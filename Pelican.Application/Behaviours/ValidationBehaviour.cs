@@ -25,10 +25,10 @@ internal sealed class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavi
 		List<ValidationFailure> failures = _validators
 			.Select(v => v.Validate(context))
 			.SelectMany(result => result.Errors)
-			.Where(f => f != null)
+			.Where(f => f is not null)
 			.ToList();
 
-		if (failures.Count != 0)
+		if (failures.Any())
 		{
 			throw new ValidationException(failures);
 		}

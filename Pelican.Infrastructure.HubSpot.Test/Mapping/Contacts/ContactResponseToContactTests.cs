@@ -49,24 +49,6 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_ResponseMissingHubSpotOwnerId_ThrowsException()
-	{
-		/// Arrange
-		ContactResponse defaultResponse = new();
-		defaultResponse.Properties.HubSpotObjectId = ID;
-
-		/// Act
-		Exception result = Record.Exception(() => defaultResponse.ToContact());
-
-		/// Assert
-		Assert.NotNull(result);
-
-		Assert.Equal(
-			typeof(ArgumentNullException),
-			result.GetType());
-	}
-
-	[Fact]
 	public void ToContact_WithoutAssociations_ReturnCorrectProperties()
 	{
 		/// Act

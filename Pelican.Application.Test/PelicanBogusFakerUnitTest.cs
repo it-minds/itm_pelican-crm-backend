@@ -170,8 +170,6 @@ public class PelicanBogusFakerUnitTest
 			item => Assert.NotNull(item.AccountManagerDeals));
 		Assert.All(result,
 			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotId)));
-		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotOwnerId)));
 	}
 
 	[Theory]

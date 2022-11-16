@@ -42,24 +42,6 @@ public class DealResponseToDealTests
 	}
 
 	[Fact]
-	public void ToDeal_ResponseMissingHubSpotOwnerId_ThrowsException()
-	{
-		/// Arrange
-		DealResponse defaultResponse = new();
-		defaultResponse.Properties.HubSpotObjectId = ID;
-
-		/// Act
-		Exception result = Record.Exception(() => defaultResponse.ToDeal());
-
-		/// Assert
-		Assert.NotNull(result);
-
-		Assert.Equal(
-			typeof(ArgumentNullException),
-			result.GetType());
-	}
-
-	[Fact]
 	public void ToDeal_WithoutAssociations_ReturnCorrectProperties()
 	{
 		/// Act

@@ -7,8 +7,7 @@ internal static class DealResponseToDeal
 {
 	internal static Deal ToDeal(this DealResponse response)
 	{
-		if (string.IsNullOrWhiteSpace(response.Properties.HubSpotObjectId)
-			|| string.IsNullOrWhiteSpace(response.Properties.HubSpotOwnerId))
+		if (string.IsNullOrWhiteSpace(response.Properties.HubSpotObjectId))
 		{
 			throw new ArgumentNullException(nameof(response));
 		}

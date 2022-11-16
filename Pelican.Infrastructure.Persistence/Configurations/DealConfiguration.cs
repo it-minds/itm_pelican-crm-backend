@@ -18,8 +18,7 @@ internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 			.IsRequired();
 
 		builder.Property(p => p.HubSpotOwnerId)
-			.HasMaxLength(StringLengths.Id)
-			.IsRequired();
+			.HasMaxLength(StringLengths.Id);
 
 		builder.Property(p => p.EndDate)
 			.HasColumnType("Date");

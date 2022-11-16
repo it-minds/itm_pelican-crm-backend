@@ -5,7 +5,7 @@ public class Contact : Entity, ITimeTracked
 {
 	public string HubSpotId { get; set; }
 
-	public string HubSpotOwnerId { get; set; }
+	public string? HubSpotOwnerId { get; set; }
 
 
 	public string? Firstname { get; set; }

@@ -32,8 +32,7 @@ internal class ContactConfiguration : IEntityTypeConfiguration<Contact>
 			.IsRequired();
 
 		builder.Property(p => p.HubSpotOwnerId)
-			.HasMaxLength(StringLengths.Id)
-			.IsRequired();
+			.HasMaxLength(StringLengths.Id);
 
 		builder.Property(p => p.JobTitle)
 			.HasMaxLength(StringLengths.JobTitle);

@@ -44,7 +44,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 		var faker = new Faker<Deal>().UseSeed(1339);
 		faker
 			.RuleFor(e => e.HubSpotId, f => f.Random.Guid().ToString())
-			.RuleFor(e => e.HubSpotOwnerId, f => f.PickRandom<AccountManager>(accountManagers).HubSpotId)
+			.RuleFor(e => e.HubSpotOwnerId, f => f.PickRandom<AccountManager>(accountManagers).HubSpotId.OrNull(f))
 			.RuleFor(e => e.DealStatus, f => f.PickRandom<DealStatus>().ToString().OrNull(f))
 			.RuleFor(e => e.EndDate, f => new DateTime().OrNull(f))
 			.RuleFor(e => e.Id, f => f.Random.Guid())
@@ -86,7 +86,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.LinkedInUrl, f => f.Internet.Url().OrNull(f))
 			.RuleFor(e => e.JobTitle, f => f.Name.JobTitle().OrNull(f))
 			.RuleFor(e => e.HubSpotId, f => f.Random.Guid().ToString())
-			.RuleFor(e => e.HubSpotOwnerId, f => f.PickRandom<AccountManager>(accountManagers).HubSpotId)
+			.RuleFor(e => e.HubSpotOwnerId, f => f.PickRandom<AccountManager>(accountManagers).HubSpotId.OrNull(f))
 			.RuleFor(e => e.Id, f => f.Random.Guid());
 		return faker.Generate(count);
 	}

@@ -6,7 +6,7 @@ public class Deal : Entity, ITimeTracked
 {
 	public string HubSpotId { get; set; }
 
-	public string HubSpotOwnerId { get; set; }
+	public string? HubSpotOwnerId { get; set; }
 
 	public string? DealStatus { get; set; }
 

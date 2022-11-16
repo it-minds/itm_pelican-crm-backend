@@ -129,7 +129,7 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 					.ToList() ?? new List<AccountManagerDeal>();
 
 				deal.Client = clients
-					.First(client => client.HubSpotId == deal.Client.HubSpotId);
+					.FirstOrDefault(client => client.HubSpotId == deal.Client?.HubSpotId);
 
 				deal
 					.DealContacts?
@@ -148,7 +148,7 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 			.ForEach(client =>
 			{
 				client.Deals = deals
-					.Where(deal => deal.Client.HubSpotId == client.HubSpotId)?
+					.Where(deal => deal.Client?.HubSpotId == client.HubSpotId)?
 					.ToList() ?? new List<Deal>();
 
 				client

@@ -4,9 +4,6 @@ namespace Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 
 internal sealed class DealProperties
 {
-	[JsonPropertyName("amount")]
-	public string Amount { get; set; } = string.Empty;
-
 	[JsonPropertyName("closedate")]
 	public DateTime CloseDate { get; set; }
 

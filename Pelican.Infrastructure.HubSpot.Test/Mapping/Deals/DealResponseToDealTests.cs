@@ -10,8 +10,6 @@ public class DealResponseToDealTests
 {
 	private const string ID = "id";
 	private const string DEALSTAGE = "dealstage";
-	private const string AMOUNTSTRING = "10";
-	private const decimal AMOUNTDECIMAL = 10;
 	private const string OWNERID = "ownerid";
 
 	private readonly DealResponse response = new()
@@ -21,7 +19,6 @@ public class DealResponseToDealTests
 			Dealstage = DEALSTAGE,
 			CloseDate = DateTime.Today,
 			HubSpotObjectId = ID,
-			Amount = AMOUNTSTRING,
 			HubSpotOwnerId = OWNERID,
 		},
 	};
@@ -63,23 +60,6 @@ public class DealResponseToDealTests
 	}
 
 	[Fact]
-	public void ToDeal_ResponseInvalidAmountFormat_ThrowsException()
-	{
-		/// Arrange
-		response.Properties.Amount = "invalidFormat";
-
-		/// Act
-		Exception result = Record.Exception(() => response.ToDeal());
-
-		/// Assert
-		Assert.NotNull(result);
-
-		Assert.Equal(
-			typeof(InvalidOperationException),
-			result.GetType());
-	}
-
-	[Fact]
 	public void ToDeal_WithoutAssociations_ReturnCorrectProperties()
 	{
 		/// Act
@@ -89,24 +69,6 @@ public class DealResponseToDealTests
 		Assert.Equal(DEALSTAGE, result.DealStatus);
 		Assert.Equal(DateTime.Today, result.EndDate);
 		Assert.Equal(ID, result.HubSpotId);
-		Assert.Equal(AMOUNTDECIMAL, result.Revenue);
-		Assert.Equal(OWNERID, result.HubSpotOwnerId);
-	}
-
-	[Fact]
-	public void ToDeal_WithoutAssociationsNoAmount_ReturnCorrectProperties()
-	{
-		/// Arragne 
-		response.Properties.Amount = string.Empty;
-
-		/// Act
-		Deal result = response.ToDeal();
-
-		/// Assert
-		Assert.Equal(DEALSTAGE, result.DealStatus);
-		Assert.Equal(DateTime.Today, result.EndDate);
-		Assert.Equal(ID, result.HubSpotId);
-		Assert.Null(result.Revenue);
 		Assert.Equal(OWNERID, result.HubSpotOwnerId);
 	}
 

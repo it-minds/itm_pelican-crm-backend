@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Primitives;
+﻿using HotChocolate;
+using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
 public class Deal : Entity, ITimeTracked
@@ -6,11 +7,6 @@ public class Deal : Entity, ITimeTracked
 	public string HubSpotId { get; set; }
 
 	public string HubSpotOwnerId { get; set; }
-
-
-	public decimal? Revenue { get; set; }
-
-	public string? CurrencyCode { get; set; }
 
 	public string? DealStatus { get; set; }
 
@@ -33,9 +29,10 @@ public class Deal : Entity, ITimeTracked
 
 
 	public Deal(Guid id) : base(id) { }
+
 	public Deal() { }
 
-
+	[GraphQLIgnore]
 	public virtual Deal UpdateProperty(string propertyName, string propertyValue)
 	{
 		switch (propertyName)
@@ -51,20 +48,8 @@ public class Deal : Entity, ITimeTracked
 					EndDate = date;
 					break;
 				}
-			case "amount":
-				{
-					if (!decimal.TryParse(propertyValue, out decimal valueDecimal))
-					{
-						throw new InvalidOperationException("Invalid amount format");
-					}
-					Revenue = valueDecimal;
-					break;
-				}
 			case "dealstage":
 				DealStatus = propertyValue;
-				break;
-			case "deal_currency_code":
-				CurrencyCode = propertyValue;
 				break;
 			default:
 				throw new InvalidOperationException("Invalid field");
@@ -73,6 +58,7 @@ public class Deal : Entity, ITimeTracked
 		return this;
 	}
 
+	[GraphQLIgnore]
 	public virtual Deal FillOutAssociations(AccountManager? accountManager, Client? client, List<Contact>? contacts)
 	{
 		FillOutAccountManager(accountManager);
@@ -82,6 +68,7 @@ public class Deal : Entity, ITimeTracked
 		return this;
 	}
 
+	[GraphQLIgnore]
 	public virtual void FillOutAccountManager(AccountManager? accountManager)
 	{
 		if (accountManager is null)

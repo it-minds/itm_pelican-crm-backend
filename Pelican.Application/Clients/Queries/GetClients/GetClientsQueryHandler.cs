@@ -14,6 +14,6 @@ public class GetClientsQueryHandler : IQueryHandler<GetClientsQuery, IQueryable<
 	//Uses the repository for Client to find all Clients in the database
 	public async Task<IQueryable<Client>> Handle(GetClientsQuery request, CancellationToken cancellation)
 	{
-		return await Task.Run(() => _repository.FindAllWithIncludes());
+		return await Task.Run(() => _repository.FindAll());
 	}
 }

@@ -8,7 +8,10 @@ namespace Pelican.Presentation.GraphQL.Deals;
 public class DealsQuery
 {
 	//This Query reguests all Deals from the database.
-	[UsePaging]
+	[UsePaging(IncludeTotalCount = true)]
+	[UseProjection]
+	[UseFiltering]
+	[UseSorting]
 	public async Task<IQueryable<Deal>> GetDeals([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
 		return await mediator.Send(new GetDealsQuery(), cancellationToken);

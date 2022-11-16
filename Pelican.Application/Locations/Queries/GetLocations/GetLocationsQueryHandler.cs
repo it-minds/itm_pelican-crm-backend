@@ -13,6 +13,6 @@ public class GetLocationsQueryHandler : IQueryHandler<GetLocationsQuery, IQuerya
 	//Uses the repository for Location to find all Locations in the database
 	public async Task<IQueryable<Location>> Handle(GetLocationsQuery request, CancellationToken cancellation)
 	{
-		return await Task.Run(() => _repository.FindAllWithIncludes());
+		return await Task.Run(() => _repository.FindAll());
 	}
 }

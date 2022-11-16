@@ -2,7 +2,6 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Pelican.Application.Behaviours;
 
 namespace Pelican.Application;
 
@@ -15,7 +14,7 @@ public static class DependencyInjection
 
 		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-		services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+		//services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
 		return services;
 	}

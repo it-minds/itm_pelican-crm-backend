@@ -58,9 +58,9 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 				{
 					oldClientContactRelation.IsActive = false;
 				}
-				//await _unitOfWork
-				//	.ClientContactRepository
-				//	.CreateAsync(new());
+				await _unitOfWork
+					.ClientContactRepository
+					.CreateAsync(new());
 				break;
 			default:
 				break;

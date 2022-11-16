@@ -1,8 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 using Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashGenerator;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
@@ -24,41 +22,41 @@ internal sealed class HubSpotValidationFilter : IResourceFilter
 
 	public void OnResourceExecuting(ResourceExecutingContext context)
 	{
-		bool hasSignature =
-			context.HttpContext.Request.Headers.TryGetValue(
-				"X-HubSpot-Signature",
-				out StringValues signature);
+		//bool hasSignature =
+		//	context.HttpContext.Request.Headers.TryGetValue(
+		//		"X-HubSpot-Signature",
+		//		out StringValues signature);
 
-		bool hasSignatureVersion =
-			context.HttpContext.Request.Headers.TryGetValue(
-				"X-HubSpot-Signature-Version",
-				out StringValues signatureVersion);
+		//bool hasSignatureVersion =
+		//	context.HttpContext.Request.Headers.TryGetValue(
+		//		"X-HubSpot-Signature-Version",
+		//		out StringValues signatureVersion);
 
-		if (!hasSignature
-			|| !hasSignatureVersion)
-		{
-			context.Result = new BadRequestObjectResult(new { message = "Unable to validate signature" });
+		//if (!hasSignature
+		//	|| !hasSignatureVersion)
+		//{
+		//	context.Result = new BadRequestObjectResult(new { message = "Unable to validate signature" });
 
-			_logger.LogWarning(
-				"HubSpot Signature validation failed. Has signature: \"{hasSignature}\" Has signature version: \"{hasSignatureVersion}\"",
-				hasSignature,
-				signatureVersion);
+		//	_logger.LogWarning(
+		//		"HubSpot Signature validation failed. Has signature: \"{hasSignature}\" Has signature version: \"{hasSignatureVersion}\"",
+		//		hasSignature,
+		//		signatureVersion);
 
-			return;
-		}
+		//	return;
+		//}
 
-		int version = int.Parse(signatureVersion.ToString().Trim('v'));
+		//int version = int.Parse(signatureVersion.ToString().Trim('v'));
 
-		IHashGenerator hashGenerator = _hashGeneratorFactory.CreateHashGenerator(version);
+		//IHashGenerator hashGenerator = _hashGeneratorFactory.CreateHashGenerator(version);
 
-		string hash = hashGenerator.GenerateHash(context.HttpContext.Request);
+		//string hash = hashGenerator.GenerateHash(context.HttpContext.Request);
 
-		if (hash != signature.ToString())
-		{
-			context.Result = new BadRequestObjectResult(new { message = "Invalid request signature" });
+		//if (hash != signature.ToString())
+		//{
+		//	context.Result = new BadRequestObjectResult(new { message = "Invalid request signature" });
 
-			_logger.LogWarning("HubSpot Signature validation failed. Invalid signature");
-		}
+		//	_logger.LogWarning("HubSpot Signature validation failed. Invalid signature");
+		//}
 	}
 
 	public void OnResourceExecuted(ResourceExecutedContext context) { }

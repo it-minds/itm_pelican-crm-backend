@@ -30,18 +30,23 @@ public static class DependencyInjection
 			AddLocalDb(services, configuration);
 		}
 		services.AddTransient<IUnitOfWork>(_ => new UnitOfWork(_.GetRequiredService<IDbContextFactory<PelicanContext>>().CreateDbContext()));
+
 		services.AddTransient<IPelicanBogusFaker, PelicanBogusFaker>();
+
 		services.AddTransient<DevelopmentSeeder>();
+
 		return services;
 	}
 	public static IRequestExecutorBuilder AddDataLoaders(this IRequestExecutorBuilder builder)
 	{
-		builder.AddDataLoader<IGenericDataLoader<AccountManager>, GenericDataLoader<AccountManager>>()
+		builder
+			.AddDataLoader<IGenericDataLoader<AccountManager>, GenericDataLoader<AccountManager>>()
 			.AddDataLoader<IGenericDataLoader<Client>, GenericDataLoader<Client>>()
 			.AddDataLoader<IGenericDataLoader<Contact>, GenericDataLoader<Contact>>()
 			.AddDataLoader<IGenericDataLoader<Deal>, GenericDataLoader<Deal>>()
 			.AddDataLoader<IGenericDataLoader<Location>, GenericDataLoader<Location>>()
 			.AddDataLoader<IGenericDataLoader<Supplier>, GenericDataLoader<Supplier>>();
+
 		return builder;
 	}
 
@@ -49,7 +54,10 @@ public static class DependencyInjection
 	{
 		if (app.Environment.IsDevelopment())
 		{
-			app.Services.GetRequiredService<DevelopmentSeeder>().SeedEntireDb(10);
+			app
+				.Services
+				.GetRequiredService<DevelopmentSeeder>()
+				.SeedEntireDb(10);
 		}
 
 		return app;

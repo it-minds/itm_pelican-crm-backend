@@ -2,7 +2,7 @@ name: Build and deploy .NET Core application to Web App pelican-linux-web-app
 on:
   push:
     branches:
-    - main
+    - hotfix/plcn-197-MoreDebugging
 
 env:
   AZURE_WEBAPP_NAME: pelican-linux-web-app

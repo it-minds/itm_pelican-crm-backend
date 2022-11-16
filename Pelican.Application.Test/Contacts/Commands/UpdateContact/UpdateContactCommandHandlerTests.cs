@@ -90,7 +90,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ContactNotFoundSupplierNotFound_ContactAndSupplierRepositoriesCalled()
+	public async void Handle_ContactNotFoundSupplierNotFound_ContactAndSupplierRepositoriesCalledReturnsFailure()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -122,30 +122,7 @@ public class UpdateContactCommandHandlerTests
 				supplier => supplier.HubSpotId == SUPPLIER_HUBSPOT_ID,
 				default),
 			Times.Once);
-	}
 
-	[Fact]
-	public async void Handle_ContactNotFoundSupplierNotFound_ReturnsFailure()
-	{
-		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		_contactRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync((Contact)null!);
-
-		_supplierRepositoryMock
-			.Setup(x => x.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Supplier, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync((Supplier)null!);
-
-		// Act
-		var result = await _uut.Handle(command, default);
-
-		// Assert
 		Assert.True(result.IsFailure);
 
 		Assert.Equal(
@@ -185,7 +162,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ContactNotFoundFailedRefreshingAccessToken_HubSpotAuthServiceCalled()
+	public async void Handle_ContactNotFoundFailedRefreshingAccessToken_HubSpotAuthServiceCalledReturnsFailure()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -222,49 +199,16 @@ public class UpdateContactCommandHandlerTests
 				supplier.RefreshToken,
 				default),
 			Times.Once);
-	}
 
-	[Fact]
-	public async void Handle_ContactNotFoundFailedRefreshingAccessToken_ReturnsFailure()
-	{
-		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
-
-		_contactRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync((Contact)null!);
-
-		_supplierRepositoryMock
-			.Setup(x => x.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Supplier, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(supplier);
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
-				It.IsAny<string>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Failure<string>(Error.NullValue));
-
-		// Act
-		var result = await _uut.Handle(command, default);
-
-		// Assert
 		Assert.True(result.IsFailure);
 
 		Assert.Equal(
 			Error.NullValue,
 			result.Error);
 	}
+
 	[Fact]
-	public async void Handle_ContactNotFoundFailedFetchingContactFromHubSpot_HubSpotContactServiceCalled()
+	public async void Handle_ContactNotFoundFailedFetchingContactFromHubSpot_HubSpotContactServiceCalledReturnsFailure()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -311,50 +255,7 @@ public class UpdateContactCommandHandlerTests
 				command.ObjectId,
 				default),
 			Times.Once);
-	}
 
-	[Fact]
-	public async void Handle_ContactNotFoundFailedFetchingContactFromHubSpot_ReturnsFailure()
-	{
-		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
-
-		string accessToken = "accessToken";
-
-		_contactRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync((Contact)null!);
-
-		_supplierRepositoryMock
-			.Setup(x => x.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Supplier, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(supplier);
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
-				It.IsAny<string>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(accessToken));
-
-		_hubSpotContactServiceMock
-			.Setup(service => service.GetByIdAsync(
-				It.IsAny<string>(),
-				It.IsAny<long>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Failure<Contact>(Error.NullValue));
-
-		// Act
-		var result = await _uut.Handle(command, default);
-
-		// Assert
 		Assert.True(result.IsFailure);
 
 		Assert.Equal(
@@ -363,7 +264,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ContactNotFoundFetchingContactWithoutAssociations_FillOutAssociationCalled()
+	public async void Handle_ContactNotFoundFetchingContactWithoutAssociations_DependencyCallsAssertedReturnsSuccess()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -411,52 +312,7 @@ public class UpdateContactCommandHandlerTests
 				Enumerable.Empty<Client>(),
 				Enumerable.Empty<Deal>()),
 			Times.Once);
-	}
 
-	[Fact]
-	public async void Handle_ContactNotFoundFetchingContactWithoutAssociations_DealAndClientRepositoriesNotCalled()
-	{
-		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
-
-		Mock<Contact> newContactMock = new();
-
-		string accessToken = "accessToken";
-
-		_contactRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync((Contact)null!);
-
-		_supplierRepositoryMock
-			.Setup(x => x.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Supplier, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(supplier);
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
-				It.IsAny<string>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(accessToken));
-
-		_hubSpotContactServiceMock
-			.Setup(service => service.GetByIdAsync(
-				It.IsAny<string>(),
-				It.IsAny<long>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(newContactMock.Object));
-
-		// Act
-		var result = await _uut.Handle(command, default);
-
-		// Assert
 		_dealRepositoryMock.Verify(
 			repo => repo.FirstOrDefaultAsync(
 				It.IsAny<Expression<Func<Deal, bool>>>(),
@@ -468,52 +324,7 @@ public class UpdateContactCommandHandlerTests
 				It.IsAny<Expression<Func<Client, bool>>>(),
 				It.IsAny<CancellationToken>()),
 			Times.Never);
-	}
 
-	[Fact]
-	public async void Handle_ContactNotFoundFetchingContactWithoutAssociations_UnitOfWorkCreateAndSaveCalled()
-	{
-		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
-
-		Mock<Contact> newContactMock = new();
-
-		string accessToken = "accessToken";
-
-		_contactRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync((Contact)null!);
-
-		_supplierRepositoryMock
-			.Setup(x => x.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Supplier, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(supplier);
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
-				It.IsAny<string>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(accessToken));
-
-		_hubSpotContactServiceMock
-			.Setup(service => service.GetByIdAsync(
-				It.IsAny<string>(),
-				It.IsAny<long>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(newContactMock.Object));
-
-		// Act
-		var result = await _uut.Handle(command, default);
-
-		// Assert
 		_contactRepositoryMock.Verify(
 			repo => repo.CreateAsync(
 				newContactMock.Object,
@@ -523,57 +334,12 @@ public class UpdateContactCommandHandlerTests
 		_unitOfWorkMock.Verify(
 			u => u.SaveAsync(default),
 			Times.Once);
-	}
 
-	[Fact]
-	public async void Handle_ContactNotFoundFetchingContactWithoutAssociations_ReturnsSuccess()
-	{
-		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
-
-		Mock<Contact> newContactMock = new();
-
-		string accessToken = "accessToken";
-
-		_contactRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync((Contact)null!);
-
-		_supplierRepositoryMock
-			.Setup(x => x.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Supplier, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(supplier);
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
-				It.IsAny<string>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(accessToken));
-
-		_hubSpotContactServiceMock
-			.Setup(service => service.GetByIdAsync(
-				It.IsAny<string>(),
-				It.IsAny<long>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(newContactMock.Object));
-
-		// Act
-		var result = await _uut.Handle(command, default);
-
-		// Assert
 		Assert.True(result.IsSuccess);
 	}
 
 	[Fact]
-	public async void Handle_ContactNotFoundFetchingContactWithAssociations_DealsAndClientLoadedFromRepositories()
+	public async void Handle_ContactNotFoundFetchingContactWithDealContacts_DealsLoadedFromRepositoriesReturnsSuccess()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -584,11 +350,9 @@ public class UpdateContactCommandHandlerTests
 		};
 
 		DealContact existingDealContact = new(Guid.NewGuid());
-		ClientContact existingClientContact = new(Guid.NewGuid());
 
 		Mock<Contact> newContactMock = new();
 		newContactMock.Object.DealContacts.Add(existingDealContact);
-		newContactMock.Object.ClientContacts.Add(existingClientContact);
 
 		string accessToken = "accessToken";
 
@@ -627,15 +391,67 @@ public class UpdateContactCommandHandlerTests
 				default),
 			Times.Once);
 
+		Assert.True(result.IsSuccess);
+	}
+
+	[Fact]
+	public async void Handle_ContactNotFoundFetchingContactWithClientContacts_ClientLoadedFromRepositoriesReturnsSuccess()
+	{
+		// Arrange
+		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+
+		Supplier supplier = new(Guid.NewGuid())
+		{
+			RefreshToken = "not_empty"
+		};
+
+		ClientContact existingClientContact = new(Guid.NewGuid());
+
+		Mock<Contact> newContactMock = new();
+		newContactMock.Object.ClientContacts.Add(existingClientContact);
+
+		string accessToken = "accessToken";
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync((Contact)null!);
+
+		_supplierRepositoryMock
+			.Setup(x => x.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Supplier, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(supplier);
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(service => service.RefreshAccessTokenAsync(
+				It.IsAny<string>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(accessToken));
+
+		_hubSpotContactServiceMock
+			.Setup(service => service.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(newContactMock.Object));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		// Assert
 		_clientRepositoryMock.Verify(
 			repo => repo.FirstOrDefaultAsync(
 				c => c.HubSpotId == existingClientContact.Client.HubSpotId,
 				default),
 			Times.Once);
+
+		Assert.True(result.IsSuccess);
 	}
 
 	[Fact]
-	public async void Handle_ContactNotFoundFetchingContactWithAssociations_UnitOfWorkCreateAndSaveCalled()
+	public async void Handle_ContactNotFoundFetchingContactWithDealContacts_UnitOfWorkCreateAndSaveCalled()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -649,10 +465,6 @@ public class UpdateContactCommandHandlerTests
 		{
 			HubSpotId = "dealHubSpotId",
 		};
-		Client existingClient = new(Guid.NewGuid())
-		{
-			HubSpotId = "clientHubSpotId",
-		};
 
 		Mock<Contact> newContactMock = new();
 		newContactMock.Object.HubSpotId = "hubSpotId";
@@ -664,6 +476,73 @@ public class UpdateContactCommandHandlerTests
 			HubSpotContactId = newContactMock.Object.HubSpotId,
 			HubSpotDealId = existingDeal.HubSpotId,
 		});
+
+		string accessToken = "accessToken";
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync((Contact)null!);
+
+		_supplierRepositoryMock
+			.Setup(x => x.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Supplier, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(supplier);
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(service => service.RefreshAccessTokenAsync(
+				It.IsAny<string>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(accessToken));
+
+		_hubSpotContactServiceMock
+			.Setup(service => service.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(newContactMock.Object));
+
+		_dealRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Deal, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(existingDeal);
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		// Assert
+		_contactRepositoryMock.Verify(
+			repo => repo.CreateAsync(
+				newContactMock.Object,
+				default),
+			Times.Once);
+
+		_unitOfWorkMock.Verify(
+			u => u.SaveAsync(default),
+			Times.Once);
+	}
+
+	[Fact]
+	public async void Handle_ContactNotFoundFetchingContactWithClientContacts_UnitOfWorkCreateAndSaveCalled()
+	{
+		// Arrange
+		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+
+		Supplier supplier = new(Guid.NewGuid())
+		{
+			RefreshToken = "not_empty"
+		};
+
+		Client existingClient = new(Guid.NewGuid())
+		{
+			HubSpotId = "clientHubSpotId",
+		};
+
+		Mock<Contact> newContactMock = new();
+		newContactMock.Object.HubSpotId = "hubSpotId";
 
 		newContactMock.Object.ClientContacts.Add(new()
 		{
@@ -700,12 +579,6 @@ public class UpdateContactCommandHandlerTests
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success(newContactMock.Object));
 
-		_dealRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Deal, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(existingDeal);
-
 		_clientRepositoryMock
 			.Setup(repo => repo.FirstOrDefaultAsync(
 				It.IsAny<Expression<Func<Client, bool>>>(),
@@ -728,60 +601,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ContactNotFoundFetchingContactWithAssociations_ReturnsSuccess()
-	{
-		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
-
-
-		DealContact existingDealContact = new(Guid.NewGuid());
-		ClientContact existingClientContact = new(Guid.NewGuid());
-
-		Mock<Contact> newContactMock = new();
-		newContactMock.Object.DealContacts.Add(existingDealContact);
-		newContactMock.Object.ClientContacts.Add(existingClientContact);
-
-		string accessToken = "accessToken";
-
-		_contactRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync((Contact)null!);
-
-		_supplierRepositoryMock
-			.Setup(x => x.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Supplier, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(supplier);
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
-				It.IsAny<string>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(accessToken));
-
-		_hubSpotContactServiceMock
-			.Setup(service => service.GetByIdAsync(
-				It.IsAny<string>(),
-				It.IsAny<long>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(newContactMock.Object));
-
-		// Act
-		var result = await _uut.Handle(command, default);
-
-		// Assert
-		Assert.True(result.IsSuccess);
-	}
-
-	[Fact]
-	public async void Handle_ContactFoundFirstnameUpdated_ContactUpdatePropertyCalled()
+	public async void Handle_ContactFoundFirstnameUpdated_DependenciesCalledReturnSuccess()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -801,77 +621,20 @@ public class UpdateContactCommandHandlerTests
 		contactMock.Verify(
 			c => c.UpdateProperty(NAME, VALUE),
 			Times.Once);
-	}
 
-	[Fact]
-	public async void Handle_ContactFoundFirstnameUpdated_ContactRepoUpdateCalled()
-	{
-		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Mock<Contact> contactMock = new();
-
-		_contactRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(contactMock.Object);
-
-		// Act
-		var result = await _uut.Handle(command, default);
-
-		// Assert
 		_contactRepositoryMock.Verify(
 			repo => repo.Update(contactMock.Object),
 			Times.Once);
-	}
 
-	[Fact]
-	public async void Handle_ContactFoundFirstnameUpdated_UnitOfWordSaveCalled()
-	{
-		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Mock<Contact> contactMock = new();
-
-		_contactRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(contactMock.Object);
-
-		// Act
-		var result = await _uut.Handle(command, default);
-
-		// Assert
 		_unitOfWorkMock.Verify(
 			u => u.SaveAsync(default),
 			Times.Once);
-	}
 
-	[Fact]
-	public async void Handle_ContactFoundFirstnameUpdated_ReturnsSuccess()
-	{
-		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Mock<Contact> contactMock = new();
-
-		_contactRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(contactMock.Object);
-
-		// Act
-		var result = await _uut.Handle(command, default);
-
-		// Assert
 		Assert.True(result.IsSuccess);
 	}
 
 	[Fact]
-	public async void Handle_ContactFoundDealAssociationsUpdatedFailedFetchingFromHubSpot_ReturnsFailure()
+	public async void Handle_ContactFoundDealAssociationsUpdatedFailedFetchingFromHubSpot_ReturnsFailureUpdateDealContactsNotCalled()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
@@ -919,59 +682,14 @@ public class UpdateContactCommandHandlerTests
 		Assert.Equal(
 			Error.NullValue,
 			result.Error);
-	}
 
-	[Fact]
-	public async void Handle_ContactFoundDealAssociationsUpdatedFailedFetchingFromHubSpot_UpdateDealContactsNotCalled()
-	{
-		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
-
-		string accessToken = "accessToken";
-
-		Mock<Contact> contactMock = new();
-
-		_contactRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(contactMock.Object);
-
-		_supplierRepositoryMock
-			.Setup(x => x.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Supplier, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(supplier);
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
-				It.IsAny<string>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(accessToken));
-
-		_hubSpotContactServiceMock
-			.Setup(service => service.GetByIdAsync(
-				It.IsAny<string>(),
-				It.IsAny<long>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Failure<Contact>(Error.NullValue));
-
-		// Act
-		var result = await _uut.Handle(command, default);
-
-		// Assert
 		contactMock.Verify(
 			c => c.UpdateDealContacts(It.IsAny<List<DealContact>>()),
 			Times.Never);
 	}
 
 	[Fact]
-	public async void Handle_ContactFoundDealAssociationsUpdatedSuccessFetchingFromHubSpot_UpdateDealContactsCalled()
+	public async void Handle_ContactFoundDealAssociationsUpdatedSuccessFetchingFromHubSpot_UpdateDealContactsCalledReturnSuccess()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
@@ -1023,62 +741,7 @@ public class UpdateContactCommandHandlerTests
 		contactMock.Verify(
 			c => c.UpdateDealContacts(dealContactsFromHubSpot),
 			Times.Once);
-	}
 
-	[Fact]
-	public async void Handle_ContactFoundDealAssociationsUpdatedSuccessFetchingFromHubSpot_ReturnSuccess()
-	{
-		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
-
-		string accessToken = "accessToken";
-
-		Mock<Contact> contactMock = new();
-
-		List<DealContact> dealContactsFromHubSpot = new List<DealContact>() { new() };
-		Contact contactFromHubSpot = new()
-		{
-			DealContacts = dealContactsFromHubSpot,
-		};
-
-		_contactRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(contactMock.Object);
-
-		_supplierRepositoryMock
-			.Setup(x => x.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Supplier, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(supplier);
-
-		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
-				It.IsAny<string>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(accessToken));
-
-		_hubSpotContactServiceMock
-			.Setup(service => service.GetByIdAsync(
-				It.IsAny<string>(),
-				It.IsAny<long>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(contactFromHubSpot));
-
-		// Act
-		var result = await _uut.Handle(command, default);
-
-		// Assert
 		Assert.True(result.IsSuccess);
 	}
-
-
-
-
 }

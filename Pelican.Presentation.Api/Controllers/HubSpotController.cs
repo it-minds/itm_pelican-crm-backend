@@ -11,7 +11,6 @@ using Pelican.Presentation.Api.Utilities.HubSpotHookValidation;
 namespace Pelican.Presentation.Api.Controllers;
 
 [Route("[controller]")]
-//[EnableCors("HubSpot")]
 internal sealed class HubSpotController : ApiController
 {
 	private readonly IRequestToCommandMapper _mapper;

@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Primitives;
+﻿using HotChocolate;
+using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
 public class Contact : Entity, ITimeTracked
@@ -60,10 +61,10 @@ public class Contact : Entity, ITimeTracked
 			default:
 				throw new InvalidOperationException("Invalid field");
 		}
-
 		return this;
 	}
 
+	[GraphQLIgnore]
 	public virtual void UpdateDealContacts(ICollection<DealContact>? currectHubSpotDealContacts)
 	{
 		if (currectHubSpotDealContacts is null)
@@ -88,6 +89,7 @@ public class Contact : Entity, ITimeTracked
 		}
 	}
 
+	[GraphQLIgnore]
 	public virtual Contact FillOutAssociations(IEnumerable<Client>? clients, IEnumerable<Deal>? deals)
 	{
 		FillOutClient(clients);

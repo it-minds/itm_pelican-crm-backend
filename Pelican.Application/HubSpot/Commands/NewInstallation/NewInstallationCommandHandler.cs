@@ -1,4 +1,12 @@
-﻿[assembly: InternalsVisibleTo("Pelican.Application.Test")]
+﻿using System.Runtime.CompilerServices;
+using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Common.Interfaces.Repositories;
+using Pelican.Application.HubSpot.Dtos;
+using Pelican.Domain.Entities;
+using Pelican.Domain.Shared;
+
+[assembly: InternalsVisibleTo("Pelican.Application.Test")]
 namespace Pelican.Application.HubSpot.Commands.NewInstallation;
 
 internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstallationCommand>
@@ -120,8 +128,11 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 					.Where(accountManagerDeal => accountManagerDeal.HubSpotDealId == deal.HubSpotId)?
 					.ToList() ?? new List<AccountManagerDeal>();
 
-				deal.Client = clients
-					.FirstOrDefault(client => client.HubSpotId == deal.Client?.HubSpotId);
+				if (deal.Client is not null)
+				{
+					deal.Client = clients
+						.FirstOrDefault(client => client.HubSpotId == deal.Client.HubSpotId);
+				}
 
 				deal
 					.DealContacts?

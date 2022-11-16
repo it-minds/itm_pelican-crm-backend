@@ -102,7 +102,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 
 		contact.UpdateDealContacts(result.Value.DealContacts);
 
-		return (Result<Contact>)contact;
+		return contact;
 	}
 
 	private async Task<Result> GetAndCreateContactAsync(

@@ -61,6 +61,10 @@ public class UpdateContactCommandHandlerTests
 
 		// Assert
 		Assert.IsType<ArgumentNullException>(result);
+
+		Assert.Contains(
+			"unitOfWork",
+			result.Message);
 	}
 
 	[Fact]
@@ -74,6 +78,10 @@ public class UpdateContactCommandHandlerTests
 
 		// Assert
 		Assert.IsType<ArgumentNullException>(result);
+
+		Assert.Contains(
+			"hubSpotContactService",
+			result.Message);
 	}
 
 	[Fact]
@@ -87,6 +95,10 @@ public class UpdateContactCommandHandlerTests
 
 		// Assert
 		Assert.IsType<ArgumentNullException>(result);
+
+		Assert.Contains(
+			"hubSpotAuthorizationService",
+			result.Message);
 	}
 
 	[Fact]
@@ -451,7 +463,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ContactNotFoundFetchingContactWithDealContacts_UnitOfWorkCreateAndSaveCalled()
+	public async void Handle_ContactNotFoundFetchingContactWithDealContacts_UnitOfWorkCreateAndSaveCalledReturnsSuccess()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -523,6 +535,8 @@ public class UpdateContactCommandHandlerTests
 		_unitOfWorkMock.Verify(
 			u => u.SaveAsync(default),
 			Times.Once);
+
+		Assert.True(result.IsSuccess);
 	}
 
 	[Fact]

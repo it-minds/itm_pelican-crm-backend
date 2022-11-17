@@ -15,14 +15,6 @@ public static class DependencyInjection
 
 	public static IServiceCollection AddApi(this IServiceCollection services)
 	{
-		services.AddCors(options => options
-			.AddPolicy(
-				ALLOWED_CORS_ORIGINS,
-				policy => policy
-					.AllowAnyOrigin()
-					.AllowAnyHeader()
-					.AllowAnyMethod()));
-
 		services.AddScoped<IHashGeneratorFactory, HashGeneratorFactory>();
 
 		services.AddScoped<HubSpotValidationFilter>();
@@ -50,8 +42,6 @@ public static class DependencyInjection
 		app.UseRouting();
 
 		app.UseAuthorization();
-
-		app.UseCors(ALLOWED_CORS_ORIGINS);
 
 		app.MapControllers();
 

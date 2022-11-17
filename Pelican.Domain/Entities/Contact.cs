@@ -34,7 +34,7 @@ public class Contact : Entity, ITimeTracked
 	public Contact(Guid id) : base(id) { }
 	public Contact() { }
 
-
+	[GraphQLIgnore]
 	public virtual Contact UpdateProperty(string propertyName, string propertyValue)
 	{
 		switch (propertyName)

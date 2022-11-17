@@ -22,12 +22,12 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(
-		   typeof(InvalidOperationException),
-		 result.GetType());
+			typeof(InvalidOperationException),
+			result.GetType());
 
 		Assert.Equal(
-		 "Invalid field",
-		 result.Message);
+			"Invalid field",
+			result.Message);
 	}
 
 	[Fact]
@@ -42,8 +42,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(
-		   propertyValue,
-		   _uut.Firstname);
+			propertyValue,
+			_uut.Firstname);
 	}
 
 	[Fact]
@@ -58,8 +58,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(
-		   propertyValue,
-		   _uut.Lastname);
+			propertyValue,
+			_uut.Lastname);
 	}
 
 	[Fact]
@@ -74,8 +74,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(
-		   propertyValue,
-		   _uut.Email);
+			propertyValue,
+			_uut.Email);
 	}
 
 	[Fact]
@@ -90,8 +90,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(
-		   propertyValue,
-		   _uut.PhoneNumber);
+			propertyValue,
+			_uut.PhoneNumber);
 	}
 
 	[Fact]
@@ -106,8 +106,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(
-		   propertyValue,
-		   _uut.PhoneNumber);
+			propertyValue,
+			_uut.PhoneNumber);
 	}
 
 	[Fact]
@@ -122,8 +122,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(
-		   propertyValue,
-		   _uut.JobTitle);
+			propertyValue,
+			_uut.JobTitle);
 	}
 
 	[Fact]
@@ -138,8 +138,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(
-		   propertyValue,
-		   _uut.HubSpotOwnerId);
+			propertyValue,
+			_uut.HubSpotOwnerId);
 	}
 
 	[Fact]
@@ -173,8 +173,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(
-		 1,
-		 _uut.DealContacts.Count);
+			1,
+			_uut.DealContacts.Count);
 	}
 
 	[Fact]
@@ -203,8 +203,8 @@ public class ContactTests
 		Assert.False(_uut.DealContacts.First(d => d.HubSpotDealId == existingDeal.HubSpotId).IsActive);
 
 		Assert.Equal(
-		   2,
-		   _uut.DealContacts.Count);
+			2,
+			_uut.DealContacts.Count);
 	}
 
 	[Fact]
@@ -233,8 +233,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(
-		   1,
-		   _uut.DealContacts.Count);
+			1,
+			_uut.DealContacts.Count);
 	}
 
 	[Fact]

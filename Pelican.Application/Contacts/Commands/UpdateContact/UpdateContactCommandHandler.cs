@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Pelican.Application.Abstractions.HubSpot;
+﻿using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
@@ -11,56 +10,69 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IHubSpotObjectService<Contact> _hubSpotContactService;
+	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
 	public UpdateContactCommandHandler(
 		IUnitOfWork unitOfWork,
-		IHubSpotObjectService<Contact> hubSpotContactService)
+		IHubSpotObjectService<Contact> hubSpotContactService,
+		IHubSpotAuthorizationService hubSpotAuthorizationService)
 	{
-		_unitOfWork = unitOfWork;
-		_hubSpotContactService = hubSpotContactService;
+		_unitOfWork = unitOfWork
+			?? throw new ArgumentNullException(nameof(unitOfWork));
+
+		_hubSpotContactService = hubSpotContactService
+			?? throw new ArgumentNullException(nameof(hubSpotContactService));
+
+		_hubSpotAuthorizationService = hubSpotAuthorizationService
+			?? throw new ArgumentNullException(nameof(hubSpotAuthorizationService));
 	}
-	public async Task<Result> Handle(UpdateContactCommand command, CancellationToken cancellationToken)
+
+	public async Task<Result> Handle(
+		UpdateContactCommand command,
+		CancellationToken cancellationToken = default)
 	{
-		Contact? contact = _unitOfWork
+		Contact? contact = await _unitOfWork
 			.ContactRepository
-			.FindByCondition(contact => contact.Id.ToString() == command.ObjectId.ToString())
-			.FirstOrDefault();
+			.FirstOrDefaultAsync(
+				contact => contact.HubSpotId == command.ObjectId.ToString(),
+				cancellationToken);
 
 		if (contact is null)
 		{
-			return await GetContactFromHubSpot(
-				command.PortalId,
+			return await GetAndCreateContactAsync(
+				command.SupplierHubSpotId,
 				command.ObjectId,
 				cancellationToken);
 		}
 
-		switch (command.PropertyName)
+		return await UpdateExistingContact(
+			contact,
+			command,
+			cancellationToken);
+	}
+
+	private async Task<Result> UpdateExistingContact(
+		Contact contact,
+		UpdateContactCommand command,
+		CancellationToken cancellationToken = default)
+	{
+		if (command.PropertyName == "num_associated_deals")
 		{
-			case "firstname":
-				contact.Firstname = command.PropertyValue;
-				break;
-			case "lastname":
-				contact.Lastname = command.PropertyValue;
-				break;
-			case "email":
-				contact.Email = command.PropertyValue;
-				break;
-			case "phone":
-			case "mobilephone":
-				contact.PhoneNumber = command.PropertyValue;
-				break;
-			case "company":
-				var oldClientContactRelation = contact
-					.ClientContacts
-					.FirstOrDefault(clientContact
-						=> clientContact.Id.ToString() == command.ObjectId.ToString()
-						|| clientContact.IsActive is true);
-				if (oldClientContactRelation is not null)
-				{
-					oldClientContactRelation.IsActive = false;
-				}
-				break;
-			default:
-				break;
+			Result<Contact> result = await UpdateDealContactsAsync(
+				contact,
+				command.SupplierHubSpotId,
+				command.ObjectId,
+				cancellationToken);
+
+			if (result.IsFailure)
+			{
+				return result;
+			}
+		}
+		else
+		{
+			contact.UpdateProperty(
+				command.PropertyName,
+				command.PropertyValue);
 		}
 
 		_unitOfWork
@@ -72,29 +84,137 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 		return Result.Success();
 	}
 
-	private async Task<Result> GetContactFromHubSpot(string userId, long objectId, CancellationToken cancellationToken)
+	private async Task<Result<Contact>> UpdateDealContactsAsync(
+		Contact contact,
+		long supplierHubSpotId,
+		long contactHubSpotId,
+		CancellationToken cancellationToken = default)
 	{
-		Supplier? supplier = await _unitOfWork
-				.SupplierRepository
-				.FindByCondition(supplier => supplier.HubSpotId.ToString() == userId)
-				.FirstOrDefaultAsync();
-
-		if (supplier is null)
-		{
-			return Result.Failure<Contact>(Error.NullValue);
-		}
-
-		Result<Contact> result = await _hubSpotContactService.GetByIdAsync(supplier.RefreshToken, objectId, cancellationToken);
+		Result<Contact> result = await GetContactFromHubSpot(
+						supplierHubSpotId,
+						contactHubSpotId,
+						cancellationToken);
 
 		if (result.IsFailure)
 		{
-			return Result.Failure<Contact>(result.Error);
+			return result;
 		}
+
+		contact.UpdateDealContacts(result.Value.DealContacts);
+
+		return contact;
+	}
+
+	private async Task<Result> GetAndCreateContactAsync(
+		long supplierHubSpotId,
+		long objectId,
+		CancellationToken cancellationToken = default)
+	{
+		Result<Contact> result = await GetContactFromHubSpot(
+						supplierHubSpotId,
+						objectId,
+						cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result;
+		}
+
+		await FillOutContactAssociationsAsync(result.Value, cancellationToken);
 
 		await _unitOfWork
 			.ContactRepository
-			.CreateAsync(result.Value, cancellationToken);
+			.CreateAsync(
+				result.Value,
+				cancellationToken);
+
+		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
+	}
+
+	private async Task<Contact> FillOutContactAssociationsAsync(
+		Contact contact,
+		CancellationToken cancellationToken = default)
+	{
+		List<Deal> deals = new();
+
+		foreach (DealContact dealContact in contact.DealContacts)
+		{
+			Deal? deal = await _unitOfWork
+				.DealRepository
+				.FirstOrDefaultAsync(
+					d => d.HubSpotId == dealContact.Deal.HubSpotId,
+					cancellationToken);
+
+			if (deal is not null)
+			{
+				deals.Add(deal);
+			}
+		}
+
+		List<Client> clients = new();
+
+		foreach (ClientContact clientContact in contact.ClientContacts)
+		{
+			Client? client = await _unitOfWork
+				.ClientRepository
+				.FirstOrDefaultAsync(
+					c => c.HubSpotId == clientContact.Client.HubSpotId,
+					cancellationToken);
+
+			if (client is not null)
+			{
+				clients.Add(client);
+			}
+		}
+
+		contact.FillOutAssociations(clients, deals);
+
+		return contact;
+	}
+
+	private async Task<Result<Contact>> GetContactFromHubSpot(
+		long supplierHubSpotId,
+		long objectId,
+		CancellationToken cancellationToken = default)
+	{
+		Result<string> accessTokenResult = await GetAccessTokenAsync(
+			supplierHubSpotId,
+			cancellationToken);
+
+		if (accessTokenResult.IsFailure)
+		{
+			return Result.Failure<Contact>(accessTokenResult.Error);
+		}
+
+		return await _hubSpotContactService.GetByIdAsync(
+			accessTokenResult.Value,
+			objectId,
+			cancellationToken);
+	}
+
+	private async Task<Result<string>> GetAccessTokenAsync(
+		long supplierHubSpotId,
+		CancellationToken cancellationToken = default)
+	{
+		Supplier? supplier = await _unitOfWork
+				.SupplierRepository
+				.FirstOrDefaultAsync(
+					supplier => supplier.HubSpotId == supplierHubSpotId,
+					cancellationToken);
+
+		if (supplier is null
+			|| string.IsNullOrWhiteSpace(supplier.RefreshToken))
+		{
+			return Result.Failure<string>(Error.NullValue);
+		}
+
+		Result<string> accessTokenResult = await _hubSpotAuthorizationService
+			.RefreshAccessTokenAsync(
+				supplier.RefreshToken,
+				cancellationToken);
+
+		return accessTokenResult;
 	}
 }

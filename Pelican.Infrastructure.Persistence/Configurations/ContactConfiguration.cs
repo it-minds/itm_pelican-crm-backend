@@ -21,9 +21,6 @@ internal class ContactConfiguration : IEntityTypeConfiguration<Contact>
 		builder.Property(p => p.Email)
 			.HasMaxLength(StringLengths.Email);
 
-		builder.Property(p => p.LinkedInUrl)
-			.HasMaxLength(StringLengths.Url);
-
 		builder.Property(p => p.PhoneNumber)
 			.HasMaxLength(StringLengths.PhoneNumber);
 

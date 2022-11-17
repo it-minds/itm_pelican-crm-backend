@@ -10,7 +10,7 @@ public class DealContactTests
 	{
 		// Arrange 
 		const string DEAL_HUBSPOTID = "dealhubspotid";
-		const string CONTACT_HUBSPOTID = "accountmanagerhubspotid";
+		const string CONTACT_HUBSPOTID = "contacthubspotid";
 
 		Deal deal = new(Guid.NewGuid())
 		{
@@ -51,5 +51,37 @@ public class DealContactTests
 			result.HubSpotContactId);
 
 		Assert.True(result.IsActive);
+	}
+
+	[Fact]
+	public void Deactivate_IsActiveIsTrue_SetIsActiveToFalse()
+	{
+		// Arrange
+		DealContact dealContact = new(Guid.NewGuid())
+		{
+			IsActive = true,
+		};
+
+		// Act
+		dealContact.Deactivate();
+
+		// Assert
+		Assert.False(dealContact.IsActive);
+	}
+
+	[Fact]
+	public void Deactivate_IsActiveIsFalse_IsActiveStillFalse()
+	{
+		// Arrange
+		DealContact dealContact = new(Guid.NewGuid())
+		{
+			IsActive = false,
+		};
+
+		// Act
+		dealContact.Deactivate();
+
+		// Assert
+		Assert.False(dealContact.IsActive);
 	}
 }

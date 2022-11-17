@@ -128,8 +128,11 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 					.Where(accountManagerDeal => accountManagerDeal.HubSpotDealId == deal.HubSpotId)?
 					.ToList() ?? new List<AccountManagerDeal>();
 
-				deal.Client = clients
-					.FirstOrDefault(client => client.HubSpotId == deal.Client?.HubSpotId);
+				if (deal.Client is not null)
+				{
+					deal.Client = clients
+						.FirstOrDefault(client => client.HubSpotId == deal.Client.HubSpotId);
+				}
 
 				deal
 					.DealContacts?

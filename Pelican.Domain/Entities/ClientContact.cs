@@ -28,4 +28,18 @@ public class ClientContact : Entity, ITimeTracked
 	public ClientContact(Guid id) : base(id) { }
 
 	public ClientContact() { }
+
+	public static ClientContact Create(Client client, Contact contact)
+	{
+		return new(Guid.NewGuid())
+		{
+			Client = client,
+			ClientId = client.Id,
+			HubSpotClientId = client.HubSpotId,
+			Contact = contact,
+			ContactId = contact.Id,
+			HubSpotContactId = contact.HubSpotId,
+			IsActive = true,
+		};
+	}
 }

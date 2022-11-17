@@ -8,16 +8,6 @@ namespace Pelican.Infrastructure.Persistence;
 
 public class PelicanContext : DbContext, IPelicanContext
 {
-	public DbSet<AccountManager> AccountManagers { get; set; }
-	public DbSet<AccountManagerDeal> AccountManagerDeals { get; set; }
-	public DbSet<Client> Clients { get; set; }
-	public DbSet<ClientContact> ClientContacts { get; set; }
-	public DbSet<Contact> Contacts { get; set; }
-	public DbSet<Deal> Deals { get; set; }
-	public DbSet<DealContact> DealContacts { get; set; }
-	public DbSet<Supplier> Suppliers { get; set; }
-	public DbSet<Location> Locations { get; set; }
-
 	public PelicanContext(DbContextOptions<PelicanContext> options) : base(options)
 	{
 	}

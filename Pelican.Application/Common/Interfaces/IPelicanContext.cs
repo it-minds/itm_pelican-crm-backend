@@ -6,15 +6,6 @@ namespace Pelican.Application.Common.Interfaces;
 
 public interface IPelicanContext : IDisposable
 {
-	DbSet<AccountManager> AccountManagers { get; }
-	DbSet<AccountManagerDeal> AccountManagerDeals { get; }
-	DbSet<Client> Clients { get; }
-	DbSet<ClientContact> ClientContacts { get; }
-	DbSet<Contact> Contacts { get; }
-	DbSet<Deal> Deals { get; }
-	DbSet<DealContact> DealContacts { get; }
-	DbSet<Supplier> Suppliers { get; }
-	DbSet<Location> Locations { get; }
 	int SaveChanges();
 	int SaveChanges(bool acceptAllChangesOnSuccess);
 	Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken());

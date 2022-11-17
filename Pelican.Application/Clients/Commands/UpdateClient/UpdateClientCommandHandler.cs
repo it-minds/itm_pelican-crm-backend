@@ -37,7 +37,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 				return Result.Failure(accessTokenResult.Error);
 			}
 			return await GetClientFromHubSpot(
-				command.PortalId, accessTokenResult.Value, cancellationToken);
+				command.ObjectId, accessTokenResult.Value, cancellationToken);
 		}
 		switch (command.PropertyName)
 		{

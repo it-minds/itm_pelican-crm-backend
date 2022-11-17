@@ -130,7 +130,7 @@ public class NewInstallationCommandHandlerTests
 				h => h.DecodeAccessTokenAsync(token2, cancellationToken))
 			.ReturnsAsync(
 				Result.Success(
-					new Supplier()));
+					new Supplier(Guid.NewGuid())));
 
 		_hubSpotAccountManagerServiceMock
 			.Setup(

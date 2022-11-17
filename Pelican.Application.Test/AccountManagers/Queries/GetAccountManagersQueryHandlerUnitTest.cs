@@ -19,6 +19,6 @@ public class GetAccountManagersQueryHandlerUnitTest
 		//Act
 		_ = await uut.Handle(accountManagersQuery, cancellationToken);
 		//Assert
-		unitOfWorkMock.Verify(x => x.AccountManagerRepository.FindAllWithIncludes(), Times.Once());
+		unitOfWorkMock.Verify(x => x.AccountManagerRepository.FindAll(), Times.Once());
 	}
 }

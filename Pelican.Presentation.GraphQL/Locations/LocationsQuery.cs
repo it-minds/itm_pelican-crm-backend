@@ -10,6 +10,9 @@ public class LocationsQuery
 {
 	//This Query reguests all Locations from the database.
 	[UsePaging]
+	[UseProjection]
+	[UseFiltering]
+	[UseSorting]
 	public async Task<IQueryable<Location>> GetLocations([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
 		return await mediator.Send(new GetLocationsQuery(), cancellationToken);

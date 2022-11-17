@@ -5,7 +5,7 @@ using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Primitives;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
-public abstract class GenericRepository<T> : IGenericRepository<T> where T : Entity
+public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 {
 	//This Repository contains base functions that will be inherited by all specific repositories
 	protected PelicanContext PelicanContext { get; set; }
@@ -76,6 +76,4 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : Ent
 	public void Delete(T entity) => PelicanContext
 		.Set<T>()
 		.Remove(entity);
-
-	public abstract IQueryable<T> FindAllWithIncludes();
 }

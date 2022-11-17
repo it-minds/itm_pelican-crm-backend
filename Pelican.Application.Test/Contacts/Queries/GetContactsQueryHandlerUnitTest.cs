@@ -19,6 +19,6 @@ public class GetContactsQueryHandlerUnitTest
 		//Act
 		_ = await uut.Handle(contactsQuery, cancellationToken);
 		//Assert
-		unitOfWorkMock.Verify(x => x.ContactRepository.FindAllWithIncludes(), Times.Once());
+		unitOfWorkMock.Verify(x => x.ContactRepository.FindAll(), Times.Once());
 	}
 }

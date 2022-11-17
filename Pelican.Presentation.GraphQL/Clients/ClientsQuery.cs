@@ -9,6 +9,9 @@ public class ClientsQuery
 {
 	//This Query reguests all Clients from the database.
 	[UsePaging]
+	[UseProjection]
+	[UseFiltering]
+	[UseSorting]
 	public async Task<IQueryable<Client>> GetClients([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
 		return await mediator.Send(new GetClientsQuery(), cancellationToken);

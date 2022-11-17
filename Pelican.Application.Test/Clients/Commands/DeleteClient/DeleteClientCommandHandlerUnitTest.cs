@@ -70,7 +70,7 @@ public class DeleteClientCommandHandlerUnitTest
 	{
 		//Arrange
 		DeleteClientCommand deleteClientCommand = new(1);
-		Client client = new();
+		Client client = new(Guid.NewGuid());
 		_fakeUnitOfWork.Setup(x => x
 			.ClientRepository
 			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))

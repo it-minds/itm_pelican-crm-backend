@@ -40,86 +40,24 @@ public class UnitOfWork : IUnitOfWork
 			=> (IGenericRepository<T>)SupplierRepository,
 		_ => throw new ArgumentException("Generic Repository is not of correct Entity type", nameof(T)),
 	};
-	public IGenericRepository<AccountManagerDeal> AccountManagerDealRepository
-	{
-		get
-		{
-			_accountManagerDealRepository ??= new AccountManagerDealsRepository(_pelicanContext);
-			return _accountManagerDealRepository;
-		}
-	}
 
-	public IGenericRepository<AccountManager> AccountManagerRepository
-	{
-		get
-		{
-			_accountManagerRepository ??= new AccountManagerRepository(_pelicanContext);
-			return _accountManagerRepository;
-		}
-	}
+	public IGenericRepository<AccountManagerDeal> AccountManagerDealRepository => _accountManagerDealRepository ??= new GenericRepository<AccountManagerDeal>(_pelicanContext);
 
-	public IGenericRepository<Client> ClientRepository
-	{
-		get
-		{
-			_clientRepository ??= new ClientRepository(_pelicanContext);
-			return _clientRepository;
-		}
-	}
+	public IGenericRepository<AccountManager> AccountManagerRepository => _accountManagerRepository ??= new GenericRepository<AccountManager>(_pelicanContext);
 
-	public IGenericRepository<Contact> ContactRepository
-	{
-		get
-		{
-			_contactRepository ??= new ContactRepository(_pelicanContext);
-			return _contactRepository;
-		}
-	}
+	public IGenericRepository<Client> ClientRepository => _clientRepository ??= new GenericRepository<Client>(_pelicanContext);
 
-	public IGenericRepository<Deal> DealRepository
-	{
-		get
-		{
-			_dealRepository ??= new DealRepository(_pelicanContext);
-			return _dealRepository;
-		}
-	}
+	public IGenericRepository<Contact> ContactRepository => _contactRepository ??= new GenericRepository<Contact>(_pelicanContext);
 
-	public IGenericRepository<Location> LocationRepository
-	{
-		get
-		{
-			_locationRepository ??= new LocationRepository(_pelicanContext);
-			return _locationRepository;
-		}
-	}
+	public IGenericRepository<Deal> DealRepository => _dealRepository ??= new GenericRepository<Deal>(_pelicanContext);
 
-	public IGenericRepository<Supplier> SupplierRepository
-	{
-		get
-		{
-			_supplierRepository ??= new SupplierRepository(_pelicanContext);
-			return _supplierRepository;
-		}
-	}
+	public IGenericRepository<Location> LocationRepository => _locationRepository ??= new GenericRepository<Location>(_pelicanContext);
 
-	public IGenericRepository<ClientContact> ClientContactRepository
-	{
-		get
-		{
-			_clientContactRepository ??= new ClientContactsRepository(_pelicanContext);
-			return _clientContactRepository;
-		}
-	}
+	public IGenericRepository<Supplier> SupplierRepository => _supplierRepository ??= new GenericRepository<Supplier>(_pelicanContext);
 
-	public IGenericRepository<DealContact> DealContactRepository
-	{
-		get
-		{
-			_dealContactRepository ??= new DealContactsRepository(_pelicanContext);
-			return _dealContactRepository;
-		}
-	}
+	public IGenericRepository<ClientContact> ClientContactRepository => _clientContactRepository ??= new GenericRepository<ClientContact>(_pelicanContext);
+
+	public IGenericRepository<DealContact> DealContactRepository => _dealContactRepository ??= new GenericRepository<DealContact>(_pelicanContext);
 
 	public UnitOfWork(IPelicanContext pelicanContext)
 	{

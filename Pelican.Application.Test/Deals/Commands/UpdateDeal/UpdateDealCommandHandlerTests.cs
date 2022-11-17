@@ -476,7 +476,7 @@ public class UpdateDealCommandHandlerTests
 		_accountManagerRepositoryMock
 			.Setup(a => a
 				.FirstOrDefaultAsync(It.IsAny<Expression<Func<AccountManager, bool>>>(), default))
-			.ReturnsAsync(new AccountManager());
+			.ReturnsAsync(new AccountManager(Guid.NewGuid()));
 
 		// Act
 		Result result = await _uut.Handle(command, default);

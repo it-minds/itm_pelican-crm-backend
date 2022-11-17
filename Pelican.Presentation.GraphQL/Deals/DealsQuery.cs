@@ -9,6 +9,9 @@ public class DealsQuery
 {
 	//This Query reguests all Deals from the database.
 	[UsePaging]
+	[UseProjection]
+	[UseFiltering]
+	[UseSorting]
 	public async Task<IQueryable<Deal>> GetDeals([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
 		return await mediator.Send(new GetDealsQuery(), cancellationToken);

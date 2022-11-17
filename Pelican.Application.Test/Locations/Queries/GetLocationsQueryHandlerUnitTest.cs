@@ -20,6 +20,6 @@ public class GetLocationsQueryHandlerUnitTest
 		//Act
 		_ = await uut.Handle(locationsQuery, cancellationToken);
 		//Assert
-		unitOfWorkMock.Verify(x => x.LocationRepository.FindAllWithIncludes(), Times.Once());
+		unitOfWorkMock.Verify(x => x.LocationRepository.FindAll(), Times.Once());
 	}
 }

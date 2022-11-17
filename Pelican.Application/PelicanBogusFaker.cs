@@ -65,7 +65,6 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 	}
 	public IEnumerable<Client> ClientFaker(int count, IQueryable<Location> locations)
 	{
-		var client = new Client();
 		var faker = new Faker<Client>().UseSeed(1341);
 		faker
 			.RuleFor(e => e.Name, f => f.Name.FullName(f.Person.Gender))

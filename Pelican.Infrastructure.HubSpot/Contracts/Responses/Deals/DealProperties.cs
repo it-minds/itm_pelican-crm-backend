@@ -5,7 +5,10 @@ namespace Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 internal sealed class DealProperties
 {
 	[JsonPropertyName("closedate")]
-	public DateTime CloseDate { get; set; }
+	public string CloseDate { get; set; } = string.Empty;
+
+	[JsonPropertyName("notes_last_contacted")]
+	public string LastContactDate { get; set; } = string.Empty;
 
 	[JsonPropertyName("createdate")]
 	public string CreateDate { get; set; } = string.Empty;

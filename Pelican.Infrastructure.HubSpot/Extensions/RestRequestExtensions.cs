@@ -10,6 +10,7 @@ internal static class RestRequestExtensions
 			.AddQueryParameter("associations", "contacts", false)
 			.AddQueryParameter("properties", "hubspot_owner_id", false)
 			.AddQueryParameter("properties", "closedate", false)
+			.AddQueryParameter("properties", "notes_last_contacted", false)
 			.AddQueryParameter("properties", "dealstage", false)
 			.AddQueryParameter("properties", "dealname", false)
 			.AddQueryParameter("properties", "amount", false);

@@ -12,6 +12,7 @@ public class Deal : Entity, ITimeTracked
 
 	public DateTime? EndDate { get; set; }
 
+	public DateTime? LastContactDate { get; set; }
 
 	public Guid? ClientId { get; set; }
 
@@ -51,6 +52,17 @@ public class Deal : Entity, ITimeTracked
 			case "dealstage":
 				DealStatus = propertyValue;
 				break;
+			case "notes_last_contacted":
+				{
+					bool hasLongValue = long.TryParse(propertyValue, out long value);
+					if (!hasLongValue)
+					{
+						throw new InvalidOperationException("Invalid date format");
+					}
+					DateTime date = DateTimeOffset.FromUnixTimeMilliseconds(value).Date;
+					LastContactDate = date;
+					break;
+				}
 			default:
 				throw new InvalidOperationException("Invalid field");
 		}

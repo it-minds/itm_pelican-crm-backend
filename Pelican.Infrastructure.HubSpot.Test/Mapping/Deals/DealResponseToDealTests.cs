@@ -11,8 +11,8 @@ public class DealResponseToDealTests
 	private const string ID = "id";
 	private const string DEALSTAGE = "dealstage";
 	private const string OWNERID = "ownerid";
-	private const string CLOSEDATE = "0001-01-01T00:00:00";
-	private const string LASTCONTACTDATE = "0001-01-01T00:00:00";
+	private const string CLOSEDATE = "1999-04-25T00:00:00";
+	private const string LASTCONTACTDATE = "1999-04-25T00:00:00";
 
 	private readonly DealResponse response = new()
 	{

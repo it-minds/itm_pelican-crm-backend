@@ -98,24 +98,24 @@ public class DealTests
 	[Fact]
 	public void UpdateProperty_LastContactedDateUpdated_ReturnsUpdatedDeal()
 	{
-		/// Arrange
-		//DateTime date = new(2022, 11, 25);
+		// Arrange
+		DateTime date = new(2022, 11, 25);
 
-		//long ticks = 1669382373249; //Timestamp in milliseconds Friday, November 25, 2022 1:19:33.249 PM
+		long ticks = 1669382373249; //Timestamp in milliseconds Friday, November 25, 2022 1:19:33.249 PM
 
-		//string name = "notes_last_contacted";
+		string name = "notes_last_contacted";
 
-		//string value = ticks.ToString();
+		string value = ticks.ToString();
 
-		//Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new(Guid.NewGuid());
 
-		///// Act
-		//Deal returnDeal = inputDeal.UpdateProperty(name, value);
+		// Act
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
 
-		///// Assert
-		//Assert.Equal(
-		//	date,
-		//	returnDeal.LastContactDate);
+		// Assert
+		Assert.Equal(
+			date,
+			returnDeal.LastContactDate);
 	}
 
 	[Fact]

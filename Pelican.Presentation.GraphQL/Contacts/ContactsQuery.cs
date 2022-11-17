@@ -9,7 +9,7 @@ namespace Pelican.Presentation.GraphQL.Contacts;
 public class ContactsQuery
 {
 	//This Query reguests all contacts from the database.
-	[UsePaging(IncludeTotalCount = true)]
+	[UsePaging]
 	[UseProjection]
 	[UseFiltering]
 	[UseSorting]

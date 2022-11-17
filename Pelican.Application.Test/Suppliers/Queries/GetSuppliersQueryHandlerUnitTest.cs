@@ -20,6 +20,6 @@ public class GetSuppliersQueryHandlerUnitTest
 		//Act
 		_ = await uut.Handle(accountManagersQuery, cancellationToken);
 		//Assert
-		unitOfWorkMock.Verify(x => x.SupplierRepository.FindAllWithIncludes(), Times.Once());
+		unitOfWorkMock.Verify(x => x.SupplierRepository.FindAll(), Times.Once());
 	}
 }

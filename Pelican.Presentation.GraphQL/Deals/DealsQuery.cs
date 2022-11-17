@@ -8,7 +8,7 @@ namespace Pelican.Presentation.GraphQL.Deals;
 public class DealsQuery
 {
 	//This Query reguests all Deals from the database.
-	[UsePaging(IncludeTotalCount = true)]
+	[UsePaging]
 	[UseProjection]
 	[UseFiltering]
 	[UseSorting]

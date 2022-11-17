@@ -20,6 +20,6 @@ public class GetDealsQueryHandlerUnitTest
 		//Act
 		_ = await uut.Handle(dealsQuery, cancellationToken);
 		//Assert
-		unitOfWorkMock.Verify(x => x.DealRepository.FindAllWithIncludes(), Times.Once());
+		unitOfWorkMock.Verify(x => x.DealRepository.FindAll(), Times.Once());
 	}
 }

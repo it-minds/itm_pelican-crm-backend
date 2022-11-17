@@ -21,6 +21,6 @@ public class GetClientsQueryHandlerUnitTest
 		//Act
 		_ = await uut.Handle(client, cancellationToken);
 		//Assert
-		unitOfWorkMock.Verify(x => x.ClientRepository.FindAllWithIncludes(), Times.Once());
+		unitOfWorkMock.Verify(x => x.ClientRepository.FindAll(), Times.Once());
 	}
 }

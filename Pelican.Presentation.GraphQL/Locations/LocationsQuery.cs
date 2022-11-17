@@ -9,7 +9,7 @@ namespace Pelican.Presentation.GraphQL.Locations;
 public class LocationsQuery
 {
 	//This Query reguests all Locations from the database.
-	[UsePaging(IncludeTotalCount = true)]
+	[UsePaging]
 	[UseProjection]
 	[UseFiltering]
 	[UseSorting]

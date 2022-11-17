@@ -23,6 +23,9 @@ internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 		builder.Property(p => p.EndDate)
 			.HasColumnType("Date");
 
+		builder.Property(p => p.LastContactDate)
+			.HasColumnType("Date");
+
 		builder.HasMany(a => a.AccountManagerDeals)
 			.WithOne(e => e.Deal)
 			.HasForeignKey(a => a.DealId)

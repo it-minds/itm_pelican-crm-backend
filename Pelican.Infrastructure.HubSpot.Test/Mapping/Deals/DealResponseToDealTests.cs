@@ -11,15 +11,18 @@ public class DealResponseToDealTests
 	private const string ID = "id";
 	private const string DEALSTAGE = "dealstage";
 	private const string OWNERID = "ownerid";
+	private const string CLOSEDATE = "0001-01-01T00:00:00";
+	private const string LASTCONTACTDATE = "0001-01-01T00:00:00";
 
 	private readonly DealResponse response = new()
 	{
 		Properties = new()
 		{
 			Dealstage = DEALSTAGE,
-			CloseDate = DateTime.Today,
+			CloseDate = CLOSEDATE,
 			HubSpotObjectId = ID,
 			HubSpotOwnerId = OWNERID,
+			LastContactDate = LASTCONTACTDATE,
 		},
 	};
 
@@ -49,7 +52,7 @@ public class DealResponseToDealTests
 
 		/// Assert
 		Assert.Equal(DEALSTAGE, result.DealStatus);
-		Assert.Equal(DateTime.Today, result.EndDate);
+		Assert.Equal(DateTime.Parse(CLOSEDATE), result.EndDate);
 		Assert.Equal(ID, result.HubSpotId);
 		Assert.Equal(OWNERID, result.HubSpotOwnerId);
 	}

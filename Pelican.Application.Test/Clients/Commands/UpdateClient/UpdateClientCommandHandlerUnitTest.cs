@@ -923,7 +923,7 @@ public class UpdateClientCommandHandlerTests
 		{
 			ClientContacts = new List<ClientContact>()
 			{
-				new ClientContact()
+				new ClientContact(Guid.NewGuid())
 				{
 					HubSpotClientId= Guid.NewGuid().ToString(),
 					HubSpotContactId= Guid.NewGuid().ToString(),
@@ -980,7 +980,7 @@ public class UpdateClientCommandHandlerTests
 		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
 		Contact contact = new Contact(Guid.NewGuid());
 		Client client = new(Guid.NewGuid());
-		ClientContact clientContact = new()
+		ClientContact clientContact = new(Guid.NewGuid())
 		{
 			IsActive = true,
 			HubSpotClientId = Guid.NewGuid().ToString(),
@@ -990,7 +990,7 @@ public class UpdateClientCommandHandlerTests
 		client.ClientContacts.Add(clientContact);
 
 		Client ClientHubSpot = new(Guid.NewGuid());
-		ClientContact clientContactHubSpot = new()
+		ClientContact clientContactHubSpot = new(Guid.NewGuid())
 		{
 			HubSpotClientId = client.ClientContacts.First().HubSpotClientId,
 			HubSpotContactId = client.ClientContacts.First().HubSpotContactId,

@@ -1,7 +1,8 @@
-﻿using Pelican.Application.Common.Interfaces.Repositories;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain.Entities;
 
-namespace Pelican.Application.Common.Interfaces;
+namespace Pelican.Application.Abstractions.Data;
+
 public interface IDevelopmentSeeder
 {
 	public void SeedEntireDb(int count);

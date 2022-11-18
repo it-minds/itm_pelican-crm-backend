@@ -1,6 +1,6 @@
 ﻿using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.AccountManagers.Queries.GetAccountManagers;
-using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
 using Xunit;
 namespace Pelican.Application.Test.AccountManagers.Queries;

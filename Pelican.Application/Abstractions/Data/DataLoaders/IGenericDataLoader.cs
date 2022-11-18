@@ -1,6 +1,7 @@
 ﻿using GreenDonut;
 
-namespace Pelican.Application.Common.Interfaces.DataLoaders;
+namespace Pelican.Application.Abstractions.Data.DataLoaders;
+
 public interface IGenericDataLoader<T> : IDataLoader<Guid, T>
 {
 	//Intentionally Empty

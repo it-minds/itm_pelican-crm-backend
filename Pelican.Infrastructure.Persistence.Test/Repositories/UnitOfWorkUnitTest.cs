@@ -1,57 +1,32 @@
 ﻿using Moq;
-using Pelican.Application.Common.Interfaces;
-using Pelican.Application.Common.Interfaces.Repositories;
+using Pelican.Application.Abstractions.Data;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Infrastructure.Persistence.Repositories;
 using Xunit;
 
-namespace Pelican.Infrastructure.Persistence.Test;
+namespace Pelican.Infrastructure.Persistence.Test.Repositories;
 
 public class UnitOfWorkUnitTest
 {
-	private IUnitOfWork uut;
-	private Mock<IPelicanContext> myPelicanContextMock;
-	private CancellationToken cancellationToken;
+	private readonly IUnitOfWork _uut;
+	private readonly Mock<IPelicanContext> _myPelicanContextMock;
+
 	public UnitOfWorkUnitTest()
 	{
-		myPelicanContextMock = new Mock<IPelicanContext>();
-		uut = new UnitOfWork(myPelicanContextMock.Object);
-		cancellationToken = new CancellationToken();
+		_myPelicanContextMock = new Mock<IPelicanContext>();
+		_uut = new UnitOfWork(_myPelicanContextMock.Object);
 	}
-	//One Test
-	[Fact]
-	public void UnitOfWorlSaveIsCalledOnce_DbContextReceivesOneSaveChanges()
-	{
-		//Arrange
 
-		//Act
-		uut.Save();
-		//Assert
-		myPelicanContextMock.Verify(x => x.SaveChanges(), Times.Once());
-	}
-	//Many Test
-	[Fact]
-	public void UnitOfWorkSaveIsCalled50Times_DbContextReceives50SaveChanges()
-	{
-		//Arrange
-		//Act
-		for (var i = 0; i < 50; i++)
-		{
-			uut.Save();
-		}
-		//Assert
-		myPelicanContextMock.Verify(x => x.SaveChanges(), Times.Exactly(50));
-	}
-	//One Test
 	[Fact]
 	public async void UnitOfWorlSaveAsyncIsCalledOnce_DbContextReceivesOneSaveChanges()
 	{
 		//Arrange
 		//Act
-		await uut.SaveAsync(cancellationToken);
+		await _uut.SaveAsync(default);
 		//Assert
-		myPelicanContextMock.Verify(x => x.SaveChangesAsync(cancellationToken), Times.Once());
+		_myPelicanContextMock.Verify(x => x.SaveChangesAsync(default), Times.Once());
 	}
-	//Many Test
+
 	[Fact]
 	public async void UnitOfWorkSaveAsyncIsCalled50Times_DbContextReceives50SaveChanges()
 	{
@@ -60,10 +35,10 @@ public class UnitOfWorkUnitTest
 		//Act
 		for (var i = 0; i < 50; i++)
 		{
-			await uut.SaveAsync(cancellationToken);
+			await _uut.SaveAsync(default);
 		}
 		//Assert
-		myPelicanContextMock.Verify(x => x.SaveChangesAsync(cancellationToken), Times.Exactly(50));
+		_myPelicanContextMock.Verify(x => x.SaveChangesAsync(default), Times.Exactly(50));
 	}
 
 	[Fact]
@@ -71,86 +46,94 @@ public class UnitOfWorkUnitTest
 	{
 		//Arrange
 		//Act
-		var exception = Record.Exception(() => uut.AccountManagerDealRepository);
+		var exception = Record.Exception(() => _uut.AccountManagerDealRepository);
 		//Assert
 		Assert.NotNull(exception);
 		Assert.IsType<InvalidCastException>(exception);
 	}
+
 	[Fact]
 	public void UnitOfWorkAccountManagerRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
-		var exception = Record.Exception(() => uut.AccountManagerRepository);
+		var exception = Record.Exception(() => _uut.AccountManagerRepository);
 		//Assert
 		Assert.NotNull(exception);
 		Assert.IsType<InvalidCastException>(exception);
 	}
+
 	[Fact]
 	public void UnitOfWorkClientRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
-		var exception = Record.Exception(() => uut.ClientRepository);
+		var exception = Record.Exception(() => _uut.ClientRepository);
 		//Assert
 		Assert.NotNull(exception);
 		Assert.IsType<InvalidCastException>(exception);
 	}
+
 	[Fact]
 	public void UnitOfWorkGetContactRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
-		var exception = Record.Exception(() => uut.ContactRepository);
+		var exception = Record.Exception(() => _uut.ContactRepository);
 		//Assert
 		Assert.NotNull(exception);
 		Assert.IsType<InvalidCastException>(exception);
 	}
+
 	[Fact]
 	public void UnitOfWorkGetSupplierRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
-		var exception = Record.Exception(() => uut.SupplierRepository);
+		var exception = Record.Exception(() => _uut.SupplierRepository);
 		//Assert
 		Assert.NotNull(exception);
 		Assert.IsType<InvalidCastException>(exception);
 	}
+
 	[Fact]
 	public void UnitOfWorkGetLocationRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
-		var exception = Record.Exception(() => uut.LocationRepository);
+		var exception = Record.Exception(() => _uut.LocationRepository);
 		//Assert
 		Assert.NotNull(exception);
 		Assert.IsType<InvalidCastException>(exception);
 	}
+
 	[Fact]
 	public void UnitOfWorkGetClientContactRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{   //Arrange
 		//Act
-		var exception = Record.Exception(() => uut.ClientContactRepository);
+		var exception = Record.Exception(() => _uut.ClientContactRepository);
 		//Assert
 		Assert.NotNull(exception);
 		Assert.IsType<InvalidCastException>(exception);
 	}
+
 	[Fact]
 	public void UnitOfWorkGetDealContactRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
-		var exception = Record.Exception(() => uut.DealContactRepository);
+		var exception = Record.Exception(() => _uut.DealContactRepository);
 		//Assert
 		Assert.NotNull(exception);
 		Assert.IsType<InvalidCastException>(exception);
 	}
+
 	[Fact]
 	public void UnitOfWorkGetDealRepository_ThrowsExceptionDueToContextNotBeingofType_PelicanContext()
 	{
 		//Arrange
 		//Act
-		var exception = Record.Exception(() => uut.DealRepository);
+		var exception = Record.Exception(() => _uut.DealRepository);
 		//Assert
 		Assert.NotNull(exception);
 		Assert.IsType<InvalidCastException>(exception);

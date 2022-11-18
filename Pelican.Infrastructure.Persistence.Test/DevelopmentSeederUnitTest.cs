@@ -1,17 +1,17 @@
 ﻿using System.Collections.ObjectModel;
 using Moq;
-using Pelican.Application.Common.Interfaces;
-using Pelican.Application.Common.Interfaces.Repositories;
+using Pelican.Application.Abstractions.Data;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain.Entities;
 using Xunit;
 
 namespace Pelican.Infrastructure.Persistence.Test;
 public class DevelopmentSeederUnitTest
 {
-	private IDevelopmentSeeder uut;
-	private Mock<IUnitOfWork> fakeUnitOfWork;
-	private Mock<IPelicanBogusFaker> fakePelicanFaker;
-	private CancellationToken cancellation;
+	private readonly IDevelopmentSeeder uut;
+	private readonly Mock<IUnitOfWork> fakeUnitOfWork;
+	private readonly Mock<IPelicanBogusFaker> fakePelicanFaker;
+	private readonly CancellationToken cancellation;
 
 	public DevelopmentSeederUnitTest()
 	{

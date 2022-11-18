@@ -1,22 +1,23 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Pelican.Application.Common.Interfaces;
-using Pelican.Application.Common.Interfaces.Repositories;
+using Pelican.Application.Abstractions.Data;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain.Primitives;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
+
 public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 {
-	//This Repository contains base functions that will be inherited by all specific repositories
-	protected PelicanContext PelicanContext { get; set; }
+	private readonly PelicanContext _pelicanContext;
 
-	public GenericRepository(IPelicanContext pelicanContext) =>
-		PelicanContext = (PelicanContext)pelicanContext
-			?? throw new ArgumentNullException(nameof(PelicanContext));
+	public GenericRepository(IPelicanContext pelicanContext)
+		=> _pelicanContext = (PelicanContext)pelicanContext
+			?? throw new ArgumentNullException(nameof(pelicanContext));
 
-	public IQueryable<T> FindAll() => PelicanContext
-		.Set<T>()
-		.AsNoTracking();
+	public IQueryable<T> FindAll()
+		=> _pelicanContext
+			.Set<T>()
+			.AsNoTracking();
 
 	public async Task<T?> GetByIdAsync(
 		Guid id,
@@ -24,21 +25,29 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 	{
 		if (id == Guid.Empty)
 		{
-			throw new ArgumentNullException($"{nameof(GetByIdAsync)} id must not be empty");
+			throw new ArgumentNullException(nameof(id));
 		}
-		return await PelicanContext.Set<T>().AsNoTracking().FirstOrDefaultAsync(entity => entity.Id == id, cancellationToken);
+
+		return await _pelicanContext
+			.Set<T>()
+			.AsNoTracking()
+			.FirstOrDefaultAsync(
+				entity => entity.Id == id,
+				cancellationToken);
 	}
 
-	public IQueryable<T> FindByCondition(
-		Expression<Func<T, bool>> expression) => PelicanContext
+	public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
+		=> _pelicanContext
 			.Set<T>()
 			.Where(expression)
 			.AsNoTracking();
 
 	public async Task<T?> FirstOrDefaultAsync(
 		Expression<Func<T, bool>> expression,
-		CancellationToken cancellationToken = default) => await PelicanContext
+		CancellationToken cancellationToken = default)
+		=> await _pelicanContext
 			.Set<T>()
+			.AsNoTracking()
 			.FirstOrDefaultAsync(expression);
 
 	public async Task<T> CreateAsync(
@@ -47,10 +56,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 	{
 		if (entity is null)
 		{
-			throw new ArgumentNullException($"{nameof(CreateAsync)} entity must not be null");
+			throw new ArgumentNullException(nameof(entity));
 		}
 
-		await PelicanContext.Set<T>().AddAsync(entity, cancellationToken);
+		await _pelicanContext
+			.Set<T>()
+			.AddAsync(entity, cancellationToken);
 
 		return entity;
 	}
@@ -61,19 +72,21 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 	{
 		if (entities is null)
 		{
-			throw new ArgumentNullException($"{nameof(CreateRangeAsync)} entity must not be null");
+			throw new ArgumentNullException(nameof(entities));
 		}
 
-		await PelicanContext.Set<T>().AddRangeAsync(entities, cancellationToken);
+		await _pelicanContext
+			.Set<T>()
+			.AddRangeAsync(entities, cancellationToken);
 
 		return entities;
 	}
 
-	public void Update(T entity) => PelicanContext
+	public void Update(T entity) => _pelicanContext
 		.Set<T>()
 		.Update(entity);
 
-	public void Delete(T entity) => PelicanContext
+	public void Delete(T entity) => _pelicanContext
 		.Set<T>()
 		.Remove(entity);
 }

@@ -1,4 +1,4 @@
-﻿using Pelican.Application.Common.Interfaces;
+﻿using Pelican.Application.Abstractions.Data;
 using Pelican.Domain.Entities;
 using Xunit;
 

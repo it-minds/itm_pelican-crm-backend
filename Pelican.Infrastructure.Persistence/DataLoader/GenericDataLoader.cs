@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Pelican.Application.Common.Interfaces.DataLoaders;
-using Pelican.Application.Common.Interfaces.Repositories;
+using Pelican.Application.Abstractions.Data.DataLoaders;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain.Primitives;
 
 namespace Pelican.Infrastructure.Persistence.DataLoader;
 
 public class GenericDataLoader<T> : BatchDataLoader<Guid, T>, IGenericDataLoader<T> where T : Entity
 {
-	private IUnitOfWork _unitOfWork;
+	private readonly IUnitOfWork _unitOfWork;
 	public GenericDataLoader(IBatchScheduler batchScheduler, IUnitOfWork unitOfWork) : base(batchScheduler)
 	{
 		_unitOfWork = unitOfWork;

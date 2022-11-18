@@ -80,7 +80,11 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 		long objectId,
 		CancellationToken cancellationToken)
 	{
-		Result<string> accessTokenResult = await GetAccessTokenAsync(supplierHubSpotId, cancellationToken);
+		Result<string> accessTokenResult = await _hubSpotAuthorizationService
+			.RefreshAccessTokenAsync(
+				supplierHubSpotId,
+				_unitOfWork,
+				cancellationToken);
 
 		if (accessTokenResult.IsFailure)
 		{
@@ -141,29 +145,5 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 		deal.FillOutAssociations(accountManager, client, contacts);
 
 		return deal;
-	}
-
-	private async Task<Result<string>> GetAccessTokenAsync(
-		long supplierHubSpotId,
-		CancellationToken cancellationToken = default)
-	{
-		Supplier? supplier = await _unitOfWork
-				.SupplierRepository
-				.FirstOrDefaultAsync(
-					supplier => supplier.HubSpotId == supplierHubSpotId,
-					cancellationToken);
-
-		if (supplier is null
-			|| string.IsNullOrWhiteSpace(supplier.RefreshToken))
-		{
-			return Result.Failure<string>(Error.NullValue);
-		}
-
-		Result<string> accessTokenResult = await _hubSpotAuthorizationService
-			.RefreshAccessTokenAsync(
-				supplier.RefreshToken,
-				cancellationToken);
-
-		return accessTokenResult;
 	}
 }

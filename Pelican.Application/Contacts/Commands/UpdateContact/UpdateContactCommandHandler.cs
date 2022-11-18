@@ -179,8 +179,9 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 		long objectId,
 		CancellationToken cancellationToken = default)
 	{
-		Result<string> accessTokenResult = await GetAccessTokenAsync(
+		Result<string> accessTokenResult = await _hubSpotAuthorizationService.RefreshAccessTokenAsync(
 			supplierHubSpotId,
+			_unitOfWork,
 			cancellationToken);
 
 		if (accessTokenResult.IsFailure)
@@ -192,29 +193,5 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 			accessTokenResult.Value,
 			objectId,
 			cancellationToken);
-	}
-
-	private async Task<Result<string>> GetAccessTokenAsync(
-		long supplierHubSpotId,
-		CancellationToken cancellationToken = default)
-	{
-		Supplier? supplier = await _unitOfWork
-				.SupplierRepository
-				.FirstOrDefaultAsync(
-					supplier => supplier.HubSpotId == supplierHubSpotId,
-					cancellationToken);
-
-		if (supplier is null
-			|| string.IsNullOrWhiteSpace(supplier.RefreshToken))
-		{
-			return Result.Failure<string>(Error.NullValue);
-		}
-
-		Result<string> accessTokenResult = await _hubSpotAuthorizationService
-			.RefreshAccessTokenAsync(
-				supplier.RefreshToken,
-				cancellationToken);
-
-		return accessTokenResult;
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Primitives;
+﻿using HotChocolate;
+using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
 public class Client : Entity, ITimeTracked
@@ -24,4 +25,52 @@ public class Client : Entity, ITimeTracked
 	public Client(Guid id) : base(id) { }
 
 	public Client() { }
+
+	[GraphQLIgnore]
+	public virtual Client UpdateProperty(string propertyName, string propertyValue)
+	{
+		switch (propertyName)
+		{
+			case "name":
+				Name = propertyValue;
+				break;
+			case "city":
+				OfficeLocation = propertyValue;
+				break;
+			case "website":
+				Website = propertyValue;
+				break;
+			default:
+				throw new ArgumentException($"{propertyName} is not a valid property on Client");
+		}
+		return this;
+	}
+
+	[GraphQLIgnore]
+	public void FillOutClientContacts(List<Contact> contacts)
+	{
+		if (contacts is null)
+		{
+			ClientContacts.Clear();
+			return;
+		}
+
+		foreach (ClientContact item in ClientContacts)
+		{
+			Contact? matchingContact = contacts
+				.FirstOrDefault(contact => contact.HubSpotId == item.HubSpotContactId);
+
+			if (matchingContact is null)
+			{
+				continue;
+			}
+
+			item.Contact = matchingContact;
+			item.ContactId = matchingContact.Id;
+		}
+
+		ClientContacts = ClientContacts
+			.Where(dc => dc.Contact is not null)
+			.ToList();
+	}
 }

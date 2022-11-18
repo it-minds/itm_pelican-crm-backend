@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.EntityFrameworkCore;
+using Moq;
 using Pelican.Application.Abstractions.Data;
 using Pelican.Domain.Primitives;
 using Pelican.Infrastructure.Persistence.Repositories;
@@ -8,6 +9,8 @@ namespace Pelican.Infrastructure.Persistence.Test.Repositories;
 
 public class GenericReposityTests
 {
+	private readonly GenericRepository<Entity> _uut;
+
 	[Fact]
 	public void GenericRepository_NullArgument_ThrowException()
 	{
@@ -20,17 +23,16 @@ public class GenericReposityTests
 			result.Message);
 	}
 
-	public void GenericRepository_NullArgument_ThrowException()
+	[Fact]
+	public void GenericRepository_NullArgument_ThrowNoException()
 	{
 		// Arrange
-		var contextMock = new Mock<PelicanContext>();
+		Mock<IPelicanContext> iPelicanContextMock = new();
 
 		// Act
-		var result = Record.Exception(() => new GenericRepository<Entity>(contextMock.Object));
+		var result = Record.Exception(() => new GenericRepository<Entity>(iPelicanContextMock.Object));
 
 		// Assert
-		Assert.Contains(
-			"pelicanContext",
-			result.Message);
+		Assert.Null(result);
 	}
 }

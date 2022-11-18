@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Pelican.Domain.Entities;
-
+﻿using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
+using Pelican.Domain.Primitives;
 
 namespace Pelican.Application.Abstractions.Data;
 
 public interface IPelicanContext : IDisposable
 {
-	Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken());
-	Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken());
+	DbSet<T> Set<T>() where T : class;
+
+	Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

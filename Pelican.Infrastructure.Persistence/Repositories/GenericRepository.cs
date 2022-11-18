@@ -8,10 +8,10 @@ namespace Pelican.Infrastructure.Persistence.Repositories;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 {
-	private readonly PelicanContext _pelicanContext;
+	private readonly IPelicanContext _pelicanContext;
 
 	public GenericRepository(IPelicanContext pelicanContext)
-		=> _pelicanContext = (PelicanContext)pelicanContext
+		=> _pelicanContext = pelicanContext
 			?? throw new ArgumentNullException(nameof(pelicanContext));
 
 	public IQueryable<T> FindAll()

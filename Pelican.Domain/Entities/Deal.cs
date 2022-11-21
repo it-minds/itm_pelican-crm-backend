@@ -12,6 +12,8 @@ public class Deal : Entity, ITimeTracked
 
 	public DateTime? EndDate { get; set; }
 
+	public DateTime? StartDate { get; set; }
+
 	public DateTime? LastContactDate { get; set; }
 
 	public Guid? ClientId { get; set; }
@@ -38,7 +40,7 @@ public class Deal : Entity, ITimeTracked
 	{
 		switch (propertyName)
 		{
-			case "closedate":
+			case "enddate":
 				{
 					bool hasLongValue = long.TryParse(propertyValue, out long value);
 					if (!hasLongValue)
@@ -47,6 +49,17 @@ public class Deal : Entity, ITimeTracked
 					}
 					DateTime date = DateTimeOffset.FromUnixTimeMilliseconds(value).Date;
 					EndDate = date;
+					break;
+				}
+			case "startdate":
+				{
+					bool hasLongValue = long.TryParse(propertyValue, out long value);
+					if (!hasLongValue)
+					{
+						throw new InvalidOperationException("Invalid date format");
+					}
+					DateTime date = DateTimeOffset.FromUnixTimeMilliseconds(value).Date;
+					StartDate = date;
 					break;
 				}
 			case "dealstage":

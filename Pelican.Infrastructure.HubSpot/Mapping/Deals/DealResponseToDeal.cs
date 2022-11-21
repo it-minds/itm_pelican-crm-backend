@@ -14,7 +14,8 @@ internal static class DealResponseToDeal
 
 		Deal result = new(Guid.NewGuid())
 		{
-			EndDate = string.IsNullOrWhiteSpace(response.Properties.CloseDate) ? null : DateTime.Parse(response.Properties.CloseDate),
+			StartDate = string.IsNullOrWhiteSpace(response.Properties.StartDate) ? null : DateTime.Parse(response.Properties.StartDate),
+			EndDate = string.IsNullOrWhiteSpace(response.Properties.EndDate) ? null : DateTime.Parse(response.Properties.EndDate),
 			LastContactDate = string.IsNullOrWhiteSpace(response.Properties.LastContactDate) ? null : DateTime.Parse(response.Properties.LastContactDate),
 			DealStatus = response.Properties.Dealstage,
 			HubSpotId = response.Properties.HubSpotObjectId,

@@ -147,31 +147,6 @@ public class UpdateDealCommandHandlerTests
 	}
 
 	[Fact]
-	public async Task Handle_DealNotFoundSupplierNotFound_ReturnsFailureErrorNullValue()
-	{
-		// Arrange
-		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
-
-		SetupRepositoryMocks(null, null);
-
-		// Act
-		Result result = await _uut.Handle(command, default);
-
-		// Assert
-		_dealRepositoryMock.Verify(
-			x => x.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString()),
-			Times.Once);
-
-		_supplierRepositoryMock.Verify(
-			x => x.FirstOrDefaultAsync(supplier => supplier.HubSpotId == SUPPLIERHUBSPOTID, default),
-			Times.Once);
-
-		Assert.True(result.IsFailure);
-
-		Assert.Equal(Error.NullValue, result.Error);
-	}
-
-	[Fact]
 	public async void Handle_DealNotFoundFailsRefreshingToken_ReturnsFailure()
 	{
 		// Arrange

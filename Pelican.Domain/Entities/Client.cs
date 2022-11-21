@@ -47,7 +47,7 @@ public class Client : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
-	public void FillOutClientContacts(List<Contact> contacts)
+	public virtual void FillOutClientContacts(List<Contact> contacts)
 	{
 		if (contacts is null)
 		{
@@ -58,7 +58,7 @@ public class Client : Entity, ITimeTracked
 		foreach (ClientContact item in ClientContacts)
 		{
 			Contact? matchingContact = contacts
-				.FirstOrDefault(contact => contact.HubSpotId == item.HubSpotContactId);
+				.FirstOrDefault(contacts => contacts.HubSpotId == item.Contact.HubSpotId);
 
 			if (matchingContact is null)
 			{
@@ -72,5 +72,31 @@ public class Client : Entity, ITimeTracked
 		ClientContacts = ClientContacts
 			.Where(dc => dc.Contact is not null)
 			.ToList();
+	}
+
+
+	[GraphQLIgnore]
+	public virtual void UpdateClientContacts(ICollection<ClientContact>? currectHubSpotClientContacts)
+	{
+		if (currectHubSpotClientContacts is null)
+		{
+			return;
+		}
+
+		foreach (ClientContact clientContact in ClientContacts.Where(dc => dc.IsActive))
+		{
+			if (!currectHubSpotClientContacts.Any(currectHubSpotClientContact => currectHubSpotClientContact.HubSpotClientId == clientContact.HubSpotClientId))
+			{
+				clientContact.Deactivate();
+			}
+		}
+
+		foreach (ClientContact clientContact in currectHubSpotClientContacts)
+		{
+			if (!ClientContacts.Any(dc => dc.HubSpotClientId == clientContact.HubSpotClientId && dc.IsActive))
+			{
+				ClientContacts.Add(clientContact);
+			}
+		}
 	}
 }

@@ -1,6 +1,10 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Linq.Expressions;
+using Microsoft.Extensions.Options;
 using Moq;
+using Pelican.Application.Common.Interfaces.Repositories;
+using Pelican.Domain.Entities;
 using Pelican.Domain.Settings;
+using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
 using Pelican.Infrastructure.HubSpot.Services;
@@ -16,9 +20,12 @@ public class HubSpotAuthorizationServicesTests
 	private const int APPID = 123;
 	private const string CLIENTID = "clientId";
 	private const string CLIENTSECRET = "clientSecret";
+	private const string ACCESS = "access";
+	private const string REFRESH = "refresh";
 
 	private readonly Mock<IHubSpotClient> _hubSpotClientMock;
 	private readonly Mock<IOptions<HubSpotSettings>> _optionsMock;
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 	private readonly HubSpotAuthorizationService _uut;
 	private readonly CancellationToken _cancellationToken;
 
@@ -27,6 +34,7 @@ public class HubSpotAuthorizationServicesTests
 		_hubSpotClientMock = new();
 		_optionsMock = new();
 		_cancellationToken = new();
+		_unitOfWorkMock = new();
 
 		_optionsMock
 			.Setup(options => options.Value)
@@ -41,8 +49,6 @@ public class HubSpotAuthorizationServicesTests
 					ClientSecret = CLIENTSECRET,
 				},
 			});
-
-
 		_uut = new(
 			_hubSpotClientMock.Object,
 			_optionsMock.Object);
@@ -71,9 +77,6 @@ public class HubSpotAuthorizationServicesTests
 	[Fact]
 	public async Task AuthorizeUserAsync_ClientReturnsSuccess_ReturnSuccess()
 	{
-		const string REFRESH = "refresh";
-		const string ACCESS = "access";
-
 		/// Arrange
 		GetAccessTokenResponse response = new()
 		{
@@ -154,34 +157,44 @@ public class HubSpotAuthorizationServicesTests
 		Assert.Equal(DOMAIN, result.Value.WebsiteUrl);
 	}
 
-
 	[Fact]
-	public async Task RefreshAccessTokenAsync_ClientReturnsFailure_ReturnFailure()
+	public async Task RefreshAccessTokenAsync_SupplierDoesNotExist_ReturnFailure()
 	{
-		/// Arrange
-		_hubSpotClientMock
-			.Setup(client => client.PostAsync<RefreshAccessTokenResponse>(
-				It.IsAny<RestRequest>(),
-				_cancellationToken))
-			.ReturnsAsync(new RestResponse<RefreshAccessTokenResponse>()
-			{
-				IsSuccessStatusCode = false,
-			});
+		//Arrange
+		_unitOfWorkMock.Setup(m => m.SupplierRepository.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
+			.Returns(Enumerable.Empty<Supplier>().AsQueryable());
+		//Act
+		var result = await _uut.RefreshAccessTokenAsync(1, _unitOfWorkMock.Object, _cancellationToken);
+		//Assert
+		Assert.True(result.IsFailure);
+		Assert.Equal(Error.NullValue, result.Error);
+
+	}
+	[Fact]
+	public async Task RefreshAccessTokenAsync_SupplierRefreshTokenNull_ReturnFailure()
+	{
+		//Arrange
+		Supplier supplier = new();
+		_unitOfWorkMock.Setup(m => m.SupplierRepository.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
+			.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		/// Act
-		var result = await _uut.RefreshAccessTokenAsync("", _cancellationToken);
+		var result = await _uut.RefreshAccessTokenAsync(1, _unitOfWorkMock.Object, _cancellationToken);
 
 		/// Assert
 		Assert.True(result.IsFailure);
+		Assert.Equal(Error.NullValue, result.Error);
 	}
 
 
 	[Fact]
-	public async Task ARefreshAccessTokenAsync_ClientReturnsSuccess_ReturnSuccess()
+	public async Task RefreshAccessTokenAsync_ClientReturnsSuccess_ReturnSuccess()
 	{
-		const string ACCESS = "access";
-
 		/// Arrange
+		Supplier supplier = new();
+		supplier.RefreshToken = REFRESH;
+		_unitOfWorkMock.Setup(m => m.SupplierRepository.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
+			.Returns(new List<Supplier> { supplier }.AsQueryable());
 		RefreshAccessTokenResponse response = new()
 		{
 			AccessToken = ACCESS,
@@ -199,7 +212,7 @@ public class HubSpotAuthorizationServicesTests
 			});
 
 		/// Act
-		var result = await _uut.RefreshAccessTokenAsync("", _cancellationToken);
+		var result = await _uut.RefreshAccessTokenAsync(0, _unitOfWorkMock.Object, _cancellationToken);
 
 		/// Assert
 		Assert.True(result.IsSuccess);

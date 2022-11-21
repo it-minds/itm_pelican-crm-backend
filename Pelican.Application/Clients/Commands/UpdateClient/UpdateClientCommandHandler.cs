@@ -78,17 +78,17 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 	{
 		List<Contact> contacts = new();
 
-		foreach (ClientContact clientContact in client.ClientContacts)
+		foreach (ClientContact item in client.ClientContacts)
 		{
-			Contact? contact = await _unitOfWork
+			Contact? matchingContact = await _unitOfWork
 				.ContactRepository
 				.FirstOrDefaultAsync(
-					d => d.HubSpotId == clientContact.Client.HubSpotId,
+					d => d.HubSpotId == item.HubSpotContactId,
 					cancellationToken);
 
-			if (contact is not null)
+			if (matchingContact is not null)
 			{
-				contacts.Add(contact);
+				contacts.Add(matchingContact);
 			}
 		}
 
@@ -146,12 +146,12 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 	private async Task<Result<Client>> UpdateClientContactsAsync(
 		Client client,
 		long portalId,
-		long contactHubSpotId,
+		long clientHubSpotId,
 		CancellationToken cancellationToken = default)
 	{
 		Result<Client> result = await GetClientFromHubSpot(
 						portalId,
-						contactHubSpotId,
+						clientHubSpotId,
 						cancellationToken);
 
 		if (result.IsFailure)
@@ -159,7 +159,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 			return result;
 		}
 
-		//client.FillOutClientContacts(result.Value.ClientContacts.);
+		client.UpdateClientContacts(result.Value.ClientContacts);
 
 		return client;
 	}

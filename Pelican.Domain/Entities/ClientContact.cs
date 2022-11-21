@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Primitives;
+﻿using HotChocolate;
+using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
 public class ClientContact : Entity, ITimeTracked
@@ -29,6 +30,7 @@ public class ClientContact : Entity, ITimeTracked
 
 	public ClientContact() { }
 
+	[GraphQLIgnore]
 	public static ClientContact Create(Client client, Contact contact)
 	{
 		return new(Guid.NewGuid())
@@ -42,4 +44,7 @@ public class ClientContact : Entity, ITimeTracked
 			IsActive = true,
 		};
 	}
+
+	[GraphQLIgnore]
+	public virtual void Deactivate() => IsActive = false;
 }

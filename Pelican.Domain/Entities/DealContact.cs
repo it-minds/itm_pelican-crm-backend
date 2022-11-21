@@ -45,4 +45,6 @@ public class DealContact : Entity, ITimeTracked
 			IsActive = true,
 		};
 	}
+
+	public virtual void Deactivate() => IsActive = false;
 }

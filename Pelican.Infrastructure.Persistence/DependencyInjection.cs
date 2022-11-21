@@ -1,4 +1,5 @@
-﻿using Azure.Identity;
+﻿using System.Runtime.CompilerServices;
+using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using HotChocolate.Execution.Configuration;
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +16,7 @@ using Pelican.Infrastructure.Persistence.Interceptors;
 using Pelican.Infrastructure.Persistence.Repositories;
 using Location = Pelican.Domain.Entities.Location;
 
+[assembly: InternalsVisibleTo("Pelican.Infrastructure.Persistence.Test")]
 namespace Pelican.Infrastructure.Persistence;
 
 public static class DependencyInjection

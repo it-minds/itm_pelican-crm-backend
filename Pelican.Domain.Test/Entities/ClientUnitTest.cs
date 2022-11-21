@@ -205,12 +205,11 @@ public class ClientUnitTest
 		// Arrange
 		ClientContact existingClientContact = new(Guid.NewGuid())
 		{
+			Contact = new(Guid.NewGuid()),
 			HubSpotContactId = "hsID",
-			Client = _uut,
-			ClientId = _uut.Id,
-			HubSpotClientId = _uut.HubSpotId,
 			IsActive = true,
 		};
+		existingClientContact.ContactId = existingClientContact.Contact.Id;
 
 		_uut.ClientContacts.Add(existingClientContact);
 
@@ -223,7 +222,17 @@ public class ClientUnitTest
 		_uut.FillOutClientContacts(new List<Contact>() { newContact });
 
 		// Assert
-		Assert.Empty(_uut.ClientContacts);
+		Assert.Equal(
+			1,
+			_uut.ClientContacts.Count);
+
+		Assert.Equal(
+			existingClientContact.Contact,
+			_uut.ClientContacts.First().Contact);
+
+		Assert.Equal(
+			existingClientContact.ContactId,
+			_uut.ClientContacts.First().Contact.Id);
 	}
 
 	[Fact]

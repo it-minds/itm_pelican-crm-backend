@@ -58,7 +58,7 @@ public class Client : Entity, ITimeTracked
 		foreach (ClientContact item in ClientContacts)
 		{
 			Contact? matchingContact = contacts
-				.FirstOrDefault(contacts => contacts.HubSpotId == item.Contact.HubSpotId);
+				.FirstOrDefault(contacts => contacts.HubSpotId == item.HubSpotContactId);
 
 			if (matchingContact is null)
 			{
@@ -70,7 +70,7 @@ public class Client : Entity, ITimeTracked
 		}
 
 		ClientContacts = ClientContacts
-			.Where(dc => dc.Contact is not null)
+			.Where(cc => cc.Contact is not null)
 			.ToList();
 	}
 

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Pelican.Application;
 using Pelican.Application.Common.Interfaces;
 using Pelican.Application.Common.Interfaces.DataLoaders;
@@ -52,13 +51,14 @@ public static class DependencyInjection
 
 	public static WebApplication UsePersistence(this WebApplication app)
 	{
-		if (app.Environment.IsDevelopment())
-		{
-			app
-				.Services
-				.GetRequiredService<DevelopmentSeeder>()
-				.SeedEntireDb(10);
-		}
+		////Readd the below lines later when frontend is done testing with seeded data
+		//if (app.Environment.IsDevelopment())
+		//{
+		app
+			.Services
+			.GetRequiredService<DevelopmentSeeder>()
+			.SeedEntireDb(5);
+		//}
 
 		return app;
 	}

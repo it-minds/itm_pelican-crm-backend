@@ -41,13 +41,13 @@ public class Client : Entity, ITimeTracked
 				Website = propertyValue;
 				break;
 			default:
-				throw new ArgumentException($"{propertyName} is not a valid property on Client");
+				throw new InvalidOperationException($"{propertyName} is not a valid property on Client");
 		}
 		return this;
 	}
 
 	[GraphQLIgnore]
-	public virtual void FillOutClientContacts(List<Contact> contacts)
+	public virtual void FillOutClientContacts(IEnumerable<Contact>? contacts)
 	{
 		if (contacts is null)
 		{

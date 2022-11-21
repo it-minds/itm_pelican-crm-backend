@@ -97,7 +97,7 @@ public class UpdateContactCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_ContactNotFoundSupplierNotFound_ContactAndSupplierRepositoriesCalledReturnsFailure()
+	public async void Handle_ContactNotFoundAccessTokenNotFound_ContactRepositoryCalledReturnsFailure()
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
@@ -125,47 +125,9 @@ public class UpdateContactCommandHandlerTests
 				default),
 			Times.Once);
 
-		Assert.True(result.IsFailure);
-
-		Assert.Equal(
-			Error.NullValue,
-			result.Error);
-	}
-
-	[Fact]
-	public async void Handle_ContactNotFoundFailedRefreshingAccessToken_HubSpotAuthServiceCalledReturnsFailure()
-	{
-		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
-
-		_contactRepositoryMock
-			.Setup(repo => repo.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync((Contact)null!);
-
 		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
-				It.IsAny<long>(),
-				_unitOfWorkMock.Object,
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Failure<string>(Error.NullValue));
-
-		// Act
-		var result = await _uut.Handle(command, default);
-
-		// Assert
-		_hubSpotAuthorizationServiceMock.Verify(
-			service => service.RefreshAccessTokenAsync(
-				SUPPLIER_HUBSPOT_ID,
-				_unitOfWorkMock.Object,
-				default),
-			Times.Once);
+			.Setup(h => h
+				.RefreshAccessTokenAsync(SUPPLIER_HUBSPOT_ID, _unitOfWorkMock.Object, default));
 
 		Assert.True(result.IsFailure);
 
@@ -179,11 +141,6 @@ public class UpdateContactCommandHandlerTests
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
 
 		string accessToken = "accessToken";
 
@@ -231,11 +188,6 @@ public class UpdateContactCommandHandlerTests
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
 
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
-
 		Mock<Contact> newContactMock = new();
 
 		string accessToken = "accessToken";
@@ -273,7 +225,7 @@ public class UpdateContactCommandHandlerTests
 		_dealRepositoryMock.Verify(
 			repo => repo.FirstOrDefaultAsync(
 				It.IsAny<Expression<Func<Deal, bool>>>(),
-				It.IsAny<CancellationToken>()),
+				default),
 			Times.Never);
 
 		_clientRepositoryMock.Verify(
@@ -300,11 +252,6 @@ public class UpdateContactCommandHandlerTests
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
 
 		DealContact existingDealContact = new(Guid.NewGuid());
 
@@ -352,11 +299,6 @@ public class UpdateContactCommandHandlerTests
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
 
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
-
 		ClientContact existingClientContact = new(Guid.NewGuid());
 
 		Mock<Contact> newContactMock = new();
@@ -402,11 +344,6 @@ public class UpdateContactCommandHandlerTests
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
 
 		Deal existingDeal = new(Guid.NewGuid())
 		{
@@ -474,11 +411,6 @@ public class UpdateContactCommandHandlerTests
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
 
 		Client existingClient = new(Guid.NewGuid())
 		{
@@ -578,11 +510,6 @@ public class UpdateContactCommandHandlerTests
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
 
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
-
 		string accessToken = "accessToken";
 
 		Mock<Contact> contactMock = new();
@@ -627,11 +554,6 @@ public class UpdateContactCommandHandlerTests
 	{
 		// Arrange
 		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
-
-		Supplier supplier = new(Guid.NewGuid())
-		{
-			RefreshToken = "not_empty"
-		};
 
 		string accessToken = "accessToken";
 

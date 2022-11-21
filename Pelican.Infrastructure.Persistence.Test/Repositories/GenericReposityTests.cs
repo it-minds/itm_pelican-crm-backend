@@ -1,9 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Moq;
 using Pelican.Application.Abstractions.Data;
 using Pelican.Domain.Primitives;
 using Pelican.Infrastructure.Persistence.Repositories;
 using Xunit;
+using static HotChocolate.ErrorCodes;
 
 namespace Pelican.Infrastructure.Persistence.Test.Repositories;
 
@@ -28,29 +34,6 @@ public class GenericReposityTests
 			"pelicanContext",
 			result.Message);
 	}
-
-	//[Fact]
-	//public void FindAll_SetCalledOnContext()
-	//{
-	//	// Arrange
-	//	Mock<DbSet<Entity>> dbSetMock = new();
-
-	//	_pelicanContextMock
-	//		.Setup(p => p.Set<Entity>().AsNoTracking())
-	//		.Returns(dbSetMock.Object.AsNoTracking());
-
-	//	//dbSetMock
-	//	//	.Setup(d => d.AsNoTracking())
-	//	//	.Returns(dbSetMock.Object);
-
-	//	// Act
-	//	var result = _uut.FindAll();
-
-	//	// Assert
-	//	//_pelicanContextMock.Verify(
-	//	//	p => p.Set<Entity>(),
-	//	//	Times.Once);
-	//}
 
 	[Fact]
 	public void GetByIdAsync_ArgumentEmpty_ThrowException()
@@ -85,6 +68,31 @@ public class GenericReposityTests
 	}
 
 	[Fact]
+	public async void CreateAsync_ArgumentNotEmpty_AddCalled()
+	{
+		// Arrange
+		Mock<Entity> entityMock = new();
+
+		ValueTask<EntityEntry<Entity>> returnValue = new();
+
+		_pelicanContextMock
+			.Setup(p => p.Set<Entity>().AddAsync(It.IsAny<Entity>(), default))
+			.Returns(returnValue);
+
+		// Act
+		var result = await _uut.CreateAsync(entityMock.Object, default);
+
+		// Assert
+		_pelicanContextMock.Verify(
+			p => p.Set<Entity>().AddAsync(entityMock.Object, default),
+			Times.Once);
+
+		Assert.Equal(
+			entityMock.Object,
+			result);
+	}
+
+	[Fact]
 	public void CreateRangeAsync_ArgumentEmpty_ThrowException()
 	{
 		// Act
@@ -98,5 +106,70 @@ public class GenericReposityTests
 		Assert.Contains(
 			"entities",
 			result.Result.Message);
+	}
+
+	[Fact]
+	public async void CreateRangeAsync_ArgumentNotEmpty_AddRangeCalled()
+	{
+		// Arrange
+		IEnumerable<Entity> entities = new List<Entity>();
+
+		_pelicanContextMock
+			.Setup(p => p.Set<Entity>().AddRangeAsync(It.IsAny<IEnumerable<Entity>>(), default))
+			.Returns(Task.CompletedTask);
+
+		// Act
+		var result = await _uut.CreateRangeAsync(entities, default);
+
+		// Assert
+		_pelicanContextMock.Verify(
+			p => p.Set<Entity>().AddRangeAsync(entities, default),
+			Times.Once);
+
+		Assert.Equal(
+			entities,
+			result);
+	}
+
+	[Fact]
+	public void Update_ArgumentNotEmpty_UpdateCalled()
+	{
+		// Arrange
+		Mock<Entity> entityMock = new();
+
+		Mock<DbSet<Entity>> dbSetMock = new();
+
+		_pelicanContextMock
+			.Setup(p => p.Set<Entity>())
+			.Returns(dbSetMock.Object);
+
+		// Act
+		_uut.Update(entityMock.Object);
+
+		// Assert
+		_pelicanContextMock.Verify(
+			p => p.Set<Entity>().Update(entityMock.Object),
+			Times.Once);
+	}
+
+	[Fact]
+	public void Update_ArgumentNotEmpty_RemoveCalled()
+	{
+		// Arrange
+		Mock<Entity> entityMock = new();
+
+		Mock<DbSet<Entity>> dbSetMock = new();
+
+		_pelicanContextMock
+			.Setup(p => p.Set<Entity>())
+			.Returns(dbSetMock.Object);
+
+		// Act
+		_uut.Delete(entityMock.Object);
+
+		// Assert
+		_pelicanContextMock.Verify(
+			p => p.Set<Entity>().Remove(entityMock.Object),
+			Times.Once);
 	}
 }

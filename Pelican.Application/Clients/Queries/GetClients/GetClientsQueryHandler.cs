@@ -1,9 +1,8 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Clients.Queries.GetClients;
 using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
 
-namespace Pelican.Application.Clients.Queries.GetCLients;
+namespace Pelican.Application.Clients.Queries.GetClients;
 public class GetClientsQueryHandler : IQueryHandler<GetClientsQuery, IQueryable<Client>>
 {
 	private readonly IGenericRepository<Client> _repository;

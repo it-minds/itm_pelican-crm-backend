@@ -3,7 +3,6 @@ using Moq;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Clients.Commands.UpdateClient;
 using Pelican.Application.Common.Interfaces.Repositories;
-using Pelican.Application.Contacts.Commands.UpdateContact;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Xunit;
@@ -14,21 +13,15 @@ public class UpdateClientCommandHandlerTests
 {
 	private readonly UpdateClientCommandHandler _uut;
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-	private readonly Mock<IGenericRepository<Client>> _clientRepositoryMock;
-	private readonly Mock<IGenericRepository<Supplier>> _supplierRepositoryMock;
 	private readonly Mock<IHubSpotObjectService<Client>> _hubSpotClientServiceMock;
-	private readonly Mock<IHubSpotObjectService<Contact>> _hubSpotContactServiceMock;
 	private readonly Mock<IHubSpotAuthorizationService> _hubSpotAuthorizationServiceMock;
 	private readonly CancellationToken _cancellationToken;
 
 	public UpdateClientCommandHandlerTests()
 	{
 		_unitOfWorkMock = new();
-		_clientRepositoryMock = new();
-		_supplierRepositoryMock = new();
 		_hubSpotClientServiceMock = new();
 		_hubSpotAuthorizationServiceMock = new();
-		_hubSpotContactServiceMock = new();
 
 		_uut = new(
 			_unitOfWorkMock.Object,
@@ -41,9 +34,9 @@ public class UpdateClientCommandHandlerTests
 	public void UpdateClientCommandHandler_UnitOfWorkNull_ThrowsArgumentNullException()
 	{
 		// Act
-		var result = Record.Exception(() => new UpdateContactCommandHandler(
+		var result = Record.Exception(() => new UpdateClientCommandHandler(
 			null!,
-			_hubSpotContactServiceMock.Object,
+			_hubSpotClientServiceMock.Object,
 			_hubSpotAuthorizationServiceMock.Object));
 
 		// Assert
@@ -58,7 +51,7 @@ public class UpdateClientCommandHandlerTests
 	public void UpdateClientCommandHandler_HubSpotContactServiceNull_ThrowsArgumentNullException()
 	{
 		// Act
-		var result = Record.Exception(() => new UpdateContactCommandHandler(
+		var result = Record.Exception(() => new UpdateClientCommandHandler(
 			_unitOfWorkMock.Object,
 			null!,
 			_hubSpotAuthorizationServiceMock.Object));
@@ -67,7 +60,7 @@ public class UpdateClientCommandHandlerTests
 		Assert.IsType<ArgumentNullException>(result);
 
 		Assert.Contains(
-			"hubSpotContactService",
+			"hubSpotClientService",
 			result.Message);
 	}
 
@@ -75,9 +68,9 @@ public class UpdateClientCommandHandlerTests
 	public void UpdateClientCommandHandler_HubSpotAuthorizationServiceNull_ThrowsArgumentNullException()
 	{
 		// Act
-		var result = Record.Exception(() => new UpdateContactCommandHandler(
+		var result = Record.Exception(() => new UpdateClientCommandHandler(
 			_unitOfWorkMock.Object,
-			_hubSpotContactServiceMock.Object,
+			_hubSpotClientServiceMock.Object,
 			null!));
 
 		// Assert

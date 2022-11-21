@@ -83,7 +83,7 @@ public class UpdateClientCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, "0", "0")]
-	public async void Handle_ClientNotFoundFailsToRefreshAccessToken_ReturnsFailureErrorNullValue(
+	public async void Handle_ClientNotFoundRefreshAccessTokenReturnsFailure_ReturnsFailureErrorNullValue(
 		long objectId,
 		long portalId,
 		string propertyName,
@@ -399,7 +399,7 @@ public class UpdateClientCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, "num_associated_contacts", "0")]
-	public async void Handle_ClientFoundNumAssociatedHubSpotClientServiceReturnsClient_ReturnsSucces(
+	public async void Handle_ClientFoundNumAssociatedHubSpotClientServiceReturnsClient_ReturnsSuccess(
 		long objectId,
 		long portalId,
 		string propertyName,

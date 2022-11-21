@@ -11,7 +11,7 @@ using Pelican.Presentation.Api.Utilities.HubSpotHookValidation;
 namespace Pelican.Presentation.Api.Controllers;
 
 [Route("[controller]")]
-internal sealed class HubSpotController : ApiController
+public sealed class HubSpotController : ApiController
 {
 	private readonly IRequestToCommandMapper _mapper;
 

@@ -12,7 +12,6 @@ using Xunit;
 using static HotChocolate.ErrorCodes;
 
 namespace Pelican.Infrastructure.Persistence.Test.Repositories;
-
 public class GenericReposityTests
 {
 	private readonly GenericRepository<Entity> _uut;

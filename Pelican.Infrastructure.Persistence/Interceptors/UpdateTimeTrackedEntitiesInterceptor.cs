@@ -33,7 +33,7 @@ internal sealed class UpdateTimeTrackedEntitiesInterceptor
 			cancellationToken);
 	}
 
-	private void SetCreatedAtOnAddedEntities(DbContext dbContext)
+	private static void SetCreatedAtOnAddedEntities(DbContext dbContext)
 	{
 		dbContext.ChangeTracker
 			.Entries<ITimeTracked>()
@@ -49,7 +49,7 @@ internal sealed class UpdateTimeTrackedEntitiesInterceptor
 			});
 	}
 
-	private void SetLastUpdatedAtOnUpdatedEntities(DbContext dbContext)
+	private static void SetLastUpdatedAtOnUpdatedEntities(DbContext dbContext)
 	{
 		dbContext.ChangeTracker
 			.Entries<ITimeTracked>()

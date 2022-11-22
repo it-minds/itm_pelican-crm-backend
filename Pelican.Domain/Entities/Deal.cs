@@ -16,6 +16,10 @@ public class Deal : Entity, ITimeTracked
 
 	public DateTime? LastContactDate { get; set; }
 
+	public string? Name { get; set; }
+
+	public string? Description { get; set; }
+
 	public Guid? ClientId { get; set; }
 
 	public Client? Client { get; set; }
@@ -63,7 +67,7 @@ public class Deal : Entity, ITimeTracked
 					break;
 				}
 			case "dealstage":
-				DealStatus = propertyValue;
+				DealStatus = propertyValue.Length > StringLengths.DealStatus ? propertyValue.Substring(0, StringLengths.DealStatus - 3) + ("...") : propertyValue;
 				break;
 			case "notes_last_contacted":
 				{
@@ -76,10 +80,15 @@ public class Deal : Entity, ITimeTracked
 					LastContactDate = date;
 					break;
 				}
+			case "dealname":
+				Name = propertyValue.Length > StringLengths.DealName ? propertyValue.Substring(0, StringLengths.DealName - 3) + ("...") : propertyValue;
+				break;
+			case "description":
+				Description = propertyValue.Length > StringLengths.DealDescription ? propertyValue.Substring(0, StringLengths.DealDescription - 3) + ("...") : propertyValue;
+				break;
 			default:
 				throw new InvalidOperationException("Invalid field");
 		}
-
 		return this;
 	}
 

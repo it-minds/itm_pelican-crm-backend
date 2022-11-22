@@ -7,13 +7,11 @@ public class AccountManagerDeal : Entity, ITimeTracked
 {
 	public bool IsActive { get; set; }
 
-
 	public Guid AccountManagerId { get; set; }
 
 	public string HubSpotAccountManagerId { get; set; }
 
 	public AccountManager AccountManager { get; set; }
-
 
 	public Deal Deal { get; set; }
 
@@ -25,7 +23,6 @@ public class AccountManagerDeal : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 
 	public long? LastUpdatedAt { get; set; }
-
 
 	public AccountManagerDeal(Guid id) : base(id) { }
 
@@ -45,6 +42,7 @@ public class AccountManagerDeal : Entity, ITimeTracked
 			IsActive = true,
 		};
 	}
+
 	[GraphQLIgnore]
 	public void Deactivate()
 	{

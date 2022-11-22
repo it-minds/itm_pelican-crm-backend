@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Entities;
+﻿using Pelican.Domain;
+using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.Deals;
@@ -17,10 +18,13 @@ internal static class DealResponseToDeal
 			StartDate = string.IsNullOrWhiteSpace(response.Properties.StartDate) ? null : DateTime.Parse(response.Properties.StartDate),
 			EndDate = string.IsNullOrWhiteSpace(response.Properties.EndDate) ? null : DateTime.Parse(response.Properties.EndDate),
 			LastContactDate = string.IsNullOrWhiteSpace(response.Properties.LastContactDate) ? null : DateTime.Parse(response.Properties.LastContactDate),
-			DealStatus = response.Properties.Dealstage,
+			DealStatus = response.Properties.DealStage.Length > StringLengths.DealStatus ? response.Properties.DealStage.Substring(0, StringLengths.DealStatus - 3) + ("...") : response.Properties.DealStage,
 			HubSpotId = response.Properties.HubSpotObjectId,
 			HubSpotOwnerId = response.Properties.HubSpotOwnerId,
+			Name = response.Properties.DealName.Length > StringLengths.DealName ? response.Properties.DealName.Substring(0, StringLengths.DealName - 3) + ("...") : response.Properties.DealName,
+			Description = response.Properties.Description.Length > StringLengths.DealDescription ? response.Properties.Description.Substring(0, StringLengths.DealDescription - 3) + ("...") : response.Properties.Description
 		};
+
 
 		result.AccountManagerDeals = new List<AccountManagerDeal>()
 		{

@@ -14,6 +14,7 @@ internal static class RestRequestExtensions
 			.AddQueryParameter("properties", "notes_last_contacted", false)
 			.AddQueryParameter("properties", "dealstage", false)
 			.AddQueryParameter("properties", "dealname", false)
+			.AddQueryParameter("properties", "description", false)
 			.AddQueryParameter("properties", "amount", false);
 
 	public static RestRequest AddContactQueryParams(this RestRequest request) => request
@@ -29,7 +30,6 @@ internal static class RestRequestExtensions
 	public static RestRequest AddCompanyQueryParams(this RestRequest request) => request
 			.AddQueryParameter("associations", "contacts", false)
 			.AddQueryParameter("associations", "deals", false)
-			.AddQueryParameter("properties", "industry", false)
 			.AddQueryParameter("properties", "domain", false)
 			.AddQueryParameter("properties", "name", false)
 			.AddQueryParameter("properties", "city", false);

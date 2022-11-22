@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Entities;
+﻿using Pelican.Domain;
+using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.Clients;
@@ -15,9 +16,10 @@ internal static class CompanyResponseToClient
 
 		Client result = new(Guid.NewGuid())
 		{
-			Name = response.Properties.Name,
+			Website = response.Properties.Domain.Length > StringLengths.Url ? response.Properties.Domain.Substring(0, StringLengths.Url - 3) + ("...") : response.Properties.Domain,
+			Name = response.Properties.Name.Length > StringLengths.Name ? response.Properties.Name.Substring(0, StringLengths.Name - 3) + ("...") : response.Properties.Name,
 			HubSpotId = response.Properties.HubSpotObjectId,
-			OfficeLocation = response.Properties.City,
+			OfficeLocation = response.Properties.City.Length > StringLengths.OfficeLocation ? response.Properties.City.Substring(0, StringLengths.OfficeLocation - 3) + ("...") : response.Properties.City,
 		};
 
 		result.Deals = response

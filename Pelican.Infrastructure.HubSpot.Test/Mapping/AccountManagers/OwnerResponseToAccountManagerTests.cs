@@ -1,4 +1,6 @@
-﻿using Pelican.Domain.Entities;
+﻿using Bogus;
+using Pelican.Domain;
+using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
 using Pelican.Infrastructure.HubSpot.Mapping.AccountManagers;
 using Xunit;
@@ -102,5 +104,50 @@ public class OwnerResponseToAccountManagerTests
 		Assert.Equal(LASTNAME, result.LastName);
 		Assert.Equal(EMAIL, result.Email);
 		Assert.Equal(USERID, result.HubSpotUserId);
+	}
+	[Fact]
+	public void ToAccountManager_FirstNameStringTooLong_FirstNameShortenededAndAppendedWithThreeDots()
+	{
+		Faker faker = new();
+		response.Firstname = faker.Lorem.Letter(StringLengths.Name * 2);
+
+		/// Act
+		AccountManager result = response.ToAccountManager();
+
+		/// Assert
+		Assert.Equal(StringLengths.Name, result.FirstName.Length);
+		Assert.Equal("...", result.FirstName.Substring(StringLengths.Name - 3));
+		Assert.Equal(response.Firstname.Substring(0, StringLengths.Name - 3), result.FirstName.Substring(0, StringLengths.Name - 3));
+
+	}
+	[Fact]
+	public void ToAccountManager_LastNameStringTooLong_LastNameShortenededAndAppendedWithThreeDots()
+	{
+		Faker faker = new();
+		response.Lastname = faker.Lorem.Letter(StringLengths.Name * 2);
+
+		/// Act
+		AccountManager result = response.ToAccountManager();
+
+		/// Assert
+		Assert.Equal(StringLengths.Name, result.LastName.Length);
+		Assert.Equal("...", result.LastName.Substring(StringLengths.Name - 3));
+		Assert.Equal(response.Lastname.Substring(0, StringLengths.Name - 3), result.LastName.Substring(0, StringLengths.Name - 3));
+
+	}
+	[Fact]
+	public void ToAccountManager_EmailStringTooLong_EmailShortenededAndAppendedWithThreeDots()
+	{
+		Faker faker = new();
+		response.Email = faker.Lorem.Letter(StringLengths.Email * 2);
+
+		/// Act
+		AccountManager result = response.ToAccountManager();
+
+		/// Assert
+		Assert.Equal(StringLengths.Email, result.Email.Length);
+		Assert.Equal("...", result.Email.Substring(StringLengths.Email - 3));
+		Assert.Equal(response.Email.Substring(0, StringLengths.Email - 3), result.Email.Substring(0, StringLengths.Email - 3));
+
 	}
 }

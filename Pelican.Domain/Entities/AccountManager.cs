@@ -13,22 +13,17 @@ public class AccountManager : Entity, ITimeTracked
 
 	public string Email { get; set; }
 
-
 	public string? PhoneNumber { get; set; }
 
 	public string? PictureUrl { get; set; }
 
 	public string? LinkedInUrl { get; set; }
 
-
-
 	public Guid SupplierId { get; set; }
 
 	public Supplier Supplier { get; set; }
 
-
 	public ICollection<AccountManagerDeal> AccountManagerDeals { get; set; } = new List<AccountManagerDeal>();
-
 
 	public long CreatedAt { get; set; }
 

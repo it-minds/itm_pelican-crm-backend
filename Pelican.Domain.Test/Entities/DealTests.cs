@@ -1,9 +1,14 @@
-﻿using Pelican.Domain.Entities;
+﻿using Bogus;
+using Pelican.Domain.Entities;
 using Xunit;
 
 namespace Pelican.Domain.Test.Entities;
 public class DealTests
 {
+	private readonly Deal _uut = new Deal(Guid.NewGuid())
+	{
+		HubSpotId = "uutHubSpotId",
+	};
 	[Fact]
 	public void UpdateProperty_NoUpdates_ThrowsNoException()
 	{
@@ -168,7 +173,6 @@ public class DealTests
 	{
 		/// Arrange
 		string name = "dealstage";
-
 		string value = "newStatus";
 
 		Deal inputDeal = new(Guid.NewGuid());
@@ -180,6 +184,93 @@ public class DealTests
 		Assert.Equal(
 			value,
 			returnDeal.DealStatus);
+	}
+
+	[Fact]
+	public void UpdateProperty_DealDescriptionNotToLongUpdated_ReturnsUpdatedDeal()
+	{
+		/// Arrange
+		string name = "description";
+		string value = "newDescription";
+
+		Deal inputDeal = new(Guid.NewGuid());
+
+		/// Act
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
+
+		/// Assert
+		Assert.Equal(
+			value,
+			returnDeal.Description);
+	}
+
+	[Fact]
+	public void UpdateProperty_DealNameUpdated_ReturnsUpdatedDeal()
+	{
+		/// Arrange
+		string name = "dealname";
+		string value = "newName";
+
+		Deal inputDeal = new(Guid.NewGuid());
+
+		/// Act
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
+
+		/// Assert
+		Assert.Equal(
+			value,
+			returnDeal.Name);
+	}
+
+	[Fact]
+	public void UpdateProperty_DealStatusStringToLongDealStatusShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyName = "dealstage";
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealStatus * 2);
+
+		// Act
+		_uut.UpdateProperty(propertyName, propertyValue);
+
+		// Assert
+		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
+		Assert.Equal("...", _uut.DealStatus.Substring(StringLengths.DealStatus - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3), _uut.DealStatus.Substring(0, StringLengths.DealStatus - 3));
+	}
+
+	[Fact]
+	public void UpdateProperty_DealDescriptionStringToLong_DealDescriptionShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyName = "description";
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealDescription * 2);
+
+		// Act
+		_uut.UpdateProperty(propertyName, propertyValue);
+
+		// Assert
+		Assert.Equal(StringLengths.DealDescription, _uut.Description!.Length);
+		Assert.Equal("...", _uut.Description.Substring(StringLengths.DealDescription - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealDescription - 3), _uut.Description.Substring(0, StringLengths.DealDescription - 3));
+	}
+
+	[Fact]
+	public void UpdateProperty_DealNameStringToLong_DealNameShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyName = "dealname";
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealName * 2);
+
+		// Act
+		_uut.UpdateProperty(propertyName, propertyValue);
+
+		// Assert
+		Assert.Equal(StringLengths.DealName, _uut.Name!.Length);
+		Assert.Equal("...", _uut.Name.Substring(StringLengths.DealName - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealName - 3), _uut.Name.Substring(0, StringLengths.DealName - 3));
 	}
 
 	[Fact]

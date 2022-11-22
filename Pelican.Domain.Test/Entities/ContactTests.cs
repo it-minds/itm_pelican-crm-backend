@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Entities;
+﻿using Bogus;
+using Pelican.Domain.Entities;
 using Xunit;
 
 namespace Pelican.Domain.Test.Entities;
@@ -13,7 +14,7 @@ public class ContactTests
 	[Fact]
 	public void UpdateProperty_InvalidPropertyName_ThrowInvalidOperationException()
 	{
-		// Arragne
+		// Arrange
 		string propertyName = "invalidName";
 		string propertyValue = "value";
 
@@ -33,7 +34,7 @@ public class ContactTests
 	[Fact]
 	public void UpdateProperty_FirstnameUpdated_FirstnameEqualsValue()
 	{
-		// Arragne
+		// Arrange
 		string propertyName = "firstname";
 		string propertyValue = "newName";
 
@@ -43,13 +44,13 @@ public class ContactTests
 		// Assert
 		Assert.Equal(
 			propertyValue,
-			_uut.Firstname);
+			_uut.FirstName);
 	}
 
 	[Fact]
 	public void UpdateProperty_LastnameUpdated_LastnameEqualsValue()
 	{
-		// Arragne
+		// Arrange
 		string propertyName = "lastname";
 		string propertyValue = "newName";
 
@@ -59,13 +60,13 @@ public class ContactTests
 		// Assert
 		Assert.Equal(
 			propertyValue,
-			_uut.Lastname);
+			_uut.LastName);
 	}
 
 	[Fact]
 	public void UpdateProperty_EmailUpdated_EmailEqualsValue()
 	{
-		// Arragne
+		// Arrange
 		string propertyName = "email";
 		string propertyValue = "newEmail";
 
@@ -81,7 +82,7 @@ public class ContactTests
 	[Fact]
 	public void UpdateProperty_PhoneUpdated_PhoneNumberEqualsValue()
 	{
-		// Arragne
+		// Arrange
 		string propertyName = "phone";
 		string propertyValue = "12345678";
 
@@ -97,7 +98,7 @@ public class ContactTests
 	[Fact]
 	public void UpdateProperty_MobilephoneUpdated_PhoneNumberEqualsValue()
 	{
-		// Arragne
+		// Arrange
 		string propertyName = "mobilephone";
 		string propertyValue = "12345678";
 
@@ -111,9 +112,9 @@ public class ContactTests
 	}
 
 	[Fact]
-	public void UpdateProperty_MobilephoneUpdated_JobTitleEqualsValue()
+	public void UpdateProperty_JobTitleUpdated_JobTitleEqualsValue()
 	{
-		// Arragne
+		// Arrange
 		string propertyName = "jobtitle";
 		string propertyValue = "jobtitle";
 
@@ -127,9 +128,112 @@ public class ContactTests
 	}
 
 	[Fact]
+	public void UpdateProperty_FirstNameStringToLong_FirstnameShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyName = "firstname";
+		string propertyValue = faker.Lorem.Letter(StringLengths.Name * 2);
+
+		// Act
+		_uut.UpdateProperty(propertyName, propertyValue);
+
+		// Assert
+
+		Assert.Equal(StringLengths.Name, _uut.FirstName!.Length);
+		Assert.Equal("...", _uut.FirstName.Substring(StringLengths.Name - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.FirstName.Substring(0, StringLengths.Name - 3));
+	}
+
+	[Fact]
+	public void UpdateProperty_LastNameStringToLong_LastNameShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyName = "lastname";
+		string propertyValue = faker.Lorem.Letter(StringLengths.Name * 2);
+
+		// Act
+		_uut.UpdateProperty(propertyName, propertyValue);
+
+		// Assert
+		Assert.Equal(StringLengths.Name, _uut.LastName!.Length);
+		Assert.Equal("...", _uut.LastName.Substring(StringLengths.Name - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.LastName.Substring(0, StringLengths.Name - 3));
+	}
+
+	[Fact]
+	public void UpdateProperty_EmailStringToLong_EmailShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyName = "email";
+		string propertyValue = faker.Lorem.Letter(StringLengths.Email * 2);
+
+		// Act
+		_uut.UpdateProperty(propertyName, propertyValue);
+
+		// Assert
+		Assert.Equal(StringLengths.Email, _uut.Email!.Length);
+		Assert.Equal("...", _uut.Email.Substring(StringLengths.Email - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Email - 3), _uut.Email.Substring(0, StringLengths.Email - 3));
+	}
+
+	[Fact]
+	public void UpdateProperty_PhoneStringToLong_PhoneShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyName = "phone";
+		string propertyValue = faker.Lorem.Letter(StringLengths.PhoneNumber * 2);
+
+		// Act
+		_uut.UpdateProperty(propertyName, propertyValue);
+
+		// Assert
+		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
+		Assert.Equal("...", _uut.PhoneNumber.Substring(StringLengths.PhoneNumber - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3), _uut.PhoneNumber.Substring(0, StringLengths.PhoneNumber - 3));
+	}
+
+	[Fact]
+	public void UpdateProperty_MobilePhoneStringToLong_MobilePhoneShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyName = "mobilephone";
+		string propertyValue = faker.Lorem.Letter(StringLengths.PhoneNumber * 2);
+
+		// Act
+		_uut.UpdateProperty(propertyName, propertyValue);
+
+		// Assert
+		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
+		Assert.Equal("...", _uut.PhoneNumber.Substring(StringLengths.PhoneNumber - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3), _uut.PhoneNumber.Substring(0, StringLengths.PhoneNumber - 3));
+	}
+
+	[Fact]
+	public void UpdateProperty_JobTitleStringToLong_JobTitleShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyName = "jobtitle";
+		string propertyValue = faker.Lorem.Letter(StringLengths.JobTitle * 2);
+
+		// Act
+		_uut.UpdateProperty(propertyName, propertyValue);
+
+		// Assert
+		Assert.Equal(StringLengths.JobTitle, _uut.JobTitle!.Length);
+		Assert.Equal("...", _uut.JobTitle.Substring(StringLengths.JobTitle - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.JobTitle - 3), _uut.JobTitle.Substring(0, StringLengths.JobTitle - 3));
+	}
+
+	[Fact]
 	public void UpdateProperty_OwnerUpdated_OwnerEqualsValue()
 	{
-		// Arragne
+		// Arrange
 		string propertyName = "hs_all_owner_ids";
 		string propertyValue = "owner";
 

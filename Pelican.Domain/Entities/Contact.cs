@@ -9,9 +9,9 @@ public class Contact : Entity, ITimeTracked
 	public string? HubSpotOwnerId { get; set; }
 
 
-	public string? Firstname { get; set; }
+	public string? FirstName { get; set; }
 
-	public string? Lastname { get; set; }
+	public string? LastName { get; set; }
 
 
 	public string? PhoneNumber { get; set; }
@@ -40,20 +40,20 @@ public class Contact : Entity, ITimeTracked
 		switch (propertyName)
 		{
 			case "firstname":
-				Firstname = propertyValue;
+				FirstName = propertyValue.Length > StringLengths.Name ? propertyValue.Substring(0, StringLengths.Name - 3) + ("...") : propertyValue;
 				break;
 			case "lastname":
-				Lastname = propertyValue;
+				LastName = propertyValue.Length > StringLengths.Name ? propertyValue.Substring(0, StringLengths.Name - 3) + ("...") : propertyValue;
 				break;
 			case "email":
-				Email = propertyValue;
+				Email = propertyValue.Length > StringLengths.Email ? propertyValue.Substring(0, StringLengths.Email - 3) + ("...") : propertyValue;
 				break;
 			case "phone":
 			case "mobilephone":
-				PhoneNumber = propertyValue;
+				PhoneNumber = propertyValue.Length > StringLengths.PhoneNumber ? propertyValue.Substring(0, StringLengths.PhoneNumber - 3) + ("...") : propertyValue;
 				break;
 			case "jobtitle":
-				JobTitle = propertyValue;
+				JobTitle = propertyValue.Length > StringLengths.JobTitle ? propertyValue.Substring(0, StringLengths.JobTitle - 3) + ("...") : propertyValue;
 				break;
 			case "hs_all_owner_ids":
 				HubSpotOwnerId = propertyValue;

@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Pelican.Domain;
-using Pelican.Domain.Entities;
-
-namespace Pelican.Infrastructure.Persistence.Configurations;
+﻿namespace Pelican.Infrastructure.Persistence.Configurations;
 internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 {
 	public void Configure(EntityTypeBuilder<Deal> builder)
@@ -20,14 +15,11 @@ internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 		builder.Property(p => p.HubSpotOwnerId)
 			.HasMaxLength(StringLengths.Id);
 
-		builder.Property(p => p.StartDate)
-			.HasColumnType("Date");
+		builder.Property(p => p.Description)
+			.HasMaxLength(StringLengths.DealDescription);
 
-		builder.Property(p => p.EndDate)
-			.HasColumnType("Date");
-
-		builder.Property(p => p.LastContactDate)
-			.HasColumnType("Date");
+		builder.Property(p => p.Name)
+			.HasMaxLength(StringLengths.DealName);
 
 		builder.HasMany(a => a.AccountManagerDeals)
 			.WithOne(e => e.Deal)

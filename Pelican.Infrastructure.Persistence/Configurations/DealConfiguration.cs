@@ -20,6 +20,9 @@ internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 		builder.Property(p => p.HubSpotOwnerId)
 			.HasMaxLength(StringLengths.Id);
 
+		builder.Property(p => p)
+			.HasColumnType("Date");
+
 		builder.Property(p => p.EndDate)
 			.HasColumnType("Date");
 

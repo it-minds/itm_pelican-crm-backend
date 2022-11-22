@@ -8,7 +8,7 @@ namespace Pelican.Presentation.GraphQL.Clients;
 public class ClientsQuery
 {
 	//This Query reguests all Clients from the database.
-	[UsePaging]
+	[UsePaging(IncludeTotalCount = true)]
 	[UseProjection]
 	[UseFiltering]
 	[UseSorting]

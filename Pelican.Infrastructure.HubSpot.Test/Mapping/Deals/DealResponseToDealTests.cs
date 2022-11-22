@@ -1,4 +1,12 @@
-﻿namespace Pelican.Infrastructure.HubSpot.Test.Mapping.Deals;
+﻿using Bogus;
+using Pelican.Domain;
+using Pelican.Domain.Entities;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
+using Pelican.Infrastructure.HubSpot.Mapping.Deals;
+using Xunit;
+
+namespace Pelican.Infrastructure.HubSpot.Test.Mapping.Deals;
 
 public class DealResponseToDealTests
 {
@@ -15,7 +23,7 @@ public class DealResponseToDealTests
 	{
 		Properties = new()
 		{
-			Dealstage = DEALSTAGE,
+			DealStage = DEALSTAGE,
 			EndDate = CLOSEDATE,
 			StartDate = STARTDATE,
 			HubSpotObjectId = ID,

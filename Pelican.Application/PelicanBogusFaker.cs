@@ -47,6 +47,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.HubSpotOwnerId, f => f.PickRandom<AccountManager>(accountManagers).HubSpotId.OrNull(f, 0.0f))
 			.RuleFor(e => e.DealStatus, f => f.PickRandom<DealStatus>().ToString().OrNull(f, 0.0f))
 			.RuleFor(e => e.EndDate, f => f.Date.Past().OrNull(f, 0.0f))
+			.RuleFor(e => e.StartDate, f => f.Date.Future().OrNull(f, 0.0f))
 			.RuleFor(e => e.Id, f => f.Random.Guid())
 			.RuleFor(e => e.LastContactDate, f => f.Date.Past().OrNull(f, 0.0f))
 			.RuleFor(e => e.ClientId, f => f.PickRandom<Client>(clients).Id)

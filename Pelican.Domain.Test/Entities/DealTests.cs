@@ -31,7 +31,7 @@ public class DealTests
 	public void UpdateProperty_EndDateUpdatedInvalidValueFormat_ThrowsInvalidOperationException()
 	{
 		/// Arrange
-		string name = "closedate";
+		string name = "enddate";
 
 		string value = "Hello";
 
@@ -58,7 +58,7 @@ public class DealTests
 
 		long ticks = 1669382373249; //Timestamp in milliseconds Friday, November 25, 2022 1:19:33.249 PM
 
-		string name = "closedate";
+		string name = "enddate";
 
 		string value = ticks.ToString();
 
@@ -71,6 +71,51 @@ public class DealTests
 		Assert.Equal(
 			date,
 			returnDeal.EndDate);
+	}
+	[Fact]
+	public void UpdateProperty_StartDateUpdatedInvalidValueFormat_ThrowsInvalidOperationException()
+	{
+		/// Arrange
+		string name = "startdate";
+
+		string value = "Hello";
+
+		Deal inputDeal = new(Guid.NewGuid());
+
+		/// Act
+		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
+
+		/// Assert
+		Assert.Equal(
+			typeof(InvalidOperationException),
+			exceptionResult.GetType());
+
+		Assert.Equal(
+			"Invalid date format",
+			exceptionResult.Message);
+	}
+
+	[Fact]
+	public void UpdateProperty_StartDateUpdated_ReturnsUpdatedDeal()
+	{
+		/// Arrange
+		DateTime date = new(2022, 11, 25);
+
+		long ticks = 1669382373249; //Timestamp in milliseconds Friday, November 25, 2022 1:19:33.249 PM
+
+		string name = "startdate";
+
+		string value = ticks.ToString();
+
+		Deal inputDeal = new(Guid.NewGuid());
+
+		/// Act
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
+
+		/// Assert
+		Assert.Equal(
+			date,
+			returnDeal.StartDate);
 	}
 	[Fact]
 	public void UpdateProperty_LastContactedDateUpdatedInvalidValueFormat_ThrowsInvalidOperationException()

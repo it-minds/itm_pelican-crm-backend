@@ -46,5 +46,6 @@ public class DealContact : Entity, ITimeTracked
 		};
 	}
 
+	[GraphQLIgnore]
 	public virtual void Deactivate() => IsActive = false;
 }

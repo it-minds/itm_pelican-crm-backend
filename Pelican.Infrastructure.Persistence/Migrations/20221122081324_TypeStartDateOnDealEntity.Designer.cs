@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pelican.Infrastructure.Persistence;
 
@@ -11,9 +12,10 @@ using Pelican.Infrastructure.Persistence;
 namespace Pelican.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(PelicanContext))]
-    partial class PelicanContextModelSnapshot : ModelSnapshot
+    [Migration("20221122081324_TypeStartDateOnDealEntity")]
+    partial class TypeStartDateOnDealEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -281,7 +283,6 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("StartDate")
-
                         .HasColumnType("Date");
 
                     b.HasKey("Id");

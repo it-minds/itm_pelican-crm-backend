@@ -9,7 +9,7 @@ namespace Pelican.Presentation.GraphQL.Suppliers;
 public class SuppliersQuery
 {
 	//This Query reguests all Suppliers from the database.
-	[UsePaging]
+	[UsePaging(IncludeTotalCount = true)]
 	[UseProjection]
 	[UseFiltering]
 	[UseSorting]

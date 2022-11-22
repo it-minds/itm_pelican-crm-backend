@@ -8,7 +8,7 @@ namespace Pelican.Presentation.GraphQL.AccountManagers;
 public class AccountManagersQuery
 {
 	//This Query reguests all AccountManager from the database.
-	[UsePaging]
+	[UsePaging(IncludeTotalCount = true)]
 	[UseProjection]
 	[UseFiltering]
 	[UseSorting]

@@ -281,6 +281,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("StartDate")
+
                         .HasColumnType("Date");
 
                     b.HasKey("Id");

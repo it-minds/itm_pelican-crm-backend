@@ -55,13 +55,13 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 	}
 
 	public async Task<Result<string>> RefreshAccessTokenAsync(
-		long portalId,
+		long supplierHubSpotId,
 		IUnitOfWork unitOfWork,
 		CancellationToken cancellationToken)
 	{
 		Supplier? supplier = await unitOfWork
 		.SupplierRepository
-				.FirstOrDefaultAsync(supplier => supplier.HubSpotId == portalId, default);
+				.FirstOrDefaultAsync(supplier => supplier.HubSpotId == supplierHubSpotId, default);
 
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{

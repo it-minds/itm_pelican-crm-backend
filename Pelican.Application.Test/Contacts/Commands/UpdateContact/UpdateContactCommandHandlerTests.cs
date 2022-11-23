@@ -126,8 +126,8 @@ public class UpdateContactCommandHandlerTests
 			Times.Once);
 
 		_hubSpotAuthorizationServiceMock
-			.Setup(h => h
-				.RefreshAccessTokenAsync(SUPPLIER_HUBSPOT_ID, _unitOfWorkMock.Object, default));
+			.Verify(h => h
+				.RefreshAccessTokenAsync(SUPPLIER_HUBSPOT_ID, _unitOfWorkMock.Object, default), Times.Once);
 
 		Assert.True(result.IsFailure);
 

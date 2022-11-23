@@ -59,10 +59,9 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 		IUnitOfWork unitOfWork,
 		CancellationToken cancellationToken)
 	{
-		Supplier? supplier = unitOfWork
+		Supplier? supplier = await unitOfWork
 		.SupplierRepository
-				.FindByCondition(supplier => supplier.HubSpotId == portalId)
-				.FirstOrDefault();
+				.FirstOrDefaultAsync(supplier => supplier.HubSpotId == portalId, default);
 
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{

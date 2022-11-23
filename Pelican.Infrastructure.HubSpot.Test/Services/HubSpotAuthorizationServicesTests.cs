@@ -193,8 +193,8 @@ public class HubSpotAuthorizationServicesTests
 		/// Arrange
 		Supplier supplier = new();
 		supplier.RefreshToken = REFRESH;
-		_unitOfWorkMock.Setup(m => m.SupplierRepository.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
-			.Returns(new List<Supplier> { supplier }.AsQueryable());
+		_unitOfWorkMock.Setup(m => m.SupplierRepository.FirstOrDefaultAsync(It.IsAny<Expression<Func<Supplier, bool>>>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(supplier);
 		RefreshAccessTokenResponse response = new()
 		{
 			AccessToken = ACCESS,

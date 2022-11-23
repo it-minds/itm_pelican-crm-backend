@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Clients.Commands.DeleteClient;
+﻿using Pelican.Application.AccountManagers.Commands.ValidateWebhookUserId;
+using Pelican.Application.Clients.Commands.DeleteClient;
 using Pelican.Application.Clients.Commands.UpdateClient;
 using Pelican.Application.Contacts.Commands.UpdateContact;
 using Pelican.Application.Deals.Commands.DeleteDeal;
@@ -40,8 +41,6 @@ public class WebHookRequestsToCommandsTests
 		// Assert
 		Assert.Empty(result);
 	}
-
-
 
 	[Fact]
 	public void ConvertToCommands_SubscriptionTypeInvalid_ThrowsInvalidDataException()
@@ -245,5 +244,183 @@ public class WebHookRequestsToCommandsTests
 		Assert.Equal(
 			2,
 			result.Count);
+	}
+
+	[Fact]
+	public void ConvertToCommands_MultipleValidRequestsWithoutSourceIds_ReturnNoValidateWebhookUserIdCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest,
+			webHookRequest,
+		};
+
+		// Act 
+		var result = _uut.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Collection(
+			result,
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
+	}
+
+	[Fact]
+	public void ConvertToCommands_MultipleValidRequestsWithoutUserIdsInSourceIds_ReturnNoValidateWebhookUserIdCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SourceId = "notUserId",
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest,
+			webHookRequest,
+		};
+
+		// Act 
+		var result = _uut.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Collection(
+			result,
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
+	}
+
+	[Fact]
+	public void ConvertToCommands_MultipleValidRequestsWithOneUserId_ReturnNoValidateWebhookUserIdCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest1 = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SourceId = "notUserId",
+		};
+		WebHookRequest webHookRequest2 = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SourceId = "userId:47115417",
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest1,
+			webHookRequest2,
+		};
+
+		// Act 
+		var result = _uut.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Collection(
+			result,
+			r => Assert.IsType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
+	}
+
+	[Fact]
+	public void ConvertToCommands_MultipleValidRequestsWithSameUserId_ReturnNoValidateWebhookUserIdCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest1 = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SourceId = "userId:47115417",
+		};
+		WebHookRequest webHookRequest2 = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SourceId = "userId:47115417",
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest1,
+			webHookRequest2,
+		};
+
+		// Act 
+		var result = _uut.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Collection(
+			result,
+			r => Assert.IsType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
+	}
+
+	[Fact]
+	public void ConvertToCommands_MultipleValidRequestsWithDifferentUserId_ReturnNoValidateWebhookUserIdCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest1 = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SupplierHubSpotId = 123,
+			SourceId = "userId:123456",
+		};
+		WebHookRequest webHookRequest2 = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SupplierHubSpotId = 456,
+			SourceId = "userId:47115417",
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest1,
+			webHookRequest2,
+		};
+
+		// Act 
+		var result = _uut.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Collection(
+			result,
+			r =>
+			{
+				Assert.IsType<ValidateWebhookUserIdCommand>(r);
+				Assert.Equal(123, (r as ValidateWebhookUserIdCommand)!.SupplierHubSpotId);
+			},
+			r => Assert.IsType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
+
+		Assert.Equal(
+			123456,
+			(result.Take(1).First() as ValidateWebhookUserIdCommand)!.UserId);
+
+		Assert.Equal(
+			123,
+			(result.Take(1).First() as ValidateWebhookUserIdCommand)!.SupplierHubSpotId);
+
+		Assert.Equal(
+			47115417,
+			(result.Take(2).Last() as ValidateWebhookUserIdCommand)!.UserId);
+
+		Assert.Equal(
+			456,
+			(result.Take(2).Last() as ValidateWebhookUserIdCommand)!.SupplierHubSpotId);
 	}
 }

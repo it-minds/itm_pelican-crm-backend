@@ -1,6 +1,5 @@
 ﻿using Moq;
 using Pelican.Application.Clients.Queries.GetClients;
-using Pelican.Application.Clients.Queries.GetCLients;
 using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
 using Xunit;

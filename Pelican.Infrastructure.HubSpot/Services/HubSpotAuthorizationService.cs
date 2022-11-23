@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Application.HubSpot.Dtos;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings;
@@ -54,14 +55,24 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 	}
 
 	public async Task<Result<string>> RefreshAccessTokenAsync(
-		string refreshToken,
+		long supplierHubSpotId,
+		IUnitOfWork unitOfWork,
 		CancellationToken cancellationToken)
 	{
+		Supplier? supplier = await unitOfWork
+		.SupplierRepository
+				.FirstOrDefaultAsync(supplier => supplier.HubSpotId == supplierHubSpotId, default);
+
+		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
+		{
+			return Result.Failure<string>(Error.NullValue);
+		}
+
 		RestRequest request = new RestRequest("oauth/v1/token")
 			.AddAuthorizationHeaders()
 			.AddCommonAuthorizationQueryParams(_hubSpotSettings)
 			.AddQueryParameter("grant_type", "refresh_token", false)
-			.AddQueryParameter("refresh_token", refreshToken, false);
+			.AddQueryParameter("refresh_token", supplier.RefreshToken, false);
 
 		RestResponse<RefreshAccessTokenResponse> response = await _hubSpotClient
 			.PostAsync<RefreshAccessTokenResponse>(

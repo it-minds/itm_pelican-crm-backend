@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Pelican.Domain.Test.Entities;
 
-public class ClientContactTest
+public class ClientContactUnitTest
 {
 	[Fact]
 	public void Create_ReturnCorrectProperties()

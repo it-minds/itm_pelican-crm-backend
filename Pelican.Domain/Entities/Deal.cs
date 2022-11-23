@@ -78,7 +78,6 @@ public class Deal : Entity, ITimeTracked
 				DealStatus = propertyValue;
 				break;
 			case "notes_last_contacted":
-				;
 				LastContactDate = Convert.ToDateTime(propertyValue).Ticks;
 				break;
 			case "dealname":

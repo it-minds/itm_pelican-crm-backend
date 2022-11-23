@@ -1,5 +1,4 @@
-﻿using Pelican.Domain;
-using Pelican.Domain.Entities;
+﻿using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.Contacts;
@@ -15,12 +14,12 @@ internal static class ContactResponseToContact
 
 		Contact result = new(Guid.NewGuid())
 		{
-			FirstName = response.Properties.FirstName.Length > StringLengths.Name ? response.Properties.FirstName.Substring(0, StringLengths.Name - 3) + ("...") : response.Properties.FirstName,
-			LastName = response.Properties.LastName.Length > StringLengths.Name ? response.Properties.LastName.Substring(0, StringLengths.Name - 3) + ("...") : response.Properties.LastName,
-			Email = response.Properties.Email.Length > StringLengths.Email ? response.Properties.Email.Substring(0, StringLengths.Email - 3) + ("...") : response.Properties.Email,
-			PhoneNumber = response.Properties.Phone.Length > StringLengths.PhoneNumber ? response.Properties.Phone.Substring(0, StringLengths.PhoneNumber - 3) + ("...") : response.Properties.Phone,
+			FirstName = response.Properties.FirstName,
+			LastName = response.Properties.LastName,
+			Email = response.Properties.Email,
+			PhoneNumber = response.Properties.Phone,
 			HubSpotId = response.Properties.HubSpotObjectId,
-			JobTitle = response.Properties.JobTitle.Length > StringLengths.JobTitle ? response.Properties.JobTitle.Substring(0, StringLengths.JobTitle - 3) + ("...") : response.Properties.JobTitle,
+			JobTitle = response.Properties.JobTitle,
 			HubSpotOwnerId = response.Properties.HubSpotOwnerId,
 		};
 

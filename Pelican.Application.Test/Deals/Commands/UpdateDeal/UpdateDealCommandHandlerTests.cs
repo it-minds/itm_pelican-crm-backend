@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Application.Deals.Commands.UpdateDeal;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;

@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Pelican.Application.Common.Interfaces.Repositories;
+namespace Pelican.Application.Abstractions.Data.Repositories;
 public interface IGenericRepository<T>
 {
 	IQueryable<T> FindAll();

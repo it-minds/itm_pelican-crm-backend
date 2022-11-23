@@ -1,6 +1,6 @@
 ﻿using Moq;
+using Pelican.Application.Abstractions.Data.DataLoaders;
 using Pelican.Application.Clients.Queries.GetClientById;
-using Pelican.Application.Common.Interfaces.DataLoaders;
 using Pelican.Domain.Entities;
 using Xunit;
 namespace Pelican.Application.Test.Clients.Queries;

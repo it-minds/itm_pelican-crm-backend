@@ -1,4 +1,5 @@
-﻿using Azure.Identity;
+﻿using System.Runtime.CompilerServices;
+using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using HotChocolate.Execution.Configuration;
 using Microsoft.AspNetCore.Builder;
@@ -6,29 +7,50 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pelican.Application;
-using Pelican.Application.Common.Interfaces;
-using Pelican.Application.Common.Interfaces.DataLoaders;
-using Pelican.Application.Common.Interfaces.Repositories;
+using Pelican.Application.Abstractions.Data;
+using Pelican.Application.Abstractions.Data.DataLoaders;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.Persistence.DataLoader;
+using Pelican.Infrastructure.Persistence.Interceptors;
 using Pelican.Infrastructure.Persistence.Repositories;
 using Location = Pelican.Domain.Entities.Location;
 
+[assembly: InternalsVisibleTo("Pelican.Infrastructure.Persistence.Test")]
 namespace Pelican.Infrastructure.Persistence;
+
 public static class DependencyInjection
 {
 	//This depedency injection allows persistence to be added as a service in program.
-	public static IServiceCollection AddPersistince(this IServiceCollection services, IConfiguration configuration, bool isProduction)
+	public static IServiceCollection AddPersistince(
+		this IServiceCollection services,
+		IConfiguration configuration,
+		bool isProduction)
 	{
-		if (isProduction)
+		services.AddSingleton<UpdateTimeTrackedEntitiesInterceptor>();
+
+		string connectionString = isProduction
+			? GetDevConnectionString(configuration)
+			: AddLocalDb(configuration);
+
+		services.AddDbContextFactory<PelicanContext>((serviceProvider, dbContextOptionsBuilder) =>
 		{
-			AddDevDb(services, configuration);
-		}
-		else
-		{
-			AddLocalDb(services, configuration);
-		}
-		services.AddTransient<IUnitOfWork>(_ => new UnitOfWork(_.GetRequiredService<IDbContextFactory<PelicanContext>>().CreateDbContext()));
+			var timetrackedInterceptor = serviceProvider.GetService<UpdateTimeTrackedEntitiesInterceptor>()
+				?? throw new NullReferenceException($"{typeof(UpdateTimeTrackedEntitiesInterceptor)} is null");
+
+			dbContextOptionsBuilder
+				.UseSqlServer(
+					connectionString,
+					SqlServerDbContextOptionsBuilder => SqlServerDbContextOptionsBuilder
+						.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName))
+				.AddInterceptors(timetrackedInterceptor!);
+		});
+
+		services.AddTransient<IUnitOfWork>(
+			serviceProvider => new UnitOfWork(
+				serviceProvider
+					.GetRequiredService<IDbContextFactory<PelicanContext>>()
+					.CreateDbContext()));
 
 		services.AddTransient<IPelicanBogusFaker, PelicanBogusFaker>();
 
@@ -62,21 +84,23 @@ public static class DependencyInjection
 
 		return app;
 	}
-	private static IServiceCollection AddLocalDb(this IServiceCollection services, IConfiguration configuration)
-	{
-		services.AddDbContextFactory<PelicanContext>(
-			o => o.UseSqlServer(configuration.GetConnectionString("myLocalDb"),
-			b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)));
-		return services;
-	}
-	private static IServiceCollection AddDevDb(this IServiceCollection services, IConfiguration configuration)
+
+	private static string AddLocalDb(IConfiguration configuration)
+		=> configuration.GetConnectionString("myLocalDb");
+
+	private static string GetDevConnectionString(IConfiguration configuration)
 	{
 		string keyVaultName = configuration["KeyVaultName"];
-		var kvUri = "https://" + keyVaultName + ".vault.azure.net";
-		var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
-		services.AddDbContextFactory<PelicanContext>(
-			o => o.UseSqlServer(client.GetSecret(configuration["PelicanMsSQLSecret"]).Value.Value,
-			b => b.MigrationsAssembly(typeof(PelicanContext).Assembly.FullName)));
-		return services;
+
+		var kvUri = $"https://{keyVaultName}.vault.azure.net";
+
+		var client = new SecretClient(
+			new Uri(kvUri),
+			new DefaultAzureCredential());
+
+		return client
+			.GetSecret(configuration["PelicanMsSQLSecret"])
+			.Value
+			.Value;
 	}
 }

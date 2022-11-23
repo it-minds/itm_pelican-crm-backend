@@ -1,14 +1,14 @@
-﻿using Pelican.Application.Common.Interfaces;
-using Pelican.Application.Common.Interfaces.Repositories;
+﻿using Pelican.Application.Abstractions.Data;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain.Entities;
 using Location = Pelican.Domain.Entities.Location;
 
 namespace Pelican.Infrastructure.Persistence;
 public class DevelopmentSeeder : IDevelopmentSeeder
 {
-	private IUnitOfWork _unitOfWork;
-	private IPelicanBogusFaker _faker;
-	private CancellationToken cancellationToken;
+	private readonly IUnitOfWork _unitOfWork;
+	private readonly IPelicanBogusFaker _faker;
+	private readonly CancellationToken cancellationToken;
 	public DevelopmentSeeder(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker)
 	{
 		_unitOfWork = unitOfWork;

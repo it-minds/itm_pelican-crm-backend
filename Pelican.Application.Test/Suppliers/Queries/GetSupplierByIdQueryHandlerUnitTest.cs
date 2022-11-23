@@ -1,5 +1,5 @@
 ﻿using Moq;
-using Pelican.Application.Common.Interfaces.DataLoaders;
+using Pelican.Application.Abstractions.Data.DataLoaders;
 using Pelican.Application.Suppliers.Queries.GetSupplierById;
 using Pelican.Domain.Entities;
 using Xunit;

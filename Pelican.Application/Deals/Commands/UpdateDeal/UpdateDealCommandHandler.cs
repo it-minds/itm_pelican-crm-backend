@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 

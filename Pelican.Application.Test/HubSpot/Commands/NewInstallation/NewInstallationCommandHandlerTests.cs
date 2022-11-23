@@ -1,6 +1,6 @@
 ﻿using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Application.HubSpot.Commands.NewInstallation;
 using Pelican.Application.HubSpot.Dtos;
 using Pelican.Domain.Entities;

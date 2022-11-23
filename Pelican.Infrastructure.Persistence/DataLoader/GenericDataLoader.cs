@@ -1,17 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Pelican.Application.Common.Interfaces.DataLoaders;
-using Pelican.Application.Common.Interfaces.Repositories;
+using Pelican.Application.Abstractions.Data.DataLoaders;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain.Primitives;
 
 namespace Pelican.Infrastructure.Persistence.DataLoader;
 
 public class GenericDataLoader<T> : BatchDataLoader<Guid, T>, IGenericDataLoader<T> where T : Entity
 {
-	private IUnitOfWork _unitOfWork;
+	private readonly IUnitOfWork _unitOfWork;
+
 	public GenericDataLoader(IBatchScheduler batchScheduler, IUnitOfWork unitOfWork) : base(batchScheduler)
 	{
-		_unitOfWork = unitOfWork;
+		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 	}
+
 	//This loads a batch from the database where the id is equal to the id requested
 	protected override async Task<IReadOnlyDictionary<Guid, T>> LoadBatchAsync(IReadOnlyList<Guid> keys, CancellationToken cancellationToken)
 	{

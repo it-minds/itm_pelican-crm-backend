@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.Extensions.Options;
 using Moq;
-using Pelican.Application.Common.Interfaces.Repositories;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings;
 using Pelican.Domain.Shared;

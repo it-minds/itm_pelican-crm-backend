@@ -1,5 +1,5 @@
-﻿using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Common.Interfaces.DataLoaders;
+﻿using Pelican.Application.Abstractions.Data.DataLoaders;
+using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Application.Clients.Queries.GetClientById;

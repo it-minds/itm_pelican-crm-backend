@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Common.Interfaces.Repositories;
 using Pelican.Application.HubSpot.Dtos;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings;

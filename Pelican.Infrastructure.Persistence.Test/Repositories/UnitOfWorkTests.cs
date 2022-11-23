@@ -27,6 +27,8 @@ public class UnitOfWorkTests
 		var result = Record.Exception(() => new UnitOfWork(null!));
 
 		// Assert
+		Assert.IsType<ArgumentNullException>(result);
+
 		Assert.Contains(
 			"pelicanContext",
 			result.Message);

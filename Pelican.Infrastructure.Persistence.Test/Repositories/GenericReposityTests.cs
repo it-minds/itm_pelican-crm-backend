@@ -75,7 +75,9 @@ public class GenericReposityTests
 		ValueTask<EntityEntry<Entity>> returnValue = new();
 
 		_pelicanContextMock
-			.Setup(p => p.Set<Entity>().AddAsync(It.IsAny<Entity>(), default))
+			.Setup(p => p.Set<Entity>().AddAsync(
+				It.IsAny<Entity>(),
+				It.IsAny<CancellationToken>()))
 			.Returns(returnValue);
 
 		// Act
@@ -114,7 +116,9 @@ public class GenericReposityTests
 		IEnumerable<Entity> entities = new List<Entity>();
 
 		_pelicanContextMock
-			.Setup(p => p.Set<Entity>().AddRangeAsync(It.IsAny<IEnumerable<Entity>>(), default))
+			.Setup(p => p.Set<Entity>().AddRangeAsync(
+				It.IsAny<IEnumerable<Entity>>(), 
+				It.IsAny<CancellationToken>()))
 			.Returns(Task.CompletedTask);
 
 		// Act

@@ -15,9 +15,6 @@ namespace Pelican.Presentation.Api.Test.Controllers;
 public class HubSpotControllerTests
 {
 	private const long OBJECT_ID = 0;
-	private const long PORTAL_ID = 0;
-	private const string PROPERTY_NAME = "propertyName";
-	private const string PROPERTY_VALUE = "newValue";
 
 	private readonly HubSpotController _uut;
 	private readonly Mock<ISender> _senderMock;

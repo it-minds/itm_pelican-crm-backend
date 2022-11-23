@@ -17,9 +17,9 @@ internal sealed class ValidateWebhookUserIdCommandHandler : ICommandHandler<Vali
         IHubSpotAuthorizationService hubSpotAuthorizationService,
         IHubSpotObjectService<AccountManager> hubSpotAccountManagerService)
     {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork)); ;
+        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _hubSpotAuthorizationService = hubSpotAuthorizationService ?? throw new ArgumentNullException(nameof(hubSpotAuthorizationService));
-        _hubSpotAccountManagerService = hubSpotAccountManagerService ?? throw new ArgumentNullException(nameof(hubSpotAccountManagerService)); ;
+        _hubSpotAccountManagerService = hubSpotAccountManagerService ?? throw new ArgumentNullException(nameof(hubSpotAccountManagerService));
     }
 
     public async Task<Result> Handle(ValidateWebhookUserIdCommand request, CancellationToken cancellationToken)
@@ -33,7 +33,7 @@ internal sealed class ValidateWebhookUserIdCommandHandler : ICommandHandler<Vali
             return Result.Success();
         }
 
-        Result<string> accessToken = "";// = _hubSpotAuthorizationService.RefreshAccessTokenAsync(request.SupplierHubSpotId, _unitOfWork, cancellationToken);
+        Result<string> accessToken = await _hubSpotAuthorizationService.RefreshAccessTokenAsync(request.SupplierHubSpotId, _unitOfWork, cancellationToken);
 
         if (accessToken.IsFailure)
         {

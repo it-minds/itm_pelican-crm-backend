@@ -4,13 +4,37 @@ using Pelican.Domain.Primitives;
 namespace Pelican.Domain.Entities;
 public class Client : Entity, ITimeTracked
 {
-	public string Name { get; set; }
+	private string _name;
+	public string Name
+	{
+		get => _name;
+		set
+		{
+			_name = value.Length > StringLengths.Name ? value.Substring(0, StringLengths.Name - 3) + ("...") : value;
+		}
+	}
 
-	public string HubSpotId { get; set; }
+	public string HubSpotId;
 
-	public string? PictureUrl { get; set; }
+	private string? _pictureUrl { get; set; }
+	public string? PictureUrl
+	{
+		get => _pictureUrl;
+		set
+		{
+			_pictureUrl = value!.Length > StringLengths.Url ? value.Substring(0, StringLengths.Url - 3) + ("...") : value;
+		}
+	}
 
-	public string? OfficeLocation { get; set; }
+	private string? _officeLocation;
+	public string? OfficeLocation
+	{
+		get => _officeLocation;
+		set
+		{
+			_officeLocation = value!.Length > StringLengths.OfficeLocation ? value.Substring(0, StringLengths.OfficeLocation - 3) + ("...") : value;
+		}
+	}
 
 	public ICollection<Deal> Deals { get; set; } = new List<Deal>();
 
@@ -20,7 +44,15 @@ public class Client : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
-	public string? Website { get; set; }
+	private string? _website { get; set; }
+	public string? Website
+	{
+		get => _website;
+		set
+		{
+			_website = value!.Length > StringLengths.Url ? value.Substring(0, StringLengths.Url - 3) + ("...") : value;
+		}
+	}
 
 	public Client(Guid id) : base(id) { }
 

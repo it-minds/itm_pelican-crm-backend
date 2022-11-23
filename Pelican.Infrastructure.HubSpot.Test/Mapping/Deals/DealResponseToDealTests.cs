@@ -13,9 +13,9 @@ public class DealResponseToDealTests
 	private const string ID = "id";
 	private const string DEALSTAGE = "dealstage";
 	private const string OWNERID = "ownerid";
-	private const string CLOSEDATE = "1999-04-25T00:00:00";
-	private const string STARTDATE = "1999-04-25T00:00:00";
-	private const string LASTCONTACTDATE = "1999-04-25T00:00:00";
+	private const string CLOSEDATE = "1999-04-25T00:00:00.000Z";
+	private const string STARTDATE = "1999-04-25T00:00:00.000Z";
+	private const string LASTCONTACTDATE = "1999-04-25T00:00:00.000Z";
 	private const string DEALNAME = "dealname";
 	private const string DEALDESCRIPTION = "dealdescription";
 
@@ -60,9 +60,9 @@ public class DealResponseToDealTests
 
 		/// Assert
 		Assert.Equal(DEALSTAGE, result.DealStatus);
-		Assert.Equal(DateTime.Parse(CLOSEDATE), result.EndDate);
-		Assert.Equal(DateTime.Parse(STARTDATE), result.StartDate);
-		Assert.Equal(DateTime.Parse(LASTCONTACTDATE), result.LastContactDate);
+		Assert.Equal(Convert.ToDateTime(CLOSEDATE).Ticks, result.EndDate);
+		Assert.Equal(Convert.ToDateTime(STARTDATE).Ticks, result.StartDate);
+		Assert.Equal(Convert.ToDateTime(LASTCONTACTDATE).Ticks, result.LastContactDate);
 		Assert.Equal(ID, result.HubSpotId);
 		Assert.Equal(OWNERID, result.HubSpotOwnerId);
 		Assert.Equal(DEALNAME, result.Name);

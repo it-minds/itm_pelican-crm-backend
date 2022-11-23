@@ -3,7 +3,15 @@
 namespace Pelican.Domain.Entities;
 public class Location : Entity, ITimeTracked
 {
-	public string CityName { get; set; }
+	private string _cityName;
+	public string CityName
+	{
+		get => _cityName;
+		set
+		{
+			_cityName = value.Length > StringLengths.OfficeLocation ? value.Substring(0, StringLengths.OfficeLocation - 3) + ("...") : value;
+		}
+	}
 
 	public Supplier Supplier { get; set; }
 

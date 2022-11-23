@@ -9,16 +9,54 @@ public class Contact : Entity, ITimeTracked
 	public string? HubSpotOwnerId { get; set; }
 
 
-	public string? FirstName { get; set; }
+	private string? _firstName;
+	public string? FirstName
+	{
+		get => _firstName;
+		set
+		{
+			_firstName = value!.Length > StringLengths.Name ? value.Substring(0, StringLengths.Name - 3) + ("...") : value;
+		}
+	}
+	private string? _lastName;
+	public string? LastName
+	{
+		get => _lastName;
+		set
+		{
+			_lastName = value!.Length > StringLengths.Name ? value.Substring(0, StringLengths.Name - 3) + ("...") : value;
+		}
+	}
 
-	public string? LastName { get; set; }
+	private string? _phoneNumber;
+	public string? PhoneNumber
+	{
+		get => _phoneNumber;
+		set
+		{
+			_phoneNumber = value!.Length > StringLengths.PhoneNumber ? value.Substring(0, StringLengths.PhoneNumber - 3) + ("...") : value;
+		}
+	}
 
+	private string? _email;
+	public string? Email
+	{
+		get => _email;
+		set
+		{
+			_email = value!.Length > StringLengths.Email ? value.Substring(0, StringLengths.Email - 3) + ("...") : value;
+		}
+	}
 
-	public string? PhoneNumber { get; set; }
-
-	public string? Email { get; set; }
-
-	public string? JobTitle { get; set; }
+	private string? _jobTitle;
+	public string? JobTitle
+	{
+		get => _jobTitle;
+		set
+		{
+			_jobTitle = value!.Length > StringLengths.JobTitle ? value.Substring(0, StringLengths.JobTitle - 3) + ("...") : value;
+		}
+	}
 
 
 	public ICollection<ClientContact> ClientContacts { get; set; } = new List<ClientContact>();
@@ -40,20 +78,20 @@ public class Contact : Entity, ITimeTracked
 		switch (propertyName)
 		{
 			case "firstname":
-				FirstName = propertyValue.Length > StringLengths.Name ? propertyValue.Substring(0, StringLengths.Name - 3) + ("...") : propertyValue;
+				FirstName = propertyValue;
 				break;
 			case "lastname":
-				LastName = propertyValue.Length > StringLengths.Name ? propertyValue.Substring(0, StringLengths.Name - 3) + ("...") : propertyValue;
+				LastName = propertyValue;
 				break;
 			case "email":
-				Email = propertyValue.Length > StringLengths.Email ? propertyValue.Substring(0, StringLengths.Email - 3) + ("...") : propertyValue;
+				Email = propertyValue;
 				break;
 			case "phone":
 			case "mobilephone":
-				PhoneNumber = propertyValue.Length > StringLengths.PhoneNumber ? propertyValue.Substring(0, StringLengths.PhoneNumber - 3) + ("...") : propertyValue;
+				PhoneNumber = propertyValue;
 				break;
 			case "jobtitle":
-				JobTitle = propertyValue.Length > StringLengths.JobTitle ? propertyValue.Substring(0, StringLengths.JobTitle - 3) + ("...") : propertyValue;
+				JobTitle = propertyValue;
 				break;
 			case "hs_all_owner_ids":
 				HubSpotOwnerId = propertyValue;

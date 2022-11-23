@@ -47,12 +47,8 @@ public class DealTests
 
 		/// Assert
 		Assert.Equal(
-			typeof(InvalidOperationException),
+			typeof(FormatException),
 			exceptionResult.GetType());
-
-		Assert.Equal(
-			"Invalid date format",
-			exceptionResult.Message);
 	}
 
 	[Fact]
@@ -61,11 +57,11 @@ public class DealTests
 		/// Arrange
 		DateTime date = new(2022, 11, 25);
 
-		long ticks = 1669382373249; //Timestamp in milliseconds Friday, November 25, 2022 1:19:33.249 PM
+		long ticks = date.Ticks;
 
 		string name = "enddate";
 
-		string value = ticks.ToString();
+		string value = date.ToString();
 
 		Deal inputDeal = new(Guid.NewGuid());
 
@@ -74,7 +70,7 @@ public class DealTests
 
 		/// Assert
 		Assert.Equal(
-			date,
+			ticks,
 			returnDeal.EndDate);
 	}
 	[Fact]
@@ -92,12 +88,8 @@ public class DealTests
 
 		/// Assert
 		Assert.Equal(
-			typeof(InvalidOperationException),
+			typeof(FormatException),
 			exceptionResult.GetType());
-
-		Assert.Equal(
-			"Invalid date format",
-			exceptionResult.Message);
 	}
 
 	[Fact]
@@ -106,11 +98,11 @@ public class DealTests
 		/// Arrange
 		DateTime date = new(2022, 11, 25);
 
-		long ticks = 1669382373249; //Timestamp in milliseconds Friday, November 25, 2022 1:19:33.249 PM
+		long ticks = date.Ticks;
 
 		string name = "startdate";
 
-		string value = ticks.ToString();
+		string value = date.ToString();
 
 		Deal inputDeal = new(Guid.NewGuid());
 
@@ -119,7 +111,7 @@ public class DealTests
 
 		/// Assert
 		Assert.Equal(
-			date,
+			ticks,
 			returnDeal.StartDate);
 	}
 	[Fact]
@@ -137,12 +129,8 @@ public class DealTests
 
 		/// Assert
 		Assert.Equal(
-			typeof(InvalidOperationException),
+			typeof(FormatException),
 			exceptionResult.GetType());
-
-		Assert.Equal(
-			"Invalid date format",
-			exceptionResult.Message);
 	}
 
 	[Fact]
@@ -151,11 +139,11 @@ public class DealTests
 		// Arrange
 		DateTime date = new(2022, 11, 25);
 
-		long ticks = 1669382373249; //Timestamp in milliseconds Friday, November 25, 2022 1:19:33.249 PM
+		long ticks = date.Ticks;
 
 		string name = "notes_last_contacted";
 
-		string value = ticks.ToString();
+		string value = date.ToString();
 
 		Deal inputDeal = new(Guid.NewGuid());
 
@@ -164,7 +152,7 @@ public class DealTests
 
 		// Assert
 		Assert.Equal(
-			date,
+			ticks,
 			returnDeal.LastContactDate);
 	}
 

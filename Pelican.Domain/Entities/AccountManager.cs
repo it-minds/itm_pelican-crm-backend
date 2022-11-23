@@ -7,17 +7,60 @@ public class AccountManager : Entity, ITimeTracked
 
 	public long HubSpotUserId { get; set; }
 
-	public string FirstName { get; set; }
-
-	public string LastName { get; set; }
-
-	public string Email { get; set; }
-
-	public string? PhoneNumber { get; set; }
-
-	public string? PictureUrl { get; set; }
-
-	public string? LinkedInUrl { get; set; }
+	private string _firstName;
+	public string FirstName
+	{
+		get => _firstName;
+		set
+		{
+			_firstName = value.Length > StringLengths.Name ? value.Substring(0, StringLengths.Name - 3) + ("...") : value;
+		}
+	}
+	private string _lastName;
+	public string LastName
+	{
+		get => _lastName;
+		set
+		{
+			_lastName = value.Length > StringLengths.Name ? value.Substring(0, StringLengths.Name - 3) + ("...") : value;
+		}
+	}
+	private string _email;
+	public string Email
+	{
+		get => _email;
+		set
+		{
+			_email = value.Length > StringLengths.Email ? value.Substring(0, StringLengths.Email - 3) + ("...") : value;
+		}
+	}
+	private string _phoneNumber;
+	public string? PhoneNumber
+	{
+		get => _phoneNumber;
+		set
+		{
+			_phoneNumber = value!.Length > StringLengths.PhoneNumber ? value.Substring(0, StringLengths.PhoneNumber - 3) + ("...") : value;
+		}
+	}
+	private string _pictureUrl;
+	public string? PictureUrl
+	{
+		get => _pictureUrl;
+		set
+		{
+			_pictureUrl = value!.Length > StringLengths.Url ? value.Substring(0, StringLengths.Url - 3) + ("...") : value;
+		}
+	}
+	private string _linkedInUrl;
+	public string? LinkedInUrl
+	{
+		get => _linkedInUrl;
+		set
+		{
+			_linkedInUrl = value!.Length > StringLengths.Url ? value.Substring(0, StringLengths.Url - 3) + ("...") : value;
+		}
+	}
 
 	public Guid SupplierId { get; set; }
 

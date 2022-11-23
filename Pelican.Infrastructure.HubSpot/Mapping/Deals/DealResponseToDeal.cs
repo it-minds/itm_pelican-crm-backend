@@ -1,5 +1,4 @@
-﻿using Pelican.Domain;
-using Pelican.Domain.Entities;
+﻿using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.Deals;
@@ -15,16 +14,16 @@ internal static class DealResponseToDeal
 
 		Deal result = new(Guid.NewGuid())
 		{
-			StartDate = string.IsNullOrWhiteSpace(response.Properties.StartDate) ? null : DateTime.Parse(response.Properties.StartDate),
-			EndDate = string.IsNullOrWhiteSpace(response.Properties.EndDate) ? null : DateTime.Parse(response.Properties.EndDate),
-			LastContactDate = string.IsNullOrWhiteSpace(response.Properties.LastContactDate) ? null : DateTime.Parse(response.Properties.LastContactDate),
-			DealStatus = response.Properties.DealStage.Length > StringLengths.DealStatus ? response.Properties.DealStage.Substring(0, StringLengths.DealStatus - 3) + ("...") : response.Properties.DealStage,
+			StartDate = string.IsNullOrWhiteSpace(response.Properties.StartDate) ? null : Convert.ToDateTime(response.Properties.StartDate).Ticks,
+			EndDate = string.IsNullOrWhiteSpace(response.Properties.EndDate) ? null : Convert.ToDateTime(response.Properties.EndDate).Ticks,
+			LastContactDate = string.IsNullOrWhiteSpace(response.Properties.LastContactDate) ? null : Convert.ToDateTime(response.Properties.LastContactDate).Ticks,
 			HubSpotId = response.Properties.HubSpotObjectId,
 			HubSpotOwnerId = response.Properties.HubSpotOwnerId,
-			Name = response.Properties.DealName.Length > StringLengths.DealName ? response.Properties.DealName.Substring(0, StringLengths.DealName - 3) + ("...") : response.Properties.DealName,
-			Description = response.Properties.Description.Length > StringLengths.DealDescription ? response.Properties.Description.Substring(0, StringLengths.DealDescription - 3) + ("...") : response.Properties.Description
 		};
 
+		result.Name = response.Properties.DealName;
+		result.Description = response.Properties.Description;
+		result.DealStatus = response.Properties.DealStage;
 
 		result.AccountManagerDeals = new List<AccountManagerDeal>()
 		{

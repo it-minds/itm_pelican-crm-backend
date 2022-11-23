@@ -1,5 +1,4 @@
-﻿using Pelican.Domain;
-using Pelican.Domain.Entities;
+﻿using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.AccountManagers;
@@ -16,14 +15,15 @@ internal static class OwnerResponseToAccountManager
 		{
 			throw new ArgumentNullException(nameof(response));
 		}
-
-		return new(Guid.NewGuid())
+		AccountManager result = new(Guid.NewGuid())
 		{
 			HubSpotId = response.Id,
-			Email = response.Email.Length > StringLengths.Email ? response.Email.Substring(0, StringLengths.Email - 3) + ("...") : response.Email,
-			FirstName = response.Firstname.Length > StringLengths.Name ? response.Firstname.Substring(0, StringLengths.Name - 3) + ("...") : response.Firstname,
-			LastName = response.Lastname.Length > StringLengths.Name ? response.Lastname.Substring(0, StringLengths.Name - 3) + ("...") : response.Lastname,
 			HubSpotUserId = response.UserId,
 		};
+		result.Email = response.Email;
+		result.FirstName = response.Firstname;
+		result.LastName = response.Lastname;
+
+		return result;
 	}
 }

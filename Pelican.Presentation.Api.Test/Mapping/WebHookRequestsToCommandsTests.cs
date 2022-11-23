@@ -12,7 +12,7 @@ namespace Pelican.Presentation.Api.Test.Mapping;
 public class WebHookRequestsToCommandsTests
 {
 	private const long OBJECT_ID = 123;
-	private const long PORTAL_ID = 456;
+	private const long SUPPLIER_HUBSPOT_ID = 456;
 	private const string PROPERTY_NAME = "name";
 	private const string PROPERTY_VALUE = "value";
 
@@ -120,7 +120,7 @@ public class WebHookRequestsToCommandsTests
 		{
 			SubscriptionType = "contact.propertyChange",
 			ObjectId = OBJECT_ID,
-			PortalId = PORTAL_ID,
+			SupplierHubSpotId = SUPPLIER_HUBSPOT_ID,
 			PropertyName = PROPERTY_NAME,
 			PropertyValue = PROPERTY_VALUE,
 		};
@@ -138,7 +138,7 @@ public class WebHookRequestsToCommandsTests
 			OBJECT_ID,
 			((UpdateContactCommand)result.First()).ObjectId);
 		Assert.Equal(
-			PORTAL_ID,
+			SUPPLIER_HUBSPOT_ID,
 			((UpdateContactCommand)result.First()).SupplierHubSpotId);
 		Assert.Equal(
 			PROPERTY_NAME,
@@ -156,7 +156,7 @@ public class WebHookRequestsToCommandsTests
 		{
 			SubscriptionType = "deal.propertyChange",
 			ObjectId = OBJECT_ID,
-			PortalId = PORTAL_ID,
+			SupplierHubSpotId = SUPPLIER_HUBSPOT_ID,
 			PropertyName = PROPERTY_NAME,
 			PropertyValue = PROPERTY_VALUE,
 		};
@@ -174,7 +174,7 @@ public class WebHookRequestsToCommandsTests
 			OBJECT_ID,
 			((UpdateDealCommand)result.First()).ObjectId);
 		Assert.Equal(
-			PORTAL_ID,
+			SUPPLIER_HUBSPOT_ID,
 			((UpdateDealCommand)result.First()).SupplierHubSpotId);
 		Assert.Equal(
 			PROPERTY_NAME,
@@ -192,7 +192,7 @@ public class WebHookRequestsToCommandsTests
 		{
 			SubscriptionType = "company.propertyChange",
 			ObjectId = OBJECT_ID,
-			PortalId = PORTAL_ID,
+			SupplierHubSpotId = SUPPLIER_HUBSPOT_ID,
 			PropertyName = PROPERTY_NAME,
 			PropertyValue = PROPERTY_VALUE,
 		};
@@ -210,7 +210,7 @@ public class WebHookRequestsToCommandsTests
 			OBJECT_ID,
 			((UpdateClientCommand)result.First()).ObjectId);
 		Assert.Equal(
-			PORTAL_ID,
+			SUPPLIER_HUBSPOT_ID,
 			((UpdateClientCommand)result.First()).PortalId);
 		Assert.Equal(
 			PROPERTY_NAME,

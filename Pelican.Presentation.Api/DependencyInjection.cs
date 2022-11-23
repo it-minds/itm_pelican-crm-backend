@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Pelican.Presentation.Api.Abstractions;
 using Pelican.Presentation.Api.Mapping;
 using Pelican.Presentation.Api.Utilities.HubSpotHookValidation;
 using Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashGenerator;

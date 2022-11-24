@@ -1,4 +1,4 @@
-name: Build and deploy .NET Core application to Web App pelican-linux-web-app
+﻿name: Build and deploy .NET Core application to Web App pelican-linux-web-app
 on:
   push:
     branches:
@@ -12,29 +12,47 @@ env:
   WORKING_DIRECTORY: src/Pelican.App
 jobs:
   build:
+    - name: Run Azure webapp deploy action using publish profile credentials
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: dotnetthoughts
+        slot-name: Production
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+        package: ${{env.DOTNET_ROOT}}/myapp
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-      - name: Restore
-        run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
-      - name: Build
-        run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
-      - name: Test
-        run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
-      - name: Publish
-        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
-      - name: Deploy to Azure WebApp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.pelican_linux_web_app_FFFF }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-      - name: Publish Artifacts
-        uses: actions/upload-artifact@v1.0.0
-        with:
-          name: webapp
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+    - name: Restore
+      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
+    - name: Build
+      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+    - name: Test
+      run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
+    - name: Publish
+      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+    - name: Deploy to Azure WebApp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.pelican_linux_web_app_FFFF }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: webapp
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+		- name: Generate scripts
+      run: dotnet ef migrations script --output ${{env.DOTNET_ROOT}}/sql/sql-script.sql --idempotent --context ApplicationDbContext --no-build
+    - name: Azure SQL Deploy
+      uses: Azure/sql-action@v1
+      with:
+        # Name of the Azure SQL Server name, like Fabrikam.database.windows.net.
+        server-name: pelican-app-mssqlserver.database.windows.net
+        # The connection string, including authentication information, for the Azure SQL Server database.
+        connection-string: ${{ secrets.CONNECTION_STRING }}
+        # Path to SQL script file to deploy
+        sql-file: ${{env.DOTNET_ROOT}}/sql/sql-script.sql

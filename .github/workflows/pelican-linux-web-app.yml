@@ -46,16 +46,16 @@ jobs:
    - name: Publish Artifacts
      uses: actions/upload-artifact@v1.0.0
      with:
-     name: webapp
-     path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+       name: webapp
+       path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
    - name: Azure SQL Deploy
    - uses: azure/sql-action@v2
      with:
-     connection-string: ${{ secrets.CONNECTION_STRING }}
-     path: './Database.dacpac'
-     action: 'Publish'
+       connection-string: ${{ secrets.CONNECTION_STRING }}
+       path: './Database.dacpac'
+       action: 'Publish'
     # Azure logout 
    - name: logout
      run: |
-      az logout
+       az logout

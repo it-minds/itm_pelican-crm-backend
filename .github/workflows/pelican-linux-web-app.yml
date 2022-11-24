@@ -42,7 +42,7 @@ jobs:
          dotnet tool install dotnet-ef
 
     - name: Generate scripts
-      run: dotnet ef migrations script --project .\Pelican.Infrastructure.Persistence\Pelican.Infrastructure.Persistence.csproj --startup-project .\Pelican.App\Pelican.App.csproj --idempotent --output ${{env.DOTNET_ROOT}}/sql/sql-script.sql --context ApplicationDbContext
+      run: dotnet ef migrations script --project .\Pelican.Infrastructure.Persistence\Pelican.Infrastructure.Persistence.csproj --startup-project .\Pelican.App\Pelican.App.csproj --idempotent --output ${{env.DOTNET_ROOT}}/sql/sql-script.sql --context PelicanContext
 
     - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"

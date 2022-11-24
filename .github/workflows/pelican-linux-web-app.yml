@@ -22,29 +22,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-	- name: Setup .NET Core
+    - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
    
-	- name: Restore
+    - name: Restore
       run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
    
-	- name: Build
+    - name: Build
       run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
    
-	- name: Test
+    - name: Test
       run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
    
-	- name: Install EF Tool
+    - name: Install EF Tool
       run: |
          dotnet new tool-manifest
          dotnet tool install dotnet-ef
 
-	- name: Publish
+    - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
    
-	- name: Deploy to Azure WebApp
+    - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
@@ -57,8 +57,8 @@ jobs:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-	- name: Generate scripts
-	  run: dotnet ef migrations script --output ${{env.DOTNET_ROOT}}/sql/sql-script.sql --idempotent --context ApplicationDbContext
+    - name: Generate scripts
+      run: dotnet ef migrations script --output ${{env.DOTNET_ROOT}}/sql/sql-script.sql --idempotent --context ApplicationDbContext
 
     - name: Azure SQL Deploy
       uses: Azure/sql-action@v1
@@ -76,4 +76,4 @@ jobs:
         app-name: dotnetthoughts
         slot-name: Production
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}         
-		package: ${{env.DOTNET_ROOT}}/myapp
+package: ${{env.DOTNET_ROOT}}/myapp

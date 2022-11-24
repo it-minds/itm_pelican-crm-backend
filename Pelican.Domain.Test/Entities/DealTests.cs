@@ -9,6 +9,103 @@ public class DealTests
 	{
 		HubSpotId = "uutHubSpotId",
 	};
+
+	[Fact]
+	public void SetName_NameStringNotToLong_nameEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealName);
+
+		// Act
+		_uut.Name = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.DealName, _uut.Name!.Length);
+		Assert.Equal(propertyValue, _uut.Name);
+	}
+
+	[Fact]
+	public void SetDealStatus_DealStatusStringNotToLong_DealStatusEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealStatus);
+
+		// Act
+		_uut.DealStatus = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
+		Assert.Equal(propertyValue, _uut.DealStatus);
+	}
+
+	[Fact]
+	public void SetDescription_DescriptionStringNotToLong_DescriptionEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealDescription);
+
+		// Act
+		_uut.Description = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.DealDescription, _uut.Description!.Length);
+		Assert.Equal(propertyValue, _uut.Description);
+	}
+
+
+
+	[Fact]
+	public void SetName_NameStringToLong_NameShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealName * 2);
+
+		// Act
+		_uut.Name = propertyValue;
+
+		// Assert
+
+		Assert.Equal(StringLengths.DealName, _uut.Name!.Length);
+		Assert.Equal("...", _uut.Name.Substring(StringLengths.DealName - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealName - 3), _uut.Name.Substring(0, StringLengths.DealName - 3));
+	}
+
+	[Fact]
+	public void SetDealStatus_DealStatusStringToLong_DealStatusShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealStatus * 2);
+
+		// Act
+		_uut.DealStatus = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
+		Assert.Equal("...", _uut.DealStatus.Substring(StringLengths.DealStatus - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3), _uut.DealStatus.Substring(0, StringLengths.DealStatus - 3));
+	}
+
+	[Fact]
+	public void SetDescription_DescriptionStringToLong_DescriptionShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealDescription * 2);
+
+		// Act
+		_uut.Description = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.DealDescription, _uut.Description!.Length);
+		Assert.Equal("...", _uut.Description.Substring(StringLengths.DealDescription - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealDescription - 3), _uut.Description.Substring(0, StringLengths.DealDescription - 3));
+	}
+
 	[Fact]
 	public void UpdateProperty_NoUpdates_ThrowsNoException()
 	{

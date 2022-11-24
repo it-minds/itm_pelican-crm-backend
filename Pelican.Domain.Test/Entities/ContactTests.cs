@@ -12,6 +12,162 @@ public class ContactTests
 	};
 
 	[Fact]
+	public void SetFirstName_FirstNameStringNotToLong_FirstnameEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.Name);
+
+		// Act
+		_uut.FirstName = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.Name, _uut.FirstName!.Length);
+		Assert.Equal(propertyValue, _uut.FirstName);
+	}
+
+	[Fact]
+	public void SetLastName_LastNameStringNotToLong_LastNameEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.Name);
+
+		// Act
+		_uut.LastName = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.Name, _uut.LastName!.Length);
+		Assert.Equal(propertyValue, _uut.LastName);
+	}
+
+	[Fact]
+	public void SetEmail_EmailStringNotToLong_EmailEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.Email);
+
+		// Act
+		_uut.Email = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.Email, _uut.Email!.Length);
+		Assert.Equal(propertyValue, _uut.Email);
+	}
+
+	[Fact]
+	public void SetPhoneNumber_PhoneNumberStringNotToLong_PhoneNumberEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.PhoneNumber);
+
+		// Act
+		_uut.PhoneNumber = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
+		Assert.Equal(propertyValue, _uut.PhoneNumber);
+	}
+
+	[Fact]
+	public void SetJobTitle_JobTitleStringNotToLong_JobTitleEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.JobTitle);
+
+		// Act
+		_uut.JobTitle = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.JobTitle, _uut.JobTitle!.Length);
+		Assert.Equal(propertyValue, _uut.JobTitle);
+	}
+
+	[Fact]
+	public void SetFirstName_FirstNameStringToLong_FirstnameShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.Name * 2);
+
+		// Act
+		_uut.FirstName = propertyValue;
+
+		// Assert
+
+		Assert.Equal(StringLengths.Name, _uut.FirstName!.Length);
+		Assert.Equal("...", _uut.FirstName.Substring(StringLengths.Name - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.FirstName.Substring(0, StringLengths.Name - 3));
+	}
+
+	[Fact]
+	public void SetLastName_LastNameStringToLong_LastNameShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.Name * 2);
+
+		// Act
+		_uut.LastName = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.Name, _uut.LastName!.Length);
+		Assert.Equal("...", _uut.LastName.Substring(StringLengths.Name - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.LastName.Substring(0, StringLengths.Name - 3));
+	}
+
+	[Fact]
+	public void SetEmail_EmailStringToLong_EmailShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.Email * 2);
+
+		// Act
+		_uut.Email = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.Email, _uut.Email!.Length);
+		Assert.Equal("...", _uut.Email.Substring(StringLengths.Email - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Email - 3), _uut.Email.Substring(0, StringLengths.Email - 3));
+	}
+
+	[Fact]
+	public void SetPhoneNumber_PhoneNumberStringToLong_PhoneShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.PhoneNumber * 2);
+
+		// Act
+		_uut.PhoneNumber = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
+		Assert.Equal("...", _uut.PhoneNumber.Substring(StringLengths.PhoneNumber - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3), _uut.PhoneNumber.Substring(0, StringLengths.PhoneNumber - 3));
+	}
+
+	[Fact]
+	public void SetJobTitle_JobTitleStringToLong_JobTitleShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.JobTitle * 2);
+
+		// Act
+		_uut.JobTitle = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.JobTitle, _uut.JobTitle!.Length);
+		Assert.Equal("...", _uut.JobTitle.Substring(StringLengths.JobTitle - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.JobTitle - 3), _uut.JobTitle.Substring(0, StringLengths.JobTitle - 3));
+	}
+
+	[Fact]
 	public void UpdateProperty_InvalidPropertyName_ThrowInvalidOperationException()
 	{
 		// Arrange

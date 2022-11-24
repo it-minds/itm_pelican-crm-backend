@@ -6,7 +6,15 @@ public class Supplier : Entity, ITimeTracked
 {
 	public long HubSpotId { get; set; }
 
-	public string RefreshToken { get; set; }
+	private string _refreshToken;
+	public string RefreshToken
+	{
+		get => _refreshToken;
+		set
+		{
+			_refreshToken = value!.Length > StringLengths.Token ? value.Substring(0, StringLengths.Token - 3) + ("...") : value;
+		}
+	}
 
 	private string? _name;
 	public string? Name
@@ -66,7 +74,6 @@ public class Supplier : Entity, ITimeTracked
 		}
 	}
 
-
 	public ICollection<Location> OfficeLocations { get; set; } = new List<Location>();
 
 	public ICollection<AccountManager> AccountManagers { get; set; } = new List<AccountManager>();
@@ -80,28 +87,4 @@ public class Supplier : Entity, ITimeTracked
 	public Supplier(Guid id) : base(id) { }
 
 	public Supplier() { }
-	public void SetName(string newName)
-	{
-		Name = newName.Length > StringLengths.Name ? newName.Substring(0, StringLengths.Name - 3) + ("...") : newName;
-	}
-	public void SetPhoneNumber(string newPhoneNumber)
-	{
-		PhoneNumber = newPhoneNumber.Length > StringLengths.DealDescription ? newPhoneNumber.Substring(0, StringLengths.DealDescription - 3) + ("...") : newPhoneNumber;
-	}
-	public void SetEmail(string newEmail)
-	{
-		Email = newEmail.Length > StringLengths.Email ? newEmail.Substring(0, StringLengths.Email - 3) + ("...") : newEmail;
-	}
-	public void SetPictureUrl(string newPictureUrl)
-	{
-		PictureUrl = newPictureUrl.Length > StringLengths.Url ? newPictureUrl.Substring(0, StringLengths.Url - 3) + ("...") : newPictureUrl;
-	}
-	public void SetLinkedInUrl(string newLinkedInUrl)
-	{
-		LinkedInUrl = newLinkedInUrl.Length > StringLengths.Url ? newLinkedInUrl.Substring(0, StringLengths.Url - 3) + ("...") : newLinkedInUrl;
-	}
-	public void SetWebsiteUrl(string newWebsiteUrl)
-	{
-		WebsiteUrl = newWebsiteUrl.Length > StringLengths.Url ? newWebsiteUrl.Substring(0, StringLengths.Url - 3) + ("...") : newWebsiteUrl;
-	}
 }

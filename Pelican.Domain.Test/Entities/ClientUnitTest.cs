@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Entities;
+﻿using Bogus;
+using Pelican.Domain.Entities;
 using Xunit;
 
 namespace Pelican.Domain.Test.Entities;
@@ -8,6 +9,132 @@ public class ClientUnitTest
 	{
 		HubSpotId = "uutHubSpotId",
 	};
+
+	[Fact]
+	public void SetName_NameStringNotToLong_NameEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.Name);
+
+		// Act
+		_uut.Name = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.Name, _uut.Name!.Length);
+		Assert.Equal(propertyValue, _uut.Name);
+	}
+
+	[Fact]
+	public void SetOfficeLocation_OfficeLocationStringNotToLong_LastNameEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.OfficeLocation);
+
+		// Act
+		_uut.OfficeLocation = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.OfficeLocation, _uut.OfficeLocation!.Length);
+		Assert.Equal(propertyValue, _uut.OfficeLocation);
+	}
+
+	[Fact]
+	public void SetPictureUrl_PictureUrlStringNotToLong_PictureUrlEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.Url);
+
+		// Act
+		_uut.PictureUrl = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.Url, _uut.PictureUrl!.Length);
+		Assert.Equal(propertyValue, _uut.PictureUrl);
+	}
+
+	[Fact]
+	public void SetWebsite_WebsiteStringNotToLong_WebsiteEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.Url);
+
+		// Act
+		_uut.Website = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.Url, _uut.Website!.Length);
+		Assert.Equal(propertyValue, _uut.Website);
+	}
+
+
+	[Fact]
+	public void SetName_NameStringToLong_NameShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.Name * 2);
+
+		// Act
+		_uut.Name = propertyValue;
+
+		// Assert
+
+		Assert.Equal(StringLengths.Name, _uut.Name!.Length);
+		Assert.Equal("...", _uut.Name.Substring(StringLengths.Name - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.Name.Substring(0, StringLengths.Name - 3));
+	}
+
+	[Fact]
+	public void SetOfficeLocation_OfficeLocationStringToLong_OfficeLocationShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.OfficeLocation * 2);
+
+		// Act
+		_uut.OfficeLocation = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.OfficeLocation, _uut.OfficeLocation!.Length);
+		Assert.Equal("...", _uut.OfficeLocation.Substring(StringLengths.OfficeLocation - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.OfficeLocation - 3), _uut.OfficeLocation.Substring(0, StringLengths.OfficeLocation - 3));
+	}
+
+	[Fact]
+	public void SetPictureUrl_PictureUrlStringToLong_PictureUrlShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.Url * 2);
+
+		// Act
+		_uut.PictureUrl = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.Url, _uut.PictureUrl!.Length);
+		Assert.Equal("...", _uut.PictureUrl.Substring(StringLengths.Url - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3), _uut.PictureUrl.Substring(0, StringLengths.Url - 3));
+	}
+
+	[Fact]
+	public void SetWebsite_WebsiteStringToLong_WebsiteShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.Url * 2);
+
+		// Act
+		_uut.Website = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.Url, _uut.Website!.Length);
+		Assert.Equal("...", _uut.Website.Substring(StringLengths.Url - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3), _uut.Website.Substring(0, StringLengths.Url - 3));
+	}
 
 	[Fact]
 	public void UpdateProperty_InvalidPropertyName_ThrowInvalidOperationException()

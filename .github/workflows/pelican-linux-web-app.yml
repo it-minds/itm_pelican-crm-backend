@@ -76,4 +76,4 @@ jobs:
         app-name: dotnetthoughts
         slot-name: Production
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}         
-package: ${{env.DOTNET_ROOT}}/myapp
+        package: ${{env.DOTNET_ROOT}}/Pelican.App

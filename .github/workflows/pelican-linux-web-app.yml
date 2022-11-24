@@ -45,7 +45,7 @@ jobs:
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
    
     - name: Generate scripts
-      run: dotnet ef migrations script --project \Pelican.Infrastructure.Persistence\Pelican.Infrastructure.Persistence.csproj --startup-project \Pelican.App\ --idempotent --output ${{env.DOTNET_ROOT}}/sql/sql-script.sql --context PelicanContext
+      run: dotnet ef migrations script --project Pelican.Infrastructure.Persistence/Pelican.Infrastructure.Persistence.csproj --startup-project Pelican.App --idempotent --output ${{env.DOTNET_ROOT}}/sql/sql-script.sql --context PelicanContext
    
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2

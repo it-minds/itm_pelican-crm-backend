@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Abstractions.Messaging;
+﻿using HotChocolate.Language.Visitors;
+using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.AccountManagers.Commands.ValidateWebhookUserId;
 using Pelican.Application.Clients.Commands.DeleteClient;
 using Pelican.Application.Clients.Commands.UpdateClient;
@@ -26,8 +27,13 @@ internal sealed class WebHookRequestsToCommands : IRequestToCommandMapper
 			.Select(group => group.First())
 			.Where(group => group.SourceId.StartsWith("userId")))
 		{
+			if (!long.TryParse(request.SourceId[7..], out long accountManagerHubspotId))
+			{
+				continue;
+			}
+
 			commands.Add(new ValidateWebhookUserIdCommand(
-				long.Parse(request.SourceId[7..]),
+				accountManagerHubspotId,
 				request.SupplierHubSpotId));
 		}
 

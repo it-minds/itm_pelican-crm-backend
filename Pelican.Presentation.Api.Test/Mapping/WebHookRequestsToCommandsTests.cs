@@ -300,7 +300,34 @@ public class WebHookRequestsToCommandsTests
 	}
 
 	[Fact]
-	public void ConvertToCommands_MultipleValidRequestsWithOneUserId_ReturnNoValidateWebhookUserIdCommand()
+	public void ConvertToCommands_MultipleValidRequestsWithInvallidUserIdInSourceIds_ReturnNoValidateWebhookUserIdCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SourceId = "userId:invalid",
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest,
+			webHookRequest,
+		};
+
+		// Act 
+		var result = _uut.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Collection(
+			result,
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
+	}
+
+	[Fact]
+	public void ConvertToCommands_MultipleValidRequestsWithOneUserId_ReturnOneValidateWebhookUserIdCommand()
 	{
 		// Arrange
 		WebHookRequest webHookRequest1 = new()
@@ -308,12 +335,14 @@ public class WebHookRequestsToCommandsTests
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
 			SourceId = "notUserId",
+			SupplierHubSpotId = 123,
 		};
 		WebHookRequest webHookRequest2 = new()
 		{
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
 			SourceId = "userId:47115417",
+			SupplierHubSpotId = 456,
 		};
 
 		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
@@ -328,13 +357,18 @@ public class WebHookRequestsToCommandsTests
 		// Assert
 		Assert.Collection(
 			result,
-			r => Assert.IsType<ValidateWebhookUserIdCommand>(r),
+			r =>
+			{
+				Assert.IsType<ValidateWebhookUserIdCommand>(r);
+				Assert.Equal(47115417, (r as ValidateWebhookUserIdCommand)!.UserId);
+				Assert.Equal(456, (r as ValidateWebhookUserIdCommand)!.SupplierHubSpotId);
+			},
 			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
 			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
 	}
 
 	[Fact]
-	public void ConvertToCommands_MultipleValidRequestsWithSameUserId_ReturnNoValidateWebhookUserIdCommand()
+	public void ConvertToCommands_MultipleValidRequestsWithSameUserId_ReturnOneValidateWebhookUserIdCommand()
 	{
 		// Arrange
 		WebHookRequest webHookRequest1 = new()
@@ -342,12 +376,14 @@ public class WebHookRequestsToCommandsTests
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
 			SourceId = "userId:47115417",
+			SupplierHubSpotId = 123,
 		};
 		WebHookRequest webHookRequest2 = new()
 		{
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
 			SourceId = "userId:47115417",
+			SupplierHubSpotId = 123
 		};
 
 		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
@@ -362,13 +398,18 @@ public class WebHookRequestsToCommandsTests
 		// Assert
 		Assert.Collection(
 			result,
-			r => Assert.IsType<ValidateWebhookUserIdCommand>(r),
+			r =>
+			{
+				Assert.IsType<ValidateWebhookUserIdCommand>(r);
+				Assert.Equal(47115417, (r as ValidateWebhookUserIdCommand)!.UserId);
+				Assert.Equal(123, (r as ValidateWebhookUserIdCommand)!.SupplierHubSpotId);
+			},
 			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
 			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
 	}
 
 	[Fact]
-	public void ConvertToCommands_MultipleValidRequestsWithDifferentUserId_ReturnNoValidateWebhookUserIdCommand()
+	public void ConvertToCommands_MultipleValidRequestsWithDifferentUserId_ReturnTwoValidateWebhookUserIdCommand()
 	{
 		// Arrange
 		WebHookRequest webHookRequest1 = new()
@@ -401,26 +442,16 @@ public class WebHookRequestsToCommandsTests
 			r =>
 			{
 				Assert.IsType<ValidateWebhookUserIdCommand>(r);
+				Assert.Equal(123456, (r as ValidateWebhookUserIdCommand)!.UserId);
 				Assert.Equal(123, (r as ValidateWebhookUserIdCommand)!.SupplierHubSpotId);
 			},
-			r => Assert.IsType<ValidateWebhookUserIdCommand>(r),
+			r =>
+			{
+				Assert.IsType<ValidateWebhookUserIdCommand>(r);
+				Assert.Equal(47115417, (r as ValidateWebhookUserIdCommand)!.UserId);
+				Assert.Equal(456, (r as ValidateWebhookUserIdCommand)!.SupplierHubSpotId);
+			},
 			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
 			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
-
-		Assert.Equal(
-			123456,
-			(result.Take(1).First() as ValidateWebhookUserIdCommand)!.UserId);
-
-		Assert.Equal(
-			123,
-			(result.Take(1).First() as ValidateWebhookUserIdCommand)!.SupplierHubSpotId);
-
-		Assert.Equal(
-			47115417,
-			(result.Take(2).Last() as ValidateWebhookUserIdCommand)!.UserId);
-
-		Assert.Equal(
-			456,
-			(result.Take(2).Last() as ValidateWebhookUserIdCommand)!.SupplierHubSpotId);
 	}
 }

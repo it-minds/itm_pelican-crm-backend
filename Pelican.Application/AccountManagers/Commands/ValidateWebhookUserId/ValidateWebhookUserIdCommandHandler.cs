@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Abstractions.Data.Repositories;
+﻿using Microsoft.Extensions.Azure;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Entities;
@@ -33,23 +34,36 @@ internal sealed class ValidateWebhookUserIdCommandHandler : ICommandHandler<Vali
 			return Result.Success();
 		}
 
-		Result<string> accessToken = await _hubSpotAuthorizationService.RefreshAccessTokenAsync(request.SupplierHubSpotId, _unitOfWork, cancellationToken);
+		Supplier? supplier = await _unitOfWork
+			.SupplierRepository
+			.FirstOrDefaultAsync(s => s.HubSpotId == request.SupplierHubSpotId, cancellationToken);
 
-		if (accessToken.IsFailure)
+		if (supplier is null)
 		{
-			return accessToken;
+			return Result.Failure(Error.NullValue);
 		}
 
-		Result<AccountManager> newAccountManager = await _hubSpotAccountManagerService.GetByIdAsync(accessToken.Value, request.UserId, cancellationToken);
+		Result<string> accessTokenResult = await _hubSpotAuthorizationService.RefreshAccessTokenFromRefreshTokenAsync(supplier.RefreshToken, cancellationToken);
 
-		if (newAccountManager.IsFailure)
+		if (accessTokenResult.IsFailure)
 		{
-			return newAccountManager;
+			return accessTokenResult;
 		}
+
+		Result<AccountManager> newAccountManagerResult = await _hubSpotAccountManagerService.GetByIdAsync(accessTokenResult.Value, request.UserId, cancellationToken);
+
+		if (newAccountManagerResult.IsFailure)
+		{
+			return newAccountManagerResult;
+		}
+
+		AccountManager newAccountManager = newAccountManagerResult.Value;
+		newAccountManager.Supplier = supplier;
+		newAccountManager.SupplierId = supplier.Id;
 
 		await _unitOfWork
 			.AccountManagerRepository
-			.CreateAsync(newAccountManager.Value, cancellationToken);
+			.CreateAsync(newAccountManagerResult.Value, cancellationToken);
 
 		await _unitOfWork
 			.SaveAsync(cancellationToken);

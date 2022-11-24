@@ -12,6 +12,9 @@ namespace Pelican.Application.Test.AccountManagers.Commands.ValidateWebhookUserI
 
 public class ValidateWebhookUserIdCommandHandlerTests
 {
+	private const string ACCESS_TOKEN = "access";
+	private const string REFRESH_TOKEN = "refresh";
+
 	private readonly ValidateWebhookUserIdCommandHandler _uut;
 
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
@@ -80,7 +83,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 		_unitOfWorkMock
 			.Setup(u => u.AccountManagerRepository.FirstOrDefaultAsync(
 				It.IsAny<Expression<Func<AccountManager, bool>>>(),
-				default))
+				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(new AccountManager(Guid.NewGuid()));
 
 		// Act 
@@ -97,6 +100,43 @@ public class ValidateWebhookUserIdCommandHandlerTests
 	}
 
 	[Fact]
+	public async Task Handle_NewAccountManagerSupplierNotFound_DependenciesCalledReturnsFailure()
+	{
+		// Arrange
+		ValidateWebhookUserIdCommand command = new(1, 1);
+
+		_unitOfWorkMock
+			.Setup(u => u.AccountManagerRepository.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<AccountManager, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync((AccountManager)null!);
+
+		_unitOfWorkMock
+			.Setup(u => u.SupplierRepository.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Supplier, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync((Supplier)null!);
+
+		// Act 
+		var result = await _uut.Handle(command, default);
+
+		// Assert
+		_unitOfWorkMock.Verify(
+			u => u.AccountManagerRepository.FirstOrDefaultAsync(
+				a => a.HubSpotUserId == command.UserId,
+				default),
+			Times.Once);
+
+		_unitOfWorkMock.Verify(
+			u => u.SupplierRepository.FirstOrDefaultAsync(
+				a => a.HubSpotId == command.SupplierHubSpotId,
+				default),
+			Times.Once);
+
+		Assert.True(result.IsFailure);
+	}
+
+	[Fact]
 	public async Task Handle_NewAccountManagerRefreshingFailed_DependenciesCalledReturnsFailure()
 	{
 		// Arrange
@@ -105,14 +145,22 @@ public class ValidateWebhookUserIdCommandHandlerTests
 		_unitOfWorkMock
 			.Setup(u => u.AccountManagerRepository.FirstOrDefaultAsync(
 				It.IsAny<Expression<Func<AccountManager, bool>>>(),
-				default))
+				It.IsAny<CancellationToken>()))
 			.ReturnsAsync((AccountManager)null!);
 
+		_unitOfWorkMock
+			.Setup(u => u.SupplierRepository.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Supplier, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(new Supplier(Guid.NewGuid())
+			{
+				RefreshToken = REFRESH_TOKEN,
+			});
+
 		_hubSpotAuthorizationServiceMock
-			.Setup(h => h.RefreshAccessTokenAsync(
-				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
-				default))
+			.Setup(h => h.RefreshAccessTokenFromRefreshTokenAsync(
+				It.IsAny<string>(),
+				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Failure<string>(Error.NullValue));
 
 		// Act 
@@ -125,10 +173,15 @@ public class ValidateWebhookUserIdCommandHandlerTests
 				default),
 			Times.Once);
 
+		_unitOfWorkMock.Verify(
+			u => u.SupplierRepository.FirstOrDefaultAsync(
+				a => a.HubSpotId == command.SupplierHubSpotId,
+				default),
+			Times.Once);
+
 		_hubSpotAuthorizationServiceMock.Verify(
-			h => h.RefreshAccessTokenAsync(
-				command.SupplierHubSpotId,
-				_unitOfWorkMock.Object,
+			h => h.RefreshAccessTokenFromRefreshTokenAsync(
+				REFRESH_TOKEN,
 				default),
 			Times.Once);
 
@@ -141,26 +194,32 @@ public class ValidateWebhookUserIdCommandHandlerTests
 		// Arrange
 		ValidateWebhookUserIdCommand command = new(1, 1);
 
-		string accessToken = "token";
-
 		_unitOfWorkMock
 			.Setup(u => u.AccountManagerRepository.FirstOrDefaultAsync(
 				It.IsAny<Expression<Func<AccountManager, bool>>>(),
-				default))
+				It.IsAny<CancellationToken>()))
 			.ReturnsAsync((AccountManager)null!);
 
+		_unitOfWorkMock
+			.Setup(u => u.SupplierRepository.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Supplier, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(new Supplier(Guid.NewGuid())
+			{
+				RefreshToken = REFRESH_TOKEN,
+			});
+
 		_hubSpotAuthorizationServiceMock
-			.Setup(h => h.RefreshAccessTokenAsync(
-				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
-				default))
-			.ReturnsAsync(accessToken);
+			.Setup(h => h.RefreshAccessTokenFromRefreshTokenAsync(
+				It.IsAny<string>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(ACCESS_TOKEN);
 
 		_hubSpotAccountManagerServiceMock
 			.Setup(h => h.GetByIdAsync(
 				It.IsAny<string>(),
 				It.IsAny<long>(),
-				default))
+				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Failure<AccountManager>(Error.NullValue));
 
 		// Act 
@@ -173,16 +232,21 @@ public class ValidateWebhookUserIdCommandHandlerTests
 				default),
 			Times.Once);
 
+		_unitOfWorkMock.Verify(
+			u => u.SupplierRepository.FirstOrDefaultAsync(
+				a => a.HubSpotId == command.SupplierHubSpotId,
+				default),
+			Times.Once);
+
 		_hubSpotAuthorizationServiceMock.Verify(
-			h => h.RefreshAccessTokenAsync(
-				command.SupplierHubSpotId,
-				_unitOfWorkMock.Object,
+			h => h.RefreshAccessTokenFromRefreshTokenAsync(
+				REFRESH_TOKEN,
 				default),
 			Times.Once);
 
 		_hubSpotAccountManagerServiceMock.Verify(
 			h => h.GetByIdAsync(
-				accessToken,
+				ACCESS_TOKEN,
 				command.UserId,
 				default),
 			Times.Once);
@@ -196,28 +260,34 @@ public class ValidateWebhookUserIdCommandHandlerTests
 		// Arrange
 		ValidateWebhookUserIdCommand command = new(1, 1);
 
-		string accessToken = "token";
-
 		AccountManager accountManager = new(Guid.NewGuid());
 
 		_unitOfWorkMock
 			.Setup(u => u.AccountManagerRepository.FirstOrDefaultAsync(
 				It.IsAny<Expression<Func<AccountManager, bool>>>(),
-				default))
+				It.IsAny<CancellationToken>()))
 			.ReturnsAsync((AccountManager)null!);
 
+		_unitOfWorkMock
+			.Setup(u => u.SupplierRepository.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Supplier, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(new Supplier(Guid.NewGuid())
+			{
+				RefreshToken = REFRESH_TOKEN,
+			});
+
 		_hubSpotAuthorizationServiceMock
-			.Setup(h => h.RefreshAccessTokenAsync(
-				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
-				default))
-			.ReturnsAsync(accessToken);
+			.Setup(h => h.RefreshAccessTokenFromRefreshTokenAsync(
+				It.IsAny<string>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(ACCESS_TOKEN);
 
 		_hubSpotAccountManagerServiceMock
 			.Setup(h => h.GetByIdAsync(
 				It.IsAny<string>(),
 				It.IsAny<long>(),
-				default))
+				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(accountManager);
 
 		// Act 
@@ -230,16 +300,21 @@ public class ValidateWebhookUserIdCommandHandlerTests
 				default),
 			Times.Once);
 
+		_unitOfWorkMock.Verify(
+			u => u.SupplierRepository.FirstOrDefaultAsync(
+				a => a.HubSpotId == command.SupplierHubSpotId,
+				default),
+			Times.Once);
+
 		_hubSpotAuthorizationServiceMock.Verify(
-			h => h.RefreshAccessTokenAsync(
-				command.SupplierHubSpotId,
-				_unitOfWorkMock.Object,
+			h => h.RefreshAccessTokenFromRefreshTokenAsync(
+				REFRESH_TOKEN,
 				default),
 			Times.Once);
 
 		_hubSpotAccountManagerServiceMock.Verify(
 			h => h.GetByIdAsync(
-				accessToken,
+				ACCESS_TOKEN,
 				command.UserId,
 				default),
 			Times.Once);

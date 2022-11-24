@@ -54,7 +54,7 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 			.GetResult(AccessTokenResponseToSupplier.ToSupplier);
 	}
 
-	public async Task<Result<string>> RefreshAccessTokenAsync(
+	public async Task<Result<string>> RefreshAccessTokenFromSupplierHubSpotIdAsync(
 		long supplierHubSpotId,
 		IUnitOfWork unitOfWork,
 		CancellationToken cancellationToken)
@@ -73,6 +73,24 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 			.AddCommonAuthorizationQueryParams(_hubSpotSettings)
 			.AddQueryParameter("grant_type", "refresh_token", false)
 			.AddQueryParameter("refresh_token", supplier.RefreshToken, false);
+
+		RestResponse<RefreshAccessTokenResponse> response = await _hubSpotClient
+			.PostAsync<RefreshAccessTokenResponse>(
+				request,
+				cancellationToken);
+
+		return response
+			.GetResult(RefreshAccessTokenResponseToAccessToken.ToAccessToken);
+	}
+	public async Task<Result<string>> RefreshAccessTokenFromRefreshTokenAsync(
+		string refreshToken,
+		CancellationToken cancellationToken)
+	{
+		RestRequest request = new RestRequest("oauth/v1/token")
+			.AddAuthorizationHeaders()
+			.AddCommonAuthorizationQueryParams(_hubSpotSettings)
+			.AddQueryParameter("grant_type", "refresh_token", false)
+			.AddQueryParameter("refresh_token", refreshToken, false);
 
 		RestResponse<RefreshAccessTokenResponse> response = await _hubSpotClient
 			.PostAsync<RefreshAccessTokenResponse>(

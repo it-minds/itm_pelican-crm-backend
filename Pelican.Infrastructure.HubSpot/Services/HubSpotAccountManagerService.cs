@@ -31,6 +31,22 @@ internal sealed class HubSpotAccountManagerService : HubSpotService, IHubSpotObj
 			.GetResult(OwnerResponseToAccountManager.ToAccountManager);
 	}
 
+	public async Task<Result<AccountManager>> GetByUserIdAsync(
+		string accessToken,
+		long id,
+		CancellationToken cancellationToken)
+	{
+		RestRequest request = new RestRequest($"crm/v3/owners/{id}")
+			.AddHeader("Authorization", $"Bearer {accessToken}")
+			.AddQueryParameter("idProperty", "userid");
+
+		RestResponse<OwnerResponse> response = await _hubSpotClient
+			.GetAsync<OwnerResponse>(request, cancellationToken);
+
+		return response
+			.GetResult(OwnerResponseToAccountManager.ToAccountManager);
+	}
+
 	public async Task<Result<List<AccountManager>>> GetAsync(
 		string accessToken,
 		CancellationToken cancellationToken)

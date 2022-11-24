@@ -81,7 +81,7 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 		CancellationToken cancellationToken)
 	{
 		Result<string> accessTokenResult = await _hubSpotAuthorizationService
-			.RefreshAccessTokenAsync(
+			.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				supplierHubSpotId,
 				_unitOfWork,
 				cancellationToken);

@@ -179,7 +179,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 		long objectId,
 		CancellationToken cancellationToken = default)
 	{
-		Result<string> accessTokenResult = await _hubSpotAuthorizationService.RefreshAccessTokenAsync(
+		Result<string> accessTokenResult = await _hubSpotAuthorizationService.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 			supplierHubSpotId,
 			_unitOfWork,
 			cancellationToken);

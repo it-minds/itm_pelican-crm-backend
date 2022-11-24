@@ -22,10 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-	 - name: Install EF Tool
-       run: |
-          dotnet new tool-manifest
-          dotnet tool install dotnet-ef
     
 	 - name: Setup .NET Core
        uses: actions/setup-dotnet@v1
@@ -41,6 +37,11 @@ jobs:
 	 - name: Test
        run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
    
+	 - name: Install EF Tool
+       run: |
+          dotnet new tool-manifest
+          dotnet tool install dotnet-ef
+
 	 - name: Publish
        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
    

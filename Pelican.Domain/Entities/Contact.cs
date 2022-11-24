@@ -4,7 +4,7 @@ using Pelican.Domain.Primitives;
 namespace Pelican.Domain.Entities;
 public class Contact : Entity, ITimeTracked
 {
-	public string HubSpotId { get; set; }
+	public string HubSpotId { get; set; } = string.Empty;
 
 	public string? HubSpotOwnerId { get; set; }
 

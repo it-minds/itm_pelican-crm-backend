@@ -3,11 +3,11 @@
 namespace Pelican.Domain.Entities;
 public class AccountManager : Entity, ITimeTracked
 {
-	public string HubSpotId { get; set; }
+	public string HubSpotId { get; set; } = string.Empty;
 
 	public long HubSpotUserId { get; set; }
 
-	private string _firstName;
+	private string _firstName = string.Empty;
 	public string FirstName
 	{
 		get => _firstName;
@@ -16,7 +16,7 @@ public class AccountManager : Entity, ITimeTracked
 			_firstName = value.Length > StringLengths.Name ? value.Substring(0, StringLengths.Name - 3) + ("...") : value;
 		}
 	}
-	private string _lastName;
+	private string _lastName = string.Empty;
 	public string LastName
 	{
 		get => _lastName;
@@ -25,7 +25,7 @@ public class AccountManager : Entity, ITimeTracked
 			_lastName = value.Length > StringLengths.Name ? value.Substring(0, StringLengths.Name - 3) + ("...") : value;
 		}
 	}
-	private string _email;
+	private string _email = string.Empty;
 	public string Email
 	{
 		get => _email;
@@ -34,7 +34,7 @@ public class AccountManager : Entity, ITimeTracked
 			_email = value.Length > StringLengths.Email ? value.Substring(0, StringLengths.Email - 3) + ("...") : value;
 		}
 	}
-	private string _phoneNumber;
+	private string? _phoneNumber;
 	public string? PhoneNumber
 	{
 		get => _phoneNumber;
@@ -43,7 +43,7 @@ public class AccountManager : Entity, ITimeTracked
 			_phoneNumber = value!.Length > StringLengths.PhoneNumber ? value.Substring(0, StringLengths.PhoneNumber - 3) + ("...") : value;
 		}
 	}
-	private string _pictureUrl;
+	private string? _pictureUrl;
 	public string? PictureUrl
 	{
 		get => _pictureUrl;
@@ -52,7 +52,7 @@ public class AccountManager : Entity, ITimeTracked
 			_pictureUrl = value!.Length > StringLengths.Url ? value.Substring(0, StringLengths.Url - 3) + ("...") : value;
 		}
 	}
-	private string _linkedInUrl;
+	private string? _linkedInUrl;
 	public string? LinkedInUrl
 	{
 		get => _linkedInUrl;

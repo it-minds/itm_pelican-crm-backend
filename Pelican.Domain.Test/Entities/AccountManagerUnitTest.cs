@@ -72,7 +72,7 @@ public class AccountManagerUnitTest
 	}
 
 	[Fact]
-	public void SetPictureUrl_PictureUrlStringNotToLong_PictureUrlEqualeToValueSet()
+	public void SetPictureUrl_PictureUrlStringNotToLong_PictureUrlEqualToValueSet()
 	{
 		// Arrange
 		Faker faker = new();

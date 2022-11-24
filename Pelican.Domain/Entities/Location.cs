@@ -3,7 +3,7 @@
 namespace Pelican.Domain.Entities;
 public class Location : Entity, ITimeTracked
 {
-	private string _cityName;
+	private string _cityName = string.Empty;
 	public string CityName
 	{
 		get => _cityName;

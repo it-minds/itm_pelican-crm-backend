@@ -6,7 +6,7 @@ public class Supplier : Entity, ITimeTracked
 {
 	public long HubSpotId { get; set; }
 
-	private string _refreshToken;
+	private string _refreshToken = string.Empty;
 	public string RefreshToken
 	{
 		get => _refreshToken;

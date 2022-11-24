@@ -9,12 +9,12 @@ public class ClientContact : Entity, ITimeTracked
 
 	public Guid ClientId { get; set; }
 
-	public string HubSpotClientId { get; set; }
+	public string HubSpotClientId { get; set; } = string.Empty;
 
 	public Client Client { get; set; }
 
 
-	public string HubSpotContactId { get; set; }
+	public string HubSpotContactId { get; set; } = string.Empty;
 
 	public Guid ContactId { get; set; }
 

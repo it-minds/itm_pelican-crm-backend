@@ -4,7 +4,7 @@ using Pelican.Domain.Primitives;
 namespace Pelican.Domain.Entities;
 public class Client : Entity, ITimeTracked
 {
-	private string _name;
+	private string _name = string.Empty;
 	public string Name
 	{
 		get => _name;
@@ -14,7 +14,7 @@ public class Client : Entity, ITimeTracked
 		}
 	}
 
-	public string HubSpotId;
+	public string HubSpotId = string.Empty;
 
 	private string? _pictureUrl { get; set; }
 	public string? PictureUrl

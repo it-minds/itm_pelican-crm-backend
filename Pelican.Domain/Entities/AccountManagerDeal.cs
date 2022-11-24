@@ -9,13 +9,13 @@ public class AccountManagerDeal : Entity, ITimeTracked
 
 	public Guid AccountManagerId { get; set; }
 
-	public string HubSpotAccountManagerId { get; set; }
+	public string HubSpotAccountManagerId { get; set; } = string.Empty;
 
 	public AccountManager AccountManager { get; set; }
 
 	public Deal Deal { get; set; }
 
-	public string HubSpotDealId { get; set; }
+	public string HubSpotDealId { get; set; } = string.Empty;
 
 	public Guid DealId { get; set; }
 

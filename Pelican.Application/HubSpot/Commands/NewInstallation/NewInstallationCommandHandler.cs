@@ -11,7 +11,7 @@ namespace Pelican.Application.HubSpot.Commands.NewInstallation;
 
 internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstallationCommand>
 {
-	private readonly IHubSpotObjectService<AccountManager> _hubSpotAccountManagerService;
+	private readonly IHubSpotOwnersService _hubSpotAccountManagerService;
 	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
 	private readonly IHubSpotObjectService<Contact> _hubSpotContactService;
 	private readonly IHubSpotObjectService<Client> _hubSpotClientService;
@@ -19,7 +19,7 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 	private readonly IUnitOfWork _unitOfWork;
 
 	public NewInstallationCommandHandler(
-		IHubSpotObjectService<AccountManager> hubSpotAccountManagerService,
+		IHubSpotOwnersService hubSpotAccountManagerService,
 		IHubSpotAuthorizationService hubSpotAuthorizationService,
 		IHubSpotObjectService<Contact> hubSpotContactService,
 		IHubSpotObjectService<Client> hubSpotClientService,

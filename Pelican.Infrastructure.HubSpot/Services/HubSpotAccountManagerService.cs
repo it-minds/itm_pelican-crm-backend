@@ -9,7 +9,7 @@ using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;
 
-internal sealed class HubSpotAccountManagerService : HubSpotService, IHubSpotObjectService<AccountManager>
+internal sealed class HubSpotAccountManagerService : HubSpotService, IHubSpotOwnersService
 {
 	public HubSpotAccountManagerService(
 		IHubSpotClient hubSpotClient)

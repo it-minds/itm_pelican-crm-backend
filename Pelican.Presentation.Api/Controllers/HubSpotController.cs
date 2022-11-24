@@ -35,7 +35,7 @@ public sealed class HubSpotController : ApiController
 	}
 
 	[HttpPost]
-	[ServiceFilter(typeof(HubSpotValidationFilter))]
+	//[ServiceFilter(typeof(HubSpotValidationFilter))]
 	public async Task<IActionResult> Hook(
 		[FromBody] IReadOnlyCollection<WebHookRequest> requests,
 		CancellationToken cancellationToken)

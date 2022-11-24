@@ -19,7 +19,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly Mock<IHubSpotAuthorizationService> _hubSpotAuthorizationServiceMock = new();
-	private readonly Mock<IHubSpotObjectService<AccountManager>> _hubSpotAccountManagerServiceMock = new();
+	private readonly Mock<IHubSpotOwnersService> _hubSpotAccountManagerServiceMock = new();
 
 	public ValidateWebhookUserIdCommandHandlerTests()
 	{
@@ -216,7 +216,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 			.ReturnsAsync(ACCESS_TOKEN);
 
 		_hubSpotAccountManagerServiceMock
-			.Setup(h => h.GetByIdAsync(
+			.Setup(h => h.GetByUserIdAsync(
 				It.IsAny<string>(),
 				It.IsAny<long>(),
 				It.IsAny<CancellationToken>()))
@@ -245,7 +245,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 			Times.Once);
 
 		_hubSpotAccountManagerServiceMock.Verify(
-			h => h.GetByIdAsync(
+			h => h.GetByUserIdAsync(
 				ACCESS_TOKEN,
 				command.UserId,
 				default),
@@ -284,7 +284,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 			.ReturnsAsync(ACCESS_TOKEN);
 
 		_hubSpotAccountManagerServiceMock
-			.Setup(h => h.GetByIdAsync(
+			.Setup(h => h.GetByUserIdAsync(
 				It.IsAny<string>(),
 				It.IsAny<long>(),
 				It.IsAny<CancellationToken>()))
@@ -313,7 +313,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 			Times.Once);
 
 		_hubSpotAccountManagerServiceMock.Verify(
-			h => h.GetByIdAsync(
+			h => h.GetByUserIdAsync(
 				ACCESS_TOKEN,
 				command.UserId,
 				default),

@@ -15,9 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_SERVICEPRINCIPAL }}
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -58,6 +55,3 @@ jobs:
        connection-string: ${{ secrets.CONNECTION_STRING }}
        path: './Database.dacpac'
        action: 'Publish'
-    - name: logout
-      run: |
-        az logout

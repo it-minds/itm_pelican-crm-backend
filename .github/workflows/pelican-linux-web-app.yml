@@ -12,50 +12,50 @@ env:
   WORKING_DIRECTORY: src/Pelican.App
 jobs:
   build:
-   runs-on: ubuntu-latest
-   steps:
-   - uses: actions/checkout@v1
-   - uses: azure/login@v1
-     with:
-        creds: ${{ secrets.AZURE_SERVICEPRINCIPAL }}
-
-   - name: Setup .NET Core
-     uses: actions/setup-dotnet@v1
-     with:
-         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
    
-   - name: Restore
-     run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
+    - name: Restore
+      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
    
-   - name: Build
-     run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+    - name: Build
+      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
    
-   - name: Test
-     run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
+    - name: Test
+      run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
+   
+    - name: Install EF Tool
+      run: |
+         dotnet new tool-manifest
+         dotnet tool install dotnet-ef
 
-   - name: Publish
-     run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
-
-   - name: Deploy to Azure WebApp
-     uses: azure/webapps-deploy@v2
-     with:
+    - name: Publish
+      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+   
+    - name: Generate scripts
+      run: dotnet ef migrations script --project Pelican.Infrastructure.Persistence/Pelican.Infrastructure.Persistence.csproj --startup-project Pelican.App --idempotent --output ${{env.DOTNET_ROOT}}/sql/sql-script.sql --context PelicanContext
+   
+    - name: Deploy to Azure WebApp
+      uses: azure/webapps-deploy@v2
+      with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.pelican_linux_web_app_FFFF }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-   - name: Publish Artifacts
-     uses: actions/upload-artifact@v1.0.0
-     with:
-       name: webapp
-       path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: webapp
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-   - name: Azure SQL Deploy
-   - uses: azure/sql-action@v2
-     with:
-       connection-string: ${{ secrets.CONNECTION_STRING }}
-       path: './Database.dacpac'
-       action: 'Publish'
-    # Azure logout 
-   - name: logout
-     run: |
-       az logout
+    - name: Azure SQL Deploy
+      uses: Azure/sql-action@v1
+      with:
+       server-name: pelican-app-mssqlserver.database.windows.net
+       connection-string: ${{ secrets.CONNECTION_STRING }}
+       sql-file: ${{env.DOTNET_ROOT}}/sql/sql-script.sql

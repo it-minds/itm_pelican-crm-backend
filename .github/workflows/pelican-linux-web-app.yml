@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_SERVICEPRINCIPAL }}
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -37,9 +40,6 @@ jobs:
     - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
    
-    - name: Generate scripts
-      run: dotnet ef migrations script --project Pelican.Infrastructure.Persistence/Pelican.Infrastructure.Persistence.csproj --startup-project Pelican.App --idempotent --output ${{env.DOTNET_ROOT}}/sql/sql-script.sql --context PelicanContext
-   
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
@@ -53,9 +53,11 @@ jobs:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-    - name: Azure SQL Deploy
-      uses: Azure/sql-action@v1
+    - uses: azure/sql-action@v2
       with:
-       server-name: pelican-app-mssqlserver.database.windows.net
-       connection-string: ${{ secrets.CONNECTION_STRING }}
-       sql-file: ${{env.DOTNET_ROOT}}/sql/sql-script.sql
+       connection-string: ${{ secrets.CONNECTION_STRING }}
+       path: './Database.dacpac'
+       action: 'Publish'
+    - name: logout
+      run: |
+        az logout

@@ -12,8 +12,8 @@ using Pelican.Infrastructure.Persistence;
 namespace Pelican.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(PelicanContext))]
-    [Migration("20221124085752_ChangedDateToLong")]
-    partial class ChangedDateToLong
+    [Migration("20221125143559_remove-date-type-columns")]
+    partial class removedatetypecolumns
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -268,9 +268,6 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<long?>("EndDate")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("HubSpotId")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -280,18 +277,12 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<long?>("LastContactDate")
-                        .HasColumnType("bigint");
-
                     b.Property<long?>("LastUpdatedAt")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<long?>("StartDate")
-                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 

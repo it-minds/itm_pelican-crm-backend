@@ -46,12 +46,14 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.HubSpotId, f => f.Random.Guid().ToString())
 			.RuleFor(e => e.HubSpotOwnerId, f => f.PickRandom<AccountManager>(accountManagers).HubSpotId.OrNull(f, 0.0f))
 			.RuleFor(e => e.DealStatus, f => f.PickRandom<DealStatus>().ToString().OrNull(f, 0.0f))
-			.RuleFor(e => e.EndDate, f => f.Date.Past().OrNull(f, 0.0f))
-			.RuleFor(e => e.StartDate, f => f.Date.Future().OrNull(f, 0.0f))
+			.RuleFor(e => e.EndDate, f => f.Date.Future().Ticks.OrNull(f, 0.0f))
+			.RuleFor(e => e.StartDate, f => f.Date.Future().Ticks.OrNull(f, 0.0f))
 			.RuleFor(e => e.Id, f => f.Random.Guid())
-			.RuleFor(e => e.LastContactDate, f => f.Date.Past().OrNull(f, 0.0f))
+			.RuleFor(e => e.LastContactDate, f => f.Date.Future().Ticks.OrNull(f, 0.0f))
 			.RuleFor(e => e.ClientId, f => f.PickRandom<Client>(clients).Id)
-			.RuleFor(e => e.Client, f => f.PickRandom<Client>(clients));
+			.RuleFor(e => e.Client, f => f.PickRandom<Client>(clients))
+			.RuleFor(e => e.Name, f => f.Lorem.Sentences(f.Random.Int(1, 4)).OrNull(f, 0.0f))
+			.RuleFor(e => e.Description, f => f.Lorem.Sentences(f.Random.Int(1, 10)).OrNull(f, 0.0f));
 		return faker.Generate(count);
 	}
 	public IEnumerable<Location> LocationFaker(int count, IQueryable<Supplier> suppliers)
@@ -80,8 +82,8 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 	{
 		var faker = new Faker<Contact>().UseSeed(1342);
 		faker
-			.RuleFor(e => e.Firstname, f => f.Name.FirstName(f.Person.Gender))
-			.RuleFor(e => e.Lastname, f => f.Name.LastName(f.Person.Gender))
+			.RuleFor(e => e.FirstName, f => f.Name.FirstName(f.Person.Gender).OrNull(f, 0.0f))
+			.RuleFor(e => e.LastName, f => f.Name.LastName(f.Person.Gender).OrNull(f, 0.0f))
 			.RuleFor(e => e.Email, f => f.Person.Email.OrNull(f, 0.0f))
 			.RuleFor(e => e.PhoneNumber, f => f.Phone.PhoneNumber().OrNull(f, 0.0f))
 			.RuleFor(e => e.JobTitle, f => f.Name.JobTitle().OrNull(f, 0.0f))

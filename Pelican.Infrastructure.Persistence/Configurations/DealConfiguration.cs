@@ -20,14 +20,11 @@ internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 		builder.Property(p => p.HubSpotOwnerId)
 			.HasMaxLength(StringLengths.Id);
 
-		builder.Property(p => p.StartDate)
-			.HasColumnType("Date");
+		builder.Property(p => p.Description)
+			.HasMaxLength(StringLengths.DealDescription);
 
-		builder.Property(p => p.EndDate)
-			.HasColumnType("Date");
-
-		builder.Property(p => p.LastContactDate)
-			.HasColumnType("Date");
+		builder.Property(p => p.Name)
+			.HasMaxLength(StringLengths.DealName);
 
 		builder.HasMany(a => a.AccountManagerDeals)
 			.WithOne(e => e.Deal)

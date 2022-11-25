@@ -141,10 +141,6 @@ public class PelicanBogusFakerUnitTest
 		Assert.All(result,
 			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
 		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.Firstname)));
-		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.Lastname)));
-		Assert.All(result,
 			item => Assert.NotNull(item.ClientContacts));
 		Assert.All(result,
 			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotId)));

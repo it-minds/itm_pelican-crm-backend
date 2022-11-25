@@ -17,10 +17,10 @@ internal sealed class DealProperties
 	public string CreateDate { get; set; } = string.Empty;
 
 	[JsonPropertyName("dealname")]
-	public string Dealname { get; set; } = string.Empty;
+	public string DealName { get; set; } = string.Empty;
 
 	[JsonPropertyName("dealstage")]
-	public string Dealstage { get; set; } = string.Empty;
+	public string DealStage { get; set; } = string.Empty;
 
 	[JsonPropertyName("hs_lastmodifieddate")]
 	public string LastModifiedDate { get; set; } = string.Empty;
@@ -30,4 +30,7 @@ internal sealed class DealProperties
 
 	[JsonPropertyName("hubspot_owner_id")]
 	public string HubSpotOwnerId { get; set; } = string.Empty;
+
+	[JsonPropertyName("description")]
+	public string Description { get; set; } = string.Empty;
 }

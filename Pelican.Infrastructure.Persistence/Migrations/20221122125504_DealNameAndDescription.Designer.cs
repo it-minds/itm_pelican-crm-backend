@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pelican.Infrastructure.Persistence;
 
@@ -11,9 +12,10 @@ using Pelican.Infrastructure.Persistence;
 namespace Pelican.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(PelicanContext))]
-    partial class PelicanContextModelSnapshot : ModelSnapshot
+    [Migration("20221122125504_DealNameAndDescription")]
+    partial class DealNameAndDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -266,8 +268,8 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<long?>("EndDate")
-                        .HasColumnType("bigint");
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("Date");
 
                     b.Property<string>("HubSpotId")
                         .IsRequired()
@@ -278,8 +280,8 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<long?>("LastContactDate")
-                        .HasColumnType("bigint");
+                    b.Property<DateTime?>("LastContactDate")
+                        .HasColumnType("Date");
 
                     b.Property<long?>("LastUpdatedAt")
                         .HasColumnType("bigint");
@@ -288,8 +290,8 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<long?>("StartDate")
-                        .HasColumnType("bigint");
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("Date");
 
                     b.HasKey("Id");
 

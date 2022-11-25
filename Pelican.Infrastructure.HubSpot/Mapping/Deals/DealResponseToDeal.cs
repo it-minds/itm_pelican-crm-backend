@@ -14,12 +14,14 @@ internal static class DealResponseToDeal
 
 		Deal result = new(Guid.NewGuid())
 		{
-			StartDate = string.IsNullOrWhiteSpace(response.Properties.StartDate) ? null : DateTime.Parse(response.Properties.StartDate),
-			EndDate = string.IsNullOrWhiteSpace(response.Properties.EndDate) ? null : DateTime.Parse(response.Properties.EndDate),
-			LastContactDate = string.IsNullOrWhiteSpace(response.Properties.LastContactDate) ? null : DateTime.Parse(response.Properties.LastContactDate),
-			DealStatus = response.Properties.Dealstage,
+			StartDate = string.IsNullOrWhiteSpace(response.Properties.StartDate) ? null : Convert.ToDateTime(response.Properties.StartDate).Ticks,
+			EndDate = string.IsNullOrWhiteSpace(response.Properties.EndDate) ? null : Convert.ToDateTime(response.Properties.EndDate).Ticks,
+			LastContactDate = string.IsNullOrWhiteSpace(response.Properties.LastContactDate) ? null : Convert.ToDateTime(response.Properties.LastContactDate).Ticks,
 			HubSpotId = response.Properties.HubSpotObjectId,
 			HubSpotOwnerId = response.Properties.HubSpotOwnerId,
+			Name = response.Properties.DealName,
+			Description = response.Properties.Description,
+			DealStatus = response.Properties.DealStage,
 		};
 
 		result.AccountManagerDeals = new List<AccountManagerDeal>()

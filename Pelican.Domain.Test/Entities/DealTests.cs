@@ -1,9 +1,108 @@
-﻿using Pelican.Domain.Entities;
+﻿using Bogus;
+using Pelican.Domain.Entities;
 using Xunit;
 
 namespace Pelican.Domain.Test.Entities;
 public class DealTests
 {
+	private readonly Deal _uut = new Deal(Guid.NewGuid())
+	{
+		HubSpotId = "uutHubSpotId",
+	};
+
+	[Fact]
+	public void SetName_NameStringNotToLong_nameEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealName);
+
+		// Act
+		_uut.Name = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.DealName, _uut.Name!.Length);
+		Assert.Equal(propertyValue, _uut.Name);
+	}
+
+	[Fact]
+	public void SetDealStatus_DealStatusStringNotToLong_DealStatusEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealStatus);
+
+		// Act
+		_uut.DealStatus = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
+		Assert.Equal(propertyValue, _uut.DealStatus);
+	}
+
+	[Fact]
+	public void SetDescription_DescriptionStringNotToLong_DescriptionEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealDescription);
+
+		// Act
+		_uut.Description = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.DealDescription, _uut.Description!.Length);
+		Assert.Equal(propertyValue, _uut.Description);
+	}
+
+
+
+	[Fact]
+	public void SetName_NameStringToLong_NameShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealName * 2);
+
+		// Act
+		_uut.Name = propertyValue;
+
+		// Assert
+
+		Assert.Equal(StringLengths.DealName, _uut.Name!.Length);
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealName - 3) + "...", _uut.Name);
+	}
+
+	[Fact]
+	public void SetDealStatus_DealStatusStringToLong_DealStatusShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealStatus * 2);
+
+		// Act
+		_uut.DealStatus = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3) + "...", _uut.DealStatus);
+	}
+
+	[Fact]
+	public void SetDescription_DescriptionStringToLong_DescriptionShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealDescription * 2);
+
+		// Act
+		_uut.Description = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.DealDescription, _uut.Description!.Length);
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealDescription - 3) + "...", _uut.Description);
+	}
+
 	[Fact]
 	public void UpdateProperty_NoUpdates_ThrowsNoException()
 	{
@@ -42,12 +141,8 @@ public class DealTests
 
 		/// Assert
 		Assert.Equal(
-			typeof(InvalidOperationException),
+			typeof(FormatException),
 			exceptionResult.GetType());
-
-		Assert.Equal(
-			"Invalid date format",
-			exceptionResult.Message);
 	}
 
 	[Fact]
@@ -56,11 +151,11 @@ public class DealTests
 		/// Arrange
 		DateTime date = new(2022, 11, 25);
 
-		long ticks = 1669382373249; //Timestamp in milliseconds Friday, November 25, 2022 1:19:33.249 PM
+		long ticks = date.Ticks;
 
 		string name = "enddate";
 
-		string value = ticks.ToString();
+		string value = date.ToString();
 
 		Deal inputDeal = new(Guid.NewGuid());
 
@@ -69,7 +164,7 @@ public class DealTests
 
 		/// Assert
 		Assert.Equal(
-			date,
+			ticks,
 			returnDeal.EndDate);
 	}
 	[Fact]
@@ -87,12 +182,8 @@ public class DealTests
 
 		/// Assert
 		Assert.Equal(
-			typeof(InvalidOperationException),
+			typeof(FormatException),
 			exceptionResult.GetType());
-
-		Assert.Equal(
-			"Invalid date format",
-			exceptionResult.Message);
 	}
 
 	[Fact]
@@ -101,11 +192,11 @@ public class DealTests
 		/// Arrange
 		DateTime date = new(2022, 11, 25);
 
-		long ticks = 1669382373249; //Timestamp in milliseconds Friday, November 25, 2022 1:19:33.249 PM
+		long ticks = date.Ticks;
 
 		string name = "startdate";
 
-		string value = ticks.ToString();
+		string value = date.ToString();
 
 		Deal inputDeal = new(Guid.NewGuid());
 
@@ -114,7 +205,7 @@ public class DealTests
 
 		/// Assert
 		Assert.Equal(
-			date,
+			ticks,
 			returnDeal.StartDate);
 	}
 	[Fact]
@@ -132,12 +223,8 @@ public class DealTests
 
 		/// Assert
 		Assert.Equal(
-			typeof(InvalidOperationException),
+			typeof(FormatException),
 			exceptionResult.GetType());
-
-		Assert.Equal(
-			"Invalid date format",
-			exceptionResult.Message);
 	}
 
 	[Fact]
@@ -146,11 +233,11 @@ public class DealTests
 		// Arrange
 		DateTime date = new(2022, 11, 25);
 
-		long ticks = 1669382373249; //Timestamp in milliseconds Friday, November 25, 2022 1:19:33.249 PM
+		long ticks = date.Ticks;
 
 		string name = "notes_last_contacted";
 
-		string value = ticks.ToString();
+		string value = date.ToString();
 
 		Deal inputDeal = new(Guid.NewGuid());
 
@@ -159,7 +246,7 @@ public class DealTests
 
 		// Assert
 		Assert.Equal(
-			date,
+			ticks,
 			returnDeal.LastContactDate);
 	}
 
@@ -168,7 +255,6 @@ public class DealTests
 	{
 		/// Arrange
 		string name = "dealstage";
-
 		string value = "newStatus";
 
 		Deal inputDeal = new(Guid.NewGuid());
@@ -180,6 +266,93 @@ public class DealTests
 		Assert.Equal(
 			value,
 			returnDeal.DealStatus);
+	}
+
+	[Fact]
+	public void UpdateProperty_DealDescriptionNotToLongUpdated_ReturnsUpdatedDeal()
+	{
+		/// Arrange
+		string name = "description";
+		string value = "newDescription";
+
+		Deal inputDeal = new(Guid.NewGuid());
+
+		/// Act
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
+
+		/// Assert
+		Assert.Equal(
+			value,
+			returnDeal.Description);
+	}
+
+	[Fact]
+	public void UpdateProperty_DealNameUpdated_ReturnsUpdatedDeal()
+	{
+		/// Arrange
+		string name = "dealname";
+		string value = "newName";
+
+		Deal inputDeal = new(Guid.NewGuid());
+
+		/// Act
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
+
+		/// Assert
+		Assert.Equal(
+			value,
+			returnDeal.Name);
+	}
+
+	[Fact]
+	public void UpdateProperty_DealStatusStringToLongDealStatusShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyName = "dealstage";
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealStatus * 2);
+
+		// Act
+		_uut.UpdateProperty(propertyName, propertyValue);
+
+		// Assert
+		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
+		Assert.Equal("...", _uut.DealStatus.Substring(StringLengths.DealStatus - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3), _uut.DealStatus.Substring(0, StringLengths.DealStatus - 3));
+	}
+
+	[Fact]
+	public void UpdateProperty_DealDescriptionStringToLong_DealDescriptionShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyName = "description";
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealDescription * 2);
+
+		// Act
+		_uut.UpdateProperty(propertyName, propertyValue);
+
+		// Assert
+		Assert.Equal(StringLengths.DealDescription, _uut.Description!.Length);
+		Assert.Equal("...", _uut.Description.Substring(StringLengths.DealDescription - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealDescription - 3), _uut.Description.Substring(0, StringLengths.DealDescription - 3));
+	}
+
+	[Fact]
+	public void UpdateProperty_DealNameStringToLong_DealNameShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyName = "dealname";
+		string propertyValue = faker.Lorem.Letter(StringLengths.DealName * 2);
+
+		// Act
+		_uut.UpdateProperty(propertyName, propertyValue);
+
+		// Assert
+		Assert.Equal(StringLengths.DealName, _uut.Name!.Length);
+		Assert.Equal("...", _uut.Name.Substring(StringLengths.DealName - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealName - 3), _uut.Name.Substring(0, StringLengths.DealName - 3));
 	}
 
 	[Fact]

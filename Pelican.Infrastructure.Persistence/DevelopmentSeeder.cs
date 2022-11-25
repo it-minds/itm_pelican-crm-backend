@@ -83,8 +83,6 @@ public class DevelopmentSeeder : IDevelopmentSeeder
 		unitOfWork.DealRepository
 			.CreateRangeAsync(result, cancellationToken);
 		return result.AsQueryable();
-
-
 	}
 
 	public IQueryable<Contact> SeedContacts(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<AccountManager> accountManagers, int count)

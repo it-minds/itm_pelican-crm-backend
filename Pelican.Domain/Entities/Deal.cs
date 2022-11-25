@@ -4,17 +4,56 @@ using Pelican.Domain.Primitives;
 namespace Pelican.Domain.Entities;
 public class Deal : Entity, ITimeTracked
 {
-	public string HubSpotId { get; set; }
+	private string? _name;
+	private string? _dealStatus;
+	private string? _description;
+
+	public Deal(Guid id) : base(id) { }
+
+	public Deal() { }
+
+	public string HubSpotId { get; set; } = string.Empty;
 
 	public string? HubSpotOwnerId { get; set; }
 
-	public string? DealStatus { get; set; }
+	public string? DealStatus
+	{
+		get => _dealStatus;
+		set
+		{
+			_dealStatus = value!.Length > StringLengths.DealStatus
+				? value.Substring(0, StringLengths.DealStatus - 3) + ("...")
+				: value;
+		}
+	}
 
-	public DateTime? EndDate { get; set; }
+	public long? EndDate { get; set; }
 
-	public DateTime? StartDate { get; set; }
+	public long? StartDate { get; set; }
 
-	public DateTime? LastContactDate { get; set; }
+	public long? LastContactDate { get; set; }
+
+	public string? Name
+	{
+		get => _name;
+		set
+		{
+			_name = value!.Length > StringLengths.DealName
+				? value.Substring(0, StringLengths.DealName - 3) + ("...")
+				: value;
+		}
+	}
+
+	public string? Description
+	{
+		get => _description;
+		set
+		{
+			_description = value!.Length > StringLengths.DealDescription
+				? value.Substring(0, StringLengths.DealDescription - 3) + ("...")
+				: value;
+		}
+	}
 
 	public Guid? ClientId { get; set; }
 
@@ -30,56 +69,32 @@ public class Deal : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
-
-	public Deal(Guid id) : base(id) { }
-
-	public Deal() { }
-
 	[GraphQLIgnore]
 	public virtual Deal UpdateProperty(string propertyName, string propertyValue)
 	{
 		switch (propertyName)
 		{
 			case "enddate":
-				{
-					bool hasLongValue = long.TryParse(propertyValue, out long value);
-					if (!hasLongValue)
-					{
-						throw new InvalidOperationException("Invalid date format");
-					}
-					DateTime date = DateTimeOffset.FromUnixTimeMilliseconds(value).Date;
-					EndDate = date;
-					break;
-				}
+				EndDate = Convert.ToDateTime(propertyValue).Ticks;
+				break;
 			case "startdate":
-				{
-					bool hasLongValue = long.TryParse(propertyValue, out long value);
-					if (!hasLongValue)
-					{
-						throw new InvalidOperationException("Invalid date format");
-					}
-					DateTime date = DateTimeOffset.FromUnixTimeMilliseconds(value).Date;
-					StartDate = date;
-					break;
-				}
+				StartDate = Convert.ToDateTime(propertyValue).Ticks;
+				break;
 			case "dealstage":
 				DealStatus = propertyValue;
 				break;
 			case "notes_last_contacted":
-				{
-					bool hasLongValue = long.TryParse(propertyValue, out long value);
-					if (!hasLongValue)
-					{
-						throw new InvalidOperationException("Invalid date format");
-					}
-					DateTime date = DateTimeOffset.FromUnixTimeMilliseconds(value).Date;
-					LastContactDate = date;
-					break;
-				}
+				LastContactDate = Convert.ToDateTime(propertyValue).Ticks;
+				break;
+			case "dealname":
+				Name = propertyValue;
+				break;
+			case "description":
+				Description = propertyValue;
+				break;
 			default:
 				throw new InvalidOperationException("Invalid field");
 		}
-
 		return this;
 	}
 

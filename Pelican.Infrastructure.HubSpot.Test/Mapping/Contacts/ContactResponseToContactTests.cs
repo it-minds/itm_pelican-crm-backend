@@ -1,4 +1,6 @@
-﻿using Pelican.Domain.Entities;
+﻿using Bogus;
+using Pelican.Domain;
+using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 using Pelican.Infrastructure.HubSpot.Mapping.Contacts;
@@ -20,8 +22,8 @@ public class ContactResponseToContactTests
 	{
 		Properties = new()
 		{
-			Firstname = FIRSTNAME,
-			Lastname = LASTNAME,
+			FirstName = FIRSTNAME,
+			LastName = LASTNAME,
 			Email = EMAIL,
 			Phone = PHONE,
 			HubSpotObjectId = ID,
@@ -55,8 +57,8 @@ public class ContactResponseToContactTests
 		Contact result = response.ToContact();
 
 		/// Assert
-		Assert.Equal(FIRSTNAME, result.Firstname);
-		Assert.Equal(LASTNAME, result.Lastname);
+		Assert.Equal(FIRSTNAME, result.FirstName);
+		Assert.Equal(LASTNAME, result.LastName);
 		Assert.Equal(EMAIL, result.Email);
 		Assert.Equal(PHONE, result.PhoneNumber);
 		Assert.Equal(ID, result.HubSpotId);
@@ -177,6 +179,81 @@ public class ContactResponseToContactTests
 		Assert.Equal("1", result.DealContacts.First().HubSpotDealId);
 		Assert.Equal(result, result.DealContacts.First().Contact);
 		Assert.Equal(result.Id, result.DealContacts.First().ContactId);
+	}
+
+	[Fact]
+	public void ToContact_FirstNameStringTooLong_FirstNameShortenededAndAppendedWithThreeDots()
+	{
+		Faker faker = new();
+		response.Properties.FirstName = faker.Lorem.Letter(StringLengths.Name * 2);
+
+		/// Act
+		Contact result = response.ToContact();
+
+		/// Assert
+		Assert.Equal(StringLengths.Name, result.FirstName!.Length);
+		Assert.Equal("...", result.FirstName.Substring(StringLengths.Name - 3));
+		Assert.Equal(response.Properties.FirstName.Substring(0, StringLengths.Name - 3), result.FirstName.Substring(0, StringLengths.Email - 3));
+	}
+
+	[Fact]
+	public void ToContact_LastNameStringTooLong_LastNameShortenededAndAppendedWithThreeDots()
+	{
+		Faker faker = new();
+		response.Properties.LastName = faker.Lorem.Letter(StringLengths.Name * 2);
+
+		/// Act
+		Contact result = response.ToContact();
+
+		/// Assert
+		Assert.Equal(StringLengths.Name, result.LastName!.Length);
+		Assert.Equal("...", result.LastName.Substring(StringLengths.Name - 3));
+		Assert.Equal(response.Properties.LastName.Substring(0, StringLengths.Name - 3), result.LastName.Substring(0, StringLengths.Name - 3));
+	}
+
+	[Fact]
+	public void ToContact_EmailStringTooLong_EmailShortenededAndAppendedWithThreeDots()
+	{
+		Faker faker = new();
+		response.Properties.Email = faker.Lorem.Letter(StringLengths.Email * 2);
+
+		/// Act
+		Contact result = response.ToContact();
+
+		/// Assert
+		Assert.Equal(StringLengths.Email, result.Email!.Length);
+		Assert.Equal("...", result.Email.Substring(StringLengths.Email - 3));
+		Assert.Equal(response.Properties.Email.Substring(0, StringLengths.Email - 3), result.Email.Substring(0, StringLengths.Email - 3));
+	}
+
+	[Fact]
+	public void ToContact_PhoneStringTooLong_PhoneShortenededAndAppendedWithThreeDots()
+	{
+		Faker faker = new();
+		response.Properties.Phone = faker.Lorem.Letter(StringLengths.PhoneNumber * 2);
+
+		/// Act
+		Contact result = response.ToContact();
+
+		/// Assert
+		Assert.Equal(StringLengths.PhoneNumber, result.PhoneNumber!.Length);
+		Assert.Equal("...", result.PhoneNumber.Substring(StringLengths.PhoneNumber - 3));
+		Assert.Equal(response.Properties.Phone.Substring(0, StringLengths.PhoneNumber - 3), result.PhoneNumber.Substring(0, StringLengths.PhoneNumber - 3));
+	}
+
+	[Fact]
+	public void ToContact_JobTitleStringTooLong_JobTitleShortenededAndAppendedWithThreeDots()
+	{
+		Faker faker = new();
+		response.Properties.JobTitle = faker.Lorem.Letter(StringLengths.JobTitle * 2);
+
+		/// Act
+		Contact result = response.ToContact();
+
+		/// Assert
+		Assert.Equal(StringLengths.JobTitle, result.JobTitle!.Length);
+		Assert.Equal("...", result.JobTitle.Substring(StringLengths.JobTitle - 3));
+		Assert.Equal(response.Properties.JobTitle.Substring(0, StringLengths.JobTitle - 3), result.JobTitle.Substring(0, StringLengths.JobTitle - 3));
 	}
 
 	[Fact]

@@ -14,8 +14,8 @@ internal static class ContactResponseToContact
 
 		Contact result = new(Guid.NewGuid())
 		{
-			Firstname = response.Properties.Firstname,
-			Lastname = response.Properties.Lastname,
+			FirstName = response.Properties.FirstName,
+			LastName = response.Properties.LastName,
 			Email = response.Properties.Email,
 			PhoneNumber = response.Properties.Phone,
 			HubSpotId = response.Properties.HubSpotObjectId,

@@ -15,14 +15,14 @@ internal static class OwnerResponseToAccountManager
 		{
 			throw new ArgumentNullException(nameof(response));
 		}
-
-		return new(Guid.NewGuid())
+		AccountManager result = new(Guid.NewGuid())
 		{
 			HubSpotId = response.Id,
+			HubSpotUserId = response.UserId,
 			Email = response.Email,
 			FirstName = response.Firstname,
 			LastName = response.Lastname,
-			HubSpotUserId = response.UserId,
 		};
+		return result;
 	}
 }

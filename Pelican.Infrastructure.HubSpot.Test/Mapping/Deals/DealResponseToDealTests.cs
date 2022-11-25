@@ -1,4 +1,6 @@
-﻿using Pelican.Domain.Entities;
+﻿using Bogus;
+using Pelican.Domain;
+using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Mapping.Deals;
@@ -11,20 +13,24 @@ public class DealResponseToDealTests
 	private const string ID = "id";
 	private const string DEALSTAGE = "dealstage";
 	private const string OWNERID = "ownerid";
-	private const string CLOSEDATE = "1999-04-25T00:00:00";
-	private const string STARTDATE = "1999-04-25T00:00:00";
-	private const string LASTCONTACTDATE = "1999-04-25T00:00:00";
+	private const string CLOSEDATE = "1999-04-25T00:00:00.000Z";
+	private const string STARTDATE = "1999-04-25T00:00:00.000Z";
+	private const string LASTCONTACTDATE = "1999-04-25T00:00:00.000Z";
+	private const string DEALNAME = "dealname";
+	private const string DEALDESCRIPTION = "dealdescription";
 
 	private readonly DealResponse response = new()
 	{
 		Properties = new()
 		{
-			Dealstage = DEALSTAGE,
+			DealStage = DEALSTAGE,
 			EndDate = CLOSEDATE,
 			StartDate = STARTDATE,
 			HubSpotObjectId = ID,
 			HubSpotOwnerId = OWNERID,
 			LastContactDate = LASTCONTACTDATE,
+			DealName = DEALNAME,
+			Description = DEALDESCRIPTION,
 		},
 	};
 
@@ -54,11 +60,13 @@ public class DealResponseToDealTests
 
 		/// Assert
 		Assert.Equal(DEALSTAGE, result.DealStatus);
-		Assert.Equal(DateTime.Parse(CLOSEDATE), result.EndDate);
-		Assert.Equal(DateTime.Parse(STARTDATE), result.StartDate);
-		Assert.Equal(DateTime.Parse(LASTCONTACTDATE), result.LastContactDate);
+		Assert.Equal(Convert.ToDateTime(CLOSEDATE).Ticks, result.EndDate);
+		Assert.Equal(Convert.ToDateTime(STARTDATE).Ticks, result.StartDate);
+		Assert.Equal(Convert.ToDateTime(LASTCONTACTDATE).Ticks, result.LastContactDate);
 		Assert.Equal(ID, result.HubSpotId);
 		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+		Assert.Equal(DEALNAME, result.Name);
+		Assert.Equal(DEALDESCRIPTION, result.Description);
 	}
 
 	[Fact]
@@ -175,6 +183,51 @@ public class DealResponseToDealTests
 		Assert.Equal(result, result.DealContacts.First().Deal);
 		Assert.Equal(result.Id, result.DealContacts.First().DealId);
 		Assert.True(result.DealContacts.First().IsActive);
+	}
+
+	[Fact]
+	public void ToDeal_NameStringTooLong_NameShortenededAndAppendedWithThreeDots()
+	{
+		Faker faker = new();
+		response.Properties.DealName = faker.Lorem.Letter(StringLengths.DealName * 2);
+
+		/// Act
+		Deal result = response.ToDeal();
+
+		/// Assert
+		Assert.Equal(StringLengths.DealName, result.Name!.Length);
+		Assert.Equal("...", result.Name.Substring(StringLengths.DealName - 3));
+		Assert.Equal(response.Properties.DealName.Substring(0, StringLengths.DealName - 3), result.Name.Substring(0, StringLengths.DealName - 3));
+	}
+
+	[Fact]
+	public void ToDeal_DealStatusStringTooLong_DealStatusShortenededAndAppendedWithThreeDots()
+	{
+		Faker faker = new();
+		response.Properties.DealStage = faker.Lorem.Letter(StringLengths.DealStatus * 2);
+
+		/// Act
+		Deal result = response.ToDeal();
+
+		/// Assert
+		Assert.Equal(StringLengths.DealStatus, result.DealStatus!.Length);
+		Assert.Equal("...", result.DealStatus.Substring(StringLengths.DealStatus - 3));
+		Assert.Equal(response.Properties.DealStage.Substring(0, StringLengths.DealStatus - 3), result.DealStatus.Substring(0, StringLengths.DealStatus - 3));
+	}
+
+	[Fact]
+	public void ToDeal_DescriptionStringTooLong_DescriptionShortenededAndAppendedWithThreeDots()
+	{
+		Faker faker = new();
+		response.Properties.Description = faker.Lorem.Letter(StringLengths.DealDescription * 2);
+
+		/// Act
+		Deal result = response.ToDeal();
+
+		/// Assert
+		Assert.Equal(StringLengths.DealDescription, result.Description!.Length);
+		Assert.Equal("...", result.Description.Substring(StringLengths.DealDescription - 3));
+		Assert.Equal(response.Properties.Description.Substring(0, StringLengths.DealDescription - 3), result.Description.Substring(0, StringLengths.DealDescription - 3));
 	}
 
 	[Fact]

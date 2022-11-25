@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pelican.Application\Pelican.Application.csproj" />
+    <ProjectReference Include="..\..\src\Pelican.Presentation.Api\Pelican.Presentation.Api.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pelican.Presentation.GraphQL\Pelican.Presentation.GraphQL.csproj" />
+    <ProjectReference Include="..\..\src\Pelican.Application\Pelican.Application.csproj" />
   </ItemGroup>
 
 </Project>

@@ -122,12 +122,6 @@ public class ValidateWebhookUserIdCommandHandlerTests
 
 		// Assert
 		_unitOfWorkMock.Verify(
-			u => u.AccountManagerRepository.FirstOrDefaultAsync(
-				a => a.HubSpotUserId == command.UserId,
-				default),
-			Times.Once);
-
-		_unitOfWorkMock.Verify(
 			u => u.SupplierRepository.FirstOrDefaultAsync(
 				a => a.HubSpotId == command.SupplierHubSpotId,
 				default),
@@ -167,18 +161,6 @@ public class ValidateWebhookUserIdCommandHandlerTests
 		var result = await _uut.Handle(command, default);
 
 		// Assert
-		_unitOfWorkMock.Verify(
-			u => u.AccountManagerRepository.FirstOrDefaultAsync(
-				a => a.HubSpotUserId == command.UserId,
-				default),
-			Times.Once);
-
-		_unitOfWorkMock.Verify(
-			u => u.SupplierRepository.FirstOrDefaultAsync(
-				a => a.HubSpotId == command.SupplierHubSpotId,
-				default),
-			Times.Once);
-
 		_hubSpotAuthorizationServiceMock.Verify(
 			h => h.RefreshAccessTokenFromRefreshTokenAsync(
 				REFRESH_TOKEN,
@@ -226,24 +208,6 @@ public class ValidateWebhookUserIdCommandHandlerTests
 		var result = await _uut.Handle(command, default);
 
 		// Assert
-		_unitOfWorkMock.Verify(
-			u => u.AccountManagerRepository.FirstOrDefaultAsync(
-				a => a.HubSpotUserId == command.UserId,
-				default),
-			Times.Once);
-
-		_unitOfWorkMock.Verify(
-			u => u.SupplierRepository.FirstOrDefaultAsync(
-				a => a.HubSpotId == command.SupplierHubSpotId,
-				default),
-			Times.Once);
-
-		_hubSpotAuthorizationServiceMock.Verify(
-			h => h.RefreshAccessTokenFromRefreshTokenAsync(
-				REFRESH_TOKEN,
-				default),
-			Times.Once);
-
 		_hubSpotAccountManagerServiceMock.Verify(
 			h => h.GetByUserIdAsync(
 				ACCESS_TOKEN,
@@ -294,31 +258,6 @@ public class ValidateWebhookUserIdCommandHandlerTests
 		var result = await _uut.Handle(command, default);
 
 		// Assert
-		_unitOfWorkMock.Verify(
-			u => u.AccountManagerRepository.FirstOrDefaultAsync(
-				a => a.HubSpotUserId == command.UserId,
-				default),
-			Times.Once);
-
-		_unitOfWorkMock.Verify(
-			u => u.SupplierRepository.FirstOrDefaultAsync(
-				a => a.HubSpotId == command.SupplierHubSpotId,
-				default),
-			Times.Once);
-
-		_hubSpotAuthorizationServiceMock.Verify(
-			h => h.RefreshAccessTokenFromRefreshTokenAsync(
-				REFRESH_TOKEN,
-				default),
-			Times.Once);
-
-		_hubSpotAccountManagerServiceMock.Verify(
-			h => h.GetByUserIdAsync(
-				ACCESS_TOKEN,
-				command.UserId,
-				default),
-			Times.Once);
-
 		_unitOfWorkMock.Verify(
 			u => u.AccountManagerRepository.CreateAsync(
 				accountManager,

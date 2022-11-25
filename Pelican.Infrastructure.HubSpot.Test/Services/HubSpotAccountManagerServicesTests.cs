@@ -23,57 +23,6 @@ public class HubSpotAccountManagerServicesTests
 	}
 
 	[Fact]
-	public async Task GetByIdAsync_ClientReturnsFailure_ReturnFailure()
-	{
-		// Arrange
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<OwnerResponse>(
-				It.IsAny<RestRequest>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<OwnerResponse>()
-			{
-				IsSuccessStatusCode = false,
-			});
-
-		// Act
-		var result = await _uut.GetByIdAsync("", 0, default);
-
-		// Assert
-		Assert.True(result.IsFailure);
-	}
-
-	[Fact]
-	public async Task GetByIdAsync_ClientReturnsSuccess_ReturnSuccess()
-	{
-		// Arrange
-		OwnerResponse response = new()
-		{
-			Id = ID,
-			Email = EMAIL,
-			Firstname = FIRSTNAME,
-			Lastname = LASTNAME,
-		};
-
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<OwnerResponse>(
-				It.IsAny<RestRequest>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<OwnerResponse>()
-			{
-				IsSuccessStatusCode = true,
-				ResponseStatus = ResponseStatus.Completed,
-				Data = response
-			});
-
-		// Act
-		var result = await _uut.GetByIdAsync("", 0, default);
-
-		// Assert
-		Assert.True(result.IsSuccess);
-		Assert.Equal("Id", result.Value.HubSpotId);
-	}
-
-	[Fact]
 	public async Task GetByUserIdAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		// Arrange

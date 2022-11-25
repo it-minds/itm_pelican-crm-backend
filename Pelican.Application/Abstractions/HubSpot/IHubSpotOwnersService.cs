@@ -5,11 +5,6 @@ namespace Pelican.Application.Abstractions.HubSpot;
 
 public interface IHubSpotOwnersService
 {
-	Task<Result<AccountManager>> GetByIdAsync(
-		string accessToken,
-		long id,
-		CancellationToken cancellationToken);
-
 	Task<Result<AccountManager>> GetByUserIdAsync(
 		string accessToken,
 		long id,

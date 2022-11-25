@@ -5,6 +5,10 @@ using Pelican.Domain.Primitives;
 
 public class AccountManagerDeal : Entity, ITimeTracked
 {
+	public AccountManagerDeal(Guid id) : base(id) { }
+
+	public AccountManagerDeal() { }
+
 	public bool IsActive { get; set; }
 
 	public Guid AccountManagerId { get; set; }
@@ -23,10 +27,6 @@ public class AccountManagerDeal : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 
 	public long? LastUpdatedAt { get; set; }
-
-	public AccountManagerDeal(Guid id) : base(id) { }
-
-	public AccountManagerDeal() { }
 
 	[GraphQLIgnore]
 	public static AccountManagerDeal Create(Deal deal, AccountManager accountManager)

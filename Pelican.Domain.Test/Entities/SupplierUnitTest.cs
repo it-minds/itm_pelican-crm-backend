@@ -71,21 +71,6 @@ public class SupplierUnitTest
 	}
 
 	[Fact]
-	public void SetPictureUrl_PictureUrlStringNotToLong_PictureUrlEqualeToValueSet()
-	{
-		// Arrange
-		Faker faker = new();
-		string propertyValue = faker.Lorem.Letter(StringLengths.Url);
-
-		// Act
-		_uut.PictureUrl = propertyValue;
-
-		// Assert
-		Assert.Equal(StringLengths.Url, _uut.PictureUrl!.Length);
-		Assert.Equal(propertyValue, _uut.PictureUrl);
-	}
-
-	[Fact]
 	public void SetLinkedInUrl_LinkedInUrlStringNotToLong_LinkedInUrlEqualToValueSet()
 	{
 		// Arrange
@@ -126,24 +111,9 @@ public class SupplierUnitTest
 		// Assert
 
 		Assert.Equal(StringLengths.Name, _uut.Name!.Length);
-		Assert.Equal("...", _uut.Name.Substring(StringLengths.Name - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.Name.Substring(0, StringLengths.Name - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3) + "...", _uut.Name);
 	}
 
-	[Fact]
-	public void SetRefreshToken_RefreshTokenStringToLong_RefreshTokenShortenedAndAppendedWithThreeDots()
-	{
-		// Arrange
-		Faker faker = new();
-		string propertyValue = faker.Lorem.Letter(StringLengths.Token * 2);
-
-		// Act
-		_uut.RefreshToken = propertyValue;
-		// Assert
-		Assert.Equal(StringLengths.Token, _uut.RefreshToken!.Length);
-		Assert.Equal("...", _uut.RefreshToken.Substring(StringLengths.Token - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Token - 3), _uut.RefreshToken.Substring(0, StringLengths.Token - 3));
-	}
 
 	[Fact]
 	public void SetEmail_EmailStringToLong_EmailShortenedAndAppendedWithThreeDots()
@@ -156,8 +126,7 @@ public class SupplierUnitTest
 		_uut.Email = propertyValue;
 		// Assert
 		Assert.Equal(StringLengths.Email, _uut.Email!.Length);
-		Assert.Equal("...", _uut.Email.Substring(StringLengths.Email - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Email - 3), _uut.Email.Substring(0, StringLengths.Email - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Email - 3) + "...", _uut.Email);
 	}
 
 	[Fact]
@@ -172,23 +141,7 @@ public class SupplierUnitTest
 
 		// Assert
 		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
-		Assert.Equal("...", _uut.PhoneNumber.Substring(StringLengths.PhoneNumber - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3), _uut.PhoneNumber.Substring(0, StringLengths.PhoneNumber - 3));
-	}
-	[Fact]
-	public void SetPictureUrl_PictureUrlStringToLong_PictureInUrlShortenedAndAppendedWithThreeDots()
-	{
-		// Arrange
-		Faker faker = new();
-		string propertyValue = faker.Lorem.Letter(StringLengths.Url * 2);
-
-		// Act
-		_uut.PictureUrl = propertyValue;
-
-		// Assert
-		Assert.Equal(StringLengths.Url, _uut.PictureUrl!.Length);
-		Assert.Equal("...", _uut.PictureUrl.Substring(StringLengths.Url - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3), _uut.PictureUrl.Substring(0, StringLengths.Url - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3) + "...", _uut.PhoneNumber);
 	}
 
 	[Fact]
@@ -203,8 +156,7 @@ public class SupplierUnitTest
 
 		// Assert
 		Assert.Equal(StringLengths.Url, _uut.LinkedInUrl!.Length);
-		Assert.Equal("...", _uut.LinkedInUrl.Substring(StringLengths.Url - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3), _uut.LinkedInUrl.Substring(0, StringLengths.Url - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3) + "...", _uut.LinkedInUrl);
 	}
 
 	[Fact]
@@ -219,7 +171,6 @@ public class SupplierUnitTest
 
 		// Assert
 		Assert.Equal(StringLengths.Url, _uut.WebsiteUrl!.Length);
-		Assert.Equal("...", _uut.WebsiteUrl.Substring(StringLengths.Url - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3), _uut.WebsiteUrl.Substring(0, StringLengths.Url - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3) + "...", _uut.WebsiteUrl);
 	}
 }

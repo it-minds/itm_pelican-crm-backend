@@ -16,11 +16,11 @@ internal static class CompanyResponseToClient
 		Client result = new(Guid.NewGuid())
 		{
 			HubSpotId = response.Properties.HubSpotObjectId,
-		};
-		result.Name = response.Properties.Name;
-		result.Website = response.Properties.Domain;
-		result.OfficeLocation = response.Properties.City;
+			Name = response.Properties.Name,
+			Website = response.Properties.Domain,
+			OfficeLocation = response.Properties.City,
 
+		};
 
 		result.Deals = response
 			.Associations

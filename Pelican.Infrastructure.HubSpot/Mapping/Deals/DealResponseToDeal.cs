@@ -19,11 +19,10 @@ internal static class DealResponseToDeal
 			LastContactDate = string.IsNullOrWhiteSpace(response.Properties.LastContactDate) ? null : Convert.ToDateTime(response.Properties.LastContactDate).Ticks,
 			HubSpotId = response.Properties.HubSpotObjectId,
 			HubSpotOwnerId = response.Properties.HubSpotOwnerId,
+			Name = response.Properties.DealName,
+			Description = response.Properties.Description,
+			DealStatus = response.Properties.DealStage,
 		};
-
-		result.Name = response.Properties.DealName;
-		result.Description = response.Properties.Description;
-		result.DealStatus = response.Properties.DealStage;
 
 		result.AccountManagerDeals = new List<AccountManagerDeal>()
 		{

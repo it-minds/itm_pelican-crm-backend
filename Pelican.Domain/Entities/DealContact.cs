@@ -5,8 +5,11 @@ namespace Pelican.Domain.Entities;
 
 public class DealContact : Entity, ITimeTracked
 {
-	public bool IsActive { get; set; }
+	public DealContact(Guid id) : base(id) { }
 
+	public DealContact() { }
+
+	public bool IsActive { get; set; }
 
 	public Guid DealId { get; set; }
 
@@ -25,11 +28,6 @@ public class DealContact : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 
 	public long? LastUpdatedAt { get; set; }
-
-
-	public DealContact(Guid id) : base(id) { }
-
-	public DealContact() { }
 
 	[GraphQLIgnore]
 	public static DealContact Create(Deal deal, Contact contact)

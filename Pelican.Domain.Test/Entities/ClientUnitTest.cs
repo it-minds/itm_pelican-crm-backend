@@ -41,21 +41,6 @@ public class ClientUnitTest
 	}
 
 	[Fact]
-	public void SetPictureUrl_PictureUrlStringNotToLong_PictureUrlEqualToValueSet()
-	{
-		// Arrange
-		Faker faker = new();
-		string propertyValue = faker.Lorem.Letter(StringLengths.Url);
-
-		// Act
-		_uut.PictureUrl = propertyValue;
-
-		// Assert
-		Assert.Equal(StringLengths.Url, _uut.PictureUrl!.Length);
-		Assert.Equal(propertyValue, _uut.PictureUrl);
-	}
-
-	[Fact]
 	public void SetWebsite_WebsiteStringNotToLong_WebsiteEqualToValueSet()
 	{
 		// Arrange
@@ -70,7 +55,6 @@ public class ClientUnitTest
 		Assert.Equal(propertyValue, _uut.Website);
 	}
 
-
 	[Fact]
 	public void SetName_NameStringToLong_NameShortenedAndAppendedWithThreeDots()
 	{
@@ -84,8 +68,7 @@ public class ClientUnitTest
 		// Assert
 
 		Assert.Equal(StringLengths.Name, _uut.Name!.Length);
-		Assert.Equal("...", _uut.Name.Substring(StringLengths.Name - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.Name.Substring(0, StringLengths.Name - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3) + "...", _uut.Name);
 	}
 
 	[Fact]
@@ -100,24 +83,7 @@ public class ClientUnitTest
 
 		// Assert
 		Assert.Equal(StringLengths.OfficeLocation, _uut.OfficeLocation!.Length);
-		Assert.Equal("...", _uut.OfficeLocation.Substring(StringLengths.OfficeLocation - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.OfficeLocation - 3), _uut.OfficeLocation.Substring(0, StringLengths.OfficeLocation - 3));
-	}
-
-	[Fact]
-	public void SetPictureUrl_PictureUrlStringToLong_PictureUrlShortenedAndAppendedWithThreeDots()
-	{
-		// Arrange
-		Faker faker = new();
-		string propertyValue = faker.Lorem.Letter(StringLengths.Url * 2);
-
-		// Act
-		_uut.PictureUrl = propertyValue;
-
-		// Assert
-		Assert.Equal(StringLengths.Url, _uut.PictureUrl!.Length);
-		Assert.Equal("...", _uut.PictureUrl.Substring(StringLengths.Url - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3), _uut.PictureUrl.Substring(0, StringLengths.Url - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.OfficeLocation - 3) + "...", _uut.OfficeLocation);
 	}
 
 	[Fact]
@@ -132,8 +98,7 @@ public class ClientUnitTest
 
 		// Assert
 		Assert.Equal(StringLengths.Url, _uut.Website!.Length);
-		Assert.Equal("...", _uut.Website.Substring(StringLengths.Url - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3), _uut.Website.Substring(0, StringLengths.Url - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3) + "...", _uut.Website);
 	}
 
 	[Fact]

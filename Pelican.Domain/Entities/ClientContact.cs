@@ -4,6 +4,11 @@ using Pelican.Domain.Primitives;
 namespace Pelican.Domain.Entities;
 public class ClientContact : Entity, ITimeTracked
 {
+	public ClientContact(Guid id) : base(id) { }
+
+	public ClientContact() { }
+
+
 	public bool IsActive { get; set; }
 
 
@@ -25,10 +30,6 @@ public class ClientContact : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
-
-	public ClientContact(Guid id) : base(id) { }
-
-	public ClientContact() { }
 
 	[GraphQLIgnore]
 	public static ClientContact Create(Client client, Contact contact)

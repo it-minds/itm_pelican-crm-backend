@@ -99,8 +99,7 @@ public class ContactTests
 		// Assert
 
 		Assert.Equal(StringLengths.Name, _uut.FirstName!.Length);
-		Assert.Equal("...", _uut.FirstName.Substring(StringLengths.Name - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.FirstName.Substring(0, StringLengths.Name - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3) + "...", _uut.FirstName);
 	}
 
 	[Fact]
@@ -115,8 +114,7 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.Name, _uut.LastName!.Length);
-		Assert.Equal("...", _uut.LastName.Substring(StringLengths.Name - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.LastName.Substring(0, StringLengths.Name - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3) + "...", _uut.LastName);
 	}
 
 	[Fact]
@@ -131,8 +129,7 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.Email, _uut.Email!.Length);
-		Assert.Equal("...", _uut.Email.Substring(StringLengths.Email - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Email - 3), _uut.Email.Substring(0, StringLengths.Email - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Email - 3) + "...", _uut.Email);
 	}
 
 	[Fact]
@@ -147,8 +144,7 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
-		Assert.Equal("...", _uut.PhoneNumber.Substring(StringLengths.PhoneNumber - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3), _uut.PhoneNumber.Substring(0, StringLengths.PhoneNumber - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3) + "...", _uut.PhoneNumber);
 	}
 
 	[Fact]
@@ -163,8 +159,7 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.JobTitle, _uut.JobTitle!.Length);
-		Assert.Equal("...", _uut.JobTitle.Substring(StringLengths.JobTitle - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.JobTitle - 3), _uut.JobTitle.Substring(0, StringLengths.JobTitle - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.JobTitle - 3) + "...", _uut.JobTitle);
 	}
 
 	[Fact]

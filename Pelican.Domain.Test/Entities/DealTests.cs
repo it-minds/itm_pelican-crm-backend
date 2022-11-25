@@ -70,8 +70,7 @@ public class DealTests
 		// Assert
 
 		Assert.Equal(StringLengths.DealName, _uut.Name!.Length);
-		Assert.Equal("...", _uut.Name.Substring(StringLengths.DealName - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealName - 3), _uut.Name.Substring(0, StringLengths.DealName - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealName - 3) + "...", _uut.Name);
 	}
 
 	[Fact]
@@ -86,8 +85,7 @@ public class DealTests
 
 		// Assert
 		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
-		Assert.Equal("...", _uut.DealStatus.Substring(StringLengths.DealStatus - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3), _uut.DealStatus.Substring(0, StringLengths.DealStatus - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3) + "...", _uut.DealStatus);
 	}
 
 	[Fact]
@@ -102,8 +100,7 @@ public class DealTests
 
 		// Assert
 		Assert.Equal(StringLengths.DealDescription, _uut.Description!.Length);
-		Assert.Equal("...", _uut.Description.Substring(StringLengths.DealDescription - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealDescription - 3), _uut.Description.Substring(0, StringLengths.DealDescription - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealDescription - 3) + "...", _uut.Description);
 	}
 
 	[Fact]

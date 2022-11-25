@@ -5,26 +5,26 @@ namespace Pelican.Domain.Entities;
 public class Client : Entity, ITimeTracked
 {
 	private string _name = string.Empty;
+	public string? PictureUrl { get; set; }
+	private string? _website { get; set; }
+
+	public Client(Guid id) : base(id) { }
+
+	public Client() { }
+
 	public string Name
 	{
 		get => _name;
 		set
 		{
-			_name = value.Length > StringLengths.Name ? value.Substring(0, StringLengths.Name - 3) + ("...") : value;
+			_name = value.Length > StringLengths.Name
+				? value.Substring(0, StringLengths.Name - 3) + ("...")
+				: value;
 		}
 	}
 
-	public string HubSpotId = string.Empty;
+	public string HubSpotId { get; set; } = string.Empty;
 
-	private string? _pictureUrl { get; set; }
-	public string? PictureUrl
-	{
-		get => _pictureUrl;
-		set
-		{
-			_pictureUrl = value!.Length > StringLengths.Url ? value.Substring(0, StringLengths.Url - 3) + ("...") : value;
-		}
-	}
 
 	private string? _officeLocation;
 	public string? OfficeLocation
@@ -32,7 +32,9 @@ public class Client : Entity, ITimeTracked
 		get => _officeLocation;
 		set
 		{
-			_officeLocation = value!.Length > StringLengths.OfficeLocation ? value.Substring(0, StringLengths.OfficeLocation - 3) + ("...") : value;
+			_officeLocation = value!.Length > StringLengths.OfficeLocation
+				? value.Substring(0, StringLengths.OfficeLocation - 3) + ("...")
+				: value;
 		}
 	}
 
@@ -44,19 +46,16 @@ public class Client : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
-	private string? _website { get; set; }
 	public string? Website
 	{
 		get => _website;
 		set
 		{
-			_website = value!.Length > StringLengths.Url ? value.Substring(0, StringLengths.Url - 3) + ("...") : value;
+			_website = value!.Length > StringLengths.Url
+				? value.Substring(0, StringLengths.Url - 3) + ("...")
+				: value;
 		}
 	}
-
-	public Client(Guid id) : base(id) { }
-
-	public Client() { }
 
 	[GraphQLIgnore]
 	public virtual Client UpdateProperty(string propertyName, string propertyValue)

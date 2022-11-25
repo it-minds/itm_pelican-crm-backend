@@ -4,73 +4,81 @@ using Pelican.Domain.Primitives;
 namespace Pelican.Domain.Entities;
 public class Contact : Entity, ITimeTracked
 {
+	private string? _firstName;
+	private string? _lastName;
+	private string? _phoneNumber;
+	private string? _jobTitle;
+	private string? _email;
+
+	public Contact(Guid id) : base(id) { }
+	public Contact() { }
+
 	public string HubSpotId { get; set; } = string.Empty;
 
 	public string? HubSpotOwnerId { get; set; }
 
 
-	private string? _firstName;
 	public string? FirstName
 	{
 		get => _firstName;
 		set
 		{
-			_firstName = value!.Length > StringLengths.Name ? value.Substring(0, StringLengths.Name - 3) + ("...") : value;
+			_firstName = value!.Length > StringLengths.Name
+				? value.Substring(0, StringLengths.Name - 3) + ("...")
+				: value;
 		}
 	}
-	private string? _lastName;
 	public string? LastName
 	{
 		get => _lastName;
 		set
 		{
-			_lastName = value!.Length > StringLengths.Name ? value.Substring(0, StringLengths.Name - 3) + ("...") : value;
+			_lastName = value!.Length > StringLengths.Name
+				? value.Substring(0, StringLengths.Name - 3) + ("...")
+				: value;
 		}
 	}
 
-	private string? _phoneNumber;
 	public string? PhoneNumber
 	{
 		get => _phoneNumber;
 		set
 		{
-			_phoneNumber = value!.Length > StringLengths.PhoneNumber ? value.Substring(0, StringLengths.PhoneNumber - 3) + ("...") : value;
+			_phoneNumber = value!.Length > StringLengths.PhoneNumber
+				? value.Substring(0, StringLengths.PhoneNumber - 3) + ("...")
+				: value;
 		}
 	}
 
-	private string? _email;
 	public string? Email
 	{
 		get => _email;
 		set
 		{
-			_email = value!.Length > StringLengths.Email ? value.Substring(0, StringLengths.Email - 3) + ("...") : value;
+			_email = value!.Length > StringLengths.Email
+				? value.Substring(0, StringLengths.Email - 3) + ("...")
+				: value;
 		}
 	}
 
-	private string? _jobTitle;
 	public string? JobTitle
 	{
 		get => _jobTitle;
 		set
 		{
-			_jobTitle = value!.Length > StringLengths.JobTitle ? value.Substring(0, StringLengths.JobTitle - 3) + ("...") : value;
+			_jobTitle = value!.Length > StringLengths.JobTitle
+				? value.Substring(0, StringLengths.JobTitle - 3) + ("...")
+				: value;
 		}
 	}
-
 
 	public ICollection<ClientContact> ClientContacts { get; set; } = new List<ClientContact>();
 
 	public ICollection<DealContact> DealContacts { get; set; } = new List<DealContact>();
 
-
 	public long CreatedAt { get; set; }
 
 	public long? LastUpdatedAt { get; set; }
-
-
-	public Contact(Guid id) : base(id) { }
-	public Contact() { }
 
 	[GraphQLIgnore]
 	public virtual Contact UpdateProperty(string propertyName, string propertyValue)

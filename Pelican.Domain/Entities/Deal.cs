@@ -4,17 +4,26 @@ using Pelican.Domain.Primitives;
 namespace Pelican.Domain.Entities;
 public class Deal : Entity, ITimeTracked
 {
+	private string? _name;
+	private string? _dealStatus;
+	private string? _description;
+
+	public Deal(Guid id) : base(id) { }
+
+	public Deal() { }
+
 	public string HubSpotId { get; set; } = string.Empty;
 
 	public string? HubSpotOwnerId { get; set; }
 
-	private string? _dealStatus;
 	public string? DealStatus
 	{
 		get => _dealStatus;
 		set
 		{
-			_dealStatus = value!.Length > StringLengths.DealStatus ? value.Substring(0, StringLengths.DealStatus - 3) + ("...") : value;
+			_dealStatus = value!.Length > StringLengths.DealStatus
+				? value.Substring(0, StringLengths.DealStatus - 3) + ("...")
+				: value;
 		}
 	}
 
@@ -24,23 +33,25 @@ public class Deal : Entity, ITimeTracked
 
 	public long? LastContactDate { get; set; }
 
-	private string? _name;
 	public string? Name
 	{
 		get => _name;
 		set
 		{
-			_name = value!.Length > StringLengths.DealName ? value.Substring(0, StringLengths.DealName - 3) + ("...") : value;
+			_name = value!.Length > StringLengths.DealName
+				? value.Substring(0, StringLengths.DealName - 3) + ("...")
+				: value;
 		}
 	}
 
-	private string? _description;
 	public string? Description
 	{
 		get => _description;
 		set
 		{
-			_description = value!.Length > StringLengths.DealDescription ? value.Substring(0, StringLengths.DealDescription - 3) + ("...") : value;
+			_description = value!.Length > StringLengths.DealDescription
+				? value.Substring(0, StringLengths.DealDescription - 3) + ("...")
+				: value;
 		}
 	}
 
@@ -57,11 +68,6 @@ public class Deal : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 
 	public long? LastUpdatedAt { get; set; }
-
-
-	public Deal(Guid id) : base(id) { }
-
-	public Deal() { }
 
 	[GraphQLIgnore]
 	public virtual Deal UpdateProperty(string propertyName, string propertyValue)

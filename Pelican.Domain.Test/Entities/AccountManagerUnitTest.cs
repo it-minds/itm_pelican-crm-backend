@@ -72,21 +72,6 @@ public class AccountManagerUnitTest
 	}
 
 	[Fact]
-	public void SetPictureUrl_PictureUrlStringNotToLong_PictureUrlEqualToValueSet()
-	{
-		// Arrange
-		Faker faker = new();
-		string propertyValue = faker.Lorem.Letter(StringLengths.Url);
-
-		// Act
-		_uut.PictureUrl = propertyValue;
-
-		// Assert
-		Assert.Equal(StringLengths.Url, _uut.PictureUrl!.Length);
-		Assert.Equal(propertyValue, _uut.PictureUrl);
-	}
-
-	[Fact]
 	public void SetLinkedInUrl_LinkedInUrlStringNotToLong_LinkedInUrlEqualToValueSet()
 	{
 		// Arrange
@@ -113,8 +98,7 @@ public class AccountManagerUnitTest
 		// Assert
 
 		Assert.Equal(StringLengths.Name, _uut.FirstName!.Length);
-		Assert.Equal("...", _uut.FirstName.Substring(StringLengths.Name - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.FirstName.Substring(0, StringLengths.Name - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3) + "...", _uut.FirstName);
 	}
 
 	[Fact]
@@ -128,8 +112,7 @@ public class AccountManagerUnitTest
 		_uut.LastName = propertyValue;
 		// Assert
 		Assert.Equal(StringLengths.Name, _uut.LastName!.Length);
-		Assert.Equal("...", _uut.LastName.Substring(StringLengths.Name - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.LastName.Substring(0, StringLengths.Name - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3) + "...", _uut.LastName);
 	}
 
 	[Fact]
@@ -143,8 +126,7 @@ public class AccountManagerUnitTest
 		_uut.Email = propertyValue;
 		// Assert
 		Assert.Equal(StringLengths.Email, _uut.Email!.Length);
-		Assert.Equal("...", _uut.Email.Substring(StringLengths.Email - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Email - 3), _uut.Email.Substring(0, StringLengths.Email - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Email - 3) + "...", _uut.Email);
 	}
 
 	[Fact]
@@ -159,23 +141,7 @@ public class AccountManagerUnitTest
 
 		// Assert
 		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
-		Assert.Equal("...", _uut.PhoneNumber.Substring(StringLengths.PhoneNumber - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3), _uut.PhoneNumber.Substring(0, StringLengths.PhoneNumber - 3));
-	}
-	[Fact]
-	public void SetPictureUrl_PictureUrlStringToLong_PictureInUrlShortenedAndAppendedWithThreeDots()
-	{
-		// Arrange
-		Faker faker = new();
-		string propertyValue = faker.Lorem.Letter(StringLengths.Url * 2);
-
-		// Act
-		_uut.PictureUrl = propertyValue;
-
-		// Assert
-		Assert.Equal(StringLengths.Url, _uut.PictureUrl!.Length);
-		Assert.Equal("...", _uut.PictureUrl.Substring(StringLengths.Url - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3), _uut.PictureUrl.Substring(0, StringLengths.Url - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3) + "...", _uut.PhoneNumber);
 	}
 
 	[Fact]
@@ -190,7 +156,6 @@ public class AccountManagerUnitTest
 
 		// Assert
 		Assert.Equal(StringLengths.Url, _uut.LinkedInUrl!.Length);
-		Assert.Equal("...", _uut.LinkedInUrl.Substring(StringLengths.Url - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3), _uut.LinkedInUrl.Substring(0, StringLengths.Url - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3) + "...", _uut.LinkedInUrl);
 	}
 }

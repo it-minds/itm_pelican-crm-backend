@@ -37,7 +37,6 @@ public class LocationUnitTest
 		_uut.CityName = propertyValue;
 		// Assert
 		Assert.Equal(StringLengths.OfficeLocation, _uut.CityName!.Length);
-		Assert.Equal("...", _uut.CityName.Substring(StringLengths.OfficeLocation - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.OfficeLocation - 3), _uut.CityName.Substring(0, StringLengths.OfficeLocation - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.OfficeLocation - 3) + "...", _uut.CityName);
 	}
 }

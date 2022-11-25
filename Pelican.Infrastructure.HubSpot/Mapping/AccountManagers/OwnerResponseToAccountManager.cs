@@ -19,11 +19,10 @@ internal static class OwnerResponseToAccountManager
 		{
 			HubSpotId = response.Id,
 			HubSpotUserId = response.UserId,
+			Email = response.Email,
+			FirstName = response.Firstname,
+			LastName = response.Lastname,
 		};
-		result.Email = response.Email;
-		result.FirstName = response.Firstname;
-		result.LastName = response.Lastname;
-
 		return result;
 	}
 }

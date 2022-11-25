@@ -22,13 +22,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pelican.Application\Pelican.Application.csproj" />
-    <ProjectReference Include="..\Pelican.App\Pelican.App.csproj" />
-    <ProjectReference Include="..\Pelican.Domain\Pelican.Domain.csproj" />
-    <ProjectReference Include="..\Pelican.Infrastructure.HubSpot\Pelican.Infrastructure.HubSpot.csproj" />
-    <ProjectReference Include="..\Pelican.Infrastructure.Persistence\Pelican.Infrastructure.Persistence.csproj" />
-    <ProjectReference Include="..\Pelican.Presentation.Api\Pelican.Presentation.Api.csproj" />
-    <ProjectReference Include="..\Pelican.Presentation.GraphQL\Pelican.Presentation.GraphQL.csproj" />
+    <ProjectReference Include="..\..\src\Pelican.Application\Pelican.Application.csproj" />
+    <ProjectReference Include="..\..\src\Pelican.App\Pelican.App.csproj" />
+    <ProjectReference Include="..\..\src\Pelican.Domain\Pelican.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Pelican.Infrastructure.HubSpot\Pelican.Infrastructure.HubSpot.csproj" />
+    <ProjectReference Include="..\..\src\Pelican.Infrastructure.Persistence\Pelican.Infrastructure.Persistence.csproj" />
+    <ProjectReference Include="..\..\src\Pelican.Presentation.Api\Pelican.Presentation.Api.csproj" />
+    <ProjectReference Include="..\..\src\Pelican.Presentation.GraphQL\Pelican.Presentation.GraphQL.csproj" />
   </ItemGroup>
 
 </Project>

@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Pelican.Infrastructure.HubSpot\Pelican.Infrastructure.HubSpot.csproj" />
+		<ProjectReference Include="..\..\src\Pelican.Infrastructure.HubSpot\Pelican.Infrastructure.HubSpot.csproj" />
 	</ItemGroup>
 
 </Project>

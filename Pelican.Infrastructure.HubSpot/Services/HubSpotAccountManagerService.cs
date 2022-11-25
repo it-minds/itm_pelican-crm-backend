@@ -9,20 +9,21 @@ using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;
 
-internal sealed class HubSpotAccountManagerService : HubSpotService, IHubSpotObjectService<AccountManager>
+internal sealed class HubSpotAccountManagerService : HubSpotService, IHubSpotOwnersService
 {
 	public HubSpotAccountManagerService(
 		IHubSpotClient hubSpotClient)
 		: base(hubSpotClient)
 	{ }
 
-	public async Task<Result<AccountManager>> GetByIdAsync(
+	public async Task<Result<AccountManager>> GetByUserIdAsync(
 		string accessToken,
 		long id,
 		CancellationToken cancellationToken)
 	{
 		RestRequest request = new RestRequest($"crm/v3/owners/{id}")
-			.AddHeader("Authorization", $"Bearer {accessToken}");
+			.AddHeader("Authorization", $"Bearer {accessToken}")
+			.AddQueryParameter("idProperty", "userid");
 
 		RestResponse<OwnerResponse> response = await _hubSpotClient
 			.GetAsync<OwnerResponse>(request, cancellationToken);

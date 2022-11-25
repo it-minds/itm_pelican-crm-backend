@@ -12,12 +12,12 @@ public record WebHookRequest
 	[JsonPropertyName("propertyValue")]
 	public string PropertyValue { get; set; } = string.Empty;
 
-	[JsonPropertyName("attemptNumber")]
-	public int AttemptNumber { get; set; }
-
 	[JsonPropertyName("subscriptionType")]
 	public string SubscriptionType { get; set; } = string.Empty;
 
 	[JsonPropertyName("portalId")]
-	public long PortalId { get; set; }
+	public long SupplierHubSpotId { get; set; }
+
+	[JsonPropertyName("sourceId")]
+	public string SourceId { get; set; } = string.Empty;
 }

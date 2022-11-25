@@ -12,7 +12,7 @@ namespace Pelican.Application.Test.HubSpot.Commands.NewInstallation;
 public class NewInstallationCommandHandlerTests
 {
 	private readonly NewInstallationCommandHandler _uut;
-	private readonly Mock<IHubSpotObjectService<AccountManager>> _hubSpotAccountManagerServiceMock;
+	private readonly Mock<IHubSpotOwnersService> _hubSpotAccountManagerServiceMock;
 	private readonly Mock<IHubSpotAuthorizationService> _hubSpotAuthorizationServiceMock;
 	private readonly Mock<IHubSpotObjectService<Contact>> _hubSpotContactServiceMock;
 	private readonly Mock<IHubSpotObjectService<Client>> _hubSpotClientServiceMock;

@@ -14,41 +14,38 @@ public class HubSpotAccountManagerServicesTests
 	private const string FIRSTNAME = "Firstname";
 	private const string LASTNAME = "Lastname";
 
-	private readonly Mock<IHubSpotClient> _hubSpotClientMock;
+	private readonly Mock<IHubSpotClient> _hubSpotClientMock = new();
 	private readonly HubSpotAccountManagerService _uut;
-	private readonly CancellationToken _cancellationToken;
 
 	public HubSpotAccountManagerServicesTests()
 	{
-		_hubSpotClientMock = new();
-		_cancellationToken = new();
 		_uut = new HubSpotAccountManagerService(_hubSpotClientMock.Object);
 	}
 
 	[Fact]
-	public async Task GetByIdAsync_ClientReturnsFailure_ReturnFailure()
+	public async Task GetByUserIdAsync_ClientReturnsFailure_ReturnFailure()
 	{
-		/// Arrange
+		// Arrange
 		_hubSpotClientMock
 			.Setup(client => client.GetAsync<OwnerResponse>(
 				It.IsAny<RestRequest>(),
-				_cancellationToken))
+				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(new RestResponse<OwnerResponse>()
 			{
 				IsSuccessStatusCode = false,
 			});
 
-		/// Act
-		var result = await _uut.GetByIdAsync("", 0, _cancellationToken);
+		// Act
+		var result = await _uut.GetByUserIdAsync("", 0, default);
 
-		/// Assert
+		// Assert
 		Assert.True(result.IsFailure);
 	}
 
 	[Fact]
-	public async Task GetByIdAsync_ClientReturnsSuccess_ReturnSuccess()
+	public async Task GetByUserIdAsync_ClientReturnsSuccess_ReturnSuccess()
 	{
-		/// Arrange
+		// Arrange
 		OwnerResponse response = new()
 		{
 			Id = ID,
@@ -60,7 +57,7 @@ public class HubSpotAccountManagerServicesTests
 		_hubSpotClientMock
 			.Setup(client => client.GetAsync<OwnerResponse>(
 				It.IsAny<RestRequest>(),
-				_cancellationToken))
+				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(new RestResponse<OwnerResponse>()
 			{
 				IsSuccessStatusCode = true,
@@ -68,10 +65,10 @@ public class HubSpotAccountManagerServicesTests
 				Data = response
 			});
 
-		/// Act
-		var result = await _uut.GetByIdAsync("", 0, _cancellationToken);
+		// Act
+		var result = await _uut.GetByUserIdAsync("", 0, default);
 
-		/// Assert
+		// Assert
 		Assert.True(result.IsSuccess);
 		Assert.Equal("Id", result.Value.HubSpotId);
 	}
@@ -79,27 +76,27 @@ public class HubSpotAccountManagerServicesTests
 	[Fact]
 	public async Task GetAsync_ClientReturnsFailure_ReturnFailure()
 	{
-		/// Arrange
+		// Arrange
 		_hubSpotClientMock
 			.Setup(client => client.GetAsync<OwnersResponse>(
 				It.IsAny<RestRequest>(),
-				_cancellationToken))
+				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(new RestResponse<OwnersResponse>()
 			{
 				IsSuccessStatusCode = false,
 			});
 
-		/// Act
-		var result = await _uut.GetAsync("", _cancellationToken);
+		// Act
+		var result = await _uut.GetAsync("", default);
 
-		/// Assert
+		// Assert
 		Assert.True(result.IsFailure);
 	}
 
 	[Fact]
 	public async Task GetAsync_ClientReturnsSuccess_ReturnSuccess()
 	{
-		/// Arrange
+		// Arrange
 		OwnersResponse responses = new()
 		{
 			Results = new OwnerResponse[]
@@ -117,7 +114,7 @@ public class HubSpotAccountManagerServicesTests
 		_hubSpotClientMock
 			.Setup(client => client.GetAsync<OwnersResponse>(
 				It.IsAny<RestRequest>(),
-				_cancellationToken))
+				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(new RestResponse<OwnersResponse>()
 			{
 				IsSuccessStatusCode = true,
@@ -125,10 +122,10 @@ public class HubSpotAccountManagerServicesTests
 				Data = responses
 			});
 
-		/// Act
-		var result = await _uut.GetAsync("", _cancellationToken);
+		// Act
+		var result = await _uut.GetAsync("", default);
 
-		/// Assert
+		// Assert
 		Assert.True(result.IsSuccess);
 		Assert.Equal("Id", result.Value.First().HubSpotId);
 	}

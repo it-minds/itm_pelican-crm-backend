@@ -147,7 +147,7 @@ public class UpdateDealCommandHandlerTests
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
-				.RefreshAccessTokenAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
+				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
 			.ReturnsAsync(Result.Failure<string>(error));
 
 		// Act
@@ -155,7 +155,7 @@ public class UpdateDealCommandHandlerTests
 
 		// Assert
 		_hubSpotAuthorizationServiceMock.Verify(
-			service => service.RefreshAccessTokenAsync(SUPPLIERHUBSPOTID, _unitOfWorkMock.Object, default),
+			service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(SUPPLIERHUBSPOTID, _unitOfWorkMock.Object, default),
 			Times.Once);
 
 		Assert.True(result.IsFailure);
@@ -175,7 +175,7 @@ public class UpdateDealCommandHandlerTests
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
-				.RefreshAccessTokenAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
+				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
 			.ReturnsAsync(Result.Success(TOKEN));
 
 		_hubSpotDealServiceMock
@@ -214,7 +214,7 @@ public class UpdateDealCommandHandlerTests
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
-				.RefreshAccessTokenAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
+				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
 			.ReturnsAsync(Result.Success(TOKEN));
 
 		_hubSpotDealServiceMock
@@ -283,7 +283,7 @@ public class UpdateDealCommandHandlerTests
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
-				.RefreshAccessTokenAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
+				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
 			.ReturnsAsync(Result.Success(TOKEN));
 
 		_hubSpotDealServiceMock
@@ -364,7 +364,7 @@ public class UpdateDealCommandHandlerTests
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
-				.RefreshAccessTokenAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
+				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
 			.ReturnsAsync(Result.Success(TOKEN));
 
 		_hubSpotDealServiceMock

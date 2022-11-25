@@ -129,7 +129,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		long portalId,
 		CancellationToken cancellationToken = default)
 	{
-		Result<string> accessTokenResult = await _hubSpotAuthorizationService.RefreshAccessTokenAsync(
+		Result<string> accessTokenResult = await _hubSpotAuthorizationService.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 			portalId,
 			_unitOfWork,
 			cancellationToken);

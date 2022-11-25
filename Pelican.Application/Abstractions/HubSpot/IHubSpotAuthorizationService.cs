@@ -10,5 +10,7 @@ public interface IHubSpotAuthorizationService
 
 	Task<Result<Supplier>> DecodeAccessTokenAsync(string accessToken, CancellationToken cancellationToken);
 
-	Task<Result<string>> RefreshAccessTokenAsync(long supplierHubSpotId, IUnitOfWork unitOfWork, CancellationToken cancellationToken);
+	Task<Result<string>> RefreshAccessTokenFromSupplierHubSpotIdAsync(long supplierHubSpotId, IUnitOfWork unitOfWork, CancellationToken cancellationToken);
+
+	Task<Result<string>> RefreshAccessTokenFromRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken);
 }

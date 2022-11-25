@@ -109,7 +109,7 @@ public class UpdateContactCommandHandlerTests
 			.ReturnsAsync((Contact)null!);
 
 		_hubSpotAuthorizationServiceMock
-			.Setup(h => h.RefreshAccessTokenAsync(
+			.Setup(h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
@@ -127,7 +127,7 @@ public class UpdateContactCommandHandlerTests
 
 		_hubSpotAuthorizationServiceMock
 			.Verify(h => h
-				.RefreshAccessTokenAsync(SUPPLIER_HUBSPOT_ID, _unitOfWorkMock.Object, default), Times.Once);
+				.RefreshAccessTokenFromSupplierHubSpotIdAsync(SUPPLIER_HUBSPOT_ID, _unitOfWorkMock.Object, default), Times.Once);
 
 		Assert.True(result.IsFailure);
 
@@ -151,7 +151,7 @@ public class UpdateContactCommandHandlerTests
 			.ReturnsAsync((Contact)null!);
 
 		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
+			.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
 				_unitOfWorkMock.Object,
 				It.IsAny<CancellationToken>()))
@@ -199,7 +199,7 @@ public class UpdateContactCommandHandlerTests
 			.ReturnsAsync((Contact)null!);
 
 		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
+			.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
 				_unitOfWorkMock.Object,
 				It.IsAny<CancellationToken>()))
@@ -267,7 +267,7 @@ public class UpdateContactCommandHandlerTests
 			.ReturnsAsync((Contact)null!);
 
 		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
+			.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
 				_unitOfWorkMock.Object,
 				It.IsAny<CancellationToken>()))
@@ -313,7 +313,7 @@ public class UpdateContactCommandHandlerTests
 			.ReturnsAsync((Contact)null!);
 
 		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
+			.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
 				_unitOfWorkMock.Object,
 				It.IsAny<CancellationToken>()))
@@ -370,7 +370,7 @@ public class UpdateContactCommandHandlerTests
 			.ReturnsAsync((Contact)null!);
 
 		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
+			.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
 				_unitOfWorkMock.Object,
 				It.IsAny<CancellationToken>()))
@@ -437,7 +437,7 @@ public class UpdateContactCommandHandlerTests
 			.ReturnsAsync((Contact)null!);
 
 		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
+			.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
 				_unitOfWorkMock.Object,
 				It.IsAny<CancellationToken>()))
@@ -521,7 +521,7 @@ public class UpdateContactCommandHandlerTests
 			.ReturnsAsync(contactMock.Object);
 
 		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
+			.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
 				_unitOfWorkMock.Object,
 				It.IsAny<CancellationToken>()))
@@ -572,7 +572,7 @@ public class UpdateContactCommandHandlerTests
 			.ReturnsAsync(contactMock.Object);
 
 		_hubSpotAuthorizationServiceMock
-			.Setup(service => service.RefreshAccessTokenAsync(
+			.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
 				_unitOfWorkMock.Object,
 				It.IsAny<CancellationToken>()))

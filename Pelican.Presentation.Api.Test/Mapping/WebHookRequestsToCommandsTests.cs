@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Clients.Commands.DeleteClient;
+﻿using Pelican.Application.AccountManagers.Commands.ValidateWebhookUserId;
+using Pelican.Application.Clients.Commands.DeleteClient;
 using Pelican.Application.Clients.Commands.UpdateClient;
 using Pelican.Application.Contacts.Commands.UpdateContact;
 using Pelican.Application.Deals.Commands.DeleteDeal;
@@ -12,7 +13,7 @@ namespace Pelican.Presentation.Api.Test.Mapping;
 public class WebHookRequestsToCommandsTests
 {
 	private const long OBJECT_ID = 123;
-	private const long PORTAL_ID = 456;
+	private const long SUPPLIER_HUBSPOT_ID = 456;
 	private const string PROPERTY_NAME = "name";
 	private const string PROPERTY_VALUE = "value";
 
@@ -120,7 +121,7 @@ public class WebHookRequestsToCommandsTests
 		{
 			SubscriptionType = "contact.propertyChange",
 			ObjectId = OBJECT_ID,
-			PortalId = PORTAL_ID,
+			SupplierHubSpotId = SUPPLIER_HUBSPOT_ID,
 			PropertyName = PROPERTY_NAME,
 			PropertyValue = PROPERTY_VALUE,
 		};
@@ -138,7 +139,7 @@ public class WebHookRequestsToCommandsTests
 			OBJECT_ID,
 			((UpdateContactCommand)result.First()).ObjectId);
 		Assert.Equal(
-			PORTAL_ID,
+			SUPPLIER_HUBSPOT_ID,
 			((UpdateContactCommand)result.First()).SupplierHubSpotId);
 		Assert.Equal(
 			PROPERTY_NAME,
@@ -156,7 +157,7 @@ public class WebHookRequestsToCommandsTests
 		{
 			SubscriptionType = "deal.propertyChange",
 			ObjectId = OBJECT_ID,
-			PortalId = PORTAL_ID,
+			SupplierHubSpotId = SUPPLIER_HUBSPOT_ID,
 			PropertyName = PROPERTY_NAME,
 			PropertyValue = PROPERTY_VALUE,
 		};
@@ -174,7 +175,7 @@ public class WebHookRequestsToCommandsTests
 			OBJECT_ID,
 			((UpdateDealCommand)result.First()).ObjectId);
 		Assert.Equal(
-			PORTAL_ID,
+			SUPPLIER_HUBSPOT_ID,
 			((UpdateDealCommand)result.First()).SupplierHubSpotId);
 		Assert.Equal(
 			PROPERTY_NAME,
@@ -192,7 +193,7 @@ public class WebHookRequestsToCommandsTests
 		{
 			SubscriptionType = "company.propertyChange",
 			ObjectId = OBJECT_ID,
-			PortalId = PORTAL_ID,
+			SupplierHubSpotId = SUPPLIER_HUBSPOT_ID,
 			PropertyName = PROPERTY_NAME,
 			PropertyValue = PROPERTY_VALUE,
 		};
@@ -210,7 +211,7 @@ public class WebHookRequestsToCommandsTests
 			OBJECT_ID,
 			((UpdateClientCommand)result.First()).ObjectId);
 		Assert.Equal(
-			PORTAL_ID,
+			SUPPLIER_HUBSPOT_ID,
 			((UpdateClientCommand)result.First()).PortalId);
 		Assert.Equal(
 			PROPERTY_NAME,
@@ -243,5 +244,214 @@ public class WebHookRequestsToCommandsTests
 		Assert.Equal(
 			2,
 			result.Count);
+	}
+
+	[Fact]
+	public void ConvertToCommands_MultipleValidRequestsWithoutSourceIds_ReturnNoValidateWebhookUserIdCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest,
+			webHookRequest,
+		};
+
+		// Act 
+		var result = _uut.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Collection(
+			result,
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
+	}
+
+	[Fact]
+	public void ConvertToCommands_MultipleValidRequestsWithoutUserIdsInSourceIds_ReturnNoValidateWebhookUserIdCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SourceId = "notUserId",
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest,
+			webHookRequest,
+		};
+
+		// Act 
+		var result = _uut.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Collection(
+			result,
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
+	}
+
+	[Fact]
+	public void ConvertToCommands_MultipleValidRequestsWithInvallidUserIdInSourceIds_ReturnNoValidateWebhookUserIdCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SourceId = "userId:invalid",
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest,
+			webHookRequest,
+		};
+
+		// Act 
+		var result = _uut.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Collection(
+			result,
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
+	}
+
+	[Fact]
+	public void ConvertToCommands_MultipleValidRequestsWithOneUserId_ReturnOneValidateWebhookUserIdCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest1 = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SourceId = "notUserId",
+			SupplierHubSpotId = 123,
+		};
+		WebHookRequest webHookRequest2 = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SourceId = "userId:47115417",
+			SupplierHubSpotId = 456,
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest1,
+			webHookRequest2,
+		};
+
+		// Act 
+		var result = _uut.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Collection(
+			result,
+			r =>
+			{
+				Assert.IsType<ValidateWebhookUserIdCommand>(r);
+				Assert.Equal(47115417, (r as ValidateWebhookUserIdCommand)!.UserId);
+				Assert.Equal(456, (r as ValidateWebhookUserIdCommand)!.SupplierHubSpotId);
+			},
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
+	}
+
+	[Fact]
+	public void ConvertToCommands_MultipleValidRequestsWithSameUserId_ReturnOneValidateWebhookUserIdCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest1 = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SourceId = "userId:47115417",
+			SupplierHubSpotId = 123,
+		};
+		WebHookRequest webHookRequest2 = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SourceId = "userId:47115417",
+			SupplierHubSpotId = 123
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest1,
+			webHookRequest2,
+		};
+
+		// Act 
+		var result = _uut.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Collection(
+			result,
+			r =>
+			{
+				Assert.IsType<ValidateWebhookUserIdCommand>(r);
+				Assert.Equal(47115417, (r as ValidateWebhookUserIdCommand)!.UserId);
+				Assert.Equal(123, (r as ValidateWebhookUserIdCommand)!.SupplierHubSpotId);
+			},
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
+	}
+
+	[Fact]
+	public void ConvertToCommands_MultipleValidRequestsWithDifferentUserId_ReturnTwoValidateWebhookUserIdCommand()
+	{
+		// Arrange
+		WebHookRequest webHookRequest1 = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SupplierHubSpotId = 123,
+			SourceId = "userId:123456",
+		};
+		WebHookRequest webHookRequest2 = new()
+		{
+			SubscriptionType = "deal.deletion",
+			ObjectId = OBJECT_ID,
+			SupplierHubSpotId = 456,
+			SourceId = "userId:47115417",
+		};
+
+		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		{
+			webHookRequest1,
+			webHookRequest2,
+		};
+
+		// Act 
+		var result = _uut.ConvertToCommands(webHookRequests);
+
+		// Assert
+		Assert.Collection(
+			result,
+			r =>
+			{
+				Assert.IsType<ValidateWebhookUserIdCommand>(r);
+				Assert.Equal(123456, (r as ValidateWebhookUserIdCommand)!.UserId);
+				Assert.Equal(123, (r as ValidateWebhookUserIdCommand)!.SupplierHubSpotId);
+			},
+			r =>
+			{
+				Assert.IsType<ValidateWebhookUserIdCommand>(r);
+				Assert.Equal(47115417, (r as ValidateWebhookUserIdCommand)!.UserId);
+				Assert.Equal(456, (r as ValidateWebhookUserIdCommand)!.SupplierHubSpotId);
+			},
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r),
+			r => Assert.IsNotType<ValidateWebhookUserIdCommand>(r));
 	}
 }

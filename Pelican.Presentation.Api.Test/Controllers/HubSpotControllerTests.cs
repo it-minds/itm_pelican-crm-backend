@@ -5,6 +5,7 @@ using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Deals.Commands.DeleteDeal;
 using Pelican.Application.HubSpot.Commands.NewInstallation;
 using Pelican.Domain.Shared;
+using Pelican.Presentation.Api.Abstractions;
 using Pelican.Presentation.Api.Contracts;
 using Pelican.Presentation.Api.Controllers;
 using Pelican.Presentation.Api.Mapping;
@@ -14,9 +15,6 @@ namespace Pelican.Presentation.Api.Test.Controllers;
 public class HubSpotControllerTests
 {
 	private const long OBJECT_ID = 0;
-	private const long PORTAL_ID = 0;
-	private const string PROPERTY_NAME = "propertyName";
-	private const string PROPERTY_VALUE = "newValue";
 
 	private readonly HubSpotController _uut;
 	private readonly Mock<ISender> _senderMock;

@@ -1,7 +1,7 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
 using Pelican.Presentation.Api.Contracts;
 
-namespace Pelican.Presentation.Api.Mapping;
+namespace Pelican.Presentation.Api.Abstractions;
 
 public interface IRequestToCommandMapper
 {

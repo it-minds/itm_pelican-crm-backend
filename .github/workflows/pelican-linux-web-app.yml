@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - hotfix/update-folder-in-workflow
 
 env:
   AZURE_WEBAPP_NAME: pelican-linux-web-app

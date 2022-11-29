@@ -7,25 +7,25 @@ namespace Pelican.Application.Test.Deals.Commands.UpdateDeal;
 
 public class UpdateDealCommandValidatorTests
 {
-	private readonly UpdateDealCommandValidator _uut;
+	private readonly UpdateDealHubSpotCommandValidator _uut;
 
 	public UpdateDealCommandValidatorTests()
 	{
-		_uut = new UpdateDealCommandValidator();
+		_uut = new UpdateDealHubSpotCommandValidator();
 	}
 
 	[Fact]
 	public void UpdateDealCommandValidator_EmptyStringOrDefaultValue_ReturnsError()
 	{
 		// Arrange
-		UpdateDealCommand command = new(
+		UpdateDealHubSpotCommand command = new(
 			0,
 			0,
 			string.Empty,
 			string.Empty);
 
 		// Act
-		TestValidationResult<UpdateDealCommand> result = _uut.TestValidate(command);
+		TestValidationResult<UpdateDealHubSpotCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.ObjectId);
@@ -38,14 +38,14 @@ public class UpdateDealCommandValidatorTests
 	public void UpdateDealCommandValidator_NoEmptyStringsOrDefaultValues_ReturnsNoError()
 	{
 		// Arrange
-		UpdateDealCommand command = new(
+		UpdateDealHubSpotCommand command = new(
 			1,
 			1,
 			"notEmpty",
 			"notEmpty");
 
 		// Act
-		TestValidationResult<UpdateDealCommand> result = _uut.TestValidate(command);
+		TestValidationResult<UpdateDealHubSpotCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.ObjectId);

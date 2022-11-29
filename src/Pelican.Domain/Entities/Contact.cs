@@ -23,7 +23,7 @@ public class Contact : Entity, ITimeTracked
 		get => _firstName;
 		set
 		{
-			_firstName = value!.Length > StringLengths.Name
+			_firstName = value?.Length > StringLengths.Name
 				? value.Substring(0, StringLengths.Name - 3) + ("...")
 				: value;
 		}
@@ -33,7 +33,7 @@ public class Contact : Entity, ITimeTracked
 		get => _lastName;
 		set
 		{
-			_lastName = value!.Length > StringLengths.Name
+			_lastName = value?.Length > StringLengths.Name
 				? value.Substring(0, StringLengths.Name - 3) + ("...")
 				: value;
 		}
@@ -44,7 +44,7 @@ public class Contact : Entity, ITimeTracked
 		get => _phoneNumber;
 		set
 		{
-			_phoneNumber = value!.Length > StringLengths.PhoneNumber
+			_phoneNumber = value?.Length > StringLengths.PhoneNumber
 				? value.Substring(0, StringLengths.PhoneNumber - 3) + ("...")
 				: value;
 		}
@@ -55,7 +55,7 @@ public class Contact : Entity, ITimeTracked
 		get => _email;
 		set
 		{
-			_email = value!.Length > StringLengths.Email
+			_email = value?.Length > StringLengths.Email
 				? value.Substring(0, StringLengths.Email - 3) + ("...")
 				: value;
 		}
@@ -66,7 +66,7 @@ public class Contact : Entity, ITimeTracked
 		get => _jobTitle;
 		set
 		{
-			_jobTitle = value!.Length > StringLengths.JobTitle
+			_jobTitle = value?.Length > StringLengths.JobTitle
 				? value.Substring(0, StringLengths.JobTitle - 3) + ("...")
 				: value;
 		}

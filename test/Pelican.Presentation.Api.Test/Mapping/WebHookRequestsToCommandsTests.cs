@@ -10,14 +10,14 @@ using Xunit;
 
 namespace Pelican.Presentation.Api.Test.Mapping;
 
-public class WebHookRequestsToCommandsTests
+public class HubSpotWebHookRequestsToCommandsTests
 {
 	private const long OBJECT_ID = 123;
 	private const long SUPPLIER_HUBSPOT_ID = 456;
 	private const string PROPERTY_NAME = "name";
 	private const string PROPERTY_VALUE = "value";
 
-	private readonly WebHookRequestsToCommands _uut = new();
+	private readonly HubSpotWebHookRequestsToCommands _uut = new();
 
 	[Fact]
 	public void ConvertToCommands_NullCollection_ReturnEmptyCollection()
@@ -33,7 +33,7 @@ public class WebHookRequestsToCommandsTests
 	public void ConvertToCommands_EmptyCollection_ReturnEmptyCollection()
 	{
 		// Arrange
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>();
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>();
 
 		// Act 
 		var result = _uut.ConvertToCommands(webHookRequests);
@@ -46,12 +46,12 @@ public class WebHookRequestsToCommandsTests
 	public void ConvertToCommands_SubscriptionTypeInvalid_ThrowsInvalidDataException()
 	{
 		// Arrange
-		WebHookRequest webHookRequest = new()
+		HubSpotWebHookRequest webHookRequest = new()
 		{
 			SubscriptionType = "invalid",
 		};
 
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>()
 		{
 			webHookRequest,
 		};
@@ -69,13 +69,13 @@ public class WebHookRequestsToCommandsTests
 	public void ConvertToCommands_SubscriptionTypeDealDeletion_ReturnDeleteDealCommand()
 	{
 		// Arrange
-		WebHookRequest webHookRequest = new()
+		HubSpotWebHookRequest webHookRequest = new()
 		{
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
 		};
 
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>()
 		{
 			webHookRequest,
 		};
@@ -86,20 +86,20 @@ public class WebHookRequestsToCommandsTests
 		// Assert
 		Assert.Equal(
 			OBJECT_ID,
-			((DeleteDealCommand)result.First()).ObjectId);
+			((DeleteDealHubSpotCommand)result.First()).ObjectId);
 	}
 
 	[Fact]
 	public void ConvertToCommands_SubscriptionTypeCompanyDeletion_ReturnDeleteClientCommand()
 	{
 		// Arrange
-		WebHookRequest webHookRequest = new()
+		HubSpotWebHookRequest webHookRequest = new()
 		{
 			SubscriptionType = "company.deletion",
 			ObjectId = OBJECT_ID,
 		};
 
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>()
 		{
 			webHookRequest,
 		};
@@ -117,7 +117,7 @@ public class WebHookRequestsToCommandsTests
 	public void ConvertToCommands_SubscriptionTypeContactPropertyChange_ReturnUpdateContactCommand()
 	{
 		// Arrange
-		WebHookRequest webHookRequest = new()
+		HubSpotWebHookRequest webHookRequest = new()
 		{
 			SubscriptionType = "contact.propertyChange",
 			ObjectId = OBJECT_ID,
@@ -126,7 +126,7 @@ public class WebHookRequestsToCommandsTests
 			PropertyValue = PROPERTY_VALUE,
 		};
 
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>()
 		{
 			webHookRequest,
 		};
@@ -153,7 +153,7 @@ public class WebHookRequestsToCommandsTests
 	public void ConvertToCommands_SubscriptionTypeDealPropertyChange_ReturnUpdateDealCommand()
 	{
 		// Arrange
-		WebHookRequest webHookRequest = new()
+		HubSpotWebHookRequest webHookRequest = new()
 		{
 			SubscriptionType = "deal.propertyChange",
 			ObjectId = OBJECT_ID,
@@ -162,7 +162,7 @@ public class WebHookRequestsToCommandsTests
 			PropertyValue = PROPERTY_VALUE,
 		};
 
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>()
 		{
 			webHookRequest,
 		};
@@ -173,23 +173,23 @@ public class WebHookRequestsToCommandsTests
 		// Assert
 		Assert.Equal(
 			OBJECT_ID,
-			((UpdateDealCommand)result.First()).ObjectId);
+			((UpdateDealHubSpotCommand)result.First()).ObjectId);
 		Assert.Equal(
 			SUPPLIER_HUBSPOT_ID,
-			((UpdateDealCommand)result.First()).SupplierHubSpotId);
+			((UpdateDealHubSpotCommand)result.First()).SupplierHubSpotId);
 		Assert.Equal(
 			PROPERTY_NAME,
-			((UpdateDealCommand)result.First()).PropertyName);
+			((UpdateDealHubSpotCommand)result.First()).PropertyName);
 		Assert.Equal(
 			PROPERTY_VALUE,
-			((UpdateDealCommand)result.First()).PropertyValue);
+			((UpdateDealHubSpotCommand)result.First()).PropertyValue);
 	}
 
 	[Fact]
 	public void ConvertToCommands_SubscriptionTypeCompanyPropertyChange_ReturnUpdateClientCommand()
 	{
 		// Arrange
-		WebHookRequest webHookRequest = new()
+		HubSpotWebHookRequest webHookRequest = new()
 		{
 			SubscriptionType = "company.propertyChange",
 			ObjectId = OBJECT_ID,
@@ -198,7 +198,7 @@ public class WebHookRequestsToCommandsTests
 			PropertyValue = PROPERTY_VALUE,
 		};
 
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>()
 		{
 			webHookRequest,
 		};
@@ -225,13 +225,13 @@ public class WebHookRequestsToCommandsTests
 	public void ConvertToCommands_MultipleValidRequests_ReturnMultipleCommands()
 	{
 		// Arrange
-		WebHookRequest webHookRequest = new()
+		HubSpotWebHookRequest webHookRequest = new()
 		{
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
 		};
 
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>()
 		{
 			webHookRequest,
 			webHookRequest,
@@ -250,13 +250,13 @@ public class WebHookRequestsToCommandsTests
 	public void ConvertToCommands_MultipleValidRequestsWithoutSourceIds_ReturnNoValidateWebhookUserIdCommand()
 	{
 		// Arrange
-		WebHookRequest webHookRequest = new()
+		HubSpotWebHookRequest webHookRequest = new()
 		{
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
 		};
 
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>()
 		{
 			webHookRequest,
 			webHookRequest,
@@ -276,14 +276,14 @@ public class WebHookRequestsToCommandsTests
 	public void ConvertToCommands_MultipleValidRequestsWithoutUserIdsInSourceIds_ReturnNoValidateWebhookUserIdCommand()
 	{
 		// Arrange
-		WebHookRequest webHookRequest = new()
+		HubSpotWebHookRequest webHookRequest = new()
 		{
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
 			SourceId = "notUserId",
 		};
 
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>()
 		{
 			webHookRequest,
 			webHookRequest,
@@ -303,14 +303,14 @@ public class WebHookRequestsToCommandsTests
 	public void ConvertToCommands_MultipleValidRequestsWithInvallidUserIdInSourceIds_ReturnNoValidateWebhookUserIdCommand()
 	{
 		// Arrange
-		WebHookRequest webHookRequest = new()
+		HubSpotWebHookRequest webHookRequest = new()
 		{
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
 			SourceId = "userId:invalid",
 		};
 
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>()
 		{
 			webHookRequest,
 			webHookRequest,
@@ -330,14 +330,14 @@ public class WebHookRequestsToCommandsTests
 	public void ConvertToCommands_MultipleValidRequestsWithOneUserId_ReturnOneValidateWebhookUserIdCommand()
 	{
 		// Arrange
-		WebHookRequest webHookRequest1 = new()
+		HubSpotWebHookRequest webHookRequest1 = new()
 		{
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
 			SourceId = "notUserId",
 			SupplierHubSpotId = 123,
 		};
-		WebHookRequest webHookRequest2 = new()
+		HubSpotWebHookRequest webHookRequest2 = new()
 		{
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
@@ -345,7 +345,7 @@ public class WebHookRequestsToCommandsTests
 			SupplierHubSpotId = 456,
 		};
 
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>()
 		{
 			webHookRequest1,
 			webHookRequest2,
@@ -371,14 +371,14 @@ public class WebHookRequestsToCommandsTests
 	public void ConvertToCommands_MultipleValidRequestsWithSameUserId_ReturnOneValidateWebhookUserIdCommand()
 	{
 		// Arrange
-		WebHookRequest webHookRequest1 = new()
+		HubSpotWebHookRequest webHookRequest1 = new()
 		{
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
 			SourceId = "userId:47115417",
 			SupplierHubSpotId = 123,
 		};
-		WebHookRequest webHookRequest2 = new()
+		HubSpotWebHookRequest webHookRequest2 = new()
 		{
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
@@ -386,7 +386,7 @@ public class WebHookRequestsToCommandsTests
 			SupplierHubSpotId = 123
 		};
 
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>()
 		{
 			webHookRequest1,
 			webHookRequest2,
@@ -412,14 +412,14 @@ public class WebHookRequestsToCommandsTests
 	public void ConvertToCommands_MultipleValidRequestsWithDifferentUserId_ReturnTwoValidateWebhookUserIdCommand()
 	{
 		// Arrange
-		WebHookRequest webHookRequest1 = new()
+		HubSpotWebHookRequest webHookRequest1 = new()
 		{
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
 			SupplierHubSpotId = 123,
 			SourceId = "userId:123456",
 		};
-		WebHookRequest webHookRequest2 = new()
+		HubSpotWebHookRequest webHookRequest2 = new()
 		{
 			SubscriptionType = "deal.deletion",
 			ObjectId = OBJECT_ID,
@@ -427,7 +427,7 @@ public class WebHookRequestsToCommandsTests
 			SourceId = "userId:47115417",
 		};
 
-		IReadOnlyCollection<WebHookRequest> webHookRequests = new List<WebHookRequest>()
+		IReadOnlyCollection<HubSpotWebHookRequest> webHookRequests = new List<HubSpotWebHookRequest>()
 		{
 			webHookRequest1,
 			webHookRequest2,

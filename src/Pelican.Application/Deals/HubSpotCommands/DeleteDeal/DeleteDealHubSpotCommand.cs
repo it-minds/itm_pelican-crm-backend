@@ -2,5 +2,5 @@
 
 namespace Pelican.Application.Deals.Commands.DeleteDeal;
 
-public sealed record DeleteDealCommand(
+public sealed record DeleteDealHubSpotCommand(
 	long ObjectId) : ICommand;

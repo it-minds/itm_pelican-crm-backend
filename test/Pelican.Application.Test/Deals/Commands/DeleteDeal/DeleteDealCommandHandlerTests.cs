@@ -9,7 +9,7 @@ using Xunit;
 namespace Pelican.Application.Test.Deals.Commands.DeleteDeal;
 public class DeleteDealCommandHandlerTests
 {
-	private readonly DeleteDealCommandHandler _uut;
+	private readonly DeleteDealHubSpotCommandHandler _uut;
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 	private readonly CancellationToken _cancellationToken;
 
@@ -26,7 +26,7 @@ public class DeleteDealCommandHandlerTests
 	{
 		/// Act
 		Exception exceptionResult = Record.Exception(() =>
-			new DeleteDealCommandHandler(
+			new DeleteDealHubSpotCommandHandler(
 				null!));
 
 		/// Assert
@@ -43,7 +43,7 @@ public class DeleteDealCommandHandlerTests
 	public async void Handle_DealNotFound_ReturnsSuccess()
 	{
 		// Arrange
-		DeleteDealCommand command = new(0);
+		DeleteDealHubSpotCommand command = new(0);
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork
@@ -84,7 +84,7 @@ public class DeleteDealCommandHandlerTests
 	public async void Handle_DealFound_ReturnsSuccess()
 	{
 		// Arrange
-		DeleteDealCommand command = new(0);
+		DeleteDealHubSpotCommand command = new(0);
 		Deal deal = new(Guid.NewGuid());
 
 		_unitOfWorkMock

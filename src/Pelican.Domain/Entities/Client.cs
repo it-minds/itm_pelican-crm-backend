@@ -32,7 +32,7 @@ public class Client : Entity, ITimeTracked
 		get => _officeLocation;
 		set
 		{
-			_officeLocation = value!.Length > StringLengths.OfficeLocation
+			_officeLocation = value?.Length > StringLengths.OfficeLocation
 				? value.Substring(0, StringLengths.OfficeLocation - 3) + ("...")
 				: value;
 		}
@@ -51,7 +51,7 @@ public class Client : Entity, ITimeTracked
 		get => _website;
 		set
 		{
-			_website = value!.Length > StringLengths.Url
+			_website = value?.Length > StringLengths.Url
 				? value.Substring(0, StringLengths.Url - 3) + ("...")
 				: value;
 		}

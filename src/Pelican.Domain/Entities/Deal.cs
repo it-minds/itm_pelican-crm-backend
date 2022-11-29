@@ -38,7 +38,7 @@ public class Deal : Entity, ITimeTracked
 		get => _name;
 		set
 		{
-			_name = value!.Length > StringLengths.DealName
+			_name = value?.Length > StringLengths.DealName
 				? value.Substring(0, StringLengths.DealName - 3) + ("...")
 				: value;
 		}
@@ -49,7 +49,7 @@ public class Deal : Entity, ITimeTracked
 		get => _description;
 		set
 		{
-			_description = value!.Length > StringLengths.DealDescription
+			_description = value?.Length > StringLengths.DealDescription
 				? value.Substring(0, StringLengths.DealDescription - 3) + ("...")
 				: value;
 		}

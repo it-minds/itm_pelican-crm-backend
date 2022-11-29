@@ -18,7 +18,7 @@ public class UpdateDealCommandHandlerTests
 
 	private const string TOKEN = "token";
 
-	private readonly UpdateDealCommandHandler _uut;
+	private readonly UpdateDealHubSpotCommandHandler _uut;
 
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 	private readonly Mock<IHubSpotObjectService<Deal>> _hubSpotDealServiceMock;
@@ -80,7 +80,7 @@ public class UpdateDealCommandHandlerTests
 	{
 		/// Act
 		Exception exceptionResult = Record.Exception(() =>
-			new UpdateDealCommandHandler(
+			new UpdateDealHubSpotCommandHandler(
 				null!,
 				_hubSpotDealServiceMock.Object,
 				_hubSpotAuthorizationServiceMock.Object));
@@ -100,7 +100,7 @@ public class UpdateDealCommandHandlerTests
 	{
 		/// Act
 		Exception exceptionResult = Record.Exception(() =>
-			new UpdateDealCommandHandler(
+			new UpdateDealHubSpotCommandHandler(
 				_unitOfWorkMock.Object,
 				null!,
 				_hubSpotAuthorizationServiceMock.Object));
@@ -120,7 +120,7 @@ public class UpdateDealCommandHandlerTests
 	{
 		/// Act
 		Exception exceptionResult = Record.Exception(() =>
-			new UpdateDealCommandHandler(
+			new UpdateDealHubSpotCommandHandler(
 				_unitOfWorkMock.Object,
 				_hubSpotDealServiceMock.Object,
 				null!));
@@ -139,7 +139,7 @@ public class UpdateDealCommandHandlerTests
 	public async void Handle_DealNotFoundFailsRefreshingToken_ReturnsFailure()
 	{
 		// Arrange
-		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
 		Error error = new("0", "error");
 
@@ -167,7 +167,7 @@ public class UpdateDealCommandHandlerTests
 	public async void Handle_DealNotFoundFailedFetchingDealFromHubSpot_ReturnsFailure()
 	{
 		// Arrange
-		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
 		SetupDealRepositoryMock(null);
 
@@ -200,7 +200,7 @@ public class UpdateDealCommandHandlerTests
 	public async void Handle_DealNotFoundSuccessFetchingFromHubSpot_NewDealSavedReturnsSuccess()
 	{
 		// Arrange
-		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
 		SetupDealRepositoryMock(null);
 
@@ -248,7 +248,7 @@ public class UpdateDealCommandHandlerTests
 	public async void Handle_DealNotFoundSuccessFetchingFromHubSpotWithAssociationsNotExistingInDb_ReturnsSuccess()
 	{
 		// Arrange
-		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
 		Contact existingContact = new(Guid.NewGuid())
 		{
@@ -327,7 +327,7 @@ public class UpdateDealCommandHandlerTests
 	public async void Handle_DealNotFoundSuccessFetchingFromHubSpotWithAssociations_ReturnsSuccess()
 	{
 		// Arrange
-		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
 		Deal? existingDeal = null;
 
@@ -412,7 +412,7 @@ public class UpdateDealCommandHandlerTests
 
 		SetupDealRepositoryMock(dealMock.Object);
 
-		UpdateDealCommand command = new(1, 1, "hs_all_owner_ids", EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(1, 1, "hs_all_owner_ids", EMPTY_PROPERTYVALUE);
 
 		_accountManagerRepositoryMock
 			.Setup(a => a
@@ -445,7 +445,7 @@ public class UpdateDealCommandHandlerTests
 	public async void Handle_DealFoundPropertyUpdated_ReturnsSuccess()
 	{
 		// Arrange
-		UpdateDealCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
 		Mock<Deal> dealMock = new();
 

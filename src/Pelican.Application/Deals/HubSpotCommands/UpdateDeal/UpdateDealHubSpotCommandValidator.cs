@@ -2,9 +2,9 @@
 
 namespace Pelican.Application.Deals.Commands.UpdateDeal;
 
-internal sealed class UpdateDealCommandValidator : AbstractValidator<UpdateDealCommand>
+internal sealed class UpdateDealHubSpotCommandValidator : AbstractValidator<UpdateDealHubSpotCommand>
 {
-	public UpdateDealCommandValidator()
+	public UpdateDealHubSpotCommandValidator()
 	{
 		RuleFor(command => command.ObjectId).NotEmpty();
 		RuleFor(command => command.PropertyName).NotEmpty();

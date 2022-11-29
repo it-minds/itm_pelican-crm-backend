@@ -7,21 +7,21 @@ namespace Pelican.Application.Test.Deals.Commands.DeleteDeal;
 
 public class DeleteDealCommandValidatorTests
 {
-	private readonly DeleteDealCommandValidator _uut;
+	private readonly DeleteDealHubSpotCommandValidator _uut;
 
 	public DeleteDealCommandValidatorTests()
 	{
-		_uut = new DeleteDealCommandValidator();
+		_uut = new DeleteDealHubSpotCommandValidator();
 	}
 
 	[Fact]
 	public void UpdateDealCommandValidator_EmptyId_ReturnsError()
 	{
 		// Arrange
-		DeleteDealCommand command = new(0);
+		DeleteDealHubSpotCommand command = new(0);
 
 		// Act
-		TestValidationResult<DeleteDealCommand> result = _uut.TestValidate(command);
+		TestValidationResult<DeleteDealHubSpotCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.ObjectId);
@@ -31,10 +31,10 @@ public class DeleteDealCommandValidatorTests
 	public void UpdateDealCommandValidator_NoEmptyId_ReturnsNoError()
 	{
 		// Arrange
-		DeleteDealCommand command = new(1);
+		DeleteDealHubSpotCommand command = new(1);
 
 		// Act
-		TestValidationResult<DeleteDealCommand> result = _uut.TestValidate(command);
+		TestValidationResult<DeleteDealHubSpotCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.ObjectId);

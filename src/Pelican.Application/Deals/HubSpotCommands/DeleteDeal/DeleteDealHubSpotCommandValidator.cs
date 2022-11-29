@@ -2,9 +2,9 @@
 
 namespace Pelican.Application.Deals.Commands.DeleteDeal;
 
-internal sealed class DeleteDealCommandValidator : AbstractValidator<DeleteDealCommand>
+internal sealed class DeleteDealHubSpotCommandValidator : AbstractValidator<DeleteDealHubSpotCommand>
 {
-	public DeleteDealCommandValidator()
+	public DeleteDealHubSpotCommandValidator()
 	{
 		RuleFor(command => command.ObjectId).NotEmpty();
 	}

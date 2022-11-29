@@ -54,7 +54,7 @@ public class AccountManager : Entity, ITimeTracked
 		get => _phoneNumber;
 		set
 		{
-			_phoneNumber = value!.Length > StringLengths.PhoneNumber
+			_phoneNumber = value?.Length > StringLengths.PhoneNumber
 				? value.Substring(0, StringLengths.PhoneNumber - 3) + ("...")
 				: value;
 		}
@@ -67,7 +67,7 @@ public class AccountManager : Entity, ITimeTracked
 		get => _linkedInUrl;
 		set
 		{
-			_linkedInUrl = value!.Length > StringLengths.Url
+			_linkedInUrl = value?.Length > StringLengths.Url
 				? value.Substring(0, StringLengths.Url - 3) + ("...")
 				: value;
 		}

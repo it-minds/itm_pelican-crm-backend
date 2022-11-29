@@ -5,17 +5,17 @@ using Pelican.Domain.Shared;
 
 namespace Pelican.Application.Deals.Commands.DeleteDeal;
 
-internal sealed class DeleteDealCommandHandler : ICommandHandler<DeleteDealCommand>
+internal sealed class DeleteDealHubSpotCommandHandler : ICommandHandler<DeleteDealHubSpotCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;
 
-	public DeleteDealCommandHandler(IUnitOfWork unitOfWork)
+	public DeleteDealHubSpotCommandHandler(IUnitOfWork unitOfWork)
 	{
 		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 	}
 
 	public async Task<Result> Handle(
-		DeleteDealCommand command,
+		DeleteDealHubSpotCommand command,
 		CancellationToken cancellationToken)
 	{
 		Deal? deal = await _unitOfWork

@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
+using Pelican.Application.Deals.Commands.UpdateDeal;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
 
 namespace Pelican.Presentation.Api.Controllers;
 
@@ -17,20 +17,25 @@ public sealed class PipedriveController : ApiController
 
 	[HttpPost("UpdateClient")]
 	public async Task<IActionResult> UpdateDeal(
-		[FromBody] UpdateDealRequest request)
+		[FromBody] UpdateDealResponse request,
+		CancellationToken cancellationToken)
 	{
+		List<Result> results = new();
 		ICommand command = new UpdateDealPipedriveCommand(
 			request.MetaProperties.SupplierPipedriveId,
-			request.MetaProperties.ObjectId,
-			request.MetaProperties.UserId,
+			request.MetaProperties.SubscriptionAction,
+			request.MetaProperties.SubscriptionObject,
 			request.CurrentProperties.DealStatusId,
 			request.CurrentProperties.DealDescription,
 			request.CurrentProperties.DealName,
 			request.CurrentProperties.LastContactDate,
-			null,
-			null);
+			request.CurrentProperties.DealId,
+			request.MetaProperties.UserId);
 
-		Result result = await Sender.Send(command, default);
+		results.Add(
+			await Sender.Send(command, cancellationToken));
+
+		Result result = Result.FirstFailureOrSuccess(results.ToArray());
 
 		return result.IsSuccess
 			? Ok()

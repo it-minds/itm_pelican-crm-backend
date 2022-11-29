@@ -1,13 +1,13 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
 
-namespace Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
+namespace Pelican.Application.Deals.Commands.UpdateDeal;
 public sealed record UpdateDealPipedriveCommand(
 	int SupplierPipedriveId,
-	int DealId,
-	int DealPipedriveOwnerId,
+	string SubscriptionAction,
+	string SubscriptionObject,
 	int DealStatusId,
 	string? DealDescription,
 	string? DealName,
 	string? LastContactDate,
-	string? StartDate,
-	string? EndDate) : ICommand;
+	int DealId,
+	int DealPipedriveOwnerId) : ICommand;

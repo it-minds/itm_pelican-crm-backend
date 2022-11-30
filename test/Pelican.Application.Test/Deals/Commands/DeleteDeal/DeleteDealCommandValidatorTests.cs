@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using Pelican.Application.Deals.Commands.DeleteDeal;
+using Pelican.Application.Deals.HubSpotCommands.DeleteDeal;
 using Xunit;
 
 

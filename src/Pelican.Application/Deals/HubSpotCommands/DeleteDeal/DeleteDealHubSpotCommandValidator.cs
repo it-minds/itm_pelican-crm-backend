@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Pelican.Application.Deals.Commands.DeleteDeal;
+namespace Pelican.Application.Deals.HubSpotCommands.DeleteDeal;
 
 internal sealed class DeleteDealHubSpotCommandValidator : AbstractValidator<DeleteDealHubSpotCommand>
 {

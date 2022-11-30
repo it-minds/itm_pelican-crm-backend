@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Deals.Commands.DeleteDeal;
+using Pelican.Application.Deals.HubSpotCommands.DeleteDeal;
 using Pelican.Application.HubSpot.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;

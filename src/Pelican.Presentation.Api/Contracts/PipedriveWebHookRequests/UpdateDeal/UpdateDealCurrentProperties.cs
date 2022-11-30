@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
-public record UpdateDealCurrent
+namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
+public record UpdateDealCurrentProperties
 {
 	[JsonPropertyName("stage_id")]
 	public int DealStatusId { get; set; }
@@ -14,7 +14,4 @@ public record UpdateDealCurrent
 
 	[JsonPropertyName("last_activity_date")]
 	public string? LastContactDate { get; set; } = string.Empty;
-
-	[JsonPropertyName("id")]
-	public int DealId { get; set; }
 }

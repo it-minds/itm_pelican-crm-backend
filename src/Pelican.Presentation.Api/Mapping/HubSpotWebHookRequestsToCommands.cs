@@ -3,8 +3,8 @@ using Pelican.Application.AccountManagers.Commands.ValidateWebhookUserId;
 using Pelican.Application.Clients.Commands.DeleteClient;
 using Pelican.Application.Clients.Commands.UpdateClient;
 using Pelican.Application.Contacts.Commands.UpdateContact;
-using Pelican.Application.Deals.Commands.DeleteDeal;
-using Pelican.Application.Deals.Commands.UpdateDeal;
+using Pelican.Application.Deals.HubSpotCommands.DeleteDeal;
+using Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
 using Pelican.Presentation.Api.Abstractions;
 using Pelican.Presentation.Api.Contracts;
 

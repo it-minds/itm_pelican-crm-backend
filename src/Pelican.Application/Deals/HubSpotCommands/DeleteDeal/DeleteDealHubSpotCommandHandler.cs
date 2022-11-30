@@ -3,7 +3,7 @@ using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.Deals.Commands.DeleteDeal;
+namespace Pelican.Application.Deals.HubSpotCommands.DeleteDeal;
 
 internal sealed class DeleteDealHubSpotCommandHandler : ICommandHandler<DeleteDealHubSpotCommand>
 {

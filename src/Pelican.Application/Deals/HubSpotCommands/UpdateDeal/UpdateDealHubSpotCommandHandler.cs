@@ -5,7 +5,7 @@ using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.Deals.Commands.UpdateDeal;
+namespace Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
 
 internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDealHubSpotCommand>
 {

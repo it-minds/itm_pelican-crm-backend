@@ -1,7 +1,7 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.Deals.Commands.UpdateDeal;
+namespace Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 
 internal sealed class UpdateDealPipedriveCommandHandler : ICommandHandler<UpdateDealPipedriveCommand>
 {

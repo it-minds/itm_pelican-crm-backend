@@ -2,7 +2,7 @@
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Deals.Commands.UpdateDeal;
+using Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Xunit;

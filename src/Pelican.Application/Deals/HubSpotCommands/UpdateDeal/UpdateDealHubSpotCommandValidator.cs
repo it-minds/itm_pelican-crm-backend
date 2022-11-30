@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Pelican.Application.Deals.Commands.UpdateDeal;
+namespace Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
 
 internal sealed class UpdateDealHubSpotCommandValidator : AbstractValidator<UpdateDealHubSpotCommand>
 {

@@ -15,8 +15,4 @@
 		<ProjectReference Include="..\Pelican.Application\Pelican.Application.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Contracts\Deals\" />
-	</ItemGroup>
-
 </Project>

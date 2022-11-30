@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
@@ -23,7 +24,7 @@ public class HubSpotAuthorizationServicesTests
 	private const string ACCESS = "access";
 	private const string REFRESH = "refresh";
 
-	private readonly Mock<IHubSpotClient> _hubSpotClientMock = new();
+	private readonly Mock<IClient> _hubSpotClientMock = new();
 	private readonly Mock<IOptions<HubSpotSettings>> _optionsMock = new();
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly HubSpotAuthorizationService _uut;

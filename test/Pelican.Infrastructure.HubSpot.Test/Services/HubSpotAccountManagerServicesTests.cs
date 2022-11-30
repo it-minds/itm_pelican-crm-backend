@@ -1,4 +1,5 @@
 ﻿using Moq;
+using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
 using Pelican.Infrastructure.HubSpot.Services;
@@ -14,7 +15,7 @@ public class HubSpotAccountManagerServicesTests
 	private const string FIRSTNAME = "Firstname";
 	private const string LASTNAME = "Lastname";
 
-	private readonly Mock<IHubSpotClient> _hubSpotClientMock = new();
+	private readonly Mock<IClient> _hubSpotClientMock = new();
 	private readonly HubSpotAccountManagerService _uut;
 
 	public HubSpotAccountManagerServicesTests()

@@ -13,7 +13,6 @@ public static class DependencyInjection
 	public static IServiceCollection AddHubSpot(
 		this IServiceCollection services)
 	{
-		services.AddSingleton<IHubSpotClient, RestSharpHubSpotClient>();
 		services.AddSingleton<IHubSpotOwnersService, HubSpotAccountManagerService>();
 		services.AddSingleton<IHubSpotAuthorizationService, HubSpotAuthorizationService>();
 		services.AddSingleton<IHubSpotObjectService<Contact>, HubSpotContactService>();

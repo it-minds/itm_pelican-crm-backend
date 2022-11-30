@@ -2,9 +2,9 @@
 using RestSharp;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
-namespace Pelican.Infrastructure.HubSpot.Abstractions;
+namespace Pelican.Application.Abstractions.Infrastructure;
 
-internal interface IHubSpotClient
+public interface IClient
 {
 	Task<RestResponse<TResponse>> GetAsync<TResponse>(
 		RestRequest request,

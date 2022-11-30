@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.Options;
-using Pelican.Domain.Settings.HubSpot;
+using Pelican.Application.Abstractions.Infrastructure;
+using Pelican.Domain.Settings;
 using RestSharp;
 
-namespace Pelican.Infrastructure.HubSpot.Abstractions;
+namespace Pelican.Application.Abstractions.Infrastructure;
 
-internal sealed class RestSharpHubSpotClient : IHubSpotClient
+public sealed class RestSharpClient : IClient
 {
 	private readonly RestClient _client;
 
-	public RestSharpHubSpotClient(
+	public RestSharpClient(
 		IOptions<HubSpotSettings> options)
 	{
 		_client = new RestClient(options.Value.BaseUrl);

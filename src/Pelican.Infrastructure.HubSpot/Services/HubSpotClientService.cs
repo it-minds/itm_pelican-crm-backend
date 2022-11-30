@@ -1,4 +1,5 @@
 ﻿using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Abstractions;
@@ -9,10 +10,10 @@ using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;
 
-internal sealed class HubSpotClientService : HubSpotService, IHubSpotObjectService<Client>
+internal sealed class HubSpotClientService : ServiceBase, IHubSpotObjectService<Client>
 {
 	public HubSpotClientService(
-		IHubSpotClient hubSpotClient)
+		IClient hubSpotClient)
 		: base(hubSpotClient)
 	{ }
 
@@ -25,7 +26,7 @@ internal sealed class HubSpotClientService : HubSpotService, IHubSpotObjectServi
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddCompanyQueryParams();
 
-		RestResponse<CompanyResponse> response = await _hubSpotClient
+		RestResponse<CompanyResponse> response = await _client
 			.GetAsync<CompanyResponse>(request, cancellationToken);
 
 		return response
@@ -40,7 +41,7 @@ internal sealed class HubSpotClientService : HubSpotService, IHubSpotObjectServi
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddCompanyQueryParams();
 
-		RestResponse<CompaniesResponse> response = await _hubSpotClient
+		RestResponse<CompaniesResponse> response = await _client
 			.GetAsync<CompaniesResponse>(request, cancellationToken);
 
 		return response

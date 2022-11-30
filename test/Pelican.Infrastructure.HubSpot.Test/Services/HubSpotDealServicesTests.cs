@@ -1,4 +1,5 @@
 ﻿using Moq;
+using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Services;
@@ -12,7 +13,7 @@ public class HubSpotDealServicesTests
 	private const string ID = "Id";
 	private const string OWNERID = "OwnerId";
 
-	private readonly Mock<IHubSpotClient> _hubSpotClientMock;
+	private readonly Mock<IClient> _hubSpotClientMock;
 	private readonly HubSpotDealService _uut;
 
 	public HubSpotDealServicesTests()

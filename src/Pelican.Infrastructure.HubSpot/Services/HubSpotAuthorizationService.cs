@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Application.HubSpot.Dtos;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
@@ -13,11 +14,11 @@ using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;
 
-internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuthorizationService
+internal sealed class HubSpotAuthorizationService : ServiceBase, IHubSpotAuthorizationService
 {
 	private readonly HubSpotSettings _hubSpotSettings;
 	public HubSpotAuthorizationService(
-		IHubSpotClient hubSpotClient,
+		IClient hubSpotClient,
 		IOptions<HubSpotSettings> hubSpotSettings)
 		: base(hubSpotClient)
 	{
@@ -34,7 +35,7 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 			.AddQueryParameter("code", code, false)
 			.AddQueryParameter("grant_type", "authorization_code", false);
 
-		RestResponse<GetAccessTokenResponse> response = await _hubSpotClient
+		RestResponse<GetAccessTokenResponse> response = await _client
 			.PostAsync<GetAccessTokenResponse>(request, cancellationToken);
 
 		return response
@@ -47,7 +48,7 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 	{
 		RestRequest request = new RestRequest($"oauth/v1/access-tokens/{accessToken}");
 
-		RestResponse<AccessTokenResponse> response = await _hubSpotClient
+		RestResponse<AccessTokenResponse> response = await _client
 			.GetAsync<AccessTokenResponse>(request, cancellationToken);
 
 		return response
@@ -74,7 +75,7 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 			.AddQueryParameter("grant_type", "refresh_token", false)
 			.AddQueryParameter("refresh_token", supplier.RefreshToken, false);
 
-		RestResponse<RefreshAccessTokenResponse> response = await _hubSpotClient
+		RestResponse<RefreshAccessTokenResponse> response = await _client
 			.PostAsync<RefreshAccessTokenResponse>(
 				request,
 				cancellationToken);
@@ -92,7 +93,7 @@ internal sealed class HubSpotAuthorizationService : HubSpotService, IHubSpotAuth
 			.AddQueryParameter("grant_type", "refresh_token", false)
 			.AddQueryParameter("refresh_token", refreshToken, false);
 
-		RestResponse<RefreshAccessTokenResponse> response = await _hubSpotClient
+		RestResponse<RefreshAccessTokenResponse> response = await _client
 			.PostAsync<RefreshAccessTokenResponse>(
 				request,
 				cancellationToken);

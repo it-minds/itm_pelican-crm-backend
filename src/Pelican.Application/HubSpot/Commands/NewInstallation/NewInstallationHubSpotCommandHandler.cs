@@ -9,7 +9,7 @@ using Pelican.Domain.Shared;
 [assembly: InternalsVisibleTo("Pelican.Application.Test")]
 namespace Pelican.Application.HubSpot.Commands.NewInstallation;
 
-internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstallationCommand>
+internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<NewInstallationHubSpotCommand>
 {
 	private readonly IHubSpotOwnersService _hubSpotAccountManagerService;
 	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
@@ -18,7 +18,7 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 	private readonly IHubSpotObjectService<Deal> _hubSpotDealService;
 	private readonly IUnitOfWork _unitOfWork;
 
-	public NewInstallationCommandHandler(
+	public NewInstallationHubSpotCommandHandler(
 		IHubSpotOwnersService hubSpotAccountManagerService,
 		IHubSpotAuthorizationService hubSpotAuthorizationService,
 		IHubSpotObjectService<Contact> hubSpotContactService,
@@ -35,7 +35,7 @@ internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstall
 	}
 
 	public async Task<Result> Handle(
-		NewInstallationCommand command,
+		NewInstallationHubSpotCommand command,
 		CancellationToken cancellationToken)
 	{
 		Result<RefreshAccessTokens> tokensResult = await _hubSpotAuthorizationService

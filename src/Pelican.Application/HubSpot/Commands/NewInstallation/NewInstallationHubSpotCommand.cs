@@ -2,5 +2,5 @@
 
 namespace Pelican.Application.HubSpot.Commands.NewInstallation;
 
-public sealed record NewInstallationCommand(
+public sealed record NewInstallationHubSpotCommand(
 	string Code) : ICommand;

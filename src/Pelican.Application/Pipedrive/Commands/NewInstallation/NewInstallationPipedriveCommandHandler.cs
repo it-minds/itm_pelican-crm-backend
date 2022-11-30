@@ -3,7 +3,7 @@ using Pelican.Domain.Shared;
 
 namespace Pelican.Application.Pipedrive.Commands.NewInstallation;
 
-internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstallationPipedriveCommand>
+internal sealed class NewInstallationPipedriveCommandHandler : ICommandHandler<NewInstallationPipedriveCommand>
 {
 	public Task<Result> Handle(NewInstallationPipedriveCommand request, CancellationToken cancellationToken)
 	{

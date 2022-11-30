@@ -1,9 +1,13 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
 
 namespace Pelican.Application.AccountManagers.PipedriveCommands.UpdateAccountManager;
-public sealed record UpdateClientPipedriveCommand(
+public sealed record UpdateAccountManagerPipedriveCommand(
 	int SupplierPipedriveId,
 	int AccountManagerId,
 	int AccountManagerPipedriveId,
-	string? name,
-	string) : ICommand;
+	string firstName,
+	string? lastName,
+	string? pictureUrl,
+	string? phoneNumber,
+	string? email,
+	string? linkedin) : ICommand;

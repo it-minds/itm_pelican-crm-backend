@@ -1,19 +1,18 @@
-﻿using HotChocolate.Language.Visitors;
-using Pelican.Application.Abstractions.Messaging;
+﻿using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.AccountManagers.Commands.ValidateWebhookUserId;
 using Pelican.Application.Clients.Commands.DeleteClient;
 using Pelican.Application.Clients.Commands.UpdateClient;
 using Pelican.Application.Contacts.Commands.UpdateContact;
-using Pelican.Application.Deals.Commands.DeleteDeal;
-using Pelican.Application.Deals.Commands.UpdateDeal;
+using Pelican.Application.Deals.HubSpotCommands.DeleteDeal;
+using Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
 using Pelican.Presentation.Api.Abstractions;
 using Pelican.Presentation.Api.Contracts;
 
 namespace Pelican.Presentation.Api.Mapping;
 
-internal sealed class WebHookRequestsToCommands : IRequestToCommandMapper
+internal sealed class HubSpotWebHookRequestsToCommands : IRequestToCommandMapper
 {
-	public IReadOnlyCollection<ICommand> ConvertToCommands(IReadOnlyCollection<WebHookRequest>? requests)
+	public IReadOnlyCollection<ICommand> ConvertToCommands(IReadOnlyCollection<HubSpotWebHookRequest>? requests)
 	{
 		if (requests is null)
 		{
@@ -37,11 +36,11 @@ internal sealed class WebHookRequestsToCommands : IRequestToCommandMapper
 				request.SupplierHubSpotId));
 		}
 
-		foreach (WebHookRequest request in requests)
+		foreach (HubSpotWebHookRequest request in requests)
 		{
 			commands.Add(request.SubscriptionType switch
 			{
-				"deal.deletion" => new DeleteDealCommand(
+				"deal.deletion" => new DeleteDealHubSpotCommand(
 					request.ObjectId),
 				"company.deletion" => new DeleteClientCommand(
 					request.ObjectId),
@@ -50,7 +49,7 @@ internal sealed class WebHookRequestsToCommands : IRequestToCommandMapper
 					request.SupplierHubSpotId,
 					request.PropertyName,
 					request.PropertyValue),
-				"deal.propertyChange" => new UpdateDealCommand(
+				"deal.propertyChange" => new UpdateDealHubSpotCommand(
 					request.ObjectId,
 					request.SupplierHubSpotId,
 					request.PropertyName,

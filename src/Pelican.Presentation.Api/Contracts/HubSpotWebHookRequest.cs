@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Pelican.Presentation.Api.Contracts;
-public record WebHookRequest
+public record HubSpotWebHookRequest
 {
 	[JsonPropertyName("objectId")]
 	public long ObjectId { get; set; }

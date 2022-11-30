@@ -24,7 +24,7 @@ public class Supplier : Entity, ITimeTracked
 		get => _name;
 		set
 		{
-			_name = value!.Length > StringLengths.Name
+			_name = value?.Length > StringLengths.Name
 				? value.Substring(0, StringLengths.Name - 3) + ("...")
 				: value;
 		}
@@ -37,7 +37,7 @@ public class Supplier : Entity, ITimeTracked
 		get => _phoneNumber;
 		set
 		{
-			_phoneNumber = value!.Length > StringLengths.PhoneNumber
+			_phoneNumber = value?.Length > StringLengths.PhoneNumber
 				? value.Substring(0, StringLengths.PhoneNumber - 3) + ("...")
 				: value;
 		}
@@ -47,7 +47,7 @@ public class Supplier : Entity, ITimeTracked
 		get => _email;
 		set
 		{
-			_email = value!.Length > StringLengths.Email
+			_email = value?.Length > StringLengths.Email
 				? value.Substring(0, StringLengths.Email - 3) + ("...")
 				: value;
 		}
@@ -58,7 +58,7 @@ public class Supplier : Entity, ITimeTracked
 		get => _linkedInUrl;
 		set
 		{
-			_linkedInUrl = value!.Length > StringLengths.Url
+			_linkedInUrl = value?.Length > StringLengths.Url
 				? value.Substring(0, StringLengths.Url - 3) + ("...")
 				: value;
 		}
@@ -68,7 +68,7 @@ public class Supplier : Entity, ITimeTracked
 		get => _websiteUrl;
 		set
 		{
-			_websiteUrl = value!.Length > StringLengths.Url
+			_websiteUrl = value?.Length > StringLengths.Url
 				? value.Substring(0, StringLengths.Url - 3) + ("...")
 				: value;
 		}

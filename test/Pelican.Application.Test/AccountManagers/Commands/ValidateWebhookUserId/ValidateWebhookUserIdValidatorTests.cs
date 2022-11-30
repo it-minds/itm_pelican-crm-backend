@@ -1,7 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.AccountManagers.Commands.ValidateWebhookUserId;
-using Pelican.Application.Deals.Commands.UpdateDeal;
 using Xunit;
 
 

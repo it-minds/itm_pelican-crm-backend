@@ -20,7 +20,7 @@ public static class DependencyInjection
 
 		services.AddScoped<HubSpotValidationFilter>();
 
-		services.AddScoped<IRequestToCommandMapper, WebHookRequestsToCommands>();
+		services.AddScoped<IRequestToCommandMapper, HubSpotWebHookRequestsToCommands>();
 
 		services.AddControllers();
 

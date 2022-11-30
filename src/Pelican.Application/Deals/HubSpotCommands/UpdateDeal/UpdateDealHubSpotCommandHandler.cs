@@ -5,15 +5,15 @@ using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.Deals.Commands.UpdateDeal;
+namespace Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
 
-internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealCommand>
+internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDealHubSpotCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IHubSpotObjectService<Deal> _hubSpotDealService;
 	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
 
-	public UpdateDealCommandHandler(
+	public UpdateDealHubSpotCommandHandler(
 		IUnitOfWork unitOfWork,
 		IHubSpotObjectService<Deal> hubSpotDealService,
 		IHubSpotAuthorizationService hubSpotAuthorizationService)
@@ -28,7 +28,7 @@ internal sealed class UpdateDealCommandHandler : ICommandHandler<UpdateDealComma
 			?? throw new ArgumentNullException(nameof(hubSpotAuthorizationService));
 	}
 
-	public async Task<Result> Handle(UpdateDealCommand command, CancellationToken cancellationToken = default)
+	public async Task<Result> Handle(UpdateDealHubSpotCommand command, CancellationToken cancellationToken = default)
 	{
 		Deal? deal = _unitOfWork
 			.DealRepository

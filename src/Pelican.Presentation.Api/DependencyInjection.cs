@@ -13,8 +13,6 @@ namespace Pelican.Presentation.Api;
 
 public static class DependencyInjection
 {
-	const string ALLOWED_CORS_ORIGINS = "AllowedCorsOrigins";
-
 	public static IServiceCollection AddApi(this IServiceCollection services)
 	{
 		services.AddScoped<IHashGeneratorFactory, HashGeneratorFactory>();

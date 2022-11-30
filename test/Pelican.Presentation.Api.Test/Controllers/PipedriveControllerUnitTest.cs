@@ -1,16 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
-using Pelican.Application.Pipedrive.Commands.NewInstallation;
-using Pelican.Domain.Shared;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
-using Pelican.Presentation.Api.Controllers;
-using Xunit;
-
-namespace Pelican.Presentation.Api.Test.Controllers;
+﻿namespace Pelican.Presentation.Api.Test.Controllers;
 public class PipedriveControllerUnitTest
 {
 	private readonly PipedriveController _uut;
@@ -144,9 +132,9 @@ public class PipedriveControllerUnitTest
 		//Assert
 		_senderMock.Verify(
 			s => s.Send(
-				expectedCommand,
-				default),
-			Times.Once);
+					expectedCommand,
+					default),
+				Times.Once);
 
 		Assert.IsType<OkResult>(result);
 	}

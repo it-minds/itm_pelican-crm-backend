@@ -4,6 +4,7 @@ using Moq;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Deals.PipedriveCommands.DeleteDeal;
 using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
+using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDeal;

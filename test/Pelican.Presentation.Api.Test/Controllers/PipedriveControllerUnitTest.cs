@@ -79,7 +79,7 @@ public class PipedriveControllerUnitTest
 			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
 
-		UpdateDealPipe dealRequest = new();
+		UpdateDealRequest dealRequest = new();
 
 		//Act
 		IActionResult result = await _uut.UpdateDeal(dealRequest);

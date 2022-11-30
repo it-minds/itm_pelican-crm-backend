@@ -5,6 +5,7 @@ using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
 
 namespace Pelican.Presentation.Api.Controllers;
 
@@ -37,14 +38,14 @@ public sealed class PipedriveController : ApiController
 		List<Result> results = new();
 		ICommand command = new UpdateDealPipedriveCommand(
 			request.MetaProperties.SupplierPipedriveId,
-			request.MetaProperties.SubscriptionAction,
-			request.MetaProperties.SubscriptionObject,
+			request.MetaProperties.ObjectId,
+			request.MetaProperties.UserId,
 			request.CurrentProperties.DealStatusId,
 			request.CurrentProperties.DealDescription,
 			request.CurrentProperties.DealName,
 			request.CurrentProperties.LastContactDate,
-			request.CurrentProperties.DealId,
-			request.MetaProperties.UserId);
+			null,
+			null);
 
 		results.Add(
 			await Sender.Send(command, default));

@@ -6,7 +6,6 @@ using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
-using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
 using Pelican.Infrastructure.HubSpot.Services;
 using RestSharp;
@@ -58,7 +57,7 @@ public class HubSpotAuthorizationServicesTests
 			.Setup(client => client.PostAsync<GetAccessTokenResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<GetAccessTokenResponse>()
+			.ReturnsAsync(new RestSharpResponse<GetAccessTokenResponse>()
 			{
 				IsSuccessStatusCode = false,
 			});
@@ -84,7 +83,7 @@ public class HubSpotAuthorizationServicesTests
 			.Setup(client => client.PostAsync<GetAccessTokenResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<GetAccessTokenResponse>()
+			.ReturnsAsync(new RestSharpResponse<GetAccessTokenResponse>()
 			{
 				IsSuccessStatusCode = true,
 				ResponseStatus = ResponseStatus.Completed,
@@ -105,10 +104,10 @@ public class HubSpotAuthorizationServicesTests
 	{
 		// Arrange
 		_hubSpotClientMock
-			.Setup(client => client.PostAsync<AccessTokenResponse>(
+			.Setup(client => client.GetAsync<AccessTokenResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<AccessTokenResponse>()
+			.ReturnsAsync(new RestSharpResponse<AccessTokenResponse>()
 			{
 				IsSuccessStatusCode = false,
 			});
@@ -137,7 +136,7 @@ public class HubSpotAuthorizationServicesTests
 			.Setup(client => client.GetAsync<AccessTokenResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<AccessTokenResponse>()
+			.ReturnsAsync(new RestSharpResponse<AccessTokenResponse>()
 			{
 				IsSuccessStatusCode = true,
 				ResponseStatus = ResponseStatus.Completed,
@@ -200,7 +199,7 @@ public class HubSpotAuthorizationServicesTests
 			.Setup(client => client.PostAsync<RefreshAccessTokenResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<RefreshAccessTokenResponse>()
+			.ReturnsAsync(new RestSharpResponse<RefreshAccessTokenResponse>()
 			{
 				IsSuccessStatusCode = true,
 				ResponseStatus = ResponseStatus.Completed,
@@ -229,7 +228,7 @@ public class HubSpotAuthorizationServicesTests
 			.Setup(client => client.PostAsync<RefreshAccessTokenResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<RefreshAccessTokenResponse>()
+			.ReturnsAsync(new RestSharpResponse<RefreshAccessTokenResponse>()
 			{
 				IsSuccessStatusCode = true,
 				ResponseStatus = ResponseStatus.Completed,

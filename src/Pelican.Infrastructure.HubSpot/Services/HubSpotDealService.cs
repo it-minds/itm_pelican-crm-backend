@@ -25,7 +25,7 @@ internal sealed class HubSpotDealService : ServiceBase, IHubSpotObjectService<De
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddDealQueryParams();
 
-		RestResponse<DealResponse> response = await _client
+		IResponse<DealResponse> response = await _client
 			.GetAsync<DealResponse>(request, cancellationToken);
 
 		return response
@@ -40,7 +40,7 @@ internal sealed class HubSpotDealService : ServiceBase, IHubSpotObjectService<De
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddDealQueryParams();
 
-		RestResponse<DealsResponse> response = await _client
+		IResponse<DealsResponse> response = await _client
 			.GetAsync<DealsResponse>(request, cancellationToken);
 
 		return response

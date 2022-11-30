@@ -26,7 +26,7 @@ internal sealed class HubSpotAccountManagerService : ServiceBase, IHubSpotOwners
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddQueryParameter("idProperty", "userid");
 
-		RestResponse<OwnerResponse> response = await _client
+		IResponse<OwnerResponse> response = await _client
 			.GetAsync<OwnerResponse>(request, cancellationToken);
 
 		return response
@@ -40,7 +40,7 @@ internal sealed class HubSpotAccountManagerService : ServiceBase, IHubSpotOwners
 		RestRequest request = new RestRequest("crm/v3/owners")
 			.AddHeader("Authorization", $"Bearer {accessToken}");
 
-		RestResponse<OwnersResponse> response = await _client
+		IResponse<OwnersResponse> response = await _client
 			.GetAsync<OwnersResponse>(request, cancellationToken);
 
 		return response

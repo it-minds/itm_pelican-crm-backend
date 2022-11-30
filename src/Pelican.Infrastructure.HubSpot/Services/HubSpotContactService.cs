@@ -25,7 +25,7 @@ internal sealed class HubSpotContactService : ServiceBase, IHubSpotObjectService
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddContactQueryParams();
 
-		RestResponse<ContactResponse> response = await _client
+		IResponse<ContactResponse> response = await _client
 			.GetAsync<ContactResponse>(request, cancellationToken);
 
 		return response
@@ -40,7 +40,7 @@ internal sealed class HubSpotContactService : ServiceBase, IHubSpotObjectService
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddContactQueryParams();
 
-		RestResponse<ContactsResponse> response = await _client
+		IResponse<ContactsResponse> response = await _client
 			.GetAsync<ContactsResponse>(request, cancellationToken);
 
 		return response

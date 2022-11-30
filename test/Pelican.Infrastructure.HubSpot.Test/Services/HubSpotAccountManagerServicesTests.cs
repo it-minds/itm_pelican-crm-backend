@@ -1,6 +1,5 @@
 ﻿using Moq;
 using Pelican.Application.Abstractions.Infrastructure;
-using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
 using Pelican.Infrastructure.HubSpot.Services;
 using RestSharp;
@@ -31,7 +30,7 @@ public class HubSpotAccountManagerServicesTests
 			.Setup(client => client.GetAsync<OwnerResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<OwnerResponse>()
+			.ReturnsAsync(new RestSharpResponse<OwnerResponse>()
 			{
 				IsSuccessStatusCode = false,
 			});
@@ -59,7 +58,7 @@ public class HubSpotAccountManagerServicesTests
 			.Setup(client => client.GetAsync<OwnerResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<OwnerResponse>()
+			.ReturnsAsync(new RestSharpResponse<OwnerResponse>()
 			{
 				IsSuccessStatusCode = true,
 				ResponseStatus = ResponseStatus.Completed,
@@ -82,7 +81,7 @@ public class HubSpotAccountManagerServicesTests
 			.Setup(client => client.GetAsync<OwnersResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<OwnersResponse>()
+			.ReturnsAsync(new RestSharpResponse<OwnersResponse>()
 			{
 				IsSuccessStatusCode = false,
 			});
@@ -116,7 +115,7 @@ public class HubSpotAccountManagerServicesTests
 			.Setup(client => client.GetAsync<OwnersResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<OwnersResponse>()
+			.ReturnsAsync(new RestSharpResponse<OwnersResponse>()
 			{
 				IsSuccessStatusCode = true,
 				ResponseStatus = ResponseStatus.Completed,

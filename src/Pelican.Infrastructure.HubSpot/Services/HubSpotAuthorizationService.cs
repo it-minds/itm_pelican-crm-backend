@@ -35,7 +35,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase, IHubSpotAuthori
 			.AddQueryParameter("code", code, false)
 			.AddQueryParameter("grant_type", "authorization_code", false);
 
-		RestResponse<GetAccessTokenResponse> response = await _client
+		IResponse<GetAccessTokenResponse> response = await _client
 			.PostAsync<GetAccessTokenResponse>(request, cancellationToken);
 
 		return response
@@ -48,7 +48,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase, IHubSpotAuthori
 	{
 		RestRequest request = new RestRequest($"oauth/v1/access-tokens/{accessToken}");
 
-		RestResponse<AccessTokenResponse> response = await _client
+		IResponse<AccessTokenResponse> response = await _client
 			.GetAsync<AccessTokenResponse>(request, cancellationToken);
 
 		return response
@@ -75,7 +75,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase, IHubSpotAuthori
 			.AddQueryParameter("grant_type", "refresh_token", false)
 			.AddQueryParameter("refresh_token", supplier.RefreshToken, false);
 
-		RestResponse<RefreshAccessTokenResponse> response = await _client
+		IResponse<RefreshAccessTokenResponse> response = await _client
 			.PostAsync<RefreshAccessTokenResponse>(
 				request,
 				cancellationToken);
@@ -93,7 +93,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase, IHubSpotAuthori
 			.AddQueryParameter("grant_type", "refresh_token", false)
 			.AddQueryParameter("refresh_token", refreshToken, false);
 
-		RestResponse<RefreshAccessTokenResponse> response = await _client
+		IResponse<RefreshAccessTokenResponse> response = await _client
 			.PostAsync<RefreshAccessTokenResponse>(
 				request,
 				cancellationToken);

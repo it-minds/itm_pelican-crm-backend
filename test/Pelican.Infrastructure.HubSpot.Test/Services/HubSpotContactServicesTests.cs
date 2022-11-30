@@ -23,29 +23,10 @@ public class HubSpotContactServicesTests
 	}
 
 	[Fact]
-	public async Task GetByIdAsync_ClientReturnsNull_ReturnFailure()
-	{
-		/// Arrange
-		RestResponse<ContactResponse> restResponse = null!;
-
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactResponse>(
-				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
-
-		/// Act
-		var result = await _uut.GetByIdAsync("", 0, default);
-
-		/// Assert
-		Assert.True(result.IsFailure);
-	}
-
-	[Fact]
 	public async Task GetByIdAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		/// Arrange
-		RestResponse<ContactResponse> restResponse = new()
+		RestSharpResponse<ContactResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = false,
 		};
@@ -54,7 +35,7 @@ public class HubSpotContactServicesTests
 			.Setup(client => client.GetAsync<ContactResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -67,7 +48,7 @@ public class HubSpotContactServicesTests
 	public async Task GetByIdAsync_ClientReturnsNullData_ReturnFailure()
 	{
 		/// Arrange
-		RestResponse<ContactResponse> restResponse = new()
+		RestSharpResponse<ContactResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -78,7 +59,7 @@ public class HubSpotContactServicesTests
 			.Setup(client => client.GetAsync<ContactResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -93,7 +74,7 @@ public class HubSpotContactServicesTests
 		/// Arrange
 		ContactResponse contactResponse = new();
 
-		RestResponse<ContactResponse> restResponse = new()
+		RestSharpResponse<ContactResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -104,7 +85,7 @@ public class HubSpotContactServicesTests
 			.Setup(client => client.GetAsync<ContactResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -126,7 +107,7 @@ public class HubSpotContactServicesTests
 			}
 		};
 
-		RestResponse<ContactResponse> restResponse = new()
+		RestSharpResponse<ContactResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -137,7 +118,7 @@ public class HubSpotContactServicesTests
 			.Setup(client => client.GetAsync<ContactResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -149,29 +130,10 @@ public class HubSpotContactServicesTests
 	}
 
 	[Fact]
-	public async Task GetAsync_ClientReturnsNull_ReturnFailure()
-	{
-		/// Arrange
-		RestResponse<ContactsResponse> restResponse = null!;
-
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactsResponse>(
-				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
-
-		/// Act
-		var result = await _uut.GetAsync("", default);
-
-		/// Assert
-		Assert.True(result.IsFailure);
-	}
-
-	[Fact]
 	public async Task GetAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		/// Arrange
-		RestResponse<ContactsResponse> restResponse = new()
+		RestSharpResponse<ContactsResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = false,
 		};
@@ -180,7 +142,7 @@ public class HubSpotContactServicesTests
 			.Setup(client => client.GetAsync<ContactsResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -193,7 +155,7 @@ public class HubSpotContactServicesTests
 	public async Task GetAsync_ClientReturnsNullData_ReturnFailure()
 	{
 		/// Arrange
-		RestResponse<ContactsResponse> restResponse = new()
+		RestSharpResponse<ContactsResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -204,7 +166,7 @@ public class HubSpotContactServicesTests
 			.Setup(client => client.GetAsync<ContactsResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -219,7 +181,7 @@ public class HubSpotContactServicesTests
 		/// Arrange
 		ContactsResponse contactsResponse = new();
 
-		RestResponse<ContactsResponse> restResponse = new()
+		RestSharpResponse<ContactsResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -230,7 +192,7 @@ public class HubSpotContactServicesTests
 			.Setup(client => client.GetAsync<ContactsResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -253,7 +215,7 @@ public class HubSpotContactServicesTests
 			Results = new List<ContactResponse>() { contactResponse },
 		};
 
-		RestResponse<ContactsResponse> restResponse = new()
+		RestSharpResponse<ContactsResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -264,7 +226,7 @@ public class HubSpotContactServicesTests
 			.Setup(client => client.GetAsync<ContactsResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -291,7 +253,7 @@ public class HubSpotContactServicesTests
 			Results = new List<ContactResponse>() { contactResponse },
 		};
 
-		RestResponse<ContactsResponse> restResponse = new()
+		RestSharpResponse<ContactsResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -302,7 +264,7 @@ public class HubSpotContactServicesTests
 			.Setup(client => client.GetAsync<ContactsResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);

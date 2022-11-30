@@ -1,6 +1,5 @@
 ﻿using Moq;
 using Pelican.Application.Abstractions.Infrastructure;
-using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Services;
 using RestSharp;
@@ -23,29 +22,10 @@ public class HubSpotDealServicesTests
 	}
 
 	[Fact]
-	public async Task GetByIdAsync_ClientReturnsNull_ReturnFailure()
-	{
-		/// Arrange
-		RestResponse<DealResponse> restResponse = null!;
-
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<DealResponse>(
-				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
-
-		/// Act
-		var result = await _uut.GetByIdAsync("", 0, default);
-
-		/// Assert
-		Assert.True(result.IsFailure);
-	}
-
-	[Fact]
 	public async Task GetByIdAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		/// Arrange
-		RestResponse<DealResponse> restResponse = new()
+		IResponse<DealResponse> RestSharpResponse = new RestSharpResponse<DealResponse>()
 		{
 			IsSuccessStatusCode = false,
 		};
@@ -54,7 +34,7 @@ public class HubSpotDealServicesTests
 			.Setup(client => client.GetAsync<DealResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -67,7 +47,7 @@ public class HubSpotDealServicesTests
 	public async Task GetByIdAsync_ClientReturnsNullData_ReturnFailure()
 	{
 		/// Arrange
-		RestResponse<DealResponse> restResponse = new()
+		RestSharpResponse<DealResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -78,7 +58,7 @@ public class HubSpotDealServicesTests
 			.Setup(client => client.GetAsync<DealResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -93,7 +73,7 @@ public class HubSpotDealServicesTests
 		/// Arrange
 		DealResponse dealResponse = new();
 
-		RestResponse<DealResponse> restResponse = new()
+		RestSharpResponse<DealResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -104,7 +84,7 @@ public class HubSpotDealServicesTests
 			.Setup(client => client.GetAsync<DealResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -126,7 +106,7 @@ public class HubSpotDealServicesTests
 			}
 		};
 
-		RestResponse<DealResponse> restResponse = new()
+		RestSharpResponse<DealResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -137,7 +117,7 @@ public class HubSpotDealServicesTests
 			.Setup(client => client.GetAsync<DealResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -149,29 +129,10 @@ public class HubSpotDealServicesTests
 	}
 
 	[Fact]
-	public async Task GetAsync_ClientReturnsNull_ReturnFailure()
-	{
-		/// Arrange
-		RestResponse<DealsResponse> restResponse = null!;
-
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<DealsResponse>(
-				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
-
-		/// Act
-		var result = await _uut.GetAsync("", default);
-
-		/// Assert
-		Assert.True(result.IsFailure);
-	}
-
-	[Fact]
 	public async Task GetAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		/// Arrange
-		RestResponse<DealsResponse> restResponse = new()
+		RestSharpResponse<DealsResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = false,
 		};
@@ -180,7 +141,7 @@ public class HubSpotDealServicesTests
 			.Setup(client => client.GetAsync<DealsResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -193,7 +154,7 @@ public class HubSpotDealServicesTests
 	public async Task GetAsync_ClientReturnsNullData_ReturnFailure()
 	{
 		/// Arrange
-		RestResponse<DealsResponse> restResponse = new()
+		RestSharpResponse<DealsResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -204,7 +165,7 @@ public class HubSpotDealServicesTests
 			.Setup(client => client.GetAsync<DealsResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -219,7 +180,7 @@ public class HubSpotDealServicesTests
 		/// Arrange
 		DealsResponse dealsResponse = new();
 
-		RestResponse<DealsResponse> restResponse = new()
+		RestSharpResponse<DealsResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -230,7 +191,7 @@ public class HubSpotDealServicesTests
 			.Setup(client => client.GetAsync<DealsResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -253,7 +214,7 @@ public class HubSpotDealServicesTests
 			Results = new List<DealResponse>() { dealResponse },
 		};
 
-		RestResponse<DealsResponse> restResponse = new()
+		RestSharpResponse<DealsResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -264,7 +225,7 @@ public class HubSpotDealServicesTests
 			.Setup(client => client.GetAsync<DealsResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -291,7 +252,7 @@ public class HubSpotDealServicesTests
 			Results = new List<DealResponse>() { dealResponse },
 		};
 
-		RestResponse<DealsResponse> restResponse = new()
+		RestSharpResponse<DealsResponse> RestSharpResponse = new()
 		{
 			IsSuccessStatusCode = true,
 			ResponseStatus = ResponseStatus.Completed,
@@ -302,7 +263,7 @@ public class HubSpotDealServicesTests
 			.Setup(client => client.GetAsync<DealsResponse>(
 				It.IsAny<RestRequest>(),
 				default))
-			.ReturnsAsync(restResponse);
+			.ReturnsAsync(RestSharpResponse);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);

@@ -26,7 +26,7 @@ internal sealed class HubSpotClientService : ServiceBase, IHubSpotObjectService<
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddCompanyQueryParams();
 
-		RestResponse<CompanyResponse> response = await _client
+		IResponse<CompanyResponse> response = await _client
 			.GetAsync<CompanyResponse>(request, cancellationToken);
 
 		return response
@@ -41,7 +41,7 @@ internal sealed class HubSpotClientService : ServiceBase, IHubSpotObjectService<
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddCompanyQueryParams();
 
-		RestResponse<CompaniesResponse> response = await _client
+		IResponse<CompaniesResponse> response = await _client
 			.GetAsync<CompaniesResponse>(request, cancellationToken);
 
 		return response

@@ -1,5 +1,4 @@
-﻿
-using Pelican.Application.Abstractions.Messaging;
+﻿using Pelican.Application.Abstractions.Messaging;
 
 namespace Pelican.Application.Deals.HubSpotCommands.DeleteDeal;
 

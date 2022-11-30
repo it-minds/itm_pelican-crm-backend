@@ -11,7 +11,7 @@ namespace Pelican.Application.Test.HubSpot.Commands.NewInstallation;
 
 public class NewInstallationCommandHandlerTests
 {
-	private readonly NewInstallationHubSpotCommandHandler _uut;
+	private readonly NewInstallationCommandHandler _uut;
 	private readonly Mock<IHubSpotOwnersService> _hubSpotAccountManagerServiceMock;
 	private readonly Mock<IHubSpotAuthorizationService> _hubSpotAuthorizationServiceMock;
 	private readonly Mock<IHubSpotObjectService<Contact>> _hubSpotContactServiceMock;
@@ -40,7 +40,7 @@ public class NewInstallationCommandHandlerTests
 		_contactRepositoryMock = new();
 		cancellationToken = new();
 
-		_uut = new NewInstallationHubSpotCommandHandler(
+		_uut = new NewInstallationCommandHandler(
 			_hubSpotAccountManagerServiceMock.Object,
 			_hubSpotAuthorizationServiceMock.Object,
 			_hubSpotContactServiceMock.Object,
@@ -58,7 +58,7 @@ public class NewInstallationCommandHandlerTests
 		string errorMessage)
 	{
 		// Arrange
-		var command = new NewInstallationHubSpotCommand(code);
+		var command = new NewInstallationCommand(code);
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(
@@ -112,7 +112,7 @@ public class NewInstallationCommandHandlerTests
 		string token2)
 	{
 		// Arrange
-		var command = new NewInstallationHubSpotCommand(code);
+		var command = new NewInstallationCommand(code);
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(

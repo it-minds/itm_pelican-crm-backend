@@ -7,21 +7,21 @@ namespace Pelican.Application.Test.HubSpot.Commands.NewInstallation;
 
 public class NewInstallationHubSpotCommandValidatorTests
 {
-	private readonly NewInstallationHubSpotCommandValidator _uut;
+	private readonly NewInstallationCommandValidator _uut;
 
 	public NewInstallationHubSpotCommandValidatorTests()
 	{
-		_uut = new NewInstallationHubSpotCommandValidator();
+		_uut = new NewInstallationCommandValidator();
 	}
 
 	[Fact]
 	public void NewInstallationCommandValidator_EmptyCode_ReturnsError()
 	{
 		// Arrange
-		NewInstallationHubSpotCommand command = new(String.Empty);
+		NewInstallationCommand command = new(String.Empty);
 
 		// Act
-		TestValidationResult<NewInstallationHubSpotCommand> result = _uut.TestValidate(command);
+		TestValidationResult<NewInstallationCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.Code);
@@ -31,10 +31,10 @@ public class NewInstallationHubSpotCommandValidatorTests
 	public void NewInstallationCommandValidator_NullCode_ReturnsError()
 	{
 		// Arrange
-		NewInstallationHubSpotCommand command = new("code");
+		NewInstallationCommand command = new("code");
 
 		// Act
-		TestValidationResult<NewInstallationHubSpotCommand> result = _uut.TestValidate(command);
+		TestValidationResult<NewInstallationCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.Code);

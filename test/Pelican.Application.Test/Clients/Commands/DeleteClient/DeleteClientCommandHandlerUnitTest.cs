@@ -9,7 +9,7 @@ using Xunit;
 namespace Pelican.Application.Test.Clients.Commands.DeleteClient;
 public class DeleteClientCommandHandlerUnitTest
 {
-	private readonly DeleteClientCommandHandler _uut;
+	private readonly DeleteClientHubSpotCommandHandler _uut;
 	private readonly Mock<IUnitOfWork> _fakeUnitOfWork;
 	private readonly CancellationToken _cancellation;
 	public DeleteClientCommandHandlerUnitTest()
@@ -25,7 +25,7 @@ public class DeleteClientCommandHandlerUnitTest
 
 		//Act
 		Exception exception = Record.Exception(() =>
-		new DeleteClientCommandHandler(null!));
+		new DeleteClientHubSpotCommandHandler(null!));
 
 		//Assert
 		Assert.Equal(typeof(ArgumentNullException), exception.GetType());
@@ -38,7 +38,7 @@ public class DeleteClientCommandHandlerUnitTest
 	public async void Handle_ClientNotFound_ReturnsSuccess()
 	{
 		//Arrange
-		DeleteClientCommand deleteClientCommand = new(1);
+		DeleteClientHubSpotCommand deleteClientCommand = new(1);
 		_fakeUnitOfWork.Setup(x => x
 			.ClientRepository
 				.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
@@ -69,7 +69,7 @@ public class DeleteClientCommandHandlerUnitTest
 	public async void Handle_ClientFound_ReturnsSuccess()
 	{
 		//Arrange
-		DeleteClientCommand deleteClientCommand = new(1);
+		DeleteClientHubSpotCommand deleteClientCommand = new(1);
 		Client client = new(Guid.NewGuid());
 		_fakeUnitOfWork.Setup(x => x
 			.ClientRepository

@@ -4,17 +4,17 @@ using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
 namespace Pelican.Application.Clients.HubSpotCommands.DeleteClient;
-internal sealed class DeleteClientCommandHandler : ICommandHandler<DeleteClientCommand>
+internal sealed class DeleteClientHubSpotCommandHandler : ICommandHandler<DeleteClientHubSpotCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;
 
-	public DeleteClientCommandHandler(IUnitOfWork unitOfWork)
+	public DeleteClientHubSpotCommandHandler(IUnitOfWork unitOfWork)
 	{
 		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 	}
 
 	public async Task<Result> Handle(
-		DeleteClientCommand command,
+		DeleteClientHubSpotCommand command,
 		CancellationToken cancellationToken)
 	{
 		Client? client = _unitOfWork

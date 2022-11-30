@@ -2,9 +2,9 @@
 
 
 namespace Pelican.Application.Clients.HubSpotCommands.DeleteClient;
-internal sealed class DeleteClientCommandValidator : AbstractValidator<DeleteClientCommand>
+internal sealed class DeleteClientHubspotCommandValidator : AbstractValidator<DeleteClientHubSpotCommand>
 {
-	public DeleteClientCommandValidator()
+	public DeleteClientHubspotCommandValidator()
 	{
 		RuleFor(command => command.ObjectId).NotEmpty();
 	}

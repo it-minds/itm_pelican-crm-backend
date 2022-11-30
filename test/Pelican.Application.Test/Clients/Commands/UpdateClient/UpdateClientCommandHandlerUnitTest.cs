@@ -11,7 +11,7 @@ namespace Pelican.Application.Test.Clients.Commands.UpdateClient;
 
 public class UpdateClientCommandHandlerTests
 {
-	private readonly UpdateClientCommandHandler _uut;
+	private readonly UpdateClientHubSpotCommandHandler _uut;
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 	private readonly Mock<IHubSpotObjectService<Client>> _hubSpotClientServiceMock;
 	private readonly Mock<IHubSpotAuthorizationService> _hubSpotAuthorizationServiceMock;
@@ -31,7 +31,7 @@ public class UpdateClientCommandHandlerTests
 	public void UpdateClientCommandHandler_UnitOfWorkNull_ThrowsArgumentNullException()
 	{
 		// Act
-		var result = Record.Exception(() => new UpdateClientCommandHandler(
+		var result = Record.Exception(() => new UpdateClientHubSpotCommandHandler(
 			null!,
 			_hubSpotClientServiceMock.Object,
 			_hubSpotAuthorizationServiceMock.Object));
@@ -48,7 +48,7 @@ public class UpdateClientCommandHandlerTests
 	public void UpdateClientCommandHandler_HubSpotContactServiceNull_ThrowsArgumentNullException()
 	{
 		// Act
-		var result = Record.Exception(() => new UpdateClientCommandHandler(
+		var result = Record.Exception(() => new UpdateClientHubSpotCommandHandler(
 			_unitOfWorkMock.Object,
 			null!,
 			_hubSpotAuthorizationServiceMock.Object));
@@ -65,7 +65,7 @@ public class UpdateClientCommandHandlerTests
 	public void UpdateClientCommandHandler_HubSpotAuthorizationServiceNull_ThrowsArgumentNullException()
 	{
 		// Act
-		var result = Record.Exception(() => new UpdateClientCommandHandler(
+		var result = Record.Exception(() => new UpdateClientHubSpotCommandHandler(
 			_unitOfWorkMock.Object,
 			_hubSpotClientServiceMock.Object,
 			null!));
@@ -87,7 +87,7 @@ public class UpdateClientCommandHandlerTests
 		string propertyValue)
 	{
 		// Arrange
-		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
 
 		_unitOfWorkMock.Setup(
 			u => u.ClientRepository.FindByCondition(
@@ -124,7 +124,7 @@ public class UpdateClientCommandHandlerTests
 		string propertyValue)
 	{
 		// Arrange
-		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
 
 		Supplier supplier = new(Guid.NewGuid())
 		{
@@ -175,7 +175,7 @@ public class UpdateClientCommandHandlerTests
 		string propertyValue)
 	{
 		// Arrange
-		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
 
 		Supplier supplier = new(Guid.NewGuid())
 		{
@@ -239,7 +239,7 @@ public class UpdateClientCommandHandlerTests
 		string propertyValue)
 	{
 		// Arrange
-		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
 
 		Supplier supplier = new(Guid.NewGuid())
 		{
@@ -315,7 +315,7 @@ public class UpdateClientCommandHandlerTests
 		string propertyValue)
 	{
 		// Arrange
-		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
 
 		Mock<Client> clientMock = new();
 
@@ -356,7 +356,7 @@ public class UpdateClientCommandHandlerTests
 		string propertyValue)
 	{
 		//Arrange
-		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
 
 		Mock<Client> clientMock = new();
 
@@ -397,7 +397,7 @@ public class UpdateClientCommandHandlerTests
 		string propertyValue)
 	{
 		//Arrange
-		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
 
 		Mock<Client> clientMock = new();
 
@@ -445,7 +445,7 @@ public class UpdateClientCommandHandlerTests
 		string propertyValue)
 	{
 		//Arrange
-		UpdateClientCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
 
 		Mock<Client> clientMock = new();
 

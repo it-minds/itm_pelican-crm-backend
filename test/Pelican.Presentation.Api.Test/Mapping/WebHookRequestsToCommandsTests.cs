@@ -110,7 +110,7 @@ public class HubSpotWebHookRequestsToCommandsTests
 		// Assert
 		Assert.Equal(
 			OBJECT_ID,
-			((DeleteClientCommand)result.First()).ObjectId);
+			((DeleteClientHubSpotCommand)result.First()).ObjectId);
 	}
 
 	[Fact]
@@ -209,16 +209,16 @@ public class HubSpotWebHookRequestsToCommandsTests
 		// Assert
 		Assert.Equal(
 			OBJECT_ID,
-			((UpdateClientCommand)result.First()).ObjectId);
+			((UpdateClientHubSpotCommand)result.First()).ObjectId);
 		Assert.Equal(
 			SUPPLIER_HUBSPOT_ID,
-			((UpdateClientCommand)result.First()).PortalId);
+			((UpdateClientHubSpotCommand)result.First()).PortalId);
 		Assert.Equal(
 			PROPERTY_NAME,
-			((UpdateClientCommand)result.First()).PropertyName);
+			((UpdateClientHubSpotCommand)result.First()).PropertyName);
 		Assert.Equal(
 			PROPERTY_VALUE,
-			((UpdateClientCommand)result.First()).PropertyValue);
+			((UpdateClientHubSpotCommand)result.First()).PropertyValue);
 	}
 
 	[Fact]

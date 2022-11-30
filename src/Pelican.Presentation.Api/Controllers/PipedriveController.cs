@@ -1,12 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Clients.PipedriveClientCommands;
+using Pelican.Application.Clients.PipedriveCommands.DeleteClient;
+using Pelican.Application.Clients.PipedriveCommands.UpdateClient;
 using Pelican.Application.Deals.PipedriveCommands.DeleteDeal;
 using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteClient;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDeal;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateClient;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
@@ -81,6 +83,21 @@ public sealed class PipedriveController : ApiController
 			request.CurrentProperties.OfficeLocation,
 			null
 			);
+
+		Result result = await Sender.Send(command, default);
+
+		return result.IsSuccess
+			? Ok()
+			: BadRequest(result.Error);
+	}
+
+	[HttpPost("DeleteClient")]
+	public async Task<IActionResult> DeleteClient([FromBody] DeleteClientRequest request)
+	{
+		ICommand command = new DeleteClientPipedriveCommand(
+			request.MetaProperties.SupplierPipedriveId,
+			request.MetaProperties.ObjectId,
+			request.MetaProperties.UserId);
 
 		Result result = await Sender.Send(command, default);
 

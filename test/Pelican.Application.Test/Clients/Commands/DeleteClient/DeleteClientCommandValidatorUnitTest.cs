@@ -5,7 +5,7 @@ using Xunit;
 namespace Pelican.Application.Test.Clients.Commands.DeleteClient;
 public class DeleteClientCommandValidatorUnitTest
 {
-	private readonly DeleteClientCommandValidator _uut;
+	private readonly DeleteClientHubspotCommandValidator _uut;
 	public DeleteClientCommandValidatorUnitTest()
 	{
 		_uut = new();
@@ -15,10 +15,10 @@ public class DeleteClientCommandValidatorUnitTest
 	public void DeleteClientCommandValidator_EmptyId_ReturnsError()
 	{
 		// Arrange
-		DeleteClientCommand command = new(0);
+		DeleteClientHubSpotCommand command = new(0);
 
 		// Act
-		TestValidationResult<DeleteClientCommand> result = _uut.TestValidate(command);
+		TestValidationResult<DeleteClientHubSpotCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.ObjectId);
@@ -30,10 +30,10 @@ public class DeleteClientCommandValidatorUnitTest
 	public void DeleteClientCommandValidator_NoEmptyId_ReturnsNoError(long objecId)
 	{
 		// Arrange
-		DeleteClientCommand command = new(objecId);
+		DeleteClientHubSpotCommand command = new(objecId);
 
 		// Act
-		TestValidationResult<DeleteClientCommand> result = _uut.TestValidate(command);
+		TestValidationResult<DeleteClientHubSpotCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.ObjectId);

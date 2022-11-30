@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
+using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
@@ -13,6 +14,21 @@ public sealed class PipedriveController : ApiController
 {
 	public PipedriveController(ISender sender) : base(sender)
 	{
+	}
+
+	[HttpGet("NewInstallation")]
+	public async Task<IActionResult> NewInstallation(
+		string code,
+		CancellationToken cancellationToken)
+	{
+		NewInstallationPipedriveCommand newInstallation = new(
+			code);
+
+		Result result = await Sender.Send(newInstallation, cancellationToken);
+
+		return result.IsSuccess
+			? Redirect("https://it-minds.dk/")
+			: BadRequest(result.Error);
 	}
 
 	[HttpPost("UpdateClient")]

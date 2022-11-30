@@ -8,12 +8,11 @@ using Pelican.Presentation.Api.Utilities.HubSpotHookValidation;
 using Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashGenerator;
 
 [assembly: InternalsVisibleTo("Pelican.Presentation.Api.Test")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace Pelican.Presentation.Api;
 
 public static class DependencyInjection
 {
-	const string ALLOWED_CORS_ORIGINS = "AllowedCorsOrigins";
-
 	public static IServiceCollection AddApi(this IServiceCollection services)
 	{
 		services.AddScoped<IHashGeneratorFactory, HashGeneratorFactory>();

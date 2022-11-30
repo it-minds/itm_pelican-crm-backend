@@ -1,11 +1,9 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashGenerator;
 
-[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace Pelican.Presentation.Api.Utilities.HubSpotHookValidation;
 
 // https://developers.hubspot.com/docs/api/webhooks/validating-requests

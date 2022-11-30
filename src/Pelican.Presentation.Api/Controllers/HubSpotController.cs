@@ -24,7 +24,7 @@ public sealed class HubSpotController : ApiController
 		string code,
 		CancellationToken cancellationToken)
 	{
-		NewInstallationCommand newInstallation = new(
+		NewInstallationHubSpotCommand newInstallation = new(
 			code);
 
 		Result result = await Sender.Send(newInstallation, cancellationToken);

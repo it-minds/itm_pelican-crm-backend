@@ -32,7 +32,7 @@ public class HubSpotControllerTests
 	{
 		// Arrange
 		_senderMock
-			.Setup(s => s.Send(It.IsAny<NewInstallationCommand>(), default))
+			.Setup(s => s.Send(It.IsAny<NewInstallationHubSpotCommand>(), default))
 			.ReturnsAsync(Result.Success);
 
 		// Act
@@ -41,7 +41,7 @@ public class HubSpotControllerTests
 		// Assert
 		_senderMock.Verify(
 			s => s.Send(
-				It.Is<NewInstallationCommand>(n => n.Code == code),
+				It.Is<NewInstallationHubSpotCommand>(n => n.Code == code),
 				default),
 			Times.Once);
 
@@ -57,7 +57,7 @@ public class HubSpotControllerTests
 	{
 		// Arrange
 		_senderMock
-			.Setup(s => s.Send(It.IsAny<NewInstallationCommand>(), default))
+			.Setup(s => s.Send(It.IsAny<NewInstallationHubSpotCommand>(), default))
 			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
 
 		// Act
@@ -66,7 +66,7 @@ public class HubSpotControllerTests
 		// Assert
 		_senderMock.Verify(
 			s => s.Send(
-				It.Is<NewInstallationCommand>(n => n.Code == code),
+				It.Is<NewInstallationHubSpotCommand>(n => n.Code == code),
 				default),
 			Times.Once);
 

@@ -505,4 +505,66 @@ public class PipedriveControllerUnitTest
 
 		Assert.IsType<OkResult>(result);
 	}
+
+	[Theory]
+	[InlineData("0", "fail")]
+	public async void DeleteAccountManager_ReceivesCallAndReturnsFailure_FailureIsReturned(
+		string errorCode,
+		string errorMessage)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
+
+		DeleteAccountManagerRequest accountManagerRequest = new();
+
+		//Act
+		IActionResult result = await _uut.DeleteAccountManager(accountManagerRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				It.IsAny<DeleteAccountManagerPipedriveCommand>(),
+				default),
+			Times.Once);
+
+		Assert.IsType<BadRequestObjectResult>(result);
+	}
+
+	[Theory]
+	[InlineData(1, 1, 1)]
+	public async void DeleteAccountManager_ReceivesCallAndReturnsSuccess_SuccessIsReturned(int objectId,
+		int supplierPipedriveId,
+		int userId)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success);
+
+		MetaProperties metaProperties = new()
+		{
+			ObjectId = objectId,
+			SupplierPipedriveId = supplierPipedriveId,
+			UserId = userId,
+		};
+		DeleteAccountManagerRequest accountManagerRequest = new()
+		{
+			MetaProperties = metaProperties,
+		};
+		DeleteAccountManagerPipedriveCommand expectedCommand = new(objectId);
+
+		//Act
+		IActionResult result = await _uut.DeleteAccountManager(accountManagerRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				expectedCommand,
+				default),
+			Times.Once);
+
+		Assert.IsType<OkResult>(result);
+	}
 }

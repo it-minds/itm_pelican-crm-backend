@@ -139,4 +139,16 @@ public sealed class PipedriveController : ApiController
 			? Ok()
 			: BadRequest(result.Error);
 	}
+
+	[HttpPost("DeleteAccountManager")]
+	public async Task<IActionResult> DeleteAccountManager([FromBody] DeleteAccountManagerRequest request)
+	{
+		ICommand command = new DeleteAccountManagerPipedriveCommand(request.MetaProperties.ObjectId);
+
+		Result result = await Sender.Send(command, default);
+
+		return result.IsSuccess
+			? Ok()
+			: BadRequest(result.Error);
+	}
 }

@@ -8,6 +8,7 @@ using Pelican.Presentation.Api.Utilities.HubSpotHookValidation;
 using Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashGenerator;
 
 [assembly: InternalsVisibleTo("Pelican.Presentation.Api.Test")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace Pelican.Presentation.Api;
 
 public static class DependencyInjection

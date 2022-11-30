@@ -1,6 +1,6 @@
-﻿using Pelican.Application.Abstractions.Messaging;
-using Pelican.Domain.Shared;
+﻿using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("Pelican.Application.Test")]
 namespace Pelican.Application.Pipedrive.Commands.NewInstallation;
 
 internal sealed class NewInstallationCommandHandler : ICommandHandler<NewInstallationPipedriveCommand>

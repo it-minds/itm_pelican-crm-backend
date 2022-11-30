@@ -5,11 +5,11 @@ using Xunit;
 
 namespace Pelican.Application.Test.HubSpot.Commands.NewInstallation;
 
-public class NewInstallationHubSpotCommandValidatorTests
+public class NewInstallationCommandValidatorTests
 {
 	private readonly NewInstallationHubSpotCommandValidator _uut;
 
-	public NewInstallationHubSpotCommandValidatorTests()
+	public NewInstallationCommandValidatorTests()
 	{
 		_uut = new NewInstallationHubSpotCommandValidator();
 	}

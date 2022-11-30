@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Deals.PipedriveCommands.DeleteDeal;
 using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDeal;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
 
 namespace Pelican.Presentation.Api.Controllers;
@@ -15,7 +17,6 @@ public sealed class PipedriveController : ApiController
 	public PipedriveController(ISender sender) : base(sender)
 	{
 	}
-
 	[HttpGet("NewInstallation")]
 	public async Task<IActionResult> NewInstallation(
 		string code,
@@ -45,6 +46,17 @@ public sealed class PipedriveController : ApiController
 			request.CurrentProperties.LastContactDate,
 			null,
 			null);
+
+		Result result = await Sender.Send(command, default);
+
+		return result.IsSuccess
+			? Ok()
+			: BadRequest(result.Error);
+	}
+	[HttpPost("DeleteClient")]
+	public async Task<IActionResult> DeleteDeal([FromBody] DeleteDealRequest request)
+	{
+		ICommand command = new DeleteDealPipedriveCommand(request.MetaProperties.ObjectId);
 
 		Result result = await Sender.Send(command, default);
 

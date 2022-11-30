@@ -1,8 +1,5 @@
-﻿using System.Runtime.CompilerServices;
-using Pelican.Domain.Primitives;
-using RestSharp;
+﻿using RestSharp;
 
-[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace Pelican.Application.Abstractions.Infrastructure;
 
 public interface IClient

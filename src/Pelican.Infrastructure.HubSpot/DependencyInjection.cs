@@ -2,9 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Domain.Entities;
-using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Services;
 
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 [assembly: InternalsVisibleTo("Pelican.Infrastructure.HubSpot.Test")]
 namespace Pelican.Infrastructure.HubSpot;
 

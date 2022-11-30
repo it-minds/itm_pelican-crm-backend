@@ -17,8 +17,7 @@ public sealed class PipedriveController : ApiController
 
 	[HttpPost("UpdateClient")]
 	public async Task<IActionResult> UpdateDeal(
-		[FromBody] UpdateDealResponse request,
-		CancellationToken cancellationToken)
+		[FromBody] UpdateDealResponse request)
 	{
 		List<Result> results = new();
 		ICommand command = new UpdateDealPipedriveCommand(
@@ -33,12 +32,10 @@ public sealed class PipedriveController : ApiController
 			request.MetaProperties.UserId);
 
 		results.Add(
-			await Sender.Send(command, cancellationToken));
+			await Sender.Send(command, default));
 
-		Result result = Result.FirstFailureOrSuccess(results.ToArray());
-
-		return result.IsSuccess
+		return results.First().IsSuccess
 			? Ok()
-			: BadRequest(result.Error);
+			: BadRequest(results.First().Error);
 	}
 }

@@ -35,7 +35,6 @@ public sealed class PipedriveController : ApiController
 	public async Task<IActionResult> UpdateDeal(
 		[FromBody] UpdateDealRequest request)
 	{
-		List<Result> results = new();
 		ICommand command = new UpdateDealPipedriveCommand(
 			request.MetaProperties.SupplierPipedriveId,
 			request.MetaProperties.ObjectId,
@@ -47,11 +46,10 @@ public sealed class PipedriveController : ApiController
 			null,
 			null);
 
-		results.Add(
-			await Sender.Send(command, default));
+		Result result = await Sender.Send(command, default);
 
-		return results.First().IsSuccess
+		return result.IsSuccess
 			? Ok()
-			: BadRequest(results.First().Error);
+			: BadRequest(result.Error);
 	}
 }

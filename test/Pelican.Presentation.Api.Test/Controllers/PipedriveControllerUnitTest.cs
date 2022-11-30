@@ -199,10 +199,7 @@ public class PipedriveControllerUnitTest
 		{
 			MetaProperties = metaProperties,
 		};
-		DeleteDealPipedriveCommand expectedCommand = new(
-			objectId,
-			supplierPipedriveId,
-			userId);
+		DeleteDealPipedriveCommand expectedCommand = new(objectId);
 
 		//Act
 		IActionResult result = await _uut.DeleteDeal(dealRequest);

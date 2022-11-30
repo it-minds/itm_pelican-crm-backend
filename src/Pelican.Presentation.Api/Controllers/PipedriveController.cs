@@ -56,10 +56,7 @@ public sealed class PipedriveController : ApiController
 	[HttpPost("DeleteClient")]
 	public async Task<IActionResult> DeleteDeal([FromBody] DeleteDealRequest request)
 	{
-		ICommand command = new DeleteDealPipedriveCommand(
-			request.MetaProperties.SupplierPipedriveId,
-			request.MetaProperties.ObjectId,
-			request.MetaProperties.UserId);
+		ICommand command = new DeleteDealPipedriveCommand(request.MetaProperties.ObjectId);
 
 		Result result = await Sender.Send(command, default);
 

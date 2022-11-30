@@ -1,11 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Deals.Commands.UpdateDeal;
+using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
 
 namespace Pelican.Presentation.Api.Controllers;
 
@@ -33,7 +32,7 @@ public sealed class PipedriveController : ApiController
 
 	[HttpPost("UpdateClient")]
 	public async Task<IActionResult> UpdateDeal(
-		[FromBody] UpdateDealResponse request)
+		[FromBody] UpdateDealRequest request)
 	{
 		List<Result> results = new();
 		ICommand command = new UpdateDealPipedriveCommand(

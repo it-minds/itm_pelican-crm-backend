@@ -7,16 +7,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Contracts\Deals\**" />
+	  <EmbeddedResource Remove="Contracts\Deals\**" />
+	  <None Remove="Contracts\Deals\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.10" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Pelican.Application\Pelican.Application.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Contracts\Deals\" />
 	</ItemGroup>
 
 </Project>

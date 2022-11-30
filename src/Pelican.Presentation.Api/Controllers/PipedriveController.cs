@@ -32,27 +32,24 @@ public sealed class PipedriveController : ApiController
 			null,
 			null);
 
-		results.Add(
-			await Sender.Send(command, default));
+		Result result = await Sender.Send(command, default);
 
-		return results.First().IsSuccess
+		return result.IsSuccess
 			? Ok()
-			: BadRequest(results.First().Error);
+			: BadRequest(result.Error);
 	}
 	[HttpPost("DeleteClient")]
 	public async Task<IActionResult> DeleteDeal([FromBody] DeleteDealRequest request)
 	{
-		List<Result> results = new();
 		ICommand command = new DeleteDealPipedriveCommand(
 			request.MetaProperties.SupplierPipedriveId,
 			request.MetaProperties.ObjectId,
 			request.MetaProperties.UserId);
 
-		results.Add(
-			await Sender.Send(command, default));
+		Result result = await Sender.Send(command, default);
 
-		return results.First().IsSuccess
+		return result.IsSuccess
 			? Ok()
-			: BadRequest(results.First().Error);
+			: BadRequest(result.Error);
 	}
 }

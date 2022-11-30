@@ -7,7 +7,7 @@ using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDealRequest;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDealRequest;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
 
 namespace Pelican.Presentation.Api.Controllers;
 
@@ -35,18 +35,18 @@ public sealed class PipedriveController : ApiController
 
 	[HttpPost("UpdateClient")]
 	public async Task<IActionResult> UpdateDeal(
-		[FromBody] UpdateDealResponse request)
+		[FromBody] UpdateDealRequest request)
 	{
 		ICommand command = new UpdateDealPipedriveCommand(
 			request.MetaProperties.SupplierPipedriveId,
-			request.MetaProperties.SubscriptionAction,
-			request.MetaProperties.SubscriptionObject,
+			request.MetaProperties.ObjectId,
+			request.MetaProperties.UserId,
 			request.CurrentProperties.DealStatusId,
 			request.CurrentProperties.DealDescription,
 			request.CurrentProperties.DealName,
 			request.CurrentProperties.LastContactDate,
-			request.CurrentProperties.DealId,
-			request.MetaProperties.UserId);
+			null,
+			null);
 
 		results.Add(
 			await Sender.Send(command, default));
@@ -56,14 +56,12 @@ public sealed class PipedriveController : ApiController
 			: BadRequest(results.First().Error);
 	}
 	[HttpPost("DeleteClient")]
-	public async Task<IActionResult> DeleteDeal([FromBody] DeleteDealResponse request)
+	public async Task<IActionResult> DeleteDeal([FromBody] DeleteDealRequest request)
 	{
 		List<Result> results = new();
 		ICommand command = new DeleteDealPipedriveCommand(
 			request.MetaProperties.SupplierPipedriveId,
-			request.MetaProperties.SubscriptionAction,
-			request.MetaProperties.SubscriptionObject,
-			request.MetaProperties.DealId,
+			request.MetaProperties.ObjectId,
 			request.MetaProperties.UserId);
 
 		results.Add(

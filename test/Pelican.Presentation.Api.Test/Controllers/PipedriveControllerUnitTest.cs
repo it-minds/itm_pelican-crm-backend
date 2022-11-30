@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Deals.PipedriveCommands.DeleteDeal;
 using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDealRequest;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
 using Pelican.Presentation.Api.Controllers;
 using Xunit;
@@ -146,6 +148,70 @@ public class PipedriveControllerUnitTest
 					expectedCommand,
 					default),
 				Times.Once);
+
+		Assert.IsType<OkResult>(result);
+	}
+	[Theory]
+	[InlineData("0", "fail")]
+	public async void DeleteDeal_ReceivesCallAndReturnsFailure_FailureIsReturned(
+		string errorCode,
+		string errorMessage)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
+
+		DeleteDealRequest dealRequest = new();
+
+		//Act
+		IActionResult result = await _uut.DeleteDeal(dealRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				It.IsAny<DeleteDealPipedriveCommand>(),
+				default),
+			Times.Once);
+
+		Assert.IsType<BadRequestObjectResult>(result);
+	}
+
+	[Theory]
+	[InlineData(1, 1, 1)]
+	public async void DeleteDeal_ReceivesCallAndReturnsSuccess_SuccessIsReturned(int objectId,
+		int supplierPipedriveId,
+		int userId)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success);
+
+		MetaProperties metaProperties = new()
+		{
+			ObjectId = objectId,
+			SupplierPipedriveId = supplierPipedriveId,
+			UserId = userId,
+		};
+		DeleteDealRequest dealResponse = new()
+		{
+			MetaProperties = metaProperties,
+		};
+		DeleteDealPipedriveCommand expectedCommand = new(
+			objectId,
+			supplierPipedriveId,
+			userId);
+
+		//Act
+		IActionResult result = await _uut.DeleteDeal(dealResponse);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				expectedCommand,
+				default),
+			Times.Once);
 
 		Assert.IsType<OkResult>(result);
 	}

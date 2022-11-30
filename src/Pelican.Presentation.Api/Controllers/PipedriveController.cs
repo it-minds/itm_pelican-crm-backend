@@ -5,7 +5,7 @@ using Pelican.Application.Deals.PipedriveCommands.DeleteDeal;
 using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDealRequest;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDeal;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
 
 namespace Pelican.Presentation.Api.Controllers;

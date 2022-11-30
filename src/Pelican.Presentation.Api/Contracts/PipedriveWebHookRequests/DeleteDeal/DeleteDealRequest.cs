@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDealRequest;
+namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDeal;
 public record DeleteDealRequest
 {
 	[JsonPropertyName("meta")]

@@ -6,7 +6,7 @@ using Pelican.Application.Deals.PipedriveCommands.DeleteDeal;
 using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDealRequest;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDeal;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
 using Pelican.Presentation.Api.Controllers;
 using Xunit;
@@ -194,7 +194,7 @@ public class PipedriveControllerUnitTest
 			SupplierPipedriveId = supplierPipedriveId,
 			UserId = userId,
 		};
-		DeleteDealRequest dealResponse = new()
+		DeleteDealRequest dealRequest = new()
 		{
 			MetaProperties = metaProperties,
 		};
@@ -204,7 +204,7 @@ public class PipedriveControllerUnitTest
 			userId);
 
 		//Act
-		IActionResult result = await _uut.DeleteDeal(dealResponse);
+		IActionResult result = await _uut.DeleteDeal(dealRequest);
 
 		//Assert
 		_senderMock.Verify(

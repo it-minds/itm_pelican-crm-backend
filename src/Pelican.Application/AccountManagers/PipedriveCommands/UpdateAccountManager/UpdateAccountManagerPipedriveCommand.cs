@@ -1,6 +1,4 @@
-﻿using Pelican.Application.Abstractions.Messaging;
-
-namespace Pelican.Application.AccountManagers.PipedriveCommands.UpdateAccountManager;
+﻿namespace Pelican.Application.AccountManagers.PipedriveCommands.UpdateAccountManager;
 public sealed record UpdateAccountManagerPipedriveCommand(
 	int SupplierPipedriveId,
 	int AccountManagerId,

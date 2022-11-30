@@ -26,7 +26,9 @@ public sealed class PipedriveController : ApiController
 			request.CurrentProperties.DealStatusId,
 			request.CurrentProperties.DealDescription,
 			request.CurrentProperties.DealName,
-			request.CurrentProperties.LastContactDate);
+			request.CurrentProperties.LastContactDate,
+			null,
+			null);
 
 		Result result = await Sender.Send(command, default);
 

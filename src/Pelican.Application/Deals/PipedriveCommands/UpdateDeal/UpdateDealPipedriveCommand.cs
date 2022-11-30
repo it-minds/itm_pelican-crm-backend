@@ -8,4 +8,6 @@ public sealed record UpdateDealPipedriveCommand(
 	int DealStatusId,
 	string? DealDescription,
 	string? DealName,
-	string? LastContactDate) : ICommand;
+	string? LastContactDate,
+	string? StartDate,
+	string? EndDate) : ICommand;

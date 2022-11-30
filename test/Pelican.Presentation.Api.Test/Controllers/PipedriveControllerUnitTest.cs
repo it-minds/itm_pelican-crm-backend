@@ -87,7 +87,9 @@ public class PipedriveControllerUnitTest
 			dealStatusId,
 			dealDescription,
 			dealName,
-			lastContactDate);
+			lastContactDate,
+			null,
+			null);
 
 		//Act
 		IActionResult result = await _uut.UpdateDeal(dealRequest);

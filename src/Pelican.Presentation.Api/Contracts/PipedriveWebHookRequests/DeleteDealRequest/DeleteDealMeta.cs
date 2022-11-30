@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
-public record UpdateDealMeta
+namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDealRequest;
+public record DeleteDealMeta
 {
 	[JsonPropertyName("company_id")]
 	public int SupplierPipedriveId { get; set; }
@@ -14,4 +14,7 @@ public record UpdateDealMeta
 
 	[JsonPropertyName("user_id")]
 	public int UserId { get; set; }
+
+	[JsonPropertyName("id")]
+	public int DealId { get; set; }
 }

@@ -1,11 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
+namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDealRequest;
 public record UpdateDealResponse
 {
 	[JsonPropertyName("current")]
 	public UpdateDealCurrent CurrentProperties { get; set; } = new();
 
 	[JsonPropertyName("meta")]
-	public UpdateDealMeta MetaProperties { get; set; } = new();
+	public DeleteDealMeta MetaProperties { get; set; } = new();
 }

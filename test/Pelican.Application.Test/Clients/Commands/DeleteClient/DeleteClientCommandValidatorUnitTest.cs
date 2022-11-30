@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using Pelican.Application.Clients.Commands.DeleteClient;
+using Pelican.Application.Clients.HubSpotCommands.DeleteClient;
 using Xunit;
 
 namespace Pelican.Application.Test.Clients.Commands.DeleteClient;

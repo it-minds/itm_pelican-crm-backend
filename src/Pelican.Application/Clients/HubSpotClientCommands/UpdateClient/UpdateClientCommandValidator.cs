@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Pelican.Application.Clients.Commands.UpdateClient;
+namespace Pelican.Application.Clients.HubSpotCommands.UpdateClient;
 
 internal sealed class UpdateClientCommandValidator : AbstractValidator<UpdateClientCommand>
 {

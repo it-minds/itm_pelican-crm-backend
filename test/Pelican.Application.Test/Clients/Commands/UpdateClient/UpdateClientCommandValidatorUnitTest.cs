@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using Pelican.Application.Clients.Commands.UpdateClient;
+using Pelican.Application.Clients.HubSpotCommands.UpdateClient;
 using Xunit;
 
 namespace Pelican.Application.Test.Clients.Commands.UpdateClient;

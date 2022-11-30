@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Pelican.Application.Abstractions.Data.Repositories;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.Clients.Commands.UpdateClient;
+namespace Pelican.Application.Clients.HubSpotCommands.UpdateClient;
 internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;

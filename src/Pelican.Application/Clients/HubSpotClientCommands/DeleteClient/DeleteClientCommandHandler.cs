@@ -3,7 +3,7 @@ using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.Clients.Commands.DeleteClient;
+namespace Pelican.Application.Clients.HubSpotCommands.DeleteClient;
 internal sealed class DeleteClientCommandHandler : ICommandHandler<DeleteClientCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;

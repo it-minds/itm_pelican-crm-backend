@@ -1,6 +1,6 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
 
-namespace Pelican.Application.Clients.Commands.UpdateClient;
+namespace Pelican.Application.Clients.HubSpotCommands.UpdateClient;
 public sealed record UpdateClientCommand(
 	long ObjectId,
 	long PortalId,

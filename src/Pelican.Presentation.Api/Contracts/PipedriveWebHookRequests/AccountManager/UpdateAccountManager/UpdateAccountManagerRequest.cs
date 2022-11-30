@@ -3,7 +3,7 @@
 namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.UpdateAccountManager;
 public record UpdateAccountManagerRequest
 {
-	[JsonPropertyName("current")]
+	[JsonPropertyName("current/0")]
 	public UpdateAccountManagerCurrentProperties CurrentProperties { get; set; } = new();
 
 	[JsonPropertyName("meta")]

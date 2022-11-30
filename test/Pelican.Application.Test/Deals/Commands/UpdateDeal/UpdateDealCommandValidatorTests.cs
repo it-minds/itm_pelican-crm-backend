@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using Pelican.Application.Contacts.Commands.UpdateContact;
 using Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
 using Xunit;
 

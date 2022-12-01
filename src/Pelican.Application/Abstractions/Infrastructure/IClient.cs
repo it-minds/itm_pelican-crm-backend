@@ -2,7 +2,7 @@
 
 namespace Pelican.Application.Abstractions.Infrastructure;
 
-public interface IClient
+public interface IClient<TSettings>
 {
 	Task<IResponse<TResponse>> GetAsync<TResponse>(
 		RestRequest request,

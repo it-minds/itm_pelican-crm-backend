@@ -1,7 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Settings;
 using Pelican.Infrastructure.HubSpot.Services;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

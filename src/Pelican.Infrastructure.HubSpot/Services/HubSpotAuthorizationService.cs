@@ -6,7 +6,6 @@ using Pelican.Application.HubSpot.Dtos;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
-using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
 using Pelican.Infrastructure.HubSpot.Extensions;
 using Pelican.Infrastructure.HubSpot.Mapping.Auth;
@@ -14,11 +13,11 @@ using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;
 
-internal sealed class HubSpotAuthorizationService : ServiceBase, IHubSpotAuthorizationService
+internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>, IHubSpotAuthorizationService
 {
 	private readonly HubSpotSettings _hubSpotSettings;
 	public HubSpotAuthorizationService(
-		IClient hubSpotClient,
+		IClient<HubSpotSettings> hubSpotClient,
 		IOptions<HubSpotSettings> hubSpotSettings)
 		: base(hubSpotClient)
 	{

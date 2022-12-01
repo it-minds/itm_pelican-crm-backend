@@ -1,8 +1,8 @@
 ﻿using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Settings;
 using Pelican.Domain.Shared;
-using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Extensions;
 using Pelican.Infrastructure.HubSpot.Mapping.Deals;
@@ -10,10 +10,10 @@ using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;
 
-internal sealed class HubSpotDealService : ServiceBase, IHubSpotObjectService<Deal>
+internal sealed class HubSpotDealService : ServiceBase<HubSpotSettings>, IHubSpotObjectService<Deal>
 {
 	public HubSpotDealService(
-		IClient hubSpotClient) : base(hubSpotClient)
+		IClient<HubSpotSettings> hubSpotClient) : base(hubSpotClient)
 	{ }
 
 	public async Task<Result<Deal>> GetByIdAsync(

@@ -1,8 +1,9 @@
-﻿using Pelican.Domain.Primitives;
+﻿using Pelican.Application.Abstractions.Infrastructure;
+using Pelican.Domain.Primitives;
 using Pelican.Domain.Shared;
 using RestSharp;
 
-namespace Pelican.Application.Abstractions.Infrastructure;
+namespace Pelican.Application.RestSharp;
 
 public class RestSharpResponse<TResponse> : RestResponse<TResponse>, IResponse<TResponse> where TResponse : class
 {

@@ -1,10 +1,10 @@
 ﻿namespace Pelican.Application.Abstractions.Infrastructure;
 
-public abstract class ServiceBase
+public abstract class ServiceBase<TSettings>
 {
-	protected readonly IClient _client;
+	protected readonly IClient<TSettings> _client;
 
 	protected ServiceBase(
-		IClient client)
+		IClient<TSettings> client)
 		=> _client = client ?? throw new ArgumentNullException(nameof(client));
 }

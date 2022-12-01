@@ -1,8 +1,8 @@
 ﻿using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Settings;
 using Pelican.Domain.Shared;
-using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 using Pelican.Infrastructure.HubSpot.Extensions;
 using Pelican.Infrastructure.HubSpot.Mapping.Contacts;
@@ -10,10 +10,11 @@ using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;
 
-internal sealed class HubSpotContactService : ServiceBase, IHubSpotObjectService<Contact>
+internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHubSpotObjectService<Contact>
 {
 	public HubSpotContactService(
-		IClient hubSpotClient) : base(hubSpotClient)
+		IClient<HubSpotSettings> hubSpotClient)
+		: base(hubSpotClient)
 	{ }
 
 	public async Task<Result<Contact>> GetByIdAsync(

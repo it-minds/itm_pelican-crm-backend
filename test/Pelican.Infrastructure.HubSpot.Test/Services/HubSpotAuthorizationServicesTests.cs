@@ -24,7 +24,7 @@ public class HubSpotAuthorizationServicesTests
 	private const string ACCESS = "access";
 	private const string REFRESH = "refresh";
 
-	private readonly Mock<IClient> _hubSpotClientMock = new();
+	private readonly Mock<IClient<HubSpotSettings>> _hubSpotClientMock = new();
 	private readonly Mock<IOptions<HubSpotSettings>> _optionsMock = new();
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly HubSpotAuthorizationService _uut;

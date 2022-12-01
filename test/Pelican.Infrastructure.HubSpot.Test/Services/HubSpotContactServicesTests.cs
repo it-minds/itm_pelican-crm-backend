@@ -1,6 +1,7 @@
 ﻿using Moq;
 using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Settings;
 using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 using Pelican.Infrastructure.HubSpot.Services;
@@ -11,7 +12,7 @@ namespace Pelican.Infrastructure.HubSpot.Test.Services;
 
 public class HubSpotContactServicesTests
 {
-	private readonly Mock<IClient> _hubSpotClientMock;
+	private readonly Mock<IClient<HubSpotSettings>> _hubSpotClientMock;
 	private readonly HubSpotContactService _uut;
 
 	public HubSpotContactServicesTests()

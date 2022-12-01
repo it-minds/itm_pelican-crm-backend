@@ -17,14 +17,11 @@ public sealed class RestSharpClient<TSettings> : IClient<TSettings> where TSetti
 		RestRequest request,
 		CancellationToken cancellationToken = default)
 		where TResponse : class
-		=> await _client.ExecuteGetAsync<TResponse>(request, cancellationToken) as RestSharpResponse<TResponse>
-			?? new RestSharpResponse<TResponse>() { IsSuccessStatusCode = false };
+		=> new RestSharpResponse<TResponse>(await _client.ExecuteGetAsync<TResponse>(request, cancellationToken));
 
 	public async Task<IResponse<TResponse>> PostAsync<TResponse>(
 		RestRequest request,
 		CancellationToken cancellationToken = default)
 		where TResponse : class
-		=> (RestSharpResponse<TResponse>)await _client.ExecutePostAsync<TResponse>(request, cancellationToken)
-			?? new RestSharpResponse<TResponse>() { IsSuccessStatusCode = false };
+		=> new RestSharpResponse<TResponse>(await _client.ExecutePostAsync<TResponse>(request, cancellationToken));
 }
-

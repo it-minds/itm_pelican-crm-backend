@@ -83,6 +83,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase, IHubSpotAuthori
 		return response
 			.GetResult(RefreshAccessTokenResponseToAccessToken.ToAccessToken);
 	}
+
 	public async Task<Result<string>> RefreshAccessTokenFromRefreshTokenAsync(
 		string refreshToken,
 		CancellationToken cancellationToken)

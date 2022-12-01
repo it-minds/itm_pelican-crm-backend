@@ -8,6 +8,8 @@ namespace Pelican.Application.RestSharp;
 
 public class RestSharpResponse<TResponse> : RestResponse<TResponse>, IResponse<TResponse> where TResponse : class
 {
+	public RestSharpResponse() { }
+
 	public RestSharpResponse(RestResponse<TResponse> response)
 	{
 		Content = response.Content;

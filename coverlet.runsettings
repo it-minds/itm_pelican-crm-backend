@@ -10,7 +10,7 @@
             [*.Persistence]*Configurations*,
             [*]*DependencyInjection,
             [*App]*Program,
-            [*HubSpot]*RestSharpHubSpotClient
+            [*HubSpot]*RestSharpClient
           </Exclude> [Assembly-Filter]Type-Filter
           <SingleHit>false</SingleHit>
           <UseSourceLink>true</UseSourceLink>

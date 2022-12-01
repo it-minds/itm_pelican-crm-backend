@@ -1,4 +1,5 @@
-﻿using Bogus;
+﻿using System.Collections.Generic;
+using Bogus;
 using Pelican.Application.Abstractions.Data;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Enums;
@@ -24,6 +25,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.Id, f => f.Random.Guid());
 		return faker.Generate(count);
 	}
+
 	public IEnumerable<Supplier> SupplierFaker(int count)
 	{
 		var faker = new Faker<Supplier>().UseSeed(1338);
@@ -39,6 +41,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.Id, f => f.Random.Guid());
 		return faker.Generate(count);
 	}
+
 	public IEnumerable<Deal> DealFaker(int count, IQueryable<Client> clients, IQueryable<AccountManager> accountManagers)
 	{
 		var faker = new Faker<Deal>().UseSeed(1339);
@@ -56,6 +59,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.Description, f => f.Lorem.Sentences(f.Random.Int(1, 10)).OrNull(f, 0.0f));
 		return faker.Generate(count);
 	}
+
 	public IEnumerable<Location> LocationFaker(int count, IQueryable<Supplier> suppliers)
 	{
 		var faker = new Faker<Location>().UseSeed(1340);
@@ -66,6 +70,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.Supplier, f => f.PickRandom<Supplier>(suppliers));
 		return faker.Generate(count);
 	}
+
 	public IEnumerable<Client> ClientFaker(int count, IQueryable<Location> locations)
 	{
 		var faker = new Faker<Client>().UseSeed(1341);
@@ -78,6 +83,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.Id, f => f.Random.Guid());
 		return faker.Generate(count);
 	}
+
 	public IEnumerable<Contact> ContactFaker(int count, IQueryable<AccountManager> accountManagers)
 	{
 		var faker = new Faker<Contact>().UseSeed(1342);
@@ -92,46 +98,79 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.Id, f => f.Random.Guid());
 		return faker.Generate(count);
 	}
+
 	public IEnumerable<AccountManagerDeal> AccountManagerDealFaker(IQueryable<AccountManager> accountManagers, IQueryable<Deal> deals)
 	{
-		Random gen = new Random();
-		int prob = gen.Next(100);
-		var faker = new Faker<AccountManagerDeal>().UseSeed(1343);
-		faker
+		List<AccountManagerDeal> returnValue = new();
+
+		int totalMeeded = accountManagers.Count();
+
+		int firstHalf = totalMeeded / 2;
+
+		var faker = new Faker<AccountManagerDeal>()
+			.UseSeed(1343)
 			.RuleFor(e => e.DealId, f => f.PickRandom<Deal>(deals).Id)
 			.RuleFor(e => e.AccountManagerId, f => f.PickRandom<AccountManager>(accountManagers).Id)
-			.RuleFor(e => e.IsActive, prob <= 20)
+			.RuleFor(e => e.IsActive, true)
 			.RuleFor(e => e.Id, f => f.Random.Guid())
 			.RuleFor(e => e.HubSpotAccountManagerId, f => f.PickRandom<AccountManager>(accountManagers).HubSpotId)
 			.RuleFor(e => e.HubSpotDealId, f => f.PickRandom<Deal>(deals).HubSpotId);
-		return faker.Generate(accountManagers.Count());
+
+		returnValue.AddRange(faker.Generate(firstHalf));
+
+		faker.RuleFor(e => e.IsActive, false);
+		returnValue.AddRange(faker.Generate(totalMeeded - firstHalf));
+
+		return returnValue;
 	}
+
 	public IEnumerable<DealContact> DealContactFaker(IQueryable<Deal> deals, IQueryable<Contact> contacts)
 	{
-		Random gen = new Random();
-		int prob = gen.Next(100);
+		List<DealContact> returnValue = new();
+
+		int totalMeeded = deals.Count();
+
+		int firstHalf = totalMeeded / 2;
+
 		var faker = new Faker<DealContact>().UseSeed(1344);
 		faker
 			.RuleFor(e => e.DealId, f => f.PickRandom<Deal>(deals).Id)
 			.RuleFor(e => e.ContactId, f => f.PickRandom<Contact>(contacts).Id)
-			.RuleFor(e => e.IsActive, prob <= 20)
+			.RuleFor(e => e.IsActive, new Random().Next(100) <= 70)
 			.RuleFor(e => e.Id, f => f.Random.Guid())
 			.RuleFor(e => e.HubSpotContactId, f => f.PickRandom<Contact>(contacts).HubSpotId)
 			.RuleFor(e => e.HubSpotDealId, f => f.PickRandom<Deal>(deals).HubSpotId);
-		return faker.Generate(deals.Count());
+
+		returnValue.AddRange(faker.Generate(firstHalf));
+
+		faker.RuleFor(e => e.IsActive, false);
+		returnValue.AddRange(faker.Generate(totalMeeded - firstHalf));
+
+		return returnValue;
 	}
+
 	public IEnumerable<ClientContact> ClientContactFaker(IQueryable<Client> clients, IQueryable<Contact> contacts)
 	{
-		Random gen = new Random();
-		int prob = gen.Next(100);
+		List<ClientContact> returnValue = new();
+
+		int totalMeeded = clients.Count();
+
+		int firstHalf = totalMeeded / 2;
+
 		var faker = new Faker<ClientContact>().UseSeed(1345);
 		faker
 			.RuleFor(e => e.ClientId, f => f.PickRandom<Client>(clients).Id)
 			.RuleFor(e => e.ContactId, f => f.PickRandom<Contact>(contacts).Id)
-			.RuleFor(e => e.IsActive, prob >= 20)
+			.RuleFor(e => e.IsActive, new Random().Next(100) <= 70)
 			.RuleFor(e => e.Id, f => f.Random.Guid())
 			.RuleFor(e => e.HubSpotClientId, f => f.PickRandom<Client>(clients).HubSpotId)
 			.RuleFor(e => e.HubSpotContactId, f => f.PickRandom<Contact>(contacts).HubSpotId);
-		return faker.Generate(clients.Count());
+
+		returnValue.AddRange(faker.Generate(firstHalf));
+
+		faker.RuleFor(e => e.IsActive, false);
+		returnValue.AddRange(faker.Generate(totalMeeded - firstHalf));
+
+		return returnValue;
 	}
 }

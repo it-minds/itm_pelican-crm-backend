@@ -79,7 +79,7 @@ public static class DependencyInjection
 		app
 			.Services
 			.GetRequiredService<DevelopmentSeeder>()
-			.SeedEntireDb(5);
+			.SeedEntireDb(20);
 		//}
 
 		return app;

@@ -23,6 +23,19 @@ public class HubSpotClientServicesTests
 	}
 
 	[Fact]
+	public void HubSpotClientService_ClientNull_ThrowException()
+	{
+		// Act
+		var result = Record.Exception(() => new HubSpotClientService(null!));
+
+		// Assert
+		Assert.IsType<ArgumentNullException>(result);
+		Assert.Contains(
+			"client",
+			result.Message);
+	}
+
+	[Fact]
 	public async Task GetByIdAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		/// Arrange

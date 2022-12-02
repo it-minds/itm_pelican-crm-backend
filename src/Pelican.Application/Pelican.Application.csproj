@@ -21,8 +21,4 @@
 		<ProjectReference Include="..\Pelican.Domain\Pelican.Domain.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Extensions\" />
-	</ItemGroup>
-
 </Project>

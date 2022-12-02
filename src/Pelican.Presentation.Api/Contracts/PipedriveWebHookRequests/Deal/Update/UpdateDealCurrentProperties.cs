@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
+namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Update;
 public record UpdateDealCurrentProperties
 {
 	[JsonPropertyName("stage_id")]

@@ -9,10 +9,10 @@ using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteClient;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDeal;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateClient;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Delete;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Update;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Delete;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Update;
 using Pelican.Presentation.Api.Controllers;
 using Xunit;
 
@@ -342,9 +342,7 @@ public class PipedriveControllerUnitTest
 			MetaProperties = metaProperties,
 		};
 		DeleteClientPipedriveCommand expectedCommand = new(
-			objectId,
-			supplierPipedriveId,
-			userId);
+			objectId);
 
 		//Act
 		IActionResult result = await _uut.DeleteClient(clientRequest);

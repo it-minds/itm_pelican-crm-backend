@@ -8,10 +8,10 @@ using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteClient;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDeal;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateClient;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Delete;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Update;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Delete;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Update;
 
 namespace Pelican.Presentation.Api.Controllers;
 
@@ -94,10 +94,7 @@ public sealed class PipedriveController : ApiController
 	[HttpPost("DeleteClient")]
 	public async Task<IActionResult> DeleteClient([FromBody] DeleteClientRequest request)
 	{
-		ICommand command = new DeleteClientPipedriveCommand(
-			request.MetaProperties.SupplierPipedriveId,
-			request.MetaProperties.ObjectId,
-			request.MetaProperties.UserId);
+		ICommand command = new DeleteClientPipedriveCommand(request.MetaProperties.ObjectId);
 
 		Result result = await Sender.Send(command, default);
 

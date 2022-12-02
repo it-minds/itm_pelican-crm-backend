@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateClient;
+namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Update;
 public record UpdateClientCurrentProperties
 {
 	[JsonPropertyName("name")]

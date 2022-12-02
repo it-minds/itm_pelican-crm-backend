@@ -5,12 +5,12 @@ using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
 namespace Pelican.Application.Clients.HubSpotCommands.UpdateClient;
-internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientCommand>
+internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<UpdateClientHubSpotCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IHubSpotObjectService<Client> _hubSpotClientService;
 	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
-	public UpdateClientCommandHandler(
+	public UpdateClientHubSpotCommandHandler(
 		IUnitOfWork unitOfWork,
 		IHubSpotObjectService<Client> hubSpotClientService,
 		IHubSpotAuthorizationService hubSpotAuthorizationService)
@@ -19,7 +19,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 		_hubSpotClientService = hubSpotClientService ?? throw new ArgumentNullException(nameof(hubSpotClientService));
 		_hubSpotAuthorizationService = hubSpotAuthorizationService ?? throw new ArgumentNullException(nameof(hubSpotAuthorizationService));
 	}
-	public async Task<Result> Handle(UpdateClientCommand command, CancellationToken cancellationToken)
+	public async Task<Result> Handle(UpdateClientHubSpotCommand command, CancellationToken cancellationToken)
 	{
 		Client? client = _unitOfWork
 			.ClientRepository
@@ -41,7 +41,7 @@ internal sealed class UpdateClientCommandHandler : ICommandHandler<UpdateClientC
 	}
 	private async Task<Result> UpdateExistingClient(
 		Client client,
-		UpdateClientCommand command,
+		UpdateClientHubSpotCommand command,
 		CancellationToken cancellationToken = default)
 	{
 		if (command.PropertyName == "num_associated_contacts")

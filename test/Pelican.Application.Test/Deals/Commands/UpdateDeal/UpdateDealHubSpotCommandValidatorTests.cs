@@ -5,11 +5,11 @@ using Xunit;
 
 namespace Pelican.Application.Test.Deals.Commands.UpdateDeal;
 
-public class UpdateDealCommandValidatorTests
+public class UpdateDealHubSpotCommandValidatorTests
 {
 	private readonly UpdateDealHubSpotCommandValidator _uut;
 
-	public UpdateDealCommandValidatorTests()
+	public UpdateDealHubSpotCommandValidatorTests()
 	{
 		_uut = new UpdateDealHubSpotCommandValidator();
 	}

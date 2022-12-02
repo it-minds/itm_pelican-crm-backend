@@ -3,10 +3,10 @@ using Pelican.Application.Clients.HubSpotCommands.UpdateClient;
 using Xunit;
 
 namespace Pelican.Application.Test.Clients.Commands.UpdateClient;
-public class UpdateClientCommandValidatorUnitTest
+public class UpdateClientHubSpotCommandValidatorUnitTest
 {
-	private readonly UpdateClientCommandValidator _uut;
-	public UpdateClientCommandValidatorUnitTest()
+	private readonly UpdateClientHubSpotCommandValidator _uut;
+	public UpdateClientHubSpotCommandValidatorUnitTest()
 	{
 		_uut = new();
 	}
@@ -14,7 +14,7 @@ public class UpdateClientCommandValidatorUnitTest
 	public void UpdateClientCommandValidator_EmptyOrDefaultInputs_ReturnsError()
 	{
 		// Arrange
-		UpdateClientCommand command = new(
+		UpdateClientHubSpotCommand command = new(
 			0,
 			0,
 			string.Empty,
@@ -22,7 +22,7 @@ public class UpdateClientCommandValidatorUnitTest
 
 		// Act
 
-		TestValidationResult<UpdateClientCommand> result = _uut.TestValidate(command);
+		TestValidationResult<UpdateClientHubSpotCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.ObjectId);
@@ -35,14 +35,14 @@ public class UpdateClientCommandValidatorUnitTest
 	public void UpdateClientCommandValidator_NoEmptyNorDefaultInput_ReturnsNoError()
 	{
 		// Arrange
-		UpdateClientCommand command = new(
+		UpdateClientHubSpotCommand command = new(
 			1,
 			1,
 			"notEmpty",
 			"notEmpty");
 
 		// Act
-		TestValidationResult<UpdateClientCommand> result = _uut.TestValidate(command);
+		TestValidationResult<UpdateClientHubSpotCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.ObjectId);

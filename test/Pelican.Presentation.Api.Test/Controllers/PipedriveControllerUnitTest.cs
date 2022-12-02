@@ -2,15 +2,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Clients.PipedriveClientCommands;
+using Pelican.Application.Clients.PipedriveCommands.DeleteClient;
+using Pelican.Application.Clients.PipedriveCommands.UpdateClient;
 using Pelican.Application.Deals.PipedriveCommands.DeleteDeal;
 using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDeal;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateClient;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Delete;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Update;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Delete;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Update;
 using Pelican.Presentation.Api.Controllers;
 using Xunit;
 
@@ -282,6 +284,68 @@ public class PipedriveControllerUnitTest
 
 		//Act
 		IActionResult result = await _uut.UpdateClient(clientRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				expectedCommand,
+				default),
+			Times.Once);
+
+		Assert.IsType<OkResult>(result);
+	}
+	[Theory]
+	[InlineData("0", "fail")]
+	public async void DeleteClient_ReceivesCallAndReturnsFailure_FailureIsReturned(
+		string errorCode,
+		string errorMessage)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
+
+		DeleteClientRequest clientRequest = new();
+
+		//Act
+		IActionResult result = await _uut.DeleteClient(clientRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				It.IsAny<DeleteClientPipedriveCommand>(),
+				default),
+			Times.Once);
+
+		Assert.IsType<BadRequestObjectResult>(result);
+	}
+
+	[Theory]
+	[InlineData(1, 1, 1)]
+	public async void DeleteClient_ReceivesCallAndReturnsSuccess_SuccessIsReturned(int objectId,
+		int supplierPipedriveId,
+		int userId)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success);
+
+		MetaProperties metaProperties = new()
+		{
+			ObjectId = objectId,
+			SupplierPipedriveId = supplierPipedriveId,
+			UserId = userId,
+		};
+		DeleteClientRequest clientRequest = new()
+		{
+			MetaProperties = metaProperties,
+		};
+		DeleteClientPipedriveCommand expectedCommand = new(
+			objectId);
+
+		//Act
+		IActionResult result = await _uut.DeleteClient(clientRequest);
 
 		//Assert
 		_senderMock.Verify(

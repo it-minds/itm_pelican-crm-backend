@@ -42,7 +42,7 @@ internal sealed class HubSpotWebHookRequestsToCommands : IRequestToCommandMapper
 			{
 				"deal.deletion" => new DeleteDealHubSpotCommand(
 					request.ObjectId),
-				"company.deletion" => new DeleteClientCommand(
+				"company.deletion" => new DeleteClientHubSpotCommand(
 					request.ObjectId),
 				"contact.propertyChange" => new UpdateContactCommand(
 					request.ObjectId,
@@ -54,7 +54,7 @@ internal sealed class HubSpotWebHookRequestsToCommands : IRequestToCommandMapper
 					request.SupplierHubSpotId,
 					request.PropertyName,
 					request.PropertyValue),
-				"company.propertyChange" => new UpdateClientCommand(
+				"company.propertyChange" => new UpdateClientHubSpotCommand(
 					request.ObjectId,
 					request.SupplierHubSpotId,
 					request.PropertyName,

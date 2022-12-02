@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Pelican.Application.Test.Deals.Commands.UpdateDeal;
 
-public class UpdateDealCommandHandlerTests
+public class UpdateDealHubSpotCommandHandlerTests
 {
 	private const long OBJECTID = 0;
 	private const long SUPPLIERHUBSPOTID = 0;
@@ -29,7 +29,7 @@ public class UpdateDealCommandHandlerTests
 	private readonly Mock<IGenericRepository<Client>> _clientRepositoryMock;
 	private readonly Mock<IGenericRepository<Contact>> _contactRepositoryMock;
 
-	public UpdateDealCommandHandlerTests()
+	public UpdateDealHubSpotCommandHandlerTests()
 	{
 		_unitOfWorkMock = new();
 		_hubSpotDealServiceMock = new();

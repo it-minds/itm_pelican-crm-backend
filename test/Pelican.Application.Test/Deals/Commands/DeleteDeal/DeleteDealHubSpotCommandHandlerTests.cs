@@ -7,13 +7,13 @@ using Pelican.Domain.Shared;
 using Xunit;
 
 namespace Pelican.Application.Test.Deals.Commands.DeleteDeal;
-public class DeleteDealCommandHandlerTests
+public class DeleteDealHubSpotCommandHandlerTests
 {
 	private readonly DeleteDealHubSpotCommandHandler _uut;
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 	private readonly CancellationToken _cancellationToken;
 
-	public DeleteDealCommandHandlerTests()
+	public DeleteDealHubSpotCommandHandlerTests()
 	{
 		_unitOfWorkMock = new();
 		_uut = new(_unitOfWorkMock.Object);

@@ -5,11 +5,11 @@ using Xunit;
 
 namespace Pelican.Application.Test.Deals.Commands.DeleteDeal;
 
-public class DeleteDealCommandValidatorTests
+public class DeleteDealHubSpotCommandValidatorTests
 {
 	private readonly DeleteDealHubSpotCommandValidator _uut;
 
-	public DeleteDealCommandValidatorTests()
+	public DeleteDealHubSpotCommandValidatorTests()
 	{
 		_uut = new DeleteDealHubSpotCommandValidator();
 	}

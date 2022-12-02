@@ -2,9 +2,9 @@
 
 namespace Pelican.Application.Clients.HubSpotCommands.UpdateClient;
 
-internal sealed class UpdateClientCommandValidator : AbstractValidator<UpdateClientCommand>
+internal sealed class UpdateClientHubSpotCommandValidator : AbstractValidator<UpdateClientHubSpotCommand>
 {
-	public UpdateClientCommandValidator()
+	public UpdateClientHubSpotCommandValidator()
 	{
 		RuleFor(command => command.ObjectId).NotEmpty();
 		RuleFor(command => command.PropertyName).NotEmpty();

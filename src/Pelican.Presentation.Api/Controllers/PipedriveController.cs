@@ -8,7 +8,7 @@ using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.UpdateAccountManager;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Update;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.DeleteDeal;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.UpdateDeal;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateClient;

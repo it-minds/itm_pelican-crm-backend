@@ -1,28 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.AccountManagers.PipedriveCommands.DeleteAccountManager;
-using Pelican.Application.AccountManagers.PipedriveCommands.UpdateAccountManager;
-using Pelican.Application.Clients.PipedriveCommands.DeleteClient;
-using Pelican.Application.Clients.PipedriveCommands.UpdateClient;
-using Pelican.Application.Contacts.PipedriveCommands;
-using Pelican.Application.Deals.PipedriveCommands.DeleteDeal;
-using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
-using Pelican.Application.Pipedrive.Commands.NewInstallation;
-using Pelican.Domain.Shared;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Delete;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Update;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Delete;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Update;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Contact.Update;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Delete;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Update;
-using Pelican.Presentation.Api.Controllers;
-using Xunit;
-
-namespace Pelican.Presentation.Api.Test.Controllers;
+﻿namespace Pelican.Presentation.Api.Test.Controllers;
 public class PipedriveControllerUnitTest
 {
 	private readonly PipedriveController _uut;

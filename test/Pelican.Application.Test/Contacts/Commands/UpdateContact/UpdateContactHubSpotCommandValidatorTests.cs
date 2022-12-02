@@ -4,11 +4,11 @@ using Xunit;
 
 namespace Pelican.Application.Test.Contacts.Commands.UpdateContact;
 
-public class UpdateContactCommandValidatorTests
+public class UpdateContactHubSpotCommandValidatorTests
 {
 	private readonly UpdateContactCommandValidator _uut;
 
-	public UpdateContactCommandValidatorTests()
+	public UpdateContactHubSpotCommandValidatorTests()
 	{
 		_uut = new();
 	}

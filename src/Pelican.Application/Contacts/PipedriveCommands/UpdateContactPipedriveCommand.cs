@@ -2,13 +2,13 @@
 
 namespace Pelican.Application.Contacts.PipedriveCommands;
 public sealed record UpdateContactPipedriveCommand(
-	int SupplierPipedriveId,
-	int DealId,
-	int DealPipedriveOwnerId,
-	int DealStatusId,
-	string? DealDescription,
-	string? DealName,
-	string? LastContactDate,
-	string? StartDate,
-	string? EndDate) : ICommand;
+	int supplierPipedriveId,
+	int contactId,
+	int contactPipedriveOwnerId,
+	string? firstName,
+	string? lastName,
+	string? pictureUrl,
+	string? phoneNumber,
+	string? email,
+	string? linkedInUrl) : ICommand;
 

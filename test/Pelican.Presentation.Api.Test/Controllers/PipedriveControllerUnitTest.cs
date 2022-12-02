@@ -1,26 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.AccountManagers.PipedriveCommands.DeleteAccountManager;
-using Pelican.Application.AccountManagers.PipedriveCommands.UpdateAccountManager;
-using Pelican.Application.Clients.PipedriveCommands.DeleteClient;
-using Pelican.Application.Clients.PipedriveCommands.UpdateClient;
-using Pelican.Application.Deals.PipedriveCommands.DeleteDeal;
-using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
-using Pelican.Application.Pipedrive.Commands.NewInstallation;
-using Pelican.Domain.Shared;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Delete;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Update;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Delete;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Update;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Delete;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Update;
-using Pelican.Presentation.Api.Controllers;
-using Xunit;
-
-namespace Pelican.Presentation.Api.Test.Controllers;
+﻿namespace Pelican.Presentation.Api.Test.Controllers;
 public class PipedriveControllerUnitTest
 {
 	private readonly PipedriveController _uut;
@@ -504,6 +482,110 @@ public class PipedriveControllerUnitTest
 				expectedCommand,
 				default),
 			Times.Once);
+
+		Assert.IsType<OkResult>(result);
+	}
+
+	[Theory]
+	[InlineData("0", "fail")]
+	public async void UpdateContact_ReceivesCallAndReturnsFailure_FailureIsReturned(
+		string errorCode,
+		string errorMessage)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
+
+		UpdateContactRequest contactRequest = new();
+
+		//Act
+		IActionResult result = await _uut.UpdateContact(contactRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				It.IsAny<UpdateContactPipedriveCommand>(),
+				default),
+			Times.Once);
+
+		Assert.IsType<BadRequestObjectResult>(result);
+	}
+
+	[Theory]
+	[InlineData("TestFirstName", "TestLastName", "TestUrl", "TestLabelOfNotPrimary", "TestValueOfNotPrimary", false, "TestLabelOfPrimary", "TestValueOfPrimary", true, 1, 1, 1)]
+	public async void UpdateContact_ReceivesCallAndReturnsSuccess_SuccessIsReturned(
+		string firstName,
+		string lastName,
+		string pictureUrl,
+		string labelOfNotPrimary,
+		string valueOfNotPrimary,
+		bool isPrimaryOfNotPrimary,
+		string labelOfPrimary,
+		string valueOfPrimary,
+		bool isPrimaryOfPrimary,
+		int objectId,
+		int supplierPipedriveId,
+		int userId)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success);
+
+		List<ContactItem> testContactItem = new();
+		testContactItem.Add(new()
+		{
+			Label = labelOfNotPrimary,
+			Value = valueOfNotPrimary,
+			Primary = isPrimaryOfNotPrimary
+		});
+		testContactItem.Add(new()
+		{
+			Label = labelOfPrimary,
+			Value = valueOfPrimary,
+			Primary = isPrimaryOfPrimary
+		});
+
+		UpdateContactCurrentProperties updateContactCurrentProperties = new()
+		{
+			FirstName = firstName,
+			LastName = lastName,
+			PictureUrl = pictureUrl,
+			Email = testContactItem,
+			PhoneNumber = testContactItem,
+		};
+		MetaProperties metaProperties = new()
+		{
+			ObjectId = objectId,
+			SupplierPipedriveId = supplierPipedriveId,
+			UserId = userId,
+		};
+		UpdateContactRequest contactRequest = new()
+		{
+			CurrentProperties = updateContactCurrentProperties,
+			MetaProperties = metaProperties,
+		};
+		UpdateContactPipedriveCommand expectedCommand = new(
+			supplierPipedriveId,
+			objectId,
+			userId,
+			firstName,
+			lastName,
+			pictureUrl,
+			valueOfPrimary,
+			valueOfPrimary,
+			null);
+
+		//Act
+		IActionResult result = await _uut.UpdateContact(contactRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+					expectedCommand,
+					default),
+				Times.Once);
 
 		Assert.IsType<OkResult>(result);
 	}

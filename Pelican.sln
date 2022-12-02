@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.App", "src\Pelican.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Persistence.Test", "test\Pelican.Infrastructure.Persistence.Test\Pelican.Infrastructure.Persistence.Test.csproj", "{DD8A4238-56D1-47B3-ABA9-73B429E68940}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Infrastructure.Pipedrive", "src\Pelican.Infrastructure.Pipedrive\Pelican.Infrastructure.Pipedrive.csproj", "{619C0F11-44F3-4545-AE85-9E5077887DD8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +115,10 @@ Global
 		{DD8A4238-56D1-47B3-ABA9-73B429E68940}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD8A4238-56D1-47B3-ABA9-73B429E68940}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD8A4238-56D1-47B3-ABA9-73B429E68940}.Release|Any CPU.Build.0 = Release|Any CPU
+		{619C0F11-44F3-4545-AE85-9E5077887DD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{619C0F11-44F3-4545-AE85-9E5077887DD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{619C0F11-44F3-4545-AE85-9E5077887DD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{619C0F11-44F3-4545-AE85-9E5077887DD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -132,6 +138,7 @@ Global
 		{B6AE3C4D-A483-41F3-A732-8F3F5A2E8461} = {0200A7F9-E192-48B9-A8B8-96118BB18098}
 		{DBD8D08C-D1D6-4ECD-8099-EC13F28C02F5} = {5D515F34-F1A1-48A8-B377-A8451F3765B5}
 		{DD8A4238-56D1-47B3-ABA9-73B429E68940} = {0200A7F9-E192-48B9-A8B8-96118BB18098}
+		{619C0F11-44F3-4545-AE85-9E5077887DD8} = {5D515F34-F1A1-48A8-B377-A8451F3765B5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C8DAB442-8E34-49C4-9368-B34D51D4E924}

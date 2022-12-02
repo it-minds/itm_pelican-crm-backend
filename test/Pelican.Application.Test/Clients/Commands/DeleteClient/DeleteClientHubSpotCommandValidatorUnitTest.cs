@@ -3,10 +3,10 @@ using Pelican.Application.Clients.HubSpotCommands.DeleteClient;
 using Xunit;
 
 namespace Pelican.Application.Test.Clients.Commands.DeleteClient;
-public class DeleteClientCommandValidatorUnitTest
+public class DeleteClientHubSpotCommandValidatorUnitTest
 {
 	private readonly DeleteClientHubspotCommandValidator _uut;
-	public DeleteClientCommandValidatorUnitTest()
+	public DeleteClientHubSpotCommandValidatorUnitTest()
 	{
 		_uut = new();
 	}

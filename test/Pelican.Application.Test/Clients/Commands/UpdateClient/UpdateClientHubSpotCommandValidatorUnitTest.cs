@@ -3,10 +3,10 @@ using Pelican.Application.Clients.HubSpotCommands.UpdateClient;
 using Xunit;
 
 namespace Pelican.Application.Test.Clients.Commands.UpdateClient;
-public class UpdateClientCommandValidatorUnitTest
+public class UpdateClientHubSpotCommandValidatorUnitTest
 {
 	private readonly UpdateClientHubSpotCommandValidator _uut;
-	public UpdateClientCommandValidatorUnitTest()
+	public UpdateClientHubSpotCommandValidatorUnitTest()
 	{
 		_uut = new();
 	}

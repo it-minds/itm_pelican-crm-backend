@@ -7,12 +7,12 @@ using Pelican.Domain.Shared;
 using Xunit;
 
 namespace Pelican.Application.Test.Clients.Commands.DeleteClient;
-public class DeleteClientCommandHandlerUnitTest
+public class DeleteClientHubSpotCommandHandlerUnitTest
 {
 	private readonly DeleteClientHubSpotCommandHandler _uut;
 	private readonly Mock<IUnitOfWork> _fakeUnitOfWork;
 	private readonly CancellationToken _cancellation;
-	public DeleteClientCommandHandlerUnitTest()
+	public DeleteClientHubSpotCommandHandlerUnitTest()
 	{
 		_fakeUnitOfWork = new();
 		_uut = new(_fakeUnitOfWork.Object);

@@ -11,9 +11,9 @@ using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Abstractions;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Delete;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Update;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Contact.Update;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Delete;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Update;
-using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateContact;
 
 namespace Pelican.Presentation.Api.Controllers;
 

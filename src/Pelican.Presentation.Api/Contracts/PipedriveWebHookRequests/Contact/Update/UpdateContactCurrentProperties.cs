@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 
-namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateContact;
+namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Contact.Update;
 public record UpdateContactCurrentProperties
 {
 	[JsonPropertyName("first_name")]

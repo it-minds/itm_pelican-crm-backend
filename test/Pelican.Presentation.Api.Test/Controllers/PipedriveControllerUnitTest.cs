@@ -2,15 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Clients.PipedriveCommands.DeleteClient;
 using Pelican.Application.Clients.PipedriveCommands.UpdateClient;
 using Pelican.Application.Deals.PipedriveCommands.DeleteDeal;
 using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteClient;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.DeleteDeal;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateClient;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.UpdateDeal;
+using Pelican.Presentation.Api.Controllers;
 using Xunit;
 
 namespace Pelican.Presentation.Api.Test.Controllers;

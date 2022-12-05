@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Bogus;
+﻿using Bogus;
 using Pelican.Application.Abstractions.Data;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Enums;
@@ -38,7 +37,8 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.WebsiteUrl, f => f.Internet.Url().OrNull(f, 0.0f))
 			.RuleFor(e => e.HubSpotId, f => f.Random.Long(1))
 			.RuleFor(e => e.RefreshToken, f => f.Random.Guid().ToString())
-			.RuleFor(e => e.Id, f => f.Random.Guid());
+			.RuleFor(e => e.Id, f => f.Random.Guid())
+			.RuleFor(e => e.PipedriveDomain, f => f.Internet.Url().OrNull(f, 0.0f));
 		return faker.Generate(count);
 	}
 

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.DeleteAccountManager;
+namespace Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Delete;
 public record DeleteAccountManagerRequest
 {
 	[JsonPropertyName("meta")]

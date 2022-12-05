@@ -1,4 +1,23 @@
-﻿namespace Pelican.Presentation.Api.Controllers;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.AccountManagers.PipedriveCommands.DeleteAccountManager;
+using Pelican.Application.AccountManagers.PipedriveCommands.UpdateAccountManager;
+using Pelican.Application.Clients.PipedriveCommands.DeleteClient;
+using Pelican.Application.Clients.PipedriveCommands.UpdateClient;
+using Pelican.Application.Deals.PipedriveCommands.DeleteDeal;
+using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
+using Pelican.Application.Pipedrive.Commands.NewInstallation;
+using Pelican.Domain.Shared;
+using Pelican.Presentation.Api.Abstractions;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Delete;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Update;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Delete;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Update;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Delete;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Update;
+
+namespace Pelican.Presentation.Api.Controllers;
 
 [Route("[controller]")]
 public sealed class PipedriveController : ApiController
@@ -80,32 +99,6 @@ public sealed class PipedriveController : ApiController
 	public async Task<IActionResult> DeleteClient([FromBody] DeleteClientRequest request)
 	{
 		ICommand command = new DeleteClientPipedriveCommand(request.MetaProperties.ObjectId);
-
-		Result result = await Sender.Send(command, default);
-
-		return result.IsSuccess
-			? Ok()
-			: BadRequest(result.Error);
-	}
-
-
-	[HttpPost("UpdateAccountManager")]
-	public async Task<IActionResult> UpdateAccountManager(
-		[FromBody] UpdateAccountManagerRequest request)
-	{
-		var fullNameSplit = request.CurrentProperties.AccountManagerFullName.Split(' ');
-		string firstName = string.Join(" ", fullNameSplit.Take(fullNameSplit.Length - 1));
-		string? lastName = fullNameSplit.LastOrDefault();
-		ICommand command = new UpdateAccountManagerPipedriveCommand(
-			request.MetaProperties.SupplierPipedriveId,
-			request.MetaProperties.ObjectId,
-			request.MetaProperties.UserId,
-			firstName,
-			lastName,
-			request.CurrentProperties.PictureUrl,
-			request.CurrentProperties.PhoneNumber,
-			request.CurrentProperties.Email,
-			null);
 
 		Result result = await Sender.Send(command, default);
 

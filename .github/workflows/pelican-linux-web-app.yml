@@ -54,5 +54,5 @@ jobs:
           name: webapp
           path: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
       - name: logout
-    run: |
-      az logout
+        run: |
+           az logout

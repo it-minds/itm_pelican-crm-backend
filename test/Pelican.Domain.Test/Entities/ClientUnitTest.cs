@@ -270,7 +270,7 @@ public class ClientUnitTest
 	}
 
 	[Fact]
-	public void FillOutAssociations_ClientsAndDealsNull_ThrowNoExceptionEmptyClientContacts()
+	public void FillOutClientContacts_ContactsNull_ThrowNoExceptionEmptyClientContacts()
 	{
 		// Act
 		var result = Record.Exception(() => _uut.FillOutClientContacts(null));
@@ -282,7 +282,7 @@ public class ClientUnitTest
 	}
 
 	[Fact]
-	public void FillOutAssociations_ClientsEmpty_EmptyClientContacts()
+	public void FillOutClientContacts_ContactsEmpty_EmptyClientContacts()
 	{
 		// Act
 		_uut.FillOutClientContacts(Enumerable.Empty<Contact>());
@@ -292,7 +292,7 @@ public class ClientUnitTest
 	}
 
 	[Fact]
-	public void FillOutAssociations_ExistingClientNotMatchingArgument_EmptyClientContacts()
+	public void FillOutClientContacts_ExistingClientAlreadyContainsContact_ReturnsUnchangedClientContacts()
 	{
 		// Arrange
 		ClientContact existingClientContact = new(Guid.NewGuid())
@@ -305,10 +305,7 @@ public class ClientUnitTest
 
 		_uut.ClientContacts.Add(existingClientContact);
 
-		Contact newContact = new(Guid.NewGuid())
-		{
-			HubSpotId = "another_hsId",
-		};
+		Contact newContact = existingClientContact.Contact;
 
 		// Act
 		_uut.FillOutClientContacts(new List<Contact>() { newContact });
@@ -328,7 +325,33 @@ public class ClientUnitTest
 	}
 
 	[Fact]
-	public void FillOutAssociations_ExistingClientMatchingArgument_ClientContactsUpdated()
+	public void FillOutClientContacts_NoMatchingContact_EmptyClientContacts()
+	{
+		// Arrange
+		ClientContact existingClientContact = new(Guid.NewGuid())
+		{
+			HubSpotContactId = "hsID",
+			IsActive = true,
+		};
+
+		_uut.ClientContacts.Add(existingClientContact);
+
+		Contact newContact = new(Guid.NewGuid())
+		{
+			HubSpotId = "another_hsId",
+		};
+
+		// Act
+		_uut.FillOutClientContacts(new List<Contact>() { newContact });
+
+		// Assert
+		Assert.Equal(
+			0,
+			_uut.ClientContacts.Count);
+	}
+
+	[Fact]
+	public void FillOutClientContacts_ExistingClientContactMatchingArgument_ClientContactsUpdated()
 	{
 		// Arrange
 		ClientContact existingClientContact = new(Guid.NewGuid())

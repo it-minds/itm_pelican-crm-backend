@@ -74,6 +74,8 @@ public class Supplier : Entity, ITimeTracked
 		}
 	}
 
+	public string? PipedriveDomain { get; set; }
+
 	public ICollection<Location> OfficeLocations { get; set; } = new List<Location>();
 
 	public ICollection<AccountManager> AccountManagers { get; set; } = new List<AccountManager>();

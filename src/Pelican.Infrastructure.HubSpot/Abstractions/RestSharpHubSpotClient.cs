@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using Pelican.Domain.Settings;
+using Pelican.Domain.Settings.HubSpot;
 using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Abstractions;

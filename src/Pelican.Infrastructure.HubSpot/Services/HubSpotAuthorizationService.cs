@@ -3,7 +3,7 @@ using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.HubSpot.Dtos;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Settings;
+using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;

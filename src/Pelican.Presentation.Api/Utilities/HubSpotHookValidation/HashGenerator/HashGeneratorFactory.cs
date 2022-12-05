@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using Pelican.Domain.Settings;
+using Pelican.Domain.Settings.HubSpot;
 using Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashComputer;
 
 namespace Pelican.Presentation.Api.Utilities.HubSpotHookValidation.HashGenerator;

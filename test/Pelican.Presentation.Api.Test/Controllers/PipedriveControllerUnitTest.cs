@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.AccountManagers.PipedriveCommands.UpdateAccountManager;
 using Pelican.Application.Clients.PipedriveCommands.DeleteClient;
 using Pelican.Application.Clients.PipedriveCommands.UpdateClient;
 using Pelican.Application.Deals.PipedriveCommands.DeleteDeal;
@@ -9,6 +10,7 @@ using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Update;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Delete;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Update;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Delete;
@@ -156,6 +158,7 @@ public class PipedriveControllerUnitTest
 
 		Assert.IsType<OkResult>(result);
 	}
+
 	[Theory]
 	[InlineData("0", "fail")]
 	public async void DeleteDeal_ReceivesCallAndReturnsFailure_FailureIsReturned(
@@ -214,6 +217,89 @@ public class PipedriveControllerUnitTest
 				expectedCommand,
 				default),
 			Times.Once);
+
+		Assert.IsType<OkResult>(result);
+	}
+
+	[Theory]
+	[InlineData("0", "fail")]
+	public async void UpdateAccountManager_ReceivesCallAndReturnsFailure_FailureIsReturned(
+		string errorCode,
+		string errorMessage)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
+
+		UpdateAccountManagerRequest accountManagerRequest = new();
+
+		//Act
+		IActionResult result = await _uut.UpdateAccountManager(accountManagerRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				It.IsAny<UpdateAccountManagerPipedriveCommand>(),
+				default),
+			Times.Once);
+
+		Assert.IsType<BadRequestObjectResult>(result);
+	}
+
+	[Theory]
+	[InlineData("Anton Meldgaard Esbjerg", "TestMail", "TestPhoneNumber", "TestPictureUrl", 1, 1, 1)]
+	public async void UpdateAccountManager_ReceivesCallAndReturnsSuccess_SuccessIsReturned(
+		string testFullName,
+		string testEmail,
+		string testPhoneNumber,
+		string testPictureUrl,
+		int objectId,
+		int supplierPipedriveId,
+		int userId)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success);
+		UpdateAccountManagerCurrentProperties updateAccountManagerCurrentProperties = new()
+		{
+			AccountManagerFullName = testFullName,
+			Email = testEmail,
+			PhoneNumber = testPhoneNumber,
+			PictureUrl = testPictureUrl,
+		};
+		MetaProperties metaProperties = new()
+		{
+			ObjectId = objectId,
+			SupplierPipedriveId = supplierPipedriveId,
+			UserId = userId,
+		};
+		UpdateAccountManagerRequest accountManagerRequest = new()
+		{
+			CurrentProperties = updateAccountManagerCurrentProperties,
+			MetaProperties = metaProperties,
+		};
+		UpdateAccountManagerPipedriveCommand expectedCommand = new(
+			supplierPipedriveId,
+			objectId,
+			userId,
+			"Anton Meldgaard",
+			"Esbjerg",
+			testPictureUrl,
+			testPhoneNumber,
+			testEmail,
+			null);
+
+		//Act
+		IActionResult result = await _uut.UpdateAccountManager(accountManagerRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+					expectedCommand,
+					default),
+				Times.Once);
 
 		Assert.IsType<OkResult>(result);
 	}

@@ -1,4 +1,6 @@
-﻿namespace Pelican.Domain.Entities;
+﻿using Pelican.Domain.Primitives;
+
+namespace Pelican.Domain.Entities;
 
 public class Supplier : Entity, ITimeTracked
 {

@@ -1,4 +1,9 @@
-﻿namespace Pelican.Infrastructure.Persistence.Configurations;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Pelican.Domain;
+using Pelican.Domain.Entities;
+
+namespace Pelican.Infrastructure.Persistence.Configurations;
 internal class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
 {
 	public void Configure(EntityTypeBuilder<Supplier> builder)

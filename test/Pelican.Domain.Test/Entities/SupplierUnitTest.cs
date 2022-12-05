@@ -173,4 +173,35 @@ public class SupplierUnitTest
 		Assert.Equal(StringLengths.Url, _uut.WebsiteUrl!.Length);
 		Assert.Equal(propertyValue.Substring(0, StringLengths.Url - 3) + "...", _uut.WebsiteUrl);
 	}
+
+
+	[Fact]
+	public void SetOfficeLocation_OfficeLocationStringNotToLong_LastNameEqualToValueSet()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.OfficeLocation);
+
+		// Act
+		_uut.OfficeLocation = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.OfficeLocation, _uut.OfficeLocation!.Length);
+		Assert.Equal(propertyValue, _uut.OfficeLocation);
+	}
+
+	[Fact]
+	public void SetOfficeLocation_OfficeLocationStringToLong_OfficeLocationShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.OfficeLocation * 2);
+
+		// Act
+		_uut.OfficeLocation = propertyValue;
+
+		// Assert
+		Assert.Equal(StringLengths.OfficeLocation, _uut.OfficeLocation!.Length);
+		Assert.Equal(propertyValue.Substring(0, StringLengths.OfficeLocation - 3) + "...", _uut.OfficeLocation);
+	}
 }

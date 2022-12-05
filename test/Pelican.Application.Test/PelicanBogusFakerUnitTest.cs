@@ -63,8 +63,7 @@ public class PelicanBogusFakerUnitTest
 		//Arrange
 		var supplier = uut.SupplierFaker(param).AsQueryable();
 		var accountManager = uut.AccountManagerFaker(param, supplier).AsQueryable();
-		var location = uut.LocationFaker(param, supplier).AsQueryable();
-		var client = uut.ClientFaker(param, location).AsQueryable();
+		var client = uut.ClientFaker(param).AsQueryable();
 		var deal = uut.DealFaker(param, client, accountManager).AsQueryable();
 		//Act
 		IEnumerable<AccountManagerDeal> result = uut.AccountManagerDealFaker(accountManager, deal);
@@ -88,9 +87,8 @@ public class PelicanBogusFakerUnitTest
 	{
 		//Arrange
 		var supplier = uut.SupplierFaker(param).AsQueryable();
-		var location = uut.LocationFaker(param, supplier).AsQueryable();
 		//Act
-		IEnumerable<Client> result = uut.ClientFaker(param, location);
+		IEnumerable<Client> result = uut.ClientFaker(param);
 		//Assert
 		Assert.Single(result);
 		Assert.All(result,
@@ -107,8 +105,7 @@ public class PelicanBogusFakerUnitTest
 	{
 		//Arrange
 		var supplier = uut.SupplierFaker(param).AsQueryable();
-		var location = uut.LocationFaker(param, supplier).AsQueryable();
-		var client = uut.ClientFaker(param, location).AsQueryable();
+		var client = uut.ClientFaker(param).AsQueryable();
 		var accountManager = uut.AccountManagerFaker(param, supplier).AsQueryable();
 		var contact = uut.ContactFaker(param, accountManager).AsQueryable();
 		//Act
@@ -152,8 +149,7 @@ public class PelicanBogusFakerUnitTest
 	{
 		//Arrange
 		var supplier = uut.SupplierFaker(param).AsQueryable();
-		var location = uut.LocationFaker(param, supplier).AsQueryable();
-		var client = uut.ClientFaker(param, location).AsQueryable();
+		var client = uut.ClientFaker(param).AsQueryable();
 		var accountManager = uut.AccountManagerFaker(param, supplier).AsQueryable();
 		var contact = uut.ContactFaker(param, accountManager).AsQueryable();
 		//Act
@@ -174,8 +170,7 @@ public class PelicanBogusFakerUnitTest
 	{
 		//Arrange
 		var supplier = uut.SupplierFaker(param).AsQueryable();
-		var location = uut.LocationFaker(param, supplier).AsQueryable();
-		var client = uut.ClientFaker(param, location).AsQueryable();
+		var client = uut.ClientFaker(param).AsQueryable();
 		var accountManager = uut.AccountManagerFaker(param, supplier).AsQueryable();
 		var contact = uut.ContactFaker(param, accountManager).AsQueryable();
 		var deal = uut.DealFaker(param, client, accountManager).AsQueryable();
@@ -193,25 +188,5 @@ public class PelicanBogusFakerUnitTest
 			item => Assert.NotEqual(default, item.HubSpotContactId.ToString()));
 		Assert.All(result,
 			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotContactId)));
-	}
-
-	[Theory]
-	[InlineData(1)]
-	public void LocationFaker_Id_CityName_Supplier_SupplierId_NotNullEmptyOrWhiteSpace(int param)
-	{
-		//Arrange
-		var supplier = uut.SupplierFaker(param).AsQueryable();
-		//Act
-		IEnumerable<Location> result = uut.LocationFaker(param, supplier);
-		//Assert
-		Assert.Single(result);
-		Assert.All(result,
-			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
-		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.CityName)));
-		Assert.All(result,
-			item => Assert.NotNull(item.Supplier));
-		Assert.All(result,
-			item => Assert.True(Guid.TryParse(item.SupplierId.ToString(), out _))); ;
 	}
 }

@@ -9,6 +9,7 @@ public class Supplier : Entity, ITimeTracked
 	private string? _email;
 	private string? _linkedInUrl;
 	private string? _websiteUrl;
+	private string? _officeLocation;
 
 	public Supplier(Guid id) : base(id) { }
 
@@ -74,9 +75,17 @@ public class Supplier : Entity, ITimeTracked
 		}
 	}
 
+	public string? OfficeLocation
+	{
+		get => _officeLocation;
+		set
+		{
+			_officeLocation = value?.Length > StringLengths.OfficeLocation
+				? value.Substring(0, StringLengths.OfficeLocation - 3) + ("...")
+				: value;
+		}
+	}
 	public string? PipedriveDomain { get; set; }
-
-	public ICollection<Location> OfficeLocations { get; set; } = new List<Location>();
 
 	public ICollection<AccountManager> AccountManagers { get; set; } = new List<AccountManager>();
 

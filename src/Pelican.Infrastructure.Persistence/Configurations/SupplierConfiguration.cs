@@ -32,15 +32,13 @@ internal class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
 			.HasMaxLength(StringLengths.Token)
 			.IsRequired();
 
+		builder.Property(p => p.OfficeLocation)
+			.HasMaxLength(StringLengths.OfficeLocation);
+
 		builder.Property(p => p.PipedriveDomain)
 			.HasMaxLength(StringLengths.Url);
 
 		builder.HasMany(a => a.AccountManagers)
-			.WithOne(a => a.Supplier)
-			.HasForeignKey(a => a.SupplierId)
-			.IsRequired();
-
-		builder.HasMany(a => a.OfficeLocations)
 			.WithOne(a => a.Supplier)
 			.HasForeignKey(a => a.SupplierId)
 			.IsRequired();

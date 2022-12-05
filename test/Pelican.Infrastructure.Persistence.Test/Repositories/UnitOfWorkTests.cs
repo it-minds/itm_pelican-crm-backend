@@ -1,7 +1,5 @@
-﻿using System.Reflection;
-using Moq;
+﻿using Moq;
 using Pelican.Application.Abstractions.Data;
-using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Primitives;
 using Pelican.Infrastructure.Persistence.Repositories;
@@ -95,16 +93,6 @@ public class UnitOfWorkTests
 	}
 
 	[Fact]
-	public void GetRepository_TypeLocation_ReturnsLocationRepository()
-	{
-		// Act
-		var result = _uut.GetRepository<Location>();
-
-		// Assert
-		Assert.IsType<GenericRepository<Location>>(result);
-	}
-
-	[Fact]
 	public void GetRepository_TypeSupplier_ReturnsSupplierRepository()
 	{
 		// Act
@@ -174,16 +162,6 @@ public class UnitOfWorkTests
 
 		// Assert
 		Assert.IsType<GenericRepository<Deal>>(result);
-	}
-
-	[Fact]
-	public void LocationRepository_ReturnsLocationRepository()
-	{
-		// Act
-		var result = _uut.LocationRepository;
-
-		// Assert
-		Assert.IsType<GenericRepository<Location>>(result);
 	}
 
 	[Fact]

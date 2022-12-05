@@ -14,7 +14,6 @@ using Pelican.Domain.Entities;
 using Pelican.Infrastructure.Persistence.DataLoader;
 using Pelican.Infrastructure.Persistence.Interceptors;
 using Pelican.Infrastructure.Persistence.Repositories;
-using Location = Pelican.Domain.Entities.Location;
 
 [assembly: InternalsVisibleTo("Pelican.Infrastructure.Persistence.Test")]
 namespace Pelican.Infrastructure.Persistence;
@@ -65,7 +64,6 @@ public static class DependencyInjection
 			.AddDataLoader<IGenericDataLoader<Client>, GenericDataLoader<Client>>()
 			.AddDataLoader<IGenericDataLoader<Contact>, GenericDataLoader<Contact>>()
 			.AddDataLoader<IGenericDataLoader<Deal>, GenericDataLoader<Deal>>()
-			.AddDataLoader<IGenericDataLoader<Location>, GenericDataLoader<Location>>()
 			.AddDataLoader<IGenericDataLoader<Supplier>, GenericDataLoader<Supplier>>();
 
 		return builder;

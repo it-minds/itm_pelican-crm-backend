@@ -1,6 +1,4 @@
-﻿using Azure;
-using Pelican.Application.Abstractions.Infrastructure;
-using Pelican.Domain.Primitives;
+﻿using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Shared;
 using RestSharp;
 

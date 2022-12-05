@@ -9,20 +9,22 @@ env:
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
   WORKING_DIRECTORY: src/Pelican.App
-permissions:
-  id-token: write
-  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Get resource group with PowerShell action
-        uses: azure/powershell@v1
+      - name: Az CLI login
+        uses: azure/login@v1
         with:
-          inlineScript: |
-            Get-AzResourceGroup
-          azPSVersion: "latest"
+          client-id: '${{ secrets.AZURE_CLIENT_ID }}'
+          tenant-id: '${{ secrets.AZURE_TENANT_ID }}'
+          subscription-id: '${{ secrets.AZURE_SUBSCRIPTION_ID }}'
+      - uses: azure/sql-action@v2
+        with:
+          connection-string: '${{ secrets.AZURE_SQL_CONNECTION_STRING }}'
+          path: ./Database.dacpac
+          action: Publish
+      - uses: actions/checkout@v2
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
@@ -35,10 +37,6 @@ jobs:
           env.CONFIGURATION }} --no-restore
       - name: Test
         run: 'dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build'
-      - name: Install EF Tool
-        run: |
-          dotnet new tool-manifest
-          dotnet tool install dotnet-ef
       - name: Publish
         run: >-
           dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{
@@ -55,16 +53,6 @@ jobs:
         with:
           name: webapp
           path: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
-      - uses: azure/login@v1
-        with:
-          client-id: '${{ secrets.AZURE_CLIENT_ID }}'
-          tenant-id: '${{ secrets.AZURE_TENANT_ID }}'
-          subscription-id: '${{ secrets.AZURE_SUBSCRIPTION_ID }}'
-      - uses: azure/sql-action@v2
-        with:
-          connection-string: '${{ secrets.CONNECTION_STRING }}'
-          path: ./Database.dacpac
-          action: Publish
       - name: logout
-        run: |
-          az logout
+    run: |
+      az logout

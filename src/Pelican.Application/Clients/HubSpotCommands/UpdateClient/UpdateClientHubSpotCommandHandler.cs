@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Abstractions.Data.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Entities;
@@ -24,6 +25,9 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		Client? client = _unitOfWork
 			.ClientRepository
 			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
+			.Include(d => d.ClientContacts)
+				.ThenInclude(cc => cc.Contact)
+			.Include(d => d.Deals)
 			.FirstOrDefault();
 
 		if (client is null)
@@ -64,10 +68,6 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 				command.PropertyValue);
 		}
 
-		_unitOfWork
-			.ClientRepository
-			.Update(client);
-
 		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
@@ -82,9 +82,9 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		{
 			Contact? matchingContact = await _unitOfWork
 				.ContactRepository
-				.FirstOrDefaultAsync(
-					d => d.HubSpotId == item.HubSpotContactId,
-					cancellationToken);
+				.FindByCondition(
+					d => d.HubSpotId == item.HubSpotContactId)
+				.FirstOrDefaultAsync(cancellationToken);
 
 			if (matchingContact is not null)
 			{
@@ -150,8 +150,8 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		CancellationToken cancellationToken = default)
 	{
 		Result<Client> result = await GetClientFromHubSpot(
-						portalId,
 						clientHubSpotId,
+						portalId,
 						cancellationToken);
 
 		if (result.IsFailure)
@@ -160,6 +160,12 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		}
 
 		client.UpdateClientContacts(result.Value.ClientContacts);
+
+		var newClientContacts = client.ClientContacts.Where(cc => cc.Contact is null).ToList();
+
+		await FillOutClientAssociationsAsync(client, cancellationToken);
+
+		_unitOfWork.ClientContactRepository.AttachAsAdded(newClientContacts);
 
 		return client;
 	}

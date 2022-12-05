@@ -11,4 +11,5 @@ public interface IGenericRepository<T>
 	Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default);
 	void Update(T entity);
 	void Delete(T entity);
+	void AttachAsAdded(IEnumerable<T> entities);
 }

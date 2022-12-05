@@ -1,15 +1,10 @@
-﻿using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Moq;
 using Pelican.Application.Abstractions.Data;
 using Pelican.Domain.Primitives;
 using Pelican.Infrastructure.Persistence.Repositories;
 using Xunit;
-using static HotChocolate.ErrorCodes;
 
 namespace Pelican.Infrastructure.Persistence.Test.Repositories;
 public class GenericReposityTests
@@ -117,7 +112,7 @@ public class GenericReposityTests
 
 		_pelicanContextMock
 			.Setup(p => p.Set<Entity>().AddRangeAsync(
-				It.IsAny<IEnumerable<Entity>>(), 
+				It.IsAny<IEnumerable<Entity>>(),
 				It.IsAny<CancellationToken>()))
 			.Returns(Task.CompletedTask);
 

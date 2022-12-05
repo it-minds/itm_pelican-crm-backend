@@ -1,9 +1,4 @@
-﻿using Bogus;
-using Pelican.Application.Abstractions.Data;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Enums;
-
-namespace Pelican.Application;
+﻿namespace Pelican.Application;
 public class PelicanBogusFaker : IPelicanBogusFaker
 {
 	public PelicanBogusFaker() { }

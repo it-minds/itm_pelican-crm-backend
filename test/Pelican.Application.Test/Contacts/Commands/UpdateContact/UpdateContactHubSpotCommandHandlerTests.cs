@@ -8,7 +8,7 @@ using Pelican.Domain.Shared;
 using Xunit;
 
 namespace Pelican.Application.Test.Contacts.Commands.UpdateContact;
-public class UpdateContactCommandHandlerTests
+public class UpdateContactHubSpotCommandHandlerTests
 {
 	private readonly UpdateContactCommandHandler _uut;
 
@@ -25,7 +25,7 @@ public class UpdateContactCommandHandlerTests
 	private const string NAME = "name";
 	private const string VALUE = "value";
 
-	public UpdateContactCommandHandlerTests()
+	public UpdateContactHubSpotCommandHandlerTests()
 	{
 		_uut = new(
 			_unitOfWorkMock.Object,

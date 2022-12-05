@@ -51,7 +51,7 @@ public class DeleteClientHubSpotCommandHandlerUnitTest
 		_fakeUnitOfWork
 			.Verify(
 				unitOfWork => unitOfWork.ClientRepository
-					.FindByCondition(d => d.HubSpotId == deleteClientCommand.ObjectId.ToString()),
+					.FindByCondition(d => d.SourceId == deleteClientCommand.ObjectId.ToString()),
 				Times.Once());
 
 		_fakeUnitOfWork
@@ -86,7 +86,7 @@ public class DeleteClientHubSpotCommandHandlerUnitTest
 		_fakeUnitOfWork
 		.Verify(
 		unitOfWork => unitOfWork.ClientRepository
-					.FindByCondition(d => d.HubSpotId == deleteClientCommand.ObjectId.ToString()),
+					.FindByCondition(d => d.SourceId == deleteClientCommand.ObjectId.ToString()),
 				Times.Once());
 
 		_fakeUnitOfWork

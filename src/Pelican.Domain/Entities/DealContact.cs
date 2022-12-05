@@ -13,14 +13,14 @@ public class DealContact : Entity, ITimeTracked
 
 	public Guid DealId { get; set; }
 
-	public string HubSpotDealId { get; set; } = string.Empty;
+	public string SourceDealId { get; set; } = string.Empty;
 
 	public Deal Deal { get; set; }
 
 
 	public Guid ContactId { get; set; }
 
-	public string HubSpotContactId { get; set; } = string.Empty;
+	public string SourceContactId { get; set; } = string.Empty;
 
 	public Contact Contact { get; set; }
 
@@ -36,10 +36,10 @@ public class DealContact : Entity, ITimeTracked
 		{
 			Deal = deal,
 			DealId = deal.Id,
-			HubSpotDealId = deal.HubSpotId,
+			SourceDealId = deal.SourceId,
 			Contact = contact,
 			ContactId = contact.Id,
-			HubSpotContactId = contact.HubSpotId,
+			SourceContactId = contact.SourceId,
 			IsActive = true,
 		};
 	}

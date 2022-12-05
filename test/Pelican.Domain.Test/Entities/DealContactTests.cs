@@ -14,12 +14,12 @@ public class DealContactTests
 
 		Deal deal = new(Guid.NewGuid())
 		{
-			HubSpotId = DEAL_HUBSPOTID,
+			SourceId = DEAL_HUBSPOTID,
 		};
 
 		Contact contact = new(Guid.NewGuid())
 		{
-			HubSpotId = CONTACT_HUBSPOTID,
+			SourceId = CONTACT_HUBSPOTID,
 		};
 
 		// Act
@@ -36,7 +36,7 @@ public class DealContactTests
 
 		Assert.Equal(
 			DEAL_HUBSPOTID,
-			result.HubSpotDealId);
+			result.SourceDealId);
 
 		Assert.Equal(
 			contact,
@@ -48,7 +48,7 @@ public class DealContactTests
 
 		Assert.Equal(
 			CONTACT_HUBSPOTID,
-			result.HubSpotContactId);
+			result.SourceContactId);
 
 		Assert.True(result.IsActive);
 	}

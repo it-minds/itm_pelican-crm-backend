@@ -92,7 +92,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 		// Assert
 		_unitOfWorkMock.Verify(
 			u => u.AccountManagerRepository.FirstOrDefaultAsync(
-				a => a.HubSpotUserId == command.UserId,
+				a => a.SourceUserId == command.UserId,
 				default),
 			Times.Once);
 
@@ -123,7 +123,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 		// Assert
 		_unitOfWorkMock.Verify(
 			u => u.SupplierRepository.FirstOrDefaultAsync(
-				a => a.HubSpotId == command.SupplierHubSpotId,
+				a => a.SourceId == command.SupplierHubSpotId,
 				default),
 			Times.Once);
 

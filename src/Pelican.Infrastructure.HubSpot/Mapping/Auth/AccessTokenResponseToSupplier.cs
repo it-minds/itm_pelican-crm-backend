@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Entities;
+﻿using Pelican.Domain;
+using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.Auth;
@@ -9,6 +10,7 @@ internal static class AccessTokenResponseToSupplier
 		=> new(Guid.NewGuid())
 		{
 			WebsiteUrl = response.HubDomain,
-			HubSpotId = response.HubId,
+			SourceId = response.HubId,
+			Source = Sources.HubSpot,
 		};
 }

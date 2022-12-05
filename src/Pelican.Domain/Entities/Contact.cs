@@ -13,9 +13,11 @@ public class Contact : Entity, ITimeTracked
 	public Contact(Guid id) : base(id) { }
 	public Contact() { }
 
-	public string HubSpotId { get; set; } = string.Empty;
+	public string Source { get; set; } = string.Empty;
 
-	public string? HubSpotOwnerId { get; set; }
+	public string SourceId { get; set; } = string.Empty;
+
+	public string? SourceOwnerId { get; set; }
 
 
 	public string? FirstName
@@ -102,7 +104,7 @@ public class Contact : Entity, ITimeTracked
 				JobTitle = propertyValue;
 				break;
 			case "hs_all_owner_ids":
-				HubSpotOwnerId = propertyValue;
+				SourceOwnerId = propertyValue;
 				break;
 			default:
 				throw new InvalidOperationException("Invalid field");
@@ -120,7 +122,7 @@ public class Contact : Entity, ITimeTracked
 
 		foreach (DealContact dealContact in DealContacts.Where(dc => dc.IsActive))
 		{
-			if (!currectHubSpotDealContacts.Any(currectHubSpotDealContact => currectHubSpotDealContact.HubSpotDealId == dealContact.HubSpotDealId))
+			if (!currectHubSpotDealContacts.Any(currectHubSpotDealContact => currectHubSpotDealContact.SourceDealId == dealContact.SourceDealId))
 			{
 				dealContact.Deactivate();
 			}
@@ -128,7 +130,7 @@ public class Contact : Entity, ITimeTracked
 
 		foreach (DealContact dealContact in currectHubSpotDealContacts)
 		{
-			if (!DealContacts.Any(dc => dc.HubSpotDealId == dealContact.HubSpotDealId && dc.IsActive))
+			if (!DealContacts.Any(dc => dc.SourceDealId == dealContact.SourceDealId && dc.IsActive))
 			{
 				DealContacts.Add(dealContact);
 			}
@@ -156,7 +158,7 @@ public class Contact : Entity, ITimeTracked
 			.Select(cc =>
 			{
 				Client? matchingClient = clients
-				.FirstOrDefault(client => client.HubSpotId == cc.HubSpotClientId);
+				.FirstOrDefault(client => client.SourceId == cc.SourceClientId);
 
 				if (matchingClient is not null)
 				{
@@ -182,7 +184,7 @@ public class Contact : Entity, ITimeTracked
 			.Select(dc =>
 			{
 				Deal? matchingDeal = deals
-				.FirstOrDefault(deal => deal.HubSpotId == dc.HubSpotDealId);
+				.FirstOrDefault(deal => deal.SourceId == dc.SourceDealId);
 
 				if (matchingDeal is not null)
 				{

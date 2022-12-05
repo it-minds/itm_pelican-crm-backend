@@ -31,8 +31,12 @@ internal class AccountManagerConfiguration : IEntityTypeConfiguration<AccountMan
 		builder.Property(p => p.PhoneNumber)
 			.HasMaxLength(StringLengths.PhoneNumber);
 
-		builder.Property(p => p.HubSpotId)
+		builder.Property(p => p.SourceId)
 			.HasMaxLength(StringLengths.Id)
+			.IsRequired();
+
+		builder.Property(p => p.Source)
+			.HasMaxLength(StringLengths.Source)
 			.IsRequired();
 
 		builder.HasOne(a => a.Supplier)

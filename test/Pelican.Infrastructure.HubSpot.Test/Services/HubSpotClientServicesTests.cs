@@ -1,14 +1,4 @@
-﻿using Moq;
-using Pelican.Application.Abstractions.Infrastructure;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Settings.HubSpot;
-using Pelican.Domain.Shared;
-using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
-using Pelican.Infrastructure.HubSpot.Services;
-using RestSharp;
-using Xunit;
-
-namespace Pelican.Infrastructure.HubSpot.Test.Services;
+﻿namespace Pelican.Infrastructure.HubSpot.Test.Services;
 
 public class HubSpotClientServicesTests
 {
@@ -81,9 +71,26 @@ public class HubSpotClientServicesTests
 
 		/// Assert
 		Assert.True(result.IsSuccess);
-		Assert.Equal(
-			Client,
-			result.Value);
+		Assert.Equal("id", result.Value.SourceId);
+	}
+
+	[Fact]
+	public async Task GetAsync_ClientReturnsNull_ReturnFailure()
+	{
+		/// Arrange
+		RestResponse<CompaniesResponse> restResponse = null!;
+
+		_hubSpotClientMock
+			.Setup(client => client.GetAsync<CompaniesResponse>(
+				It.IsAny<RestRequest>(),
+				default))
+			.ReturnsAsync(restResponse);
+
+		/// Act
+		var result = await _uut.GetAsync("", default);
+
+		/// Assert
+		Assert.True(result.IsFailure);
 	}
 
 	[Fact]

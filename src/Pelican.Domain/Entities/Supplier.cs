@@ -13,7 +13,9 @@ public class Supplier : Entity, ITimeTracked
 
 	public Supplier() { }
 
-	public long HubSpotId { get; set; }
+	public string Source { get; set; } = string.Empty;
+
+	public long SourceId { get; set; }
 
 	public string RefreshToken { get; set; } = string.Empty;
 

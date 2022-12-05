@@ -73,7 +73,7 @@ public class DealsResponseToDealsTests
 		var result = responses.ToDeals();
 
 		/// Assert
-		Assert.Equal(ID, result.First().HubSpotId);
-		Assert.Equal(OWNERID, result.First().HubSpotOwnerId);
+		Assert.Equal(ID, result.First().SourceId);
+		Assert.Equal(OWNERID, result.First().SourceOwnerId);
 	}
 }

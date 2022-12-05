@@ -205,8 +205,8 @@ public class UpdateDealHubSpotCommandHandlerTests
 		SetupDealRepositoryMock(null);
 
 		Mock<Deal> newDealMock = new();
-		newDealMock.Object.HubSpotId = "hubspotId";
-		newDealMock.Object.HubSpotOwnerId = "ownerId";
+		newDealMock.Object.SourceId = "hubspotId";
+		newDealMock.Object.SourceOwnerId = "ownerId";
 
 		newDealMock
 			.Setup(d => d.FillOutAssociations(It.IsAny<AccountManager>(), It.IsAny<Client>(), It.IsAny<List<Contact>>()))
@@ -252,19 +252,19 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		Contact existingContact = new(Guid.NewGuid())
 		{
-			HubSpotId = "contactHubSpotId",
+			SourceId = "contactHubSpotId",
 		};
 
 		Client existingClient = new(Guid.NewGuid())
 		{
-			HubSpotId = "clientHubSpotId",
+			SourceId = "clientHubSpotId",
 		};
 
 		SetupDealRepositoryMock(null);
 
 		Mock<Deal> newDealMock = new();
-		newDealMock.Object.HubSpotId = "hubspotId";
-		newDealMock.Object.HubSpotOwnerId = "ownerId";
+		newDealMock.Object.SourceId = "hubspotId";
+		newDealMock.Object.SourceOwnerId = "ownerId";
 		newDealMock.Object.Client = existingClient;
 		newDealMock.Object.DealContacts = new List<DealContact>()
 		{
@@ -272,8 +272,8 @@ public class UpdateDealHubSpotCommandHandlerTests
 			{
 				Deal = newDealMock.Object,
 				DealId = newDealMock.Object.Id,
-				HubSpotDealId = newDealMock.Object.HubSpotId,
-				HubSpotContactId = existingContact.HubSpotId,
+				SourceDealId = newDealMock.Object.SourceId,
+				SourceContactId = existingContact.SourceId,
 			}
 		};
 
@@ -333,19 +333,19 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		Contact existingContact = new(Guid.NewGuid())
 		{
-			HubSpotId = "contactHubSpotId",
+			SourceId = "contactHubSpotId",
 		};
 
 		Client existingClient = new(Guid.NewGuid())
 		{
-			HubSpotId = "clientHubSpotId",
+			SourceId = "clientHubSpotId",
 		};
 
 		SetupDealRepositoryMock(existingDeal);
 
 		Mock<Deal> newDealMock = new();
-		newDealMock.Object.HubSpotId = "hubspotId";
-		newDealMock.Object.HubSpotOwnerId = "ownerId";
+		newDealMock.Object.SourceId = "hubspotId";
+		newDealMock.Object.SourceOwnerId = "ownerId";
 		newDealMock.Object.Client = existingClient;
 		newDealMock.Object.DealContacts = new List<DealContact>()
 		{
@@ -353,8 +353,8 @@ public class UpdateDealHubSpotCommandHandlerTests
 			{
 				Deal = newDealMock.Object,
 				DealId = newDealMock.Object.Id,
-				HubSpotDealId = newDealMock.Object.HubSpotId,
-				HubSpotContactId = existingContact.HubSpotId,
+				SourceDealId = newDealMock.Object.SourceId,
+				SourceContactId = existingContact.SourceId,
 			}
 		};
 
@@ -425,7 +425,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 		// Assert
 		_dealRepositoryMock.Verify(
 			x => x.FindByCondition(
-				d => d.HubSpotId == command.ObjectId.ToString()),
+				d => d.SourceId == command.ObjectId.ToString()),
 			Times.Once);
 
 		_dealRepositoryMock.Verify(
@@ -461,7 +461,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 		// Assert
 		_dealRepositoryMock.Verify(
 			x => x.FindByCondition(
-				d => d.HubSpotId == command.ObjectId.ToString()),
+				d => d.SourceId == command.ObjectId.ToString()),
 			Times.Once);
 
 		_dealRepositoryMock.Verify(

@@ -13,9 +13,11 @@ public class AccountManager : Entity, ITimeTracked
 
 	public AccountManager() { }
 
-	public string HubSpotId { get; set; } = string.Empty;
+	public string SourceId { get; set; } = string.Empty;
 
-	public long HubSpotUserId { get; set; }
+	public string Source { get; set; } = string.Empty;
+
+	public long SourceUserId { get; set; }
 
 	public string FirstName
 	{

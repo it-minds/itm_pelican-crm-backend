@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Entities;
+﻿using Pelican.Domain;
+using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.Contacts;
@@ -18,9 +19,10 @@ internal static class ContactResponseToContact
 			LastName = response.Properties.LastName,
 			Email = response.Properties.Email,
 			PhoneNumber = response.Properties.Phone,
-			HubSpotId = response.Properties.HubSpotObjectId,
+			SourceId = response.Properties.HubSpotObjectId,
 			JobTitle = response.Properties.JobTitle,
-			HubSpotOwnerId = response.Properties.HubSpotOwnerId,
+			SourceOwnerId = response.Properties.HubSpotOwnerId,
+			Source = Sources.HubSpot,
 		};
 
 		result.ClientContacts = response
@@ -31,10 +33,10 @@ internal static class ContactResponseToContact
 			.Select(association => new ClientContact(Guid.NewGuid())
 			{
 				ContactId = result.Id,
-				HubSpotContactId = result.HubSpotId,
+				SourceContactId = result.SourceId,
 				Contact = result,
 				IsActive = true,
-				HubSpotClientId = association.Id,
+				SourceClientId = association.Id,
 			})
 			.ToList();
 
@@ -47,8 +49,8 @@ internal static class ContactResponseToContact
 			{
 				Contact = result,
 				ContactId = result.Id,
-				HubSpotContactId = result.HubSpotId,
-				HubSpotDealId = association.Id,
+				SourceContactId = result.SourceId,
+				SourceDealId = association.Id,
 				IsActive = true,
 			})
 			.ToList();

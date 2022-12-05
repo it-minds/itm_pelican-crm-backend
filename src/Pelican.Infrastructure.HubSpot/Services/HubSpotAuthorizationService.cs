@@ -61,7 +61,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 	{
 		Supplier? supplier = await unitOfWork
 		.SupplierRepository
-				.FirstOrDefaultAsync(supplier => supplier.HubSpotId == supplierHubSpotId, default);
+				.FirstOrDefaultAsync(supplier => supplier.SourceId == supplierHubSpotId, default);
 
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{

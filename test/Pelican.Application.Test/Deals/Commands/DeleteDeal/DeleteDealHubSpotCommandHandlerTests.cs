@@ -62,7 +62,7 @@ public class DeleteDealHubSpotCommandHandlerTests
 				unitOfWork => unitOfWork
 					.DealRepository
 					.FirstOrDefaultAsync(
-						deal => deal.HubSpotId == command.ObjectId.ToString(),
+						deal => deal.SourceId == command.ObjectId.ToString(),
 						default),
 				Times.Once());
 
@@ -103,7 +103,7 @@ public class DeleteDealHubSpotCommandHandlerTests
 			.Verify(unitOfWork => unitOfWork
 				.DealRepository
 				.FirstOrDefaultAsync(
-					deal => deal.HubSpotId == command.ObjectId.ToString(),
+					deal => deal.SourceId == command.ObjectId.ToString(),
 					default),
 			Times.Once());
 

@@ -14,12 +14,12 @@ public class ClientContact : Entity, ITimeTracked
 
 	public Guid ClientId { get; set; }
 
-	public string HubSpotClientId { get; set; } = string.Empty;
+	public string SourceClientId { get; set; } = string.Empty;
 
 	public Client Client { get; set; }
 
 
-	public string HubSpotContactId { get; set; } = string.Empty;
+	public string SourceContactId { get; set; } = string.Empty;
 
 	public Guid ContactId { get; set; }
 
@@ -38,10 +38,10 @@ public class ClientContact : Entity, ITimeTracked
 		{
 			Client = client,
 			ClientId = client.Id,
-			HubSpotClientId = client.HubSpotId,
+			SourceClientId = client.SourceId,
 			Contact = contact,
 			ContactId = contact.Id,
-			HubSpotContactId = contact.HubSpotId,
+			SourceContactId = contact.SourceId,
 			IsActive = true,
 		};
 	}

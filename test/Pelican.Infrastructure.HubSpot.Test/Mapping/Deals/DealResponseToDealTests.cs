@@ -18,6 +18,7 @@ public class DealResponseToDealTests
 	private const string LASTCONTACTDATE = "1999-04-25T00:00:00.000Z";
 	private const string DEALNAME = "dealname";
 	private const string DEALDESCRIPTION = "dealdescription";
+	private const string DEALSOURCE = "HubSpot";
 
 	private readonly DealResponse response = new()
 	{
@@ -63,10 +64,11 @@ public class DealResponseToDealTests
 		Assert.Equal(Convert.ToDateTime(CLOSEDATE).Ticks, result.EndDate);
 		Assert.Equal(Convert.ToDateTime(STARTDATE).Ticks, result.StartDate);
 		Assert.Equal(Convert.ToDateTime(LASTCONTACTDATE).Ticks, result.LastContactDate);
-		Assert.Equal(ID, result.HubSpotId);
-		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+		Assert.Equal(ID, result.SourceId);
+		Assert.Equal(OWNERID, result.SourceOwnerId);
 		Assert.Equal(DEALNAME, result.Name);
 		Assert.Equal(DEALDESCRIPTION, result.Description);
+		Assert.Equal(Sources.HubSpot, result.Source);
 	}
 
 	[Fact]
@@ -179,7 +181,7 @@ public class DealResponseToDealTests
 
 		/// assert
 		Assert.Equal(1, result.DealContacts!.Count);
-		Assert.Equal("1", result.DealContacts.First().HubSpotContactId);
+		Assert.Equal("1", result.DealContacts.First().SourceContactId);
 		Assert.Equal(result, result.DealContacts.First().Deal);
 		Assert.Equal(result.Id, result.DealContacts.First().DealId);
 		Assert.True(result.DealContacts.First().IsActive);
@@ -247,7 +249,7 @@ public class DealResponseToDealTests
 		Deal result = response.ToDeal();
 
 		/// assert
-		Assert.Equal("1", result.Client!.HubSpotId);
+		Assert.Equal("1", result.Client!.SourceId);
 		Assert.Equal(result, result.Client!.Deals!.First());
 	}
 }

@@ -54,7 +54,7 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			return supplierResult;
 		}
 
-		if (_unitOfWork.SupplierRepository.FindAll().Any(supplier => supplier.HubSpotId == supplierResult.Value.HubSpotId))
+		if (_unitOfWork.SupplierRepository.FindAll().Any(supplier => supplier.SourceId == supplierResult.Value.SourceId))
 		{
 			return Result.Failure(Error.AlreadyExists);
 		}
@@ -99,15 +99,15 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 				accountManager.SupplierId = supplier.Id;
 
 				accountManager.AccountManagerDeals = deals
-					.Where(deal => deal.HubSpotOwnerId == accountManager.HubSpotId)?
+					.Where(deal => deal.SourceOwnerId == accountManager.SourceId)?
 					.Select(deal => new AccountManagerDeal(Guid.NewGuid())
 					{
 						AccountManager = accountManager,
 						AccountManagerId = accountManager.Id,
-						HubSpotAccountManagerId = accountManager.HubSpotId,
+						SourceAccountManagerId = accountManager.SourceId,
 						Deal = deal,
 						DealId = deal.Id,
-						HubSpotDealId = deal.HubSpotId,
+						SourceDealId = deal.SourceId,
 						IsActive = true,
 					})
 					.ToList() ?? new List<AccountManagerDeal>();
@@ -123,13 +123,13 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			.ForEach(deal =>
 			{
 				deal.AccountManagerDeals = accountManagerDeals
-					.Where(accountManagerDeal => accountManagerDeal.HubSpotDealId == deal.HubSpotId)?
+					.Where(accountManagerDeal => accountManagerDeal.SourceDealId == deal.SourceId)?
 					.ToList() ?? new List<AccountManagerDeal>();
 
 				if (deal.Client is not null)
 				{
 					deal.Client = clients
-						.FirstOrDefault(client => client.HubSpotId == deal.Client.HubSpotId);
+						.FirstOrDefault(client => client.SourceId == deal.Client.SourceId);
 				}
 
 				deal
@@ -138,7 +138,7 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 					.ForEach(dealContact =>
 					{
 						Contact contact = contacts
-							.First(contact => contact.HubSpotId == dealContact.HubSpotContactId);
+							.First(contact => contact.SourceId == dealContact.SourceContactId);
 
 						dealContact.Contact = contact;
 						dealContact.ContactId = contact.Id;
@@ -149,7 +149,7 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			.ForEach(client =>
 			{
 				client.Deals = deals
-					.Where(deal => deal.Client?.HubSpotId == client.HubSpotId)?
+					.Where(deal => deal.Client?.SourceId == client.SourceId)?
 					.ToList() ?? new List<Deal>();
 
 				client
@@ -158,7 +158,7 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 					.ForEach(clientContact =>
 					{
 						Contact contact = contacts
-							.First(contact => contact.HubSpotId == clientContact.HubSpotContactId);
+							.First(contact => contact.SourceId == clientContact.SourceContactId);
 
 						clientContact.Contact = contact;
 						clientContact.ContactId = contact.Id;
@@ -177,11 +177,11 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			.ForEach(contact =>
 			{
 				contact.DealContacts = dealContacts
-					.Where(dealContact => dealContact.HubSpotContactId == contact.HubSpotId)
+					.Where(dealContact => dealContact.SourceContactId == contact.SourceId)
 					.ToList();
 
 				contact.ClientContacts = clientContacts
-					.Where(clientContact => clientContact.HubSpotContactId == contact.HubSpotId)
+					.Where(clientContact => clientContact.SourceContactId == contact.SourceId)
 					.ToList();
 			});
 

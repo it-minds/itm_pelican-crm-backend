@@ -14,12 +14,12 @@ public class ClientContactUnitTest
 
 		Client client = new(Guid.NewGuid())
 		{
-			HubSpotId = CLIENT_HUBSPOTID,
+			SourceId = CLIENT_HUBSPOTID,
 		};
 
 		Contact contact = new(Guid.NewGuid())
 		{
-			HubSpotId = CONTACT_HUBSPOTID,
+			SourceId = CONTACT_HUBSPOTID,
 		};
 
 		// Act
@@ -36,7 +36,7 @@ public class ClientContactUnitTest
 
 		Assert.Equal(
 			CLIENT_HUBSPOTID,
-			result.HubSpotClientId);
+			result.SourceClientId);
 
 		Assert.Equal(
 			contact,
@@ -48,7 +48,7 @@ public class ClientContactUnitTest
 
 		Assert.Equal(
 			CONTACT_HUBSPOTID,
-			result.HubSpotContactId);
+			result.SourceContactId);
 
 		Assert.True(result.IsActive);
 	}

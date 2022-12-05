@@ -1,16 +1,16 @@
-﻿using HotChocolate;
-using Pelican.Domain.Primitives;
-
-namespace Pelican.Domain.Entities;
+﻿namespace Pelican.Domain.Entities;
 public class Client : Entity, ITimeTracked
 {
 	private string _name = string.Empty;
-	public string? PictureUrl { get; set; }
 	private string? _website { get; set; }
+
+	public string? PictureUrl { get; set; }
 
 	public Client(Guid id) : base(id) { }
 
 	public Client() { }
+
+	public string Source { get; set; } = string.Empty;
 
 	public string Name
 	{
@@ -23,7 +23,7 @@ public class Client : Entity, ITimeTracked
 		}
 	}
 
-	public string HubSpotId { get; set; } = string.Empty;
+	public string SourceId { get; set; } = string.Empty;
 
 
 	private string? _officeLocation;
@@ -94,7 +94,7 @@ public class Client : Entity, ITimeTracked
 			}
 
 			Contact? matchingContact = contacts
-				.FirstOrDefault(contacts => contacts.HubSpotId == item.HubSpotContactId);
+				.FirstOrDefault(contacts => contacts.SourceId == item.SourceContactId);
 
 			if (matchingContact is null)
 			{

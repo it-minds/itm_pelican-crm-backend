@@ -23,8 +23,12 @@ internal class ClientConfiguration : IEntityTypeConfiguration<Client>
 		builder.Property(p => p.Website)
 			.HasMaxLength(StringLengths.Url);
 
-		builder.Property(p => p.HubSpotId)
+		builder.Property(p => p.SourceId)
 			.HasMaxLength(StringLengths.Id)
+			.IsRequired();
+
+		builder.Property(p => p.Source)
+			.HasMaxLength(StringLengths.Source)
 			.IsRequired();
 
 		builder.HasMany(a => a.ClientContacts)

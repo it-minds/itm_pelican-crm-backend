@@ -76,10 +76,10 @@ public class OwnersResponseToAccountManagersTests
 		var result = responses.ToAccountManagers();
 
 		/// Assert
-		Assert.Equal(ID, result.First().HubSpotId);
+		Assert.Equal(ID, result.First().SourceId);
 		Assert.Equal(FIRSTNAME, result.First().FirstName);
 		Assert.Equal(LASTNAME, result.First().LastName);
 		Assert.Equal(EMAIL, result.First().Email);
-		Assert.Equal(USERID, result.First().HubSpotUserId);
+		Assert.Equal(USERID, result.First().SourceUserId);
 	}
 }

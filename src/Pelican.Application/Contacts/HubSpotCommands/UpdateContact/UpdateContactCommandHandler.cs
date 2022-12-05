@@ -33,7 +33,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 		Contact? contact = await _unitOfWork
 			.ContactRepository
 			.FirstOrDefaultAsync(
-				contact => contact.HubSpotId == command.ObjectId.ToString(),
+				contact => contact.SourceId == command.ObjectId.ToString(),
 				cancellationToken);
 
 		if (contact is null)
@@ -144,7 +144,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 			Deal? deal = await _unitOfWork
 				.DealRepository
 				.FirstOrDefaultAsync(
-					d => d.HubSpotId == dealContact.Deal.HubSpotId,
+					d => d.SourceId == dealContact.Deal.SourceId,
 					cancellationToken);
 
 			if (deal is not null)
@@ -160,7 +160,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 			Client? client = await _unitOfWork
 				.ClientRepository
 				.FirstOrDefaultAsync(
-					c => c.HubSpotId == clientContact.Client.HubSpotId,
+					c => c.SourceId == clientContact.Client.SourceId,
 					cancellationToken);
 
 			if (client is not null)

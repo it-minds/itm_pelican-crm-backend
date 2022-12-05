@@ -20,7 +20,7 @@ internal sealed class DeleteDealHubSpotCommandHandler : ICommandHandler<DeleteDe
 	{
 		Deal? deal = await _unitOfWork
 			.DealRepository
-			.FirstOrDefaultAsync(d => d.HubSpotId == command.ObjectId.ToString(), cancellationToken);
+			.FirstOrDefaultAsync(d => d.SourceId == command.ObjectId.ToString(), cancellationToken);
 
 		if (deal is null)
 		{

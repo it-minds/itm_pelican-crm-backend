@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Entities;
+﻿using Pelican.Domain;
+using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.AccountManagers;
@@ -17,11 +18,12 @@ internal static class OwnerResponseToAccountManager
 		}
 		AccountManager result = new(Guid.NewGuid())
 		{
-			HubSpotId = response.Id,
-			HubSpotUserId = response.UserId,
+			SourceId = response.Id,
+			SourceUserId = response.UserId,
 			Email = response.Email,
 			FirstName = response.Firstname,
 			LastName = response.Lastname,
+			Source = Sources.HubSpot,
 		};
 		return result;
 	}

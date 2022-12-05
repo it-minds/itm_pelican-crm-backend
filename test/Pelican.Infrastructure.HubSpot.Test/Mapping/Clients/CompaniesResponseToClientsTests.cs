@@ -73,7 +73,7 @@ public class CompaniesResponseToClientsTests
 		var result = responses.ToClients();
 
 		/// Assert
-		Assert.Equal(ID, result.First().HubSpotId);
+		Assert.Equal(ID, result.First().SourceId);
 		Assert.Equal(NAME, result.First().Name);
 	}
 }

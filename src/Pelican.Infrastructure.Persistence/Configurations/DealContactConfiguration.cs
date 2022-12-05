@@ -13,11 +13,11 @@ internal class DealContactConfiguration : IEntityTypeConfiguration<DealContact>
 		builder.Property(p => p.IsActive)
 			.IsRequired();
 
-		builder.Property(p => p.HubSpotContactId)
+		builder.Property(p => p.SourceContactId)
 			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 
-		builder.Property(p => p.HubSpotDealId)
+		builder.Property(p => p.SourceDealId)
 			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 

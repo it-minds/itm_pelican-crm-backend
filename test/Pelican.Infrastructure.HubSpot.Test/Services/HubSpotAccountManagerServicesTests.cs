@@ -1,14 +1,4 @@
-﻿using Moq;
-using Pelican.Application.Abstractions.Infrastructure;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Settings.HubSpot;
-using Pelican.Domain.Shared;
-using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
-using Pelican.Infrastructure.HubSpot.Services;
-using RestSharp;
-using Xunit;
-
-namespace Pelican.Infrastructure.HubSpot.Test.Services;
+﻿namespace Pelican.Infrastructure.HubSpot.Test.Services;
 
 public class HubSpotAccountManagerServicesTests
 {

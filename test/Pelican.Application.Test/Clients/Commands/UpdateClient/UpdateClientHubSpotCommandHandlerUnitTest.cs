@@ -107,7 +107,7 @@ public class UpdateClientCommandHandlerTests
 		// Assert
 		_unitOfWorkMock.Verify(
 			unitOfWork => unitOfWork.ClientRepository.FindByCondition(
-				Client => Client.HubSpotId == command.ObjectId.ToString()),
+				Client => Client.SourceId == command.ObjectId.ToString()),
 			Times.Once);
 
 		Assert.True(result.IsFailure);
@@ -250,7 +250,7 @@ public class UpdateClientCommandHandlerTests
 		List<ClientContact> clientContactList = new();
 		Contact contact = new(Guid.NewGuid())
 		{
-			HubSpotId = "HubSpotId"
+			SourceId = "HubSpotId"
 		};
 		List<Contact> contactList = new();
 		contactList.Add(contact);

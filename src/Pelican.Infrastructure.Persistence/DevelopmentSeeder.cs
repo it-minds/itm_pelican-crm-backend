@@ -1,7 +1,6 @@
 ﻿using Pelican.Application.Abstractions.Data;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain.Entities;
-using Location = Pelican.Domain.Entities.Location;
 
 namespace Pelican.Infrastructure.Persistence;
 public class DevelopmentSeeder : IDevelopmentSeeder
@@ -19,9 +18,8 @@ public class DevelopmentSeeder : IDevelopmentSeeder
 	public async void SeedEntireDb(int count)
 	{
 		var suppliers = SeedSuppliers(_unitOfWork, _faker, count);
-		var locations = SeedLocations(_unitOfWork, _faker, suppliers, count);
 		var accountManagers = SeedAccountManagers(_unitOfWork, _faker, suppliers, count);
-		var clients = SeedClients(_unitOfWork, _faker, locations, count);
+		var clients = SeedClients(_unitOfWork, _faker, count);
 		var deals = SeedDeals(_unitOfWork, _faker, clients, accountManagers, count);
 		var contacts = SeedContacts(_unitOfWork, _faker, accountManagers, count);
 		var accountManagerDeals = SeedAccountManagerDeals(_unitOfWork, _faker, accountManagers, deals);
@@ -29,17 +27,6 @@ public class DevelopmentSeeder : IDevelopmentSeeder
 		var dealContacts = SeedDealContacts(_unitOfWork, _faker, deals, contacts);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
-	}
-
-	public IQueryable<Location> SeedLocations(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Supplier> suppliers, int count)
-	{
-		var repositoryContent = unitOfWork.LocationRepository.FindAll();
-		if (repositoryContent.Any())
-			return repositoryContent;
-		var result = pelicanFaker.LocationFaker(count, suppliers);
-		unitOfWork.LocationRepository
-			.CreateRangeAsync(result, cancellationToken);
-		return result.AsQueryable();
 	}
 
 	public IQueryable<Supplier> SeedSuppliers(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, int count)
@@ -64,12 +51,12 @@ public class DevelopmentSeeder : IDevelopmentSeeder
 		return result.AsQueryable();
 	}
 
-	public IQueryable<Client> SeedClients(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, IQueryable<Location> location, int count)
+	public IQueryable<Client> SeedClients(IUnitOfWork unitOfWork, IPelicanBogusFaker pelicanFaker, int count)
 	{
 		var repositoryContent = unitOfWork.ClientRepository.FindAll();
 		if (repositoryContent.Any())
 			return repositoryContent;
-		var result = pelicanFaker.ClientFaker(count, location);
+		var result = pelicanFaker.ClientFaker(count);
 		unitOfWork.ClientRepository
 			.CreateRangeAsync(result, cancellationToken);
 		return result.AsQueryable();

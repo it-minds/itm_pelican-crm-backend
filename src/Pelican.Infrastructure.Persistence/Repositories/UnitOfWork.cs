@@ -2,7 +2,6 @@
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Primitives;
-using Location = Pelican.Domain.Entities.Location;
 
 namespace Pelican.Infrastructure.Persistence.Repositories;
 
@@ -14,7 +13,6 @@ public class UnitOfWork : IUnitOfWork
 	private IGenericRepository<AccountManager>? _accountManagerRepository;
 	private IGenericRepository<ClientContact>? _clientContactRepository;
 	private IGenericRepository<DealContact>? _dealContactRepository;
-	private IGenericRepository<Location>? _locationRepository;
 	private IGenericRepository<Supplier>? _supplierRepository;
 	private IGenericRepository<Contact>? _contactRepository;
 	private IGenericRepository<Client>? _clientRepository;
@@ -35,8 +33,6 @@ public class UnitOfWork : IUnitOfWork
 				=> (IGenericRepository<T>)ClientContactRepository,
 			Type DealContact when DealContact == typeof(DealContact)
 				=> (IGenericRepository<T>)DealContactRepository,
-			Type Location when Location == typeof(Location)
-				=> (IGenericRepository<T>)LocationRepository,
 			Type Supplier when Supplier == typeof(Supplier)
 				=> (IGenericRepository<T>)SupplierRepository,
 			Type Contact when Contact == typeof(Contact)
@@ -59,9 +55,6 @@ public class UnitOfWork : IUnitOfWork
 
 	public IGenericRepository<DealContact> DealContactRepository
 		=> _dealContactRepository ??= new GenericRepository<DealContact>(_pelicanContext);
-
-	public IGenericRepository<Location> LocationRepository
-		=> _locationRepository ??= new GenericRepository<Location>(_pelicanContext);
 
 	public IGenericRepository<Supplier> SupplierRepository
 		=> _supplierRepository ??= new GenericRepository<Supplier>(_pelicanContext);

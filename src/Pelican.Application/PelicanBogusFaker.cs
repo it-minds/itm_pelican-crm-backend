@@ -38,7 +38,8 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.HubSpotId, f => f.Random.Long(1))
 			.RuleFor(e => e.RefreshToken, f => f.Random.Guid().ToString())
 			.RuleFor(e => e.Id, f => f.Random.Guid())
-			.RuleFor(e => e.PipedriveDomain, f => f.Internet.Url().OrNull(f, 0.0f));
+			.RuleFor(e => e.PipedriveDomain, f => f.Internet.Url().OrNull(f, 0.0f))
+			.RuleFor(e => e.OfficeLocation, f => f.Address.City().OrNull(f, 0.0f));
 		return faker.Generate(count);
 	}
 
@@ -60,24 +61,14 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 		return faker.Generate(count);
 	}
 
-	public IEnumerable<Location> LocationFaker(int count, IQueryable<Supplier> suppliers)
-	{
-		var faker = new Faker<Location>().UseSeed(1340);
-		faker
-			.RuleFor(e => e.CityName, f => f.Address.City())
-			.RuleFor(e => e.Id, f => f.Random.Guid())
-			.RuleFor(e => e.SupplierId, f => f.PickRandom<Supplier>(suppliers).Id)
-			.RuleFor(e => e.Supplier, f => f.PickRandom<Supplier>(suppliers));
-		return faker.Generate(count);
-	}
 
-	public IEnumerable<Client> ClientFaker(int count, IQueryable<Location> locations)
+	public IEnumerable<Client> ClientFaker(int count)
 	{
 		var faker = new Faker<Client>().UseSeed(1341);
 		faker
 			.RuleFor(e => e.Name, f => f.Name.FullName(f.Person.Gender))
 			.RuleFor(e => e.PictureUrl, f => f.Image.PicsumUrl().OrNull(f, 0.0f))
-			.RuleFor(e => e.OfficeLocation, f => f.PickRandom<Location>(locations).CityName.OrNull(f, 0.0f))
+			.RuleFor(e => e.OfficeLocation, f => f.Address.City().OrNull(f, 0.0f))
 			.RuleFor(e => e.HubSpotId, f => f.Random.Guid().ToString())
 			.RuleFor(e => e.Website, f => f.Internet.Url().OrNull(f, 0.0f))
 			.RuleFor(e => e.Id, f => f.Random.Guid());

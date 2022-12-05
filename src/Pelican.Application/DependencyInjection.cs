@@ -1,12 +1,13 @@
-﻿using FluentValidation;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Application.Behaviours;
 using Pelican.Application.RestSharp;
 using Pelican.Domain.Settings;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using Pelican.Domain.Settings.HubSpot;
 
 [assembly: InternalsVisibleTo("Pelican.Application.Test")]
 namespace Pelican.Application;

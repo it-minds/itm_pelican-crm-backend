@@ -11,7 +11,9 @@ public sealed class RestSharpClient<TSettings> : IClient<TSettings> where TSetti
 
 	public RestSharpClient(
 		IOptions<TSettings> options)
-		=> _client = new RestClient(options.Value.BaseUrl);
+		=> _client = string.IsNullOrWhiteSpace(options.Value.BaseUrl)
+		? new RestClient(options.Value.BaseUrl)
+		: new RestClient();
 
 	public async Task<IResponse<TResponse>> GetAsync<TResponse>(
 		RestRequest request,

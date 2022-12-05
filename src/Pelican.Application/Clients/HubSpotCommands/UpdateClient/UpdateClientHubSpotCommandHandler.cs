@@ -80,11 +80,11 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 
 		foreach (ClientContact item in client.ClientContacts)
 		{
-			Contact? matchingContact = await _unitOfWork
+			Contact? matchingContact = _unitOfWork
 				.ContactRepository
 				.FindByCondition(
 					d => d.HubSpotId == item.HubSpotContactId)
-				.FirstOrDefaultAsync(cancellationToken);
+				.FirstOrDefault();
 
 			if (matchingContact is not null)
 			{

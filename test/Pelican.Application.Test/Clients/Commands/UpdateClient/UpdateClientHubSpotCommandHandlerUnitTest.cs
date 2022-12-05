@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
@@ -258,26 +259,27 @@ public class UpdateClientCommandHandlerTests
 		clientContactList.Add(clientContact);
 		clientMock.Object.ClientContacts = clientContactList;
 
-		_unitOfWorkMock.Setup(
-			unitOfWork => unitOfWork.ClientRepository.FindByCondition(
-				It.IsAny<Expression<Func<Client, bool>>>()))
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.ClientRepository
+				.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(Enumerable.Empty<Client>().AsQueryable());
 
-		_unitOfWorkMock.Setup
-			(unitOfWork => unitOfWork.ContactRepository.FirstOrDefaultAsync(
-				It.IsAny<Expression<Func<Contact, bool>>>(),
-				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(contact);
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.ContactRepository
+				.FindByCondition(It.IsAny<Expression<Func<Contact, bool>>>()))
+			.Returns(new List<Contact>() { contact }.AsQueryable());
 
-		_hubSpotAuthorizationServiceMock.Setup(
-			service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+		_hubSpotAuthorizationServiceMock
+			.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success("AccessToken"));
 
-		_hubSpotClientServiceMock.Setup(
-			h => h.GetByIdAsync(
+		_hubSpotClientServiceMock
+			.Setup(h => h.GetByIdAsync(
 				It.IsAny<string>(),
 				It.IsAny<long>(),
 				It.IsAny<CancellationToken>()))
@@ -339,11 +341,6 @@ public class UpdateClientCommandHandlerTests
 		_unitOfWorkMock.Verify(
 			u => u.SaveAsync(
 				default),
-			Times.Once);
-
-		_unitOfWorkMock.Verify(
-			u => u.ClientRepository.Update(
-				clientMock.Object),
 			Times.Once);
 	}
 
@@ -449,24 +446,31 @@ public class UpdateClientCommandHandlerTests
 
 		Mock<Client> clientMock = new();
 
-		_unitOfWorkMock.Setup(
-			unitOfWork => unitOfWork.ClientRepository.FindByCondition(
-				It.IsAny<Expression<Func<Client, bool>>>()))
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.ClientRepository
+				.FindByCondition(
+					It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
 
-		_hubSpotAuthorizationServiceMock.Setup(
-			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+		_hubSpotAuthorizationServiceMock
+			.Setup(h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success("AccessToken"));
 
-		_hubSpotClientServiceMock.Setup(
-			h => h.GetByIdAsync(
+		_hubSpotClientServiceMock
+			.Setup(h => h.GetByIdAsync(
 				It.IsAny<string>(),
 				It.IsAny<long>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(new Client(Guid.NewGuid()));
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.ClientContactRepository
+				.AttachAsAdded(It.IsAny<IEnumerable<ClientContact>>()));
 
 		// Act
 		var result = await _uut.Handle(command, default);
@@ -479,11 +483,6 @@ public class UpdateClientCommandHandlerTests
 
 		_unitOfWorkMock.Verify(
 			u => u.SaveAsync(default),
-			Times.Once);
-
-		_unitOfWorkMock.Verify(
-			u => u.ClientRepository.Update(
-				clientMock.Object),
 			Times.Once);
 
 		Assert.True(result.IsSuccess);

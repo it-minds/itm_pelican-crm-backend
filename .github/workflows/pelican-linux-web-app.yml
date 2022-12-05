@@ -1,77 +1,69 @@
 ﻿name: Build and deploy .NET Core application to Web App pelican-linux-web-app
-on:
+'on':
   push:
     branches:
-    - feature/plcn-211-AddAutoUpdateDeployedDatabaseAsAGitHubAction
-
+      - feature/plcn-211-AddAutoUpdateDeployedDatabaseAsAGitHubAction
 env:
   AZURE_WEBAPP_NAME: pelican-linux-web-app
   AZURE_WEBAPP_PACKAGE_PATH: Pelican.App/published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
   WORKING_DIRECTORY: src/Pelican.App
-  WORKING_DIRECTORY: Pelican.App
-
 permissions:
-      id-token: write
-      contents: read
-
+  id-token: write
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: 'Get resource group with PowerShell action'
-      uses: azure/powershell@v1
-      with:
-         inlineScript: |
-           Get-AzResourceGroup
-
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-   
-    - name: Restore
-      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
-   
-    - name: Build
-      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
-   
-    - name: Test
-      run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
-   
-    - name: Install EF Tool
-      run: |
-         dotnet new tool-manifest
-         dotnet tool install dotnet-ef
-
-    - name: Publish
-      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
-   
-    - name: Deploy to Azure WebApp
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.pelican_linux_web_app_FFFF }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: webapp
-        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-
-    - uses: azure/login@v1
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    - uses: azure/sql-action@v2
-      with:
-       connection-string: ${{ secrets.CONNECTION_STRING }}
-       path: './Database.dacpac'
-       action: 'Publish'
-    - name: logout
-      run: |
-        az logout
+      - uses: actions/checkout@v1
+      - name: Get resource group with PowerShell action
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            Get-AzResourceGroup
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '${{ env.DOTNET_CORE_VERSION }}'
+      - name: Restore
+        run: 'dotnet restore "${{ env.WORKING_DIRECTORY }}"'
+      - name: Build
+        run: >-
+          dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{
+          env.CONFIGURATION }} --no-restore
+      - name: Test
+        run: 'dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build'
+      - name: Install EF Tool
+        run: |
+          dotnet new tool-manifest
+          dotnet tool install dotnet-ef
+      - name: Publish
+        run: >-
+          dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{
+          env.CONFIGURATION }} --no-build --output "${{
+          env.AZURE_WEBAPP_PACKAGE_PATH }}"
+      - name: Deploy to Azure WebApp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: '${{ env.AZURE_WEBAPP_NAME }}'
+          publish-profile: '${{ secrets.pelican_linux_web_app_FFFF }}'
+          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: webapp
+          path: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+      - uses: azure/login@v1
+        with:
+          client-id: '${{ secrets.AZURE_CLIENT_ID }}'
+          tenant-id: '${{ secrets.AZURE_TENANT_ID }}'
+          subscription-id: '${{ secrets.AZURE_SUBSCRIPTION_ID }}'
+      - uses: azure/sql-action@v2
+        with:
+          connection-string: '${{ secrets.CONNECTION_STRING }}'
+          path: ./Database.dacpac
+          action: Publish
+      - name: logout
+        run: |
+          az logout

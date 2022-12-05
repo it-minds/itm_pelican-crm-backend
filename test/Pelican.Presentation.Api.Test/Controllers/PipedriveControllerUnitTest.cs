@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.AccountManagers.PipedriveCommands.DeleteAccountManager;
 using Pelican.Application.AccountManagers.PipedriveCommands.UpdateAccountManager;
 using Pelican.Application.Clients.PipedriveCommands.DeleteClient;
 using Pelican.Application.Clients.PipedriveCommands.UpdateClient;
@@ -10,6 +11,7 @@ using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Delete;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Update;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Delete;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Update;
@@ -306,6 +308,68 @@ public class PipedriveControllerUnitTest
 
 	[Theory]
 	[InlineData("0", "fail")]
+	public async void DeleteAccountManager_ReceivesCallAndReturnsFailure_FailureIsReturned(
+		string errorCode,
+		string errorMessage)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
+
+		DeleteAccountManagerRequest accountManagerRequest = new();
+
+		//Act
+		IActionResult result = await _uut.DeleteAccountManager(accountManagerRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				It.IsAny<DeleteAccountManagerPipedriveCommand>(),
+				default),
+			Times.Once);
+
+		Assert.IsType<BadRequestObjectResult>(result);
+	}
+
+	[Theory]
+	[InlineData(1, 1, 1)]
+	public async void DeleteAccountManager_ReceivesCallAndReturnsSuccess_SuccessIsReturned(int objectId,
+		int supplierPipedriveId,
+		int userId)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success);
+
+		MetaProperties metaProperties = new()
+		{
+			ObjectId = objectId,
+			SupplierPipedriveId = supplierPipedriveId,
+			UserId = userId,
+		};
+		DeleteAccountManagerRequest accountManagerRequest = new()
+		{
+			MetaProperties = metaProperties,
+		};
+		DeleteAccountManagerPipedriveCommand expectedCommand = new(objectId);
+
+		//Act
+		IActionResult result = await _uut.DeleteAccountManager(accountManagerRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				expectedCommand,
+				default),
+			Times.Once);
+
+		Assert.IsType<OkResult>(result);
+	}
+
+	[Theory]
+	[InlineData("0", "fail")]
 	public async void UpdateClient_ReceivesCallAndReturnsFailure_FailureIsReturned(
 		string errorCode,
 		string errorMessage)
@@ -380,6 +444,7 @@ public class PipedriveControllerUnitTest
 
 		Assert.IsType<OkResult>(result);
 	}
+
 	[Theory]
 	[InlineData("0", "fail")]
 	public async void DeleteClient_ReceivesCallAndReturnsFailure_FailureIsReturned(

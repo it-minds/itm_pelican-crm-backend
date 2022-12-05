@@ -51,6 +51,37 @@ public class HubSpotAuthorizationServicesTests
 	}
 
 	[Fact]
+	public void HubSpotAuthorizationService_ClientNull_ThrowException()
+	{
+		// Act
+		var result = Record.Exception(() => new HubSpotAuthorizationService(null!, null!));
+
+		// Assert
+		Assert.IsType<ArgumentNullException>(result);
+		Assert.Contains(
+			"client",
+			result.Message);
+	}
+
+	[Fact]
+	public void HubSpotAuthorizationService_SettingsNull_ThrowException()
+	{
+		// Arrange
+		_optionsMock
+			.Setup(o => o.Value)
+			.Returns((HubSpotSettings)null!);
+
+		// Act
+		var result = Record.Exception(() => new HubSpotAuthorizationService(_hubSpotClientMock.Object, _optionsMock.Object));
+
+		// Assert
+		Assert.IsType<ArgumentNullException>(result);
+		Assert.Contains(
+			"hubSpotSettings",
+			result.Message);
+	}
+
+	[Fact]
 	public async Task AuthorizeUserAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		// Arrange

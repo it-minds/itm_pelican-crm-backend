@@ -21,6 +21,19 @@ public class HubSpotAccountManagerServicesTests
 	}
 
 	[Fact]
+	public void HubSpotAccountManagerService_ClientNull_ThrowException()
+	{
+		// Act
+		var result = Record.Exception(() => new HubSpotAccountManagerService(null!));
+
+		// Assert
+		Assert.IsType<ArgumentNullException>(result);
+		Assert.Contains(
+			"client",
+			result.Message);
+	}
+
+	[Fact]
 	public async Task GetByIdAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		/// Arrange

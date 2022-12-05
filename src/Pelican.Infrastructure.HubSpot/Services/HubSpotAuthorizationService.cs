@@ -21,7 +21,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 		IOptions<HubSpotSettings> hubSpotSettings)
 		: base(hubSpotClient)
 	{
-		_hubSpotSettings = hubSpotSettings.Value;
+		_hubSpotSettings = hubSpotSettings.Value ?? throw new ArgumentNullException(nameof(hubSpotSettings));
 	}
 
 	public async Task<Result<RefreshAccessTokens>> AuthorizeUserAsync(

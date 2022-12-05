@@ -1,10 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.Options;
-using Moq;
-using Pelican.Application.RestSharp;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Settings;
-using Pelican.Domain.Shared;
+﻿using Pelican.Application.RestSharp;
 using RestSharp;
 using Xunit;
 

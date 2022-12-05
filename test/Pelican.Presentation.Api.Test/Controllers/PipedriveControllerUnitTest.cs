@@ -225,145 +225,6 @@ public class PipedriveControllerUnitTest
 
 	[Theory]
 	[InlineData("0", "fail")]
-	public async void UpdateClient_ReceivesCallAndReturnsFailure_FailureIsReturned(
-		string errorCode,
-		string errorMessage)
-	{
-		//Arrange
-		_senderMock
-			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
-
-		UpdateClientRequest clientRequest = new();
-
-		//Act
-		IActionResult result = await _uut.UpdateClient(clientRequest);
-
-		//Assert
-		_senderMock.Verify(
-			s => s.Send(
-				It.IsAny<UpdateClientPipedriveCommand>(),
-				default),
-			Times.Once);
-
-		Assert.IsType<BadRequestObjectResult>(result);
-	}
-
-	[Theory]
-	[InlineData("TestName", "TestLocation", 1, 1, 1)]
-	public async void UpdateClient_ReceivesCallAndReturnsSuccess_SuccessIsReturned(
-		string clientName,
-		string officeLocation,
-		int objectId,
-		int supplierPipedriveId,
-		int userId)
-	{
-		//Arrange
-		_senderMock
-			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success);
-		UpdateClientCurrentProperties updateClientCurrentProperties = new()
-		{
-			ClientName = clientName,
-			OfficeLocation = officeLocation
-		};
-		MetaProperties metaProperties = new()
-		{
-			ObjectId = objectId,
-			SupplierPipedriveId = supplierPipedriveId,
-			UserId = userId,
-		};
-		UpdateClientRequest clientRequest = new()
-		{
-			CurrentProperties = updateClientCurrentProperties,
-			MetaProperties = metaProperties,
-		};
-		UpdateClientPipedriveCommand expectedCommand = new(
-			supplierPipedriveId,
-			objectId,
-			userId,
-			clientName,
-			null,
-			officeLocation,
-			null);
-
-		//Act
-		IActionResult result = await _uut.UpdateClient(clientRequest);
-
-		//Assert
-		_senderMock.Verify(
-			s => s.Send(
-				expectedCommand,
-				default),
-			Times.Once);
-
-		Assert.IsType<OkResult>(result);
-	}
-	[Theory]
-	[InlineData("0", "fail")]
-	public async void DeleteClient_ReceivesCallAndReturnsFailure_FailureIsReturned(
-		string errorCode,
-		string errorMessage)
-	{
-		//Arrange
-		_senderMock
-			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
-
-		DeleteClientRequest clientRequest = new();
-
-		//Act
-		IActionResult result = await _uut.DeleteClient(clientRequest);
-
-		//Assert
-		_senderMock.Verify(
-			s => s.Send(
-				It.IsAny<DeleteClientPipedriveCommand>(),
-				default),
-			Times.Once);
-
-		Assert.IsType<BadRequestObjectResult>(result);
-	}
-
-	[Theory]
-	[InlineData(1, 1, 1)]
-	public async void DeleteClient_ReceivesCallAndReturnsSuccess_SuccessIsReturned(int objectId,
-		int supplierPipedriveId,
-		int userId)
-	{
-		//Arrange
-		_senderMock
-			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success);
-
-		MetaProperties metaProperties = new()
-		{
-			ObjectId = objectId,
-			SupplierPipedriveId = supplierPipedriveId,
-			UserId = userId,
-		};
-		DeleteClientRequest clientRequest = new()
-		{
-			MetaProperties = metaProperties,
-		};
-		DeleteClientPipedriveCommand expectedCommand = new(
-			objectId);
-
-		//Act
-		IActionResult result = await _uut.DeleteClient(clientRequest);
-
-		//Assert
-		_senderMock.Verify(
-			s => s.Send(
-				expectedCommand,
-				default),
-			Times.Once);
-
-		Assert.IsType<OkResult>(result);
-	}
-
-	[Theory]
-	[InlineData("0", "fail")]
 	public async void UpdateAccountManager_ReceivesCallAndReturnsFailure_FailureIsReturned(
 		string errorCode,
 		string errorMessage)
@@ -496,6 +357,146 @@ public class PipedriveControllerUnitTest
 
 		//Act
 		IActionResult result = await _uut.DeleteAccountManager(accountManagerRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				expectedCommand,
+				default),
+			Times.Once);
+
+		Assert.IsType<OkResult>(result);
+	}
+
+	[Theory]
+	[InlineData("0", "fail")]
+	public async void UpdateClient_ReceivesCallAndReturnsFailure_FailureIsReturned(
+		string errorCode,
+		string errorMessage)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
+
+		UpdateClientRequest clientRequest = new();
+
+		//Act
+		IActionResult result = await _uut.UpdateClient(clientRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				It.IsAny<UpdateClientPipedriveCommand>(),
+				default),
+			Times.Once);
+
+		Assert.IsType<BadRequestObjectResult>(result);
+	}
+
+	[Theory]
+	[InlineData("TestName", "TestLocation", 1, 1, 1)]
+	public async void UpdateClient_ReceivesCallAndReturnsSuccess_SuccessIsReturned(
+		string clientName,
+		string officeLocation,
+		int objectId,
+		int supplierPipedriveId,
+		int userId)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success);
+		UpdateClientCurrentProperties updateClientCurrentProperties = new()
+		{
+			ClientName = clientName,
+			OfficeLocation = officeLocation
+		};
+		MetaProperties metaProperties = new()
+		{
+			ObjectId = objectId,
+			SupplierPipedriveId = supplierPipedriveId,
+			UserId = userId,
+		};
+		UpdateClientRequest clientRequest = new()
+		{
+			CurrentProperties = updateClientCurrentProperties,
+			MetaProperties = metaProperties,
+		};
+		UpdateClientPipedriveCommand expectedCommand = new(
+			supplierPipedriveId,
+			objectId,
+			userId,
+			clientName,
+			null,
+			officeLocation,
+			null);
+
+		//Act
+		IActionResult result = await _uut.UpdateClient(clientRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				expectedCommand,
+				default),
+			Times.Once);
+
+		Assert.IsType<OkResult>(result);
+	}
+
+	[Theory]
+	[InlineData("0", "fail")]
+	public async void DeleteClient_ReceivesCallAndReturnsFailure_FailureIsReturned(
+		string errorCode,
+		string errorMessage)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
+
+		DeleteClientRequest clientRequest = new();
+
+		//Act
+		IActionResult result = await _uut.DeleteClient(clientRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				It.IsAny<DeleteClientPipedriveCommand>(),
+				default),
+			Times.Once);
+
+		Assert.IsType<BadRequestObjectResult>(result);
+	}
+
+	[Theory]
+	[InlineData(1, 1, 1)]
+	public async void DeleteClient_ReceivesCallAndReturnsSuccess_SuccessIsReturned(int objectId,
+		int supplierPipedriveId,
+		int userId)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success);
+
+		MetaProperties metaProperties = new()
+		{
+			ObjectId = objectId,
+			SupplierPipedriveId = supplierPipedriveId,
+			UserId = userId,
+		};
+		DeleteClientRequest clientRequest = new()
+		{
+			MetaProperties = metaProperties,
+		};
+		DeleteClientPipedriveCommand expectedCommand = new(
+			objectId);
+
+		//Act
+		IActionResult result = await _uut.DeleteClient(clientRequest);
 
 		//Assert
 		_senderMock.Verify(

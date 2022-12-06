@@ -10,7 +10,7 @@ using RestSharp;
 
 namespace Pelican.Infrastructure.Pipedrive.Services;
 
-public class PipedriveDealService : ServiceBase<PipedriveSettings>, IPipedriveService<Deal>
+public sealed class PipedriveDealService : ServiceBase<PipedriveSettings>, IPipedriveService<Deal>
 {
 
 	public PipedriveDealService(IClient<PipedriveSettings> client)

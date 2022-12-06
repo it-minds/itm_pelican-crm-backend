@@ -8,6 +8,7 @@ internal static class DealsResponseToDeals
 {
 	public static List<Deal> ToDeals(DealsResponse response)
 	{
+		// PLCN.233
 		return new List<Deal>();
 	}
 }

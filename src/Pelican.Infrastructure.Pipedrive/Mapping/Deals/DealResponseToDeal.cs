@@ -8,6 +8,7 @@ internal static class DealResponseToDeal
 {
 	public static Deal ToDeal(DealResponse response)
 	{
+		// PLCN.233
 		return new Deal();
 	}
 }

@@ -10,9 +10,9 @@ const string ALLOW_ALL = "AllowAll";
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDomain(builder.Configuration, builder.Environment.IsProduction());
-builder.Services.AddHubSpot();
 builder.Services.AddPersistince(builder.Configuration, builder.Environment.IsProduction());
 builder.Services.AddApplication();
+builder.Services.AddHubSpot();
 
 builder.Services.AddCors(options =>
 {

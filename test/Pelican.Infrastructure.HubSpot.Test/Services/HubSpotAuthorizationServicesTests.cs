@@ -2,10 +2,11 @@
 using Microsoft.Extensions.Options;
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.Infrastructure;
+using Pelican.Application.HubSpot.Dtos;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
-using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
 using Pelican.Infrastructure.HubSpot.Services;
 using RestSharp;
@@ -23,7 +24,7 @@ public class HubSpotAuthorizationServicesTests
 	private const string ACCESS = "access";
 	private const string REFRESH = "refresh";
 
-	private readonly Mock<IHubSpotClient> _hubSpotClientMock = new();
+	private readonly Mock<IClient<HubSpotSettings>> _hubSpotClientMock = new();
 	private readonly Mock<IOptions<HubSpotSettings>> _optionsMock = new();
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly HubSpotAuthorizationService _uut;
@@ -50,127 +51,158 @@ public class HubSpotAuthorizationServicesTests
 	}
 
 	[Fact]
+	public void HubSpotAuthorizationService_ClientNull_ThrowException()
+	{
+		// Act
+		var result = Record.Exception(() => new HubSpotAuthorizationService(null!, null!));
+
+		// Assert
+		Assert.IsType<ArgumentNullException>(result);
+		Assert.Contains(
+			"client",
+			result.Message);
+	}
+
+	[Fact]
+	public void HubSpotAuthorizationService_SettingsNull_ThrowException()
+	{
+		// Arrange
+		_optionsMock
+			.Setup(o => o.Value)
+			.Returns((HubSpotSettings)null!);
+
+		// Act
+		var result = Record.Exception(() => new HubSpotAuthorizationService(_hubSpotClientMock.Object, _optionsMock.Object));
+
+		// Assert
+		Assert.IsType<ArgumentNullException>(result);
+		Assert.Contains(
+			"hubSpotSettings",
+			result.Message);
+	}
+
+	[Fact]
 	public async Task AuthorizeUserAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		// Arrange
+		Mock<IResponse<GetAccessTokenResponse>> responseMock = new();
+
+		responseMock
+			.Setup(r => r.GetResult(It.IsAny<Func<GetAccessTokenResponse, RefreshAccessTokens>>()))
+			.Returns(Result.Failure<RefreshAccessTokens>(Error.NullValue));
+
 		_hubSpotClientMock
 			.Setup(client => client.PostAsync<GetAccessTokenResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<GetAccessTokenResponse>()
-			{
-				IsSuccessStatusCode = false,
-			});
+			.ReturnsAsync(responseMock.Object);
 
 		// Act
 		var result = await _uut.AuthorizeUserAsync("", default);
 
 		// Assert
 		Assert.True(result.IsFailure);
+		Assert.Equal(Error.NullValue, result.Error);
 	}
 
 	[Fact]
 	public async Task AuthorizeUserAsync_ClientReturnsSuccess_ReturnSuccess()
 	{
 		// Arrange
-		GetAccessTokenResponse response = new()
-		{
-			RefreshToken = REFRESH,
-			AccessToken = ACCESS,
-		};
+		Mock<IResponse<GetAccessTokenResponse>> responseMock = new();
+
+		responseMock
+			.Setup(r => r.GetResult(It.IsAny<Func<GetAccessTokenResponse, RefreshAccessTokens>>()))
+			.Returns(Result.Success(new RefreshAccessTokens()));
 
 		_hubSpotClientMock
 			.Setup(client => client.PostAsync<GetAccessTokenResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<GetAccessTokenResponse>()
-			{
-				IsSuccessStatusCode = true,
-				ResponseStatus = ResponseStatus.Completed,
-				Data = response
-			});
+			.ReturnsAsync(responseMock.Object);
 
 		// Act
 		var result = await _uut.AuthorizeUserAsync("", default);
 
 		// Assert
 		Assert.True(result.IsSuccess);
-		Assert.Equal(REFRESH, result.Value.RefreshToken);
-		Assert.Equal(ACCESS, result.Value.AccessToken);
 	}
 
 	[Fact]
 	public async Task DecodeAccessTokenAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		// Arrange
+		Mock<IResponse<AccessTokenResponse>> responseMock = new();
+
+		responseMock
+			.Setup(r => r.GetResult(It.IsAny<Func<AccessTokenResponse, Supplier>>()))
+			.Returns(Result.Failure<Supplier>(Error.NullValue));
+
 		_hubSpotClientMock
-			.Setup(client => client.PostAsync<AccessTokenResponse>(
+			.Setup(client => client.GetAsync<AccessTokenResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<AccessTokenResponse>()
-			{
-				IsSuccessStatusCode = false,
-			});
+			.ReturnsAsync(responseMock.Object);
 
 		// Act
 		var result = await _uut.DecodeAccessTokenAsync("", default);
 
 		// Assert
 		Assert.True(result.IsFailure);
+		Assert.Equal(Error.NullValue, result.Error);
 	}
 
 	[Fact]
 	public async Task DecodeAccessTokenAsync_ClientReturnsSuccess_ReturnSuccess()
 	{
-		const long ID = 123;
-		const string DOMAIN = "domain";
-
 		// Arrange
-		AccessTokenResponse response = new()
-		{
-			HubId = ID,
-			HubDomain = DOMAIN,
-		};
+		Mock<IResponse<AccessTokenResponse>> responseMock = new();
+
+		responseMock
+			.Setup(r => r.GetResult(It.IsAny<Func<AccessTokenResponse, Supplier>>()))
+			.Returns(Result.Success(new Supplier()));
 
 		_hubSpotClientMock
 			.Setup(client => client.GetAsync<AccessTokenResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<AccessTokenResponse>()
-			{
-				IsSuccessStatusCode = true,
-				ResponseStatus = ResponseStatus.Completed,
-				Data = response
-			});
+			.ReturnsAsync(responseMock.Object);
 
 		// Act
 		var result = await _uut.DecodeAccessTokenAsync("", default);
 
 		// Assert
 		Assert.True(result.IsSuccess);
-		Assert.Equal(ID, result.Value.HubSpotId);
-		Assert.Equal(DOMAIN, result.Value.WebsiteUrl);
 	}
 
 	[Fact]
 	public async Task RefreshAccessTokenFromSupplierHubSpotIdAsync_SupplierDoesNotExist_ReturnFailure()
 	{
-		//Arrange
-		_unitOfWorkMock.Setup(m => m.SupplierRepository.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
+		// Arrange
+		_unitOfWorkMock
+			.Setup(m => m
+				.SupplierRepository
+				.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 			.Returns(Enumerable.Empty<Supplier>().AsQueryable());
-		//Act
+
+		// Act
 		var result = await _uut.RefreshAccessTokenFromSupplierHubSpotIdAsync(1, _unitOfWorkMock.Object, default);
-		//Assert
+
+		// Assert
 		Assert.True(result.IsFailure);
 		Assert.Equal(Error.NullValue, result.Error);
-
 	}
+
 	[Fact]
 	public async Task RefreshAccessTokenFromSupplierHubSpotIdAsync_SupplierRefreshTokenNull_ReturnFailure()
 	{
 		//Arrange
 		Supplier supplier = new();
-		_unitOfWorkMock.Setup(m => m.SupplierRepository.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
+
+		_unitOfWorkMock
+			.Setup(m => m
+				.SupplierRepository
+				.FindByCondition(It.IsAny<Expression<Func<Supplier, bool>>>()))
 			.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		// Act
@@ -181,30 +213,61 @@ public class HubSpotAuthorizationServicesTests
 		Assert.Equal(Error.NullValue, result.Error);
 	}
 
-
 	[Fact]
-	public async Task RefreshAccessTokenFromSupplierHubSpotIdAsync_ClientReturnsSuccess_ReturnSuccess()
+	public async Task RefreshAccessTokenFromSupplierHubSpotIdAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		// Arrange
-		Supplier supplier = new();
-		supplier.RefreshToken = REFRESH;
-		_unitOfWorkMock.Setup(m => m.SupplierRepository.FirstOrDefaultAsync(It.IsAny<Expression<Func<Supplier, bool>>>(), It.IsAny<CancellationToken>()))
+		Supplier supplier = new() { RefreshToken = REFRESH };
+
+		_unitOfWorkMock
+			.Setup(m => m
+				.SupplierRepository
+				.FirstOrDefaultAsync(It.IsAny<Expression<Func<Supplier, bool>>>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync(supplier);
-		RefreshAccessTokenResponse response = new()
-		{
-			AccessToken = ACCESS,
-		};
+
+		Mock<IResponse<RefreshAccessTokenResponse>> responseMock = new();
+
+		responseMock
+			.Setup(r => r.GetResult(It.IsAny<Func<RefreshAccessTokenResponse, string>>()))
+			.Returns(Result.Failure<string>(Error.NullValue));
 
 		_hubSpotClientMock
 			.Setup(client => client.PostAsync<RefreshAccessTokenResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<RefreshAccessTokenResponse>()
-			{
-				IsSuccessStatusCode = true,
-				ResponseStatus = ResponseStatus.Completed,
-				Data = response
-			});
+			.ReturnsAsync(responseMock.Object);
+
+		// Act
+		var result = await _uut.RefreshAccessTokenFromSupplierHubSpotIdAsync(0, _unitOfWorkMock.Object, default);
+
+		// Assert
+		Assert.True(result.IsFailure);
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+
+	[Fact]
+	public async Task RefreshAccessTokenFromSupplierHubSpotIdAsync_ClientReturnsSuccess_ReturnSuccess()
+	{
+		// Arrange
+		Supplier supplier = new() { RefreshToken = REFRESH };
+
+		_unitOfWorkMock
+			.Setup(m => m
+				.SupplierRepository
+				.FirstOrDefaultAsync(It.IsAny<Expression<Func<Supplier, bool>>>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(supplier);
+
+		Mock<IResponse<RefreshAccessTokenResponse>> responseMock = new();
+
+		responseMock
+			.Setup(r => r.GetResult(It.IsAny<Func<RefreshAccessTokenResponse, string>>()))
+			.Returns(Result.Success(ACCESS));
+
+		_hubSpotClientMock
+			.Setup(client => client.PostAsync<RefreshAccessTokenResponse>(
+				It.IsAny<RestRequest>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(responseMock.Object);
 
 		// Act
 		var result = await _uut.RefreshAccessTokenFromSupplierHubSpotIdAsync(0, _unitOfWorkMock.Object, default);
@@ -215,31 +278,49 @@ public class HubSpotAuthorizationServicesTests
 	}
 
 	[Fact]
-	public async Task RefreshAccessTokenFromRefreshTokenAsync_ClientReturnsSuccess_ReturnSuccess()
+	public async Task RefreshAccessTokenFromRefreshTokenAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		// Arrange
-		string refreshToken = REFRESH;
-		RefreshAccessTokenResponse response = new()
-		{
-			AccessToken = ACCESS,
-		};
+		Mock<IResponse<RefreshAccessTokenResponse>> responseMock = new();
+
+		responseMock
+			.Setup(r => r.GetResult(It.IsAny<Func<RefreshAccessTokenResponse, string>>()))
+			.Returns(Result.Failure<string>(Error.NullValue));
 
 		_hubSpotClientMock
 			.Setup(client => client.PostAsync<RefreshAccessTokenResponse>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new RestResponse<RefreshAccessTokenResponse>()
-			{
-				IsSuccessStatusCode = true,
-				ResponseStatus = ResponseStatus.Completed,
-				Data = response
-			});
+			.ReturnsAsync(responseMock.Object);
 
 		// Act
-		var result = await _uut.RefreshAccessTokenFromRefreshTokenAsync(refreshToken, default);
+		var result = await _uut.RefreshAccessTokenFromRefreshTokenAsync("", default);
+
+		// Assert
+		Assert.True(result.IsFailure);
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+
+	[Fact]
+	public async Task RefreshAccessTokenFromRefreshTokenAsync_ClientReturnsSuccess_ReturnSuccess()
+	{
+		// Arrange
+		Mock<IResponse<RefreshAccessTokenResponse>> responseMock = new();
+
+		responseMock
+			.Setup(r => r.GetResult(It.IsAny<Func<RefreshAccessTokenResponse, string>>()))
+			.Returns(Result.Success("token"));
+
+		_hubSpotClientMock
+			.Setup(client => client.PostAsync<RefreshAccessTokenResponse>(
+				It.IsAny<RestRequest>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(responseMock.Object);
+
+		// Act
+		var result = await _uut.RefreshAccessTokenFromRefreshTokenAsync("", default);
 
 		// Assert
 		Assert.True(result.IsSuccess);
-		Assert.Equal(ACCESS, result.Value);
 	}
 }

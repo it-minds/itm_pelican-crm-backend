@@ -1,7 +1,8 @@
 ﻿using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
-using Pelican.Infrastructure.HubSpot.Abstractions;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 using Pelican.Infrastructure.HubSpot.Extensions;
 using Pelican.Infrastructure.HubSpot.Mapping.Contacts;
@@ -9,10 +10,11 @@ using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;
 
-internal sealed class HubSpotContactService : HubSpotService, IHubSpotObjectService<Contact>
+internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHubSpotObjectService<Contact>
 {
 	public HubSpotContactService(
-		IHubSpotClient hubSpotClient) : base(hubSpotClient)
+		IClient<HubSpotSettings> hubSpotClient)
+		: base(hubSpotClient)
 	{ }
 
 	public async Task<Result<Contact>> GetByIdAsync(
@@ -24,7 +26,7 @@ internal sealed class HubSpotContactService : HubSpotService, IHubSpotObjectServ
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddContactQueryParams();
 
-		RestResponse<ContactResponse> response = await _hubSpotClient
+		IResponse<ContactResponse> response = await _client
 			.GetAsync<ContactResponse>(request, cancellationToken);
 
 		return response
@@ -39,7 +41,7 @@ internal sealed class HubSpotContactService : HubSpotService, IHubSpotObjectServ
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddContactQueryParams();
 
-		RestResponse<ContactsResponse> response = await _hubSpotClient
+		IResponse<ContactsResponse> response = await _client
 			.GetAsync<ContactsResponse>(request, cancellationToken);
 
 		return response

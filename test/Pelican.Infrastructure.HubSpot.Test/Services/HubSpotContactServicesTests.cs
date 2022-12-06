@@ -1,5 +1,8 @@
 ﻿using Moq;
-using Pelican.Infrastructure.HubSpot.Abstractions;
+using Pelican.Application.Abstractions.Infrastructure;
+using Pelican.Domain.Entities;
+using Pelican.Domain.Settings.HubSpot;
+using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 using Pelican.Infrastructure.HubSpot.Services;
 using RestSharp;
@@ -9,10 +12,7 @@ namespace Pelican.Infrastructure.HubSpot.Test.Services;
 
 public class HubSpotContactServicesTests
 {
-	private const string ID = "Id";
-	private const string OWNERID = "OwnerId";
-
-	private readonly Mock<IHubSpotClient> _hubSpotClientMock;
+	private readonly Mock<IClient<HubSpotSettings>> _hubSpotClientMock;
 	private readonly HubSpotContactService _uut;
 
 	public HubSpotContactServicesTests()
@@ -22,38 +22,33 @@ public class HubSpotContactServicesTests
 	}
 
 	[Fact]
-	public async Task GetByIdAsync_ClientReturnsNull_ReturnFailure()
+	public void HubSpotContactService_ClientNull_ThrowException()
 	{
-		/// Arrange
-		RestResponse<ContactResponse> restResponse = null!;
+		// Act
+		var result = Record.Exception(() => new HubSpotContactService(null!));
 
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactResponse>(
-				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
-
-		/// Act
-		var result = await _uut.GetByIdAsync("", 0, default);
-
-		/// Assert
-		Assert.True(result.IsFailure);
+		// Assert
+		Assert.IsType<ArgumentNullException>(result);
+		Assert.Contains(
+			"client",
+			result.Message);
 	}
 
 	[Fact]
 	public async Task GetByIdAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		/// Arrange
-		RestResponse<ContactResponse> restResponse = new()
-		{
-			IsSuccessStatusCode = false,
-		};
+		Mock<IResponse<ContactResponse>> responseMock = new();
 
 		_hubSpotClientMock
 			.Setup(client => client.GetAsync<ContactResponse>(
 				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(responseMock.Object);
+
+		responseMock
+			.Setup(r => r.GetResult(It.IsAny<Func<ContactResponse, Contact>>()))
+			.Returns(Result.Failure<Contact>(Error.NullValue));
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -63,123 +58,48 @@ public class HubSpotContactServicesTests
 	}
 
 	[Fact]
-	public async Task GetByIdAsync_ClientReturnsNullData_ReturnFailure()
+	public async Task GetByIdAsync_ClientReturnsSuccess_ReturnSuccess()
 	{
 		/// Arrange
-		RestResponse<ContactResponse> restResponse = new()
-		{
-			IsSuccessStatusCode = true,
-			ResponseStatus = ResponseStatus.Completed,
-			Data = null
-		};
+		Mock<IResponse<ContactResponse>> responseMock = new();
+
+		Contact Contact = new();
 
 		_hubSpotClientMock
 			.Setup(client => client.GetAsync<ContactResponse>(
 				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(responseMock.Object);
 
-		/// Act
-		var result = await _uut.GetByIdAsync("", 0, default);
-
-		/// Assert
-		Assert.True(result.IsFailure);
-	}
-
-	[Fact]
-	public async Task GetByIdAsync_ClientReturnsInvalidData_ReturnFailure()
-	{
-		/// Arrange
-		ContactResponse contactResponse = new();
-
-		RestResponse<ContactResponse> restResponse = new()
-		{
-			IsSuccessStatusCode = true,
-			ResponseStatus = ResponseStatus.Completed,
-			Data = contactResponse
-		};
-
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactResponse>(
-				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
-
-		/// Act
-		var result = await _uut.GetByIdAsync("", 0, default);
-
-		/// Assert
-		Assert.True(result.IsFailure);
-	}
-
-	[Fact]
-	public async Task GetByIdAsync_ClientReturnsValidData_ReturnSuccess()
-	{
-		/// Arrange
-		ContactResponse contactResponse = new()
-		{
-			Properties = new()
-			{
-				HubSpotObjectId = ID,
-				HubSpotOwnerId = OWNERID,
-			}
-		};
-
-		RestResponse<ContactResponse> restResponse = new()
-		{
-			IsSuccessStatusCode = true,
-			ResponseStatus = ResponseStatus.Completed,
-			Data = contactResponse
-		};
-
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactResponse>(
-				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
+		responseMock
+			.Setup(r => r.GetResult(It.IsAny<Func<ContactResponse, Contact>>()))
+			.Returns(Contact);
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
 
 		/// Assert
 		Assert.True(result.IsSuccess);
-		Assert.Equal(ID, result.Value.HubSpotId);
-		Assert.Equal(OWNERID, result.Value.HubSpotOwnerId);
-	}
-
-	[Fact]
-	public async Task GetAsync_ClientReturnsNull_ReturnFailure()
-	{
-		/// Arrange
-		RestResponse<ContactsResponse> restResponse = null!;
-
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactsResponse>(
-				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
-
-		/// Act
-		var result = await _uut.GetAsync("", default);
-
-		/// Assert
-		Assert.True(result.IsFailure);
+		Assert.Equal(
+			Contact,
+			result.Value);
 	}
 
 	[Fact]
 	public async Task GetAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		/// Arrange
-		RestResponse<ContactsResponse> restResponse = new()
-		{
-			IsSuccessStatusCode = false,
-		};
+		Mock<IResponse<ContactsResponse>> responseMock = new();
 
 		_hubSpotClientMock
 			.Setup(client => client.GetAsync<ContactsResponse>(
 				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(responseMock.Object);
+
+		responseMock
+			.Setup(r => r.GetResult(It.IsAny<Func<ContactsResponse, List<Contact>>>()))
+			.Returns(Result.Failure<List<Contact>>(Error.NullValue));
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -189,126 +109,30 @@ public class HubSpotContactServicesTests
 	}
 
 	[Fact]
-	public async Task GetAsync_ClientReturnsNullData_ReturnFailure()
+	public async Task GetAsync_ClientReturnsSuccess_ReturnSuccess()
 	{
 		/// Arrange
-		RestResponse<ContactsResponse> restResponse = new()
-		{
-			IsSuccessStatusCode = true,
-			ResponseStatus = ResponseStatus.Completed,
-			Data = null
-		};
+		Mock<IResponse<ContactsResponse>> responseMock = new();
+
+		List<Contact> Contacts = new();
 
 		_hubSpotClientMock
 			.Setup(client => client.GetAsync<ContactsResponse>(
 				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(responseMock.Object);
 
-		/// Act
-		var result = await _uut.GetAsync("", default);
-
-		/// Assert
-		Assert.True(result.IsFailure);
-	}
-
-	[Fact]
-	public async Task GetAsync_ClientReturnsEmptyData_ReturnSuccess()
-	{
-		/// Arrange
-		ContactsResponse contactsResponse = new();
-
-		RestResponse<ContactsResponse> restResponse = new()
-		{
-			IsSuccessStatusCode = true,
-			ResponseStatus = ResponseStatus.Completed,
-			Data = contactsResponse
-		};
-
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactsResponse>(
-				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
+		responseMock
+			.Setup(r => r.GetResult(It.IsAny<Func<ContactsResponse, List<Contact>>>()))
+			.Returns(Contacts);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
 
 		/// Assert
 		Assert.True(result.IsSuccess);
-	}
-
-	[Fact]
-	public async Task GetAsync_ClientReturnsInvalidData_ReturnFailure()
-	{
-		/// Arrange
-		ContactResponse contactResponse = new()
-		{
-			Properties = new()
-		};
-
-		ContactsResponse contactsResponse = new()
-		{
-			Results = new List<ContactResponse>() { contactResponse },
-		};
-
-		RestResponse<ContactsResponse> restResponse = new()
-		{
-			IsSuccessStatusCode = true,
-			ResponseStatus = ResponseStatus.Completed,
-			Data = contactsResponse
-		};
-
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactsResponse>(
-				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
-
-		/// Act
-		var result = await _uut.GetAsync("", default);
-
-		/// Assert
-		Assert.True(result.IsFailure);
-	}
-
-	[Fact]
-	public async Task GetAsync_ClientReturnsValidData_ReturnSuccess()
-	{
-		/// Arrange
-		ContactResponse contactResponse = new()
-		{
-			Properties = new()
-			{
-				HubSpotObjectId = ID,
-				HubSpotOwnerId = OWNERID,
-			}
-		};
-
-		ContactsResponse contactsResponse = new()
-		{
-			Results = new List<ContactResponse>() { contactResponse },
-		};
-
-		RestResponse<ContactsResponse> restResponse = new()
-		{
-			IsSuccessStatusCode = true,
-			ResponseStatus = ResponseStatus.Completed,
-			Data = contactsResponse
-		};
-
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactsResponse>(
-				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
-
-		/// Act
-		var result = await _uut.GetAsync("", default);
-
-		/// Assert
-		Assert.True(result.IsSuccess);
-		Assert.Equal(ID, result.Value.First().HubSpotId);
-		Assert.Equal(OWNERID, result.Value.First().HubSpotOwnerId);
+		Assert.Equal(
+			Contacts,
+			result.Value);
 	}
 }

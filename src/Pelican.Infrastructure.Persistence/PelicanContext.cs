@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Pelican.Application.Abstractions.Data;
-using Pelican.Domain.Primitives;
 
 namespace Pelican.Infrastructure.Persistence;
 
@@ -14,8 +14,11 @@ public class PelicanContext : DbContext, IPelicanContext
 		modelBuilder.ApplyConfigurationsFromAssembly(typeof(PelicanContext).Assembly);
 	}
 
-	public override DbSet<TEntity> Set<TEntity>() where TEntity : class
+	public override DbSet<TEntity> Set<TEntity>()
 		=> base.Set<TEntity>();
+
+	public override EntityEntry<TEntity> Entry<TEntity>(TEntity entity)
+		=> base.Entry(entity);
 
 	public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
 		=> base.SaveChangesAsync(cancellationToken);

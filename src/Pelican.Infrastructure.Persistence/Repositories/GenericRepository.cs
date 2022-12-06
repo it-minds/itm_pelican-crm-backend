@@ -39,8 +39,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 	public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
 		=> _pelicanContext
 			.Set<T>()
-			.Where(expression)
-			.AsNoTracking();
+			.Where(expression);
 
 	public async Task<T?> FirstOrDefaultAsync(
 		Expression<Func<T, bool>> expression,
@@ -89,4 +88,16 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 	public void Delete(T entity) => _pelicanContext
 		.Set<T>()
 		.Remove(entity);
+
+	public void AttachAsAdded(IEnumerable<T> entities)
+	{
+		_pelicanContext
+			.Set<T>()
+			.AttachRange(entities);
+
+		foreach (var entity in entities)
+		{
+			_pelicanContext.Entry(entity).State = EntityState.Added;
+		}
+	}
 }

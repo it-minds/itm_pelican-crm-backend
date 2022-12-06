@@ -88,6 +88,11 @@ public class Client : Entity, ITimeTracked
 
 		foreach (ClientContact item in ClientContacts)
 		{
+			if (item.Contact is not null)
+			{
+				continue;
+			}
+
 			Contact? matchingContact = contacts
 				.FirstOrDefault(contacts => contacts.HubSpotId == item.HubSpotContactId);
 
@@ -116,7 +121,7 @@ public class Client : Entity, ITimeTracked
 
 		foreach (ClientContact clientContact in ClientContacts.Where(dc => dc.IsActive))
 		{
-			if (!currectHubSpotClientContacts.Any(currectHubSpotClientContact => currectHubSpotClientContact.HubSpotClientId == clientContact.HubSpotClientId))
+			if (!currectHubSpotClientContacts.Any(currectHubSpotClientContact => currectHubSpotClientContact.HubSpotContactId == clientContact.HubSpotContactId))
 			{
 				clientContact.Deactivate();
 			}
@@ -124,7 +129,7 @@ public class Client : Entity, ITimeTracked
 
 		foreach (ClientContact clientContact in currectHubSpotClientContacts)
 		{
-			if (!ClientContacts.Any(dc => dc.HubSpotClientId == clientContact.HubSpotClientId && dc.IsActive))
+			if (!ClientContacts.Any(dc => dc.HubSpotContactId == clientContact.HubSpotContactId && dc.IsActive))
 			{
 				ClientContacts.Add(clientContact);
 			}

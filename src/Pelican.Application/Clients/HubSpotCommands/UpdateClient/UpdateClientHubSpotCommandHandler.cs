@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Abstractions.Data.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Entities;
@@ -24,6 +25,9 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		Client? client = _unitOfWork
 			.ClientRepository
 			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
+			.Include(d => d.ClientContacts)
+				.ThenInclude(cc => cc.Contact)
+			.Include(d => d.Deals)
 			.FirstOrDefault();
 
 		if (client is null)
@@ -64,27 +68,22 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 				command.PropertyValue);
 		}
 
-		_unitOfWork
-			.ClientRepository
-			.Update(client);
-
 		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
 	}
-	private async Task<Client> FillOutClientAssociationsAsync(
-		Client client,
-		CancellationToken cancellationToken = default)
+	private Client FillOutClientAssociations(
+		Client client)
 	{
 		List<Contact> contacts = new();
 
 		foreach (ClientContact item in client.ClientContacts)
 		{
-			Contact? matchingContact = await _unitOfWork
+			Contact? matchingContact = _unitOfWork
 				.ContactRepository
-				.FirstOrDefaultAsync(
-					d => d.HubSpotId == item.HubSpotContactId,
-					cancellationToken);
+				.FindByCondition(
+					d => d.HubSpotId == item.HubSpotContactId)
+				.FirstOrDefault();
 
 			if (matchingContact is not null)
 			{
@@ -110,7 +109,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			return result;
 		}
 
-		await FillOutClientAssociationsAsync(result.Value, cancellationToken);
+		FillOutClientAssociations(result.Value);
 
 		await _unitOfWork
 			.ClientRepository
@@ -150,8 +149,8 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		CancellationToken cancellationToken = default)
 	{
 		Result<Client> result = await GetClientFromHubSpot(
-						portalId,
 						clientHubSpotId,
+						portalId,
 						cancellationToken);
 
 		if (result.IsFailure)
@@ -160,6 +159,12 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		}
 
 		client.UpdateClientContacts(result.Value.ClientContacts);
+
+		var newClientContacts = client.ClientContacts.Where(cc => cc.Contact is null).ToList();
+
+		FillOutClientAssociations(client);
+
+		_unitOfWork.ClientContactRepository.AttachAsAdded(newClientContacts);
 
 		return client;
 	}

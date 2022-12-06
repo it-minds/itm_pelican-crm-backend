@@ -1,4 +1,16 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.Extensions.Options;
+using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.Infrastructure;
+using Pelican.Application.HubSpot.Dtos;
+using Pelican.Domain.Entities;
+using Pelican.Domain.Settings.HubSpot;
+using Pelican.Domain.Shared;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
+using Pelican.Infrastructure.HubSpot.Services;
+using RestSharp;
+using Xunit;
 
 namespace Pelican.Infrastructure.HubSpot.Test.Services;
 
@@ -161,8 +173,6 @@ public class HubSpotAuthorizationServicesTests
 
 		// Assert
 		Assert.True(result.IsSuccess);
-		Assert.Equal(ID, result.Value.SourceId);
-		Assert.Equal(DOMAIN, result.Value.WebsiteUrl);
 	}
 
 	[Fact]

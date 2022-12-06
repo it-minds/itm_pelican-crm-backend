@@ -1,4 +1,8 @@
-﻿namespace Pelican.Domain.Test.Entities;
+﻿using Bogus;
+using Pelican.Domain.Entities;
+using Xunit;
+
+namespace Pelican.Domain.Test.Entities;
 public class ClientUnitTest
 {
 	private readonly Client _uut = new Client(Guid.NewGuid())
@@ -326,7 +330,7 @@ public class ClientUnitTest
 		// Arrange
 		ClientContact existingClientContact = new(Guid.NewGuid())
 		{
-			HubSpotContactId = "hsID",
+			SourceContactId = "hsID",
 			IsActive = true,
 		};
 
@@ -334,7 +338,7 @@ public class ClientUnitTest
 
 		Contact newContact = new(Guid.NewGuid())
 		{
-			HubSpotId = "another_hsId",
+			SourceId = "another_hsId",
 		};
 
 		// Act

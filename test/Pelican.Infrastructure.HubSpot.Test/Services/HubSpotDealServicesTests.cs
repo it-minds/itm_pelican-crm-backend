@@ -83,27 +83,9 @@ public class HubSpotDealServicesTests
 
 		/// Assert
 		Assert.True(result.IsSuccess);
-		Assert.Equal(ID, result.Value.SourceId);
-		Assert.Equal(OWNERID, result.Value.SourceOwnerId);
-	}
-
-	[Fact]
-	public async Task GetAsync_ClientReturnsNull_ReturnFailure()
-	{
-		/// Arrange
-		RestResponse<DealsResponse> restResponse = null!;
-
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<DealsResponse>(
-				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
-
-		/// Act
-		var result = await _uut.GetAsync("", default);
-
-		/// Assert
-		Assert.True(result.IsFailure);
+		Assert.Equal(
+			deal,
+			result.Value);
 	}
 
 	[Fact]

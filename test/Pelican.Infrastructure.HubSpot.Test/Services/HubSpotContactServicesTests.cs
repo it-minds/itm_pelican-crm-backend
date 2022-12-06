@@ -80,25 +80,9 @@ public class HubSpotContactServicesTests
 
 		/// Assert
 		Assert.True(result.IsSuccess);
-	}
-
-	[Fact]
-	public async Task GetAsync_ClientReturnsNull_ReturnFailure()
-	{
-		/// Arrange
-		RestResponse<ContactsResponse> restResponse = null!;
-
-		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactsResponse>(
-				It.IsAny<RestRequest>(),
-				default))
-			.ReturnsAsync(restResponse);
-
-		/// Act
-		var result = await _uut.GetAsync("", default);
-
-		/// Assert
-		Assert.True(result.IsFailure);
+		Assert.Equal(
+			Contact,
+			result.Value);
 	}
 
 	[Fact]

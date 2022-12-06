@@ -97,8 +97,8 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.AccountManagerId, f => f.PickRandom<AccountManager>(accountManagers).Id)
 			.RuleFor(e => e.IsActive, () => new Random().Next(100) <= 50)
 			.RuleFor(e => e.Id, f => f.Random.Guid())
-			.RuleFor(e => e.HubSpotAccountManagerId, f => f.PickRandom<AccountManager>(accountManagers).HubSpotId)
-			.RuleFor(e => e.HubSpotDealId, f => f.PickRandom<Deal>(deals).HubSpotId)
+			.RuleFor(e => e.SourceAccountManagerId, f => f.PickRandom<AccountManager>(accountManagers).SourceId)
+			.RuleFor(e => e.SourceDealId, f => f.PickRandom<Deal>(deals).SourceId)
 			.Generate(accountManagers.Count());
 
 	public IEnumerable<DealContact> DealContactFaker(IQueryable<Deal> deals, IQueryable<Contact> contacts)
@@ -108,8 +108,8 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.ContactId, f => f.PickRandom<Contact>(contacts).Id)
 			.RuleFor(e => e.IsActive, () => new Random().Next(100) <= 50)
 			.RuleFor(e => e.Id, f => f.Random.Guid())
-			.RuleFor(e => e.HubSpotContactId, f => f.PickRandom<Contact>(contacts).HubSpotId)
-			.RuleFor(e => e.HubSpotDealId, f => f.PickRandom<Deal>(deals).HubSpotId)
+			.RuleFor(e => e.SourceContactId, f => f.PickRandom<Contact>(contacts).SourceId)
+			.RuleFor(e => e.SourceDealId, f => f.PickRandom<Deal>(deals).SourceId)
 			.Generate(deals.Count());
 
 	public IEnumerable<ClientContact> ClientContactFaker(IQueryable<Client> clients, IQueryable<Contact> contacts)
@@ -119,7 +119,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.ContactId, f => f.PickRandom<Contact>(contacts).Id)
 			.RuleFor(e => e.IsActive, () => new Random().Next(100) <= 50)
 			.RuleFor(e => e.Id, f => f.Random.Guid())
-			.RuleFor(e => e.HubSpotClientId, f => f.PickRandom<Client>(clients).HubSpotId)
-			.RuleFor(e => e.HubSpotContactId, f => f.PickRandom<Contact>(contacts).HubSpotId)
+			.RuleFor(e => e.SourceClientId, f => f.PickRandom<Client>(clients).SourceId)
+			.RuleFor(e => e.SourceContactId, f => f.PickRandom<Contact>(contacts).SourceId)
 			.Generate(clients.Count());
 }

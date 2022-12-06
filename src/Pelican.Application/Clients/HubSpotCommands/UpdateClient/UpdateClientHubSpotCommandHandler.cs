@@ -1,4 +1,11 @@
-﻿namespace Pelican.Application.Clients.HubSpotCommands.UpdateClient;
+﻿using Microsoft.EntityFrameworkCore;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Domain.Entities;
+using Pelican.Domain.Shared;
+
+namespace Pelican.Application.Clients.HubSpotCommands.UpdateClient;
 internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<UpdateClientHubSpotCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;
@@ -17,7 +24,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 	{
 		Client? client = _unitOfWork
 			.ClientRepository
-			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
+			.FindByCondition(d => d.SourceId == command.ObjectId.ToString())
 			.Include(d => d.ClientContacts)
 				.ThenInclude(cc => cc.Contact)
 			.Include(d => d.Deals)
@@ -75,7 +82,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			Contact? matchingContact = _unitOfWork
 				.ContactRepository
 				.FindByCondition(
-					d => d.HubSpotId == item.HubSpotContactId)
+					d => d.SourceId == item.SourceContactId)
 				.FirstOrDefault();
 
 			if (matchingContact is not null)

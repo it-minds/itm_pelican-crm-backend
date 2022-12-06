@@ -1,4 +1,7 @@
-﻿namespace Pelican.Domain.Entities;
+﻿using HotChocolate;
+using Pelican.Domain.Primitives;
+
+namespace Pelican.Domain.Entities;
 public class Client : Entity, ITimeTracked
 {
 	private string _name = string.Empty;
@@ -121,7 +124,7 @@ public class Client : Entity, ITimeTracked
 
 		foreach (ClientContact clientContact in ClientContacts.Where(dc => dc.IsActive))
 		{
-			if (!currectHubSpotClientContacts.Any(currectHubSpotClientContact => currectHubSpotClientContact.HubSpotContactId == clientContact.HubSpotContactId))
+			if (!currectHubSpotClientContacts.Any(currectHubSpotClientContact => currectHubSpotClientContact.SourceContactId == clientContact.SourceContactId))
 			{
 				clientContact.Deactivate();
 			}
@@ -129,7 +132,7 @@ public class Client : Entity, ITimeTracked
 
 		foreach (ClientContact clientContact in currectHubSpotClientContacts)
 		{
-			if (!ClientContacts.Any(dc => dc.HubSpotContactId == clientContact.HubSpotContactId && dc.IsActive))
+			if (!ClientContacts.Any(dc => dc.SourceContactId == clientContact.SourceContactId && dc.IsActive))
 			{
 				ClientContacts.Add(clientContact);
 			}

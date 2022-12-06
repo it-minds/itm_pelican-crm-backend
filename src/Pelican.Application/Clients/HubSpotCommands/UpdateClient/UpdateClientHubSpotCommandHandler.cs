@@ -73,8 +73,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		return Result.Success();
 	}
 	private Client FillOutClientAssociations(
-		Client client,
-		CancellationToken cancellationToken = default)
+		Client client)
 	{
 		List<Contact> contacts = new();
 
@@ -110,7 +109,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			return result;
 		}
 
-		FillOutClientAssociations(result.Value, cancellationToken);
+		FillOutClientAssociations(result.Value);
 
 		await _unitOfWork
 			.ClientRepository
@@ -163,7 +162,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 
 		var newClientContacts = client.ClientContacts.Where(cc => cc.Contact is null).ToList();
 
-		FillOutClientAssociations(client, cancellationToken);
+		FillOutClientAssociations(client);
 
 		_unitOfWork.ClientContactRepository.AttachAsAdded(newClientContacts);
 

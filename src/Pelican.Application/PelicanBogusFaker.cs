@@ -117,7 +117,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.UseSeed(1345)
 			.RuleFor(e => e.ClientId, f => f.PickRandom<Client>(clients).Id)
 			.RuleFor(e => e.ContactId, f => f.PickRandom<Contact>(contacts).Id)
-			.RuleFor(e => e.IsActive, new Random().Next(100) <= 50)
+			.RuleFor(e => e.IsActive, () => new Random().Next(100) <= 50)
 			.RuleFor(e => e.Id, f => f.Random.Guid())
 			.RuleFor(e => e.HubSpotClientId, f => f.PickRandom<Client>(clients).HubSpotId)
 			.RuleFor(e => e.HubSpotContactId, f => f.PickRandom<Contact>(contacts).HubSpotId)

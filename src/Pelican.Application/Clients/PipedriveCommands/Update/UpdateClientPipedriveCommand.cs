@@ -1,6 +1,6 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
 
-namespace Pelican.Application.Clients.PipedriveCommands.UpdateClient;
+namespace Pelican.Application.Clients.PipedriveCommands.Update;
 public sealed record UpdateClientPipedriveCommand(
 	int supplierPipedriveId,
 	int clientId,

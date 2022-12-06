@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.AccountManagers.PipedriveCommands.DeleteAccountManager;
-using Pelican.Application.AccountManagers.PipedriveCommands.UpdateAccountManager;
-using Pelican.Application.Clients.PipedriveCommands.DeleteClient;
-using Pelican.Application.Clients.PipedriveCommands.UpdateClient;
-using Pelican.Application.Contacts.PipedriveCommands;
-using Pelican.Application.Deals.PipedriveCommands.DeleteDeal;
-using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
+using Pelican.Application.AccountManagers.PipedriveCommands.Delete;
+using Pelican.Application.AccountManagers.PipedriveCommands.Update;
+using Pelican.Application.Clients.PipedriveCommands.Delete;
+using Pelican.Application.Clients.PipedriveCommands.Update;
+using Pelican.Application.Contacts.PipedriveCommands.Delete;
+using Pelican.Application.Contacts.PipedriveCommands.Update;
+using Pelican.Application.Deals.PipedriveCommands.Delete;
+using Pelican.Application.Deals.PipedriveCommands.Update;
 using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
@@ -16,6 +17,7 @@ using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Update;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Delete;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Update;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Contact.Delete;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Contact.Update;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Delete;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Deal.Update;
@@ -610,6 +612,69 @@ public class PipedriveControllerUnitTest
 					expectedCommand,
 					default),
 				Times.Once);
+
+		Assert.IsType<OkResult>(result);
+	}
+
+	[Theory]
+	[InlineData("0", "fail")]
+	public async void DeleteContact_ReceivesCallAndReturnsFailure_FailureIsReturned(
+		string errorCode,
+		string errorMessage)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure(new Error(errorCode, errorMessage)));
+
+		DeleteContactRequest contactRequest = new();
+
+		//Act
+		IActionResult result = await _uut.DeleteContact(contactRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				It.IsAny<DeleteContactPipedriveCommand>(),
+				default),
+			Times.Once);
+
+		Assert.IsType<BadRequestObjectResult>(result);
+	}
+
+	[Theory]
+	[InlineData(1, 1, 1)]
+	public async void DeleteContact_ReceivesCallAndReturnsSuccess_SuccessIsReturned(int objectId,
+		int supplierPipedriveId,
+		int userId)
+	{
+		//Arrange
+		_senderMock
+			.Setup(s => s.Send(It.IsAny<ICommand>(), It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success);
+
+		MetaProperties metaProperties = new()
+		{
+			ObjectId = objectId,
+			SupplierPipedriveId = supplierPipedriveId,
+			UserId = userId,
+		};
+		DeleteContactRequest contactRequest = new()
+		{
+			MetaProperties = metaProperties,
+		};
+		DeleteContactPipedriveCommand expectedCommand = new(
+			objectId);
+
+		//Act
+		IActionResult result = await _uut.DeleteContact(contactRequest);
+
+		//Assert
+		_senderMock.Verify(
+			s => s.Send(
+				expectedCommand,
+				default),
+			Times.Once);
 
 		Assert.IsType<OkResult>(result);
 	}

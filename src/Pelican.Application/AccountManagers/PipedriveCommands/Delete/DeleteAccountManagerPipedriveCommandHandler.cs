@@ -1,7 +1,7 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.AccountManagers.PipedriveCommands.DeleteAccountManager;
+namespace Pelican.Application.AccountManagers.PipedriveCommands.Delete;
 
 internal sealed class DeleteAccountManagerPipedriveCommandHandler : ICommandHandler<DeleteAccountManagerPipedriveCommand>
 {

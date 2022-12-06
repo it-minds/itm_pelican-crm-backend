@@ -1,7 +1,7 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.Clients.PipedriveCommands.DeleteClient;
+namespace Pelican.Application.Clients.PipedriveCommands.Delete;
 
 internal sealed class DeleteClientPipedriveCommandHandler : ICommandHandler<DeleteClientPipedriveCommand>
 {

@@ -25,6 +25,7 @@ public class ClientContact : Entity, ITimeTracked
 
 	public Contact Contact { get; set; }
 
+	public string Source { get; set; }
 
 	public long CreatedAt { get; set; }
 
@@ -43,6 +44,7 @@ public class ClientContact : Entity, ITimeTracked
 			ContactId = contact.Id,
 			SourceContactId = contact.SourceId,
 			IsActive = true,
+			Source = client.Source,
 		};
 	}
 

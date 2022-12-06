@@ -1,4 +1,5 @@
-﻿using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
+﻿using Pelican.Domain;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
 using Pelican.Infrastructure.HubSpot.Mapping.AccountManagers;
 using Xunit;
 
@@ -81,5 +82,6 @@ public class OwnersResponseToAccountManagersTests
 		Assert.Equal(LASTNAME, result.First().LastName);
 		Assert.Equal(EMAIL, result.First().Email);
 		Assert.Equal(USERID, result.First().SourceUserId);
+		Assert.Equal(Sources.HubSpot, result.First().Source);
 	}
 }

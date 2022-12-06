@@ -15,11 +15,13 @@ public class AccountManagerDealTests
 		Deal deal = new(Guid.NewGuid())
 		{
 			SourceId = DEAL_HUBSPOTID,
+			Source = Sources.HubSpot,
 		};
 
 		AccountManager accountManager = new(Guid.NewGuid())
 		{
 			SourceId = ACCOUNTMANAGER_HUBSPOTID,
+			Source = Sources.HubSpot
 		};
 
 		// Act
@@ -51,6 +53,10 @@ public class AccountManagerDealTests
 			result.SourceAccountManagerId);
 
 		Assert.True(result.IsActive);
+
+		Assert.Equal(
+			Sources.HubSpot,
+			result.Source);
 	}
 
 	[Fact]

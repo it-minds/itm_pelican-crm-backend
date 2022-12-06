@@ -1,5 +1,6 @@
 ﻿using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
@@ -20,7 +21,7 @@ internal sealed class DeleteDealHubSpotCommandHandler : ICommandHandler<DeleteDe
 	{
 		Deal? deal = await _unitOfWork
 			.DealRepository
-			.FirstOrDefaultAsync(d => d.SourceId == command.ObjectId.ToString(), cancellationToken);
+			.FirstOrDefaultAsync(d => d.SourceId == command.ObjectId.ToString() && d.Source == Sources.HubSpot, cancellationToken);
 
 		if (deal is null)
 		{

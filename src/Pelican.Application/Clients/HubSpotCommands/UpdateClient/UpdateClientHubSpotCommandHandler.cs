@@ -2,6 +2,7 @@
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
@@ -24,7 +25,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 	{
 		Client? client = _unitOfWork
 			.ClientRepository
-			.FindByCondition(d => d.SourceId == command.ObjectId.ToString())
+			.FindByCondition(d => d.SourceId == command.ObjectId.ToString() && d.Source == Sources.HubSpot)
 			.Include(d => d.ClientContacts)
 				.ThenInclude(cc => cc.Contact)
 			.Include(d => d.Deals)
@@ -82,7 +83,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			Contact? matchingContact = _unitOfWork
 				.ContactRepository
 				.FindByCondition(
-					d => d.SourceId == item.SourceContactId)
+					d => d.SourceId == item.SourceContactId && d.Source == Sources.HubSpot)
 				.FirstOrDefault();
 
 			if (matchingContact is not null)

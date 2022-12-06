@@ -113,24 +113,27 @@ public class Contact : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
-	public virtual void UpdateDealContacts(ICollection<DealContact>? currectHubSpotDealContacts)
+	public virtual void UpdateDealContacts(ICollection<DealContact>? currentHubSpotDealContacts)
 	{
-		if (currectHubSpotDealContacts is null)
+		if (currentHubSpotDealContacts is null)
 		{
 			return;
 		}
 
 		foreach (DealContact dealContact in DealContacts.Where(dc => dc.IsActive))
 		{
-			if (!currectHubSpotDealContacts.Any(currectHubSpotDealContact => currectHubSpotDealContact.SourceDealId == dealContact.SourceDealId))
+			if (!currentHubSpotDealContacts.Any(currentHubSpotDealContact => currentHubSpotDealContact.SourceDealId == dealContact.SourceDealId
+			&& currentHubSpotDealContact.Source == Sources.HubSpot))
 			{
 				dealContact.Deactivate();
 			}
 		}
 
-		foreach (DealContact dealContact in currectHubSpotDealContacts)
+		foreach (DealContact dealContact in currentHubSpotDealContacts)
 		{
-			if (!DealContacts.Any(dc => dc.SourceDealId == dealContact.SourceDealId && dc.IsActive))
+			if (!DealContacts.Any(dc => dc.SourceDealId == dealContact.SourceDealId
+			&& dc.IsActive
+			&& dc.Source == Sources.HubSpot))
 			{
 				DealContacts.Add(dealContact);
 			}
@@ -158,7 +161,7 @@ public class Contact : Entity, ITimeTracked
 			.Select(cc =>
 			{
 				Client? matchingClient = clients
-				.FirstOrDefault(client => client.SourceId == cc.SourceClientId);
+				.FirstOrDefault(client => client.SourceId == cc.SourceClientId && client.Source == Sources.HubSpot);
 
 				if (matchingClient is not null)
 				{
@@ -184,7 +187,7 @@ public class Contact : Entity, ITimeTracked
 			.Select(dc =>
 			{
 				Deal? matchingDeal = deals
-				.FirstOrDefault(deal => deal.SourceId == dc.SourceDealId);
+				.FirstOrDefault(deal => deal.SourceId == dc.SourceDealId && dc.Source == Sources.HubSpot);
 
 				if (matchingDeal is not null)
 				{

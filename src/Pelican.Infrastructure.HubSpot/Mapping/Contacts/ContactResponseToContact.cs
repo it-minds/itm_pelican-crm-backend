@@ -37,6 +37,7 @@ internal static class ContactResponseToContact
 				Contact = result,
 				IsActive = true,
 				SourceClientId = association.Id,
+				Source = Sources.HubSpot,
 			})
 			.ToList();
 
@@ -52,6 +53,7 @@ internal static class ContactResponseToContact
 				SourceContactId = result.SourceId,
 				SourceDealId = association.Id,
 				IsActive = true,
+				Source = Sources.HubSpot,
 			})
 			.ToList();
 

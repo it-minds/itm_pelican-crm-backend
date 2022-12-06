@@ -3,6 +3,7 @@ using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Xunit;
@@ -425,7 +426,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 		// Assert
 		_dealRepositoryMock.Verify(
 			x => x.FindByCondition(
-				d => d.SourceId == command.ObjectId.ToString()),
+				d => d.SourceId == command.ObjectId.ToString() && d.Source == Sources.HubSpot),
 			Times.Once);
 
 		_dealRepositoryMock.Verify(
@@ -461,7 +462,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 		// Assert
 		_dealRepositoryMock.Verify(
 			x => x.FindByCondition(
-				d => d.SourceId == command.ObjectId.ToString()),
+				d => d.SourceId == command.ObjectId.ToString() && d.Source == Sources.HubSpot),
 			Times.Once);
 
 		_dealRepositoryMock.Verify(

@@ -21,6 +21,10 @@ internal class AccountManagerDealConfiguration : IEntityTypeConfiguration<Accoun
 			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 
+		builder.Property(p => p.Source)
+			.HasMaxLength(StringLengths.Source)
+			.IsRequired();
+
 		builder.HasOne(a => a.AccountManager)
 			.WithMany(e => e.AccountManagerDeals)
 			.HasForeignKey(a => a.AccountManagerId)

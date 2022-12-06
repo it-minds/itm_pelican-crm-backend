@@ -151,7 +151,7 @@ public class Deal : Entity, ITimeTracked
 		foreach (DealContact dealContact in DealContacts)
 		{
 			Contact? matchingContact = contacts
-				.FirstOrDefault(contact => contact.SourceId == dealContact.SourceContactId);
+				.FirstOrDefault(contact => contact.SourceId == dealContact.SourceContactId && contact.Source == Sources.HubSpot);
 
 			if (matchingContact is null)
 			{

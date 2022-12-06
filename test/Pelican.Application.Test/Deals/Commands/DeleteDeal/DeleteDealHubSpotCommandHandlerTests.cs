@@ -2,6 +2,7 @@
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Deals.HubSpotCommands.DeleteDeal;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Xunit;
@@ -62,7 +63,7 @@ public class DeleteDealHubSpotCommandHandlerTests
 				unitOfWork => unitOfWork
 					.DealRepository
 					.FirstOrDefaultAsync(
-						deal => deal.SourceId == command.ObjectId.ToString(),
+						deal => deal.SourceId == command.ObjectId.ToString() && deal.Source == Sources.HubSpot,
 						default),
 				Times.Once());
 
@@ -103,7 +104,7 @@ public class DeleteDealHubSpotCommandHandlerTests
 			.Verify(unitOfWork => unitOfWork
 				.DealRepository
 				.FirstOrDefaultAsync(
-					deal => deal.SourceId == command.ObjectId.ToString(),
+					deal => deal.SourceId == command.ObjectId.ToString() && deal.Source == Sources.HubSpot,
 					default),
 			Times.Once());
 

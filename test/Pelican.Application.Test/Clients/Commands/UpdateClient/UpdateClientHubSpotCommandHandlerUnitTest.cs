@@ -3,6 +3,7 @@ using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Clients.HubSpotCommands.UpdateClient;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Xunit;
@@ -107,7 +108,7 @@ public class UpdateClientCommandHandlerTests
 		// Assert
 		_unitOfWorkMock.Verify(
 			unitOfWork => unitOfWork.ClientRepository.FindByCondition(
-				Client => Client.SourceId == command.ObjectId.ToString()),
+				Client => Client.SourceId == command.ObjectId.ToString() && Client.Source == Sources.HubSpot),
 			Times.Once);
 
 		Assert.True(result.IsFailure);

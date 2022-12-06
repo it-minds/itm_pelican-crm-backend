@@ -2,6 +2,7 @@
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.HubSpot.Dtos;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
@@ -54,7 +55,7 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			return supplierResult;
 		}
 
-		if (_unitOfWork.SupplierRepository.FindAll().Any(supplier => supplier.SourceId == supplierResult.Value.SourceId))
+		if (_unitOfWork.SupplierRepository.FindAll().Any(supplier => supplier.SourceId == supplierResult.Value.SourceId && supplier.Source == Sources.HubSpot))
 		{
 			return Result.Failure(Error.AlreadyExists);
 		}
@@ -99,7 +100,7 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 				accountManager.SupplierId = supplier.Id;
 
 				accountManager.AccountManagerDeals = deals
-					.Where(deal => deal.SourceOwnerId == accountManager.SourceId)?
+					.Where(deal => deal.SourceOwnerId == accountManager.SourceId && deal.Source == Sources.HubSpot)?
 					.Select(deal => new AccountManagerDeal(Guid.NewGuid())
 					{
 						AccountManager = accountManager,
@@ -109,6 +110,7 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 						DealId = deal.Id,
 						SourceDealId = deal.SourceId,
 						IsActive = true,
+						Source = Sources.HubSpot
 					})
 					.ToList() ?? new List<AccountManagerDeal>();
 			});
@@ -123,13 +125,13 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			.ForEach(deal =>
 			{
 				deal.AccountManagerDeals = accountManagerDeals
-					.Where(accountManagerDeal => accountManagerDeal.SourceDealId == deal.SourceId)?
+					.Where(accountManagerDeal => accountManagerDeal.SourceDealId == deal.SourceId && accountManagerDeal.Source == Sources.HubSpot)?
 					.ToList() ?? new List<AccountManagerDeal>();
 
 				if (deal.Client is not null)
 				{
 					deal.Client = clients
-						.FirstOrDefault(client => client.SourceId == deal.Client.SourceId);
+						.FirstOrDefault(client => client.SourceId == deal.Client.SourceId && deal.Source == Sources.HubSpot);
 				}
 
 				deal
@@ -138,7 +140,7 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 					.ForEach(dealContact =>
 					{
 						Contact contact = contacts
-							.First(contact => contact.SourceId == dealContact.SourceContactId);
+							.First(contact => contact.SourceId == dealContact.SourceContactId && contact.Source == Sources.HubSpot);
 
 						dealContact.Contact = contact;
 						dealContact.ContactId = contact.Id;
@@ -149,7 +151,7 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			.ForEach(client =>
 			{
 				client.Deals = deals
-					.Where(deal => deal.Client?.SourceId == client.SourceId)?
+					.Where(deal => deal.Client?.SourceId == client.SourceId && client.Source == Sources.HubSpot)?
 					.ToList() ?? new List<Deal>();
 
 				client
@@ -158,7 +160,7 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 					.ForEach(clientContact =>
 					{
 						Contact contact = contacts
-							.First(contact => contact.SourceId == clientContact.SourceContactId);
+							.First(contact => contact.SourceId == clientContact.SourceContactId && contact.Source == Sources.HubSpot);
 
 						clientContact.Contact = contact;
 						clientContact.ContactId = contact.Id;
@@ -177,11 +179,11 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			.ForEach(contact =>
 			{
 				contact.DealContacts = dealContacts
-					.Where(dealContact => dealContact.SourceContactId == contact.SourceId)
+					.Where(dealContact => dealContact.SourceContactId == contact.SourceId && dealContact.Source == Sources.HubSpot)
 					.ToList();
 
 				contact.ClientContacts = clientContacts
-					.Where(clientContact => clientContact.SourceContactId == contact.SourceId)
+					.Where(clientContact => clientContact.SourceContactId == contact.SourceId && clientContact.Source == Sources.HubSpot)
 					.ToList();
 			});
 

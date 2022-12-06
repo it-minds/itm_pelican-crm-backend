@@ -439,6 +439,7 @@ public class ContactTests
 		Deal existingDeal = new(Guid.NewGuid())
 		{
 			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		_uut.DealContacts.Add(DealContact.Create(existingDeal, _uut));
@@ -448,6 +449,7 @@ public class ContactTests
 			new(Guid.NewGuid())
 			{
 				Deal=new(Guid.NewGuid()),
+				Source= Sources.HubSpot,
 			}
 		};
 
@@ -455,7 +457,7 @@ public class ContactTests
 		_uut.UpdateDealContacts(dealContacts);
 
 		// Assert
-		Assert.False(_uut.DealContacts.First(d => d.SourceDealId == existingDeal.SourceId).IsActive);
+		Assert.False(_uut.DealContacts.First(d => d.SourceDealId == existingDeal.SourceId && d.Source == Sources.HubSpot).IsActive);
 
 		Assert.Equal(
 			2,
@@ -469,6 +471,7 @@ public class ContactTests
 		Deal existingDeal = new(Guid.NewGuid())
 		{
 			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		_uut.DealContacts.Add(DealContact.Create(existingDeal, _uut));
@@ -476,6 +479,7 @@ public class ContactTests
 		Deal newDeal = new(Guid.NewGuid())
 		{
 			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		ICollection<DealContact> newDealContacts = new List<DealContact>()
@@ -499,6 +503,7 @@ public class ContactTests
 		Deal existingDeal = new(Guid.NewGuid())
 		{
 			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		_uut.DealContacts.Add(DealContact.Create(existingDeal, _uut));
@@ -506,6 +511,7 @@ public class ContactTests
 		Deal newDeal = new(Guid.NewGuid())
 		{
 			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		ICollection<DealContact> newDealContacts = new List<DealContact>()
@@ -519,7 +525,7 @@ public class ContactTests
 		// Assert
 		Assert.True(_uut
 			.DealContacts
-			.First(dc => dc.SourceDealId == "hsId")
+			.First(dc => dc.SourceDealId == "hsId" && dc.Source == Sources.HubSpot)
 			.IsActive);
 	}
 
@@ -556,6 +562,7 @@ public class ContactTests
 			ContactId = _uut.Id,
 			SourceContactId = _uut.SourceId,
 			IsActive = true,
+			Source = Sources.HubSpot,
 		};
 
 		_uut.ClientContacts.Add(existingClientContact);
@@ -583,6 +590,7 @@ public class ContactTests
 			ContactId = _uut.Id,
 			SourceContactId = _uut.SourceId,
 			IsActive = true,
+			Source = Sources.HubSpot,
 		};
 
 		_uut.ClientContacts.Add(existingClientContact);
@@ -590,6 +598,7 @@ public class ContactTests
 		Client newClient = new(Guid.NewGuid())
 		{
 			SourceId = "hsID",
+			Source = Sources.HubSpot,
 		};
 
 		// Act
@@ -640,6 +649,7 @@ public class ContactTests
 			ContactId = _uut.Id,
 			SourceContactId = _uut.SourceId,
 			IsActive = true,
+			Source = Sources.HubSpot,
 		};
 
 		_uut.DealContacts.Add(existingDealContact);
@@ -667,6 +677,7 @@ public class ContactTests
 			ContactId = _uut.Id,
 			SourceContactId = _uut.SourceId,
 			IsActive = true,
+			Source = Sources.HubSpot,
 		};
 
 		_uut.DealContacts.Add(existingDealContact);

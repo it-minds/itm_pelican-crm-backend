@@ -1,6 +1,7 @@
 ﻿using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
@@ -33,7 +34,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 		Contact? contact = await _unitOfWork
 			.ContactRepository
 			.FirstOrDefaultAsync(
-				contact => contact.SourceId == command.ObjectId.ToString(),
+				contact => contact.SourceId == command.ObjectId.ToString() && contact.Source == Sources.HubSpot,
 				cancellationToken);
 
 		if (contact is null)
@@ -144,7 +145,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 			Deal? deal = await _unitOfWork
 				.DealRepository
 				.FirstOrDefaultAsync(
-					d => d.SourceId == dealContact.Deal.SourceId,
+					d => d.SourceId == dealContact.Deal.SourceId && d.Source == Sources.HubSpot,
 					cancellationToken);
 
 			if (deal is not null)
@@ -160,7 +161,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 			Client? client = await _unitOfWork
 				.ClientRepository
 				.FirstOrDefaultAsync(
-					c => c.SourceId == clientContact.Client.SourceId,
+					c => c.SourceId == clientContact.Client.SourceId && c.Source == Sources.HubSpot,
 					cancellationToken);
 
 			if (client is not null)

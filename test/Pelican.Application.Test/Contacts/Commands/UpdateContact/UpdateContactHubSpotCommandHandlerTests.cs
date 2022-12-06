@@ -3,6 +3,7 @@ using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Contacts.Commands.UpdateContact;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Xunit;
@@ -121,7 +122,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 		// Assert
 		_contactRepositoryMock.Verify(
 			repo => repo.FirstOrDefaultAsync(
-				contact => contact.SourceId == command.ObjectId.ToString(),
+				contact => contact.SourceId == command.ObjectId.ToString() && contact.Source == Sources.HubSpot,
 				default),
 			Times.Once);
 
@@ -286,7 +287,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 		// Assert
 		_dealRepositoryMock.Verify(
 			repo => repo.FirstOrDefaultAsync(
-				d => d.SourceId == existingDealContact.Deal.SourceId,
+				d => d.SourceId == existingDealContact.Deal.SourceId && d.Source == Sources.HubSpot,
 				default),
 			Times.Once);
 
@@ -332,7 +333,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 		// Assert
 		_clientRepositoryMock.Verify(
 			repo => repo.FirstOrDefaultAsync(
-				c => c.SourceId == existingClientContact.Client.SourceId,
+				c => c.SourceId == existingClientContact.Client.SourceId && c.Source == Sources.HubSpot,
 				default),
 			Times.Once);
 

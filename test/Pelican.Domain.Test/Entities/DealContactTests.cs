@@ -15,11 +15,13 @@ public class DealContactTests
 		Deal deal = new(Guid.NewGuid())
 		{
 			SourceId = DEAL_HUBSPOTID,
+			Source = Sources.HubSpot,
 		};
 
 		Contact contact = new(Guid.NewGuid())
 		{
 			SourceId = CONTACT_HUBSPOTID,
+			Source = Sources.HubSpot,
 		};
 
 		// Act
@@ -51,6 +53,10 @@ public class DealContactTests
 			result.SourceContactId);
 
 		Assert.True(result.IsActive);
+
+		Assert.Equal(
+			Sources.HubSpot,
+			result.Source);
 	}
 
 	[Fact]

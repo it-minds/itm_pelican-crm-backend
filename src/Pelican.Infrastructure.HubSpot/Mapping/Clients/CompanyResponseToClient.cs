@@ -48,6 +48,7 @@ internal static class CompanyResponseToClient
 				Client = result,
 				ClientId = result.Id,
 				IsActive = true,
+				Source = Sources.HubSpot,
 			})
 			.ToList();
 

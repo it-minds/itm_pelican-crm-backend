@@ -8,6 +8,7 @@ public class ClientUnitTest
 	private readonly Client _uut = new Client(Guid.NewGuid())
 	{
 		SourceId = "uutHubSpotId",
+		Source = Sources.HubSpot
 	};
 
 	[Fact]
@@ -211,6 +212,7 @@ public class ClientUnitTest
 		Contact existingContact = new(Guid.NewGuid())
 		{
 			SourceId = "hsId",
+			Source = Sources.HubSpot
 		};
 
 		_uut.ClientContacts.Add(ClientContact.Create(_uut, existingContact));
@@ -220,6 +222,7 @@ public class ClientUnitTest
 			new(Guid.NewGuid())
 			{
 				Contact=new(Guid.NewGuid()),
+				Source = Sources.HubSpot
 			}
 		};
 
@@ -227,7 +230,7 @@ public class ClientUnitTest
 		_uut.UpdateClientContacts(clientContacts);
 
 		// Assert
-		Assert.False(_uut.ClientContacts.First(d => d.SourceContactId == existingContact.SourceId).IsActive);
+		Assert.False(_uut.ClientContacts.First(d => d.SourceContactId == existingContact.SourceId && existingContact.Source == Sources.HubSpot).IsActive);
 
 		Assert.Equal(
 			2,
@@ -241,6 +244,7 @@ public class ClientUnitTest
 		Contact existingContact = new(Guid.NewGuid())
 		{
 			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		_uut.ClientContacts.Add(ClientContact.Create(_uut, existingContact));
@@ -248,6 +252,7 @@ public class ClientUnitTest
 		Contact newContact = new(Guid.NewGuid())
 		{
 			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		ICollection<ClientContact> newClientContacts = new List<ClientContact>()
@@ -265,7 +270,7 @@ public class ClientUnitTest
 
 		Assert.True(_uut
 			.ClientContacts
-			.First(dc => dc.SourceContactId == "hsId")
+			.First(dc => dc.SourceContactId == "hsId" && dc.Source == Sources.HubSpot)
 			.IsActive);
 	}
 
@@ -361,6 +366,7 @@ public class ClientUnitTest
 			ClientId = _uut.Id,
 			SourceClientId = _uut.SourceId,
 			IsActive = true,
+			Source = Sources.HubSpot,
 		};
 
 		_uut.ClientContacts.Add(existingClientContact);
@@ -368,6 +374,7 @@ public class ClientUnitTest
 		Contact newContact = new(Guid.NewGuid())
 		{
 			SourceId = "hsID",
+			Source = Sources.HubSpot
 		};
 
 		// Act

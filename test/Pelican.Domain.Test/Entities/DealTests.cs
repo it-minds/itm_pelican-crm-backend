@@ -476,6 +476,7 @@ public class DealTests
 		Contact contact = new(Guid.NewGuid())
 		{
 			SourceId = "id",
+			Source = Sources.HubSpot,
 		};
 
 		Deal inputDeal = new(Guid.NewGuid());
@@ -483,6 +484,7 @@ public class DealTests
 		DealContact dealContact = new(Guid.NewGuid())
 		{
 			SourceContactId = contact.SourceId,
+			Source = Sources.HubSpot,
 		};
 
 		inputDeal.DealContacts.Add(dealContact);

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.AccountManagers.PipedriveCommands.DeleteAccountManager;
 using Pelican.Application.AccountManagers.PipedriveCommands.UpdateAccountManager;
 using Pelican.Application.Clients.PipedriveCommands.DeleteClient;
 using Pelican.Application.Clients.PipedriveCommands.UpdateClient;
@@ -12,6 +13,7 @@ using Pelican.Application.Deals.PipedriveCommands.UpdateDeal;
 using Pelican.Application.Pipedrive.Commands.NewInstallation;
 using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests;
+using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Delete;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.AccountManager.Update;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Delete;
 using Pelican.Presentation.Api.Contracts.PipedriveWebHookRequests.Client.Update;

@@ -1,4 +1,6 @@
-﻿namespace Pelican.Application.Contacts.PipedriveCommands.Update;
+﻿using Pelican.Application.Abstractions.Messaging;
+
+namespace Pelican.Application.Contacts.PipedriveCommands.Update;
 public sealed record UpdateContactPipedriveCommand(
 	int supplierPipedriveId,
 	int contactId,

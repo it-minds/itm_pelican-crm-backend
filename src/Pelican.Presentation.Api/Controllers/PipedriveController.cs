@@ -160,8 +160,8 @@ public sealed class PipedriveController : ApiController
 			request.CurrentProperties.FirstName,
 			request.CurrentProperties.LastName,
 			request.CurrentProperties.PictureUrl,
-			request.CurrentProperties.PhoneNumber?.Where(x => x.Primary == true).FirstOrDefault()?.Value,
-			request.CurrentProperties.Email?.Where(x => x.Primary == true).FirstOrDefault()?.Value,
+			request.CurrentProperties.PhoneNumber?.Where(x => x.Primary == true).First().Value,
+			request.CurrentProperties.Email?.Where(x => x.Primary == true).First().Value,
 			null);
 
 		Result result = await Sender.Send(command, default);

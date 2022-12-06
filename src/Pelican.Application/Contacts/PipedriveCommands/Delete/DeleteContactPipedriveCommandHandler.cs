@@ -1,8 +1,7 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Contacts.PipedriveCommands.Delete;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.Contacts.PipedriveCommands.DeleteContact;
+namespace Pelican.Application.Contacts.PipedriveCommands.Delete;
 
 internal sealed class DeleteContactPipedriveCommandHandler : ICommandHandler<DeleteContactPipedriveCommand>
 {

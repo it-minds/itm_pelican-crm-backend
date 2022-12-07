@@ -71,14 +71,27 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 					command.PropertyValue);
 			}
 			client.SourceUpdateTimestamp = command.UpdateTime;
-
-			_unitOfWork
+		}
+		else
+		{
+			Result<Client> result = await GetClientFromHubSpot(
+						command.ObjectId,
+						command.PortalId,
+						cancellationToken);
+			if (result.IsFailure)
+			{
+				return result;
+			}
+			client.Website = result.Value.Website;
+			client.Name = result.Value.Name;
+			client.OfficeLocation = result.Value.OfficeLocation;
+			client.UpdateClientContacts(result.Value.ClientContacts);
+		}
+		_unitOfWork
 				.ClientRepository
 				.Update(client);
 
-			await _unitOfWork.SaveAsync(cancellationToken);
-		}
-
+		await _unitOfWork.SaveAsync(cancellationToken);
 		return Result.Success();
 	}
 	private Client FillOutClientAssociations(

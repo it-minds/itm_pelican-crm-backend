@@ -78,13 +78,29 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 					command.PropertyValue);
 			}
 			contact.SourceUpdateTimestamp = command.UpdateTime;
-
-			_unitOfWork
+		}
+		else
+		{
+			Result<Contact> result = await GetContactFromHubSpot(
+				command.SupplierHubSpotId,
+				command.ObjectId,
+				cancellationToken);
+			if (result.IsFailure)
+			{
+				return result;
+			}
+			contact.FirstName = result.Value.FirstName;
+			contact.LastName = result.Value.LastName;
+			contact.Email = result.Value.Email;
+			contact.PhoneNumber = result.Value.PhoneNumber;
+			contact.JobTitle = result.Value.JobTitle;
+			contact.UpdateDealContacts(result.Value.DealContacts);
+		}
+		_unitOfWork
 				.ContactRepository
 				.Update(contact);
 
-			await _unitOfWork.SaveAsync(cancellationToken);
-		}
+		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
 	}

@@ -41,7 +41,7 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 
 		if (deal is null)
 		{
-			return await GetDealFromHubSpotAsync(
+			return await GetAndCreateDealAsync(
 				command.SupplierHubSpotId,
 				command.ObjectId,
 				cancellationToken);
@@ -67,13 +67,36 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 					command.PropertyName,
 					command.PropertyValue);
 			}
+		}
+		else
+		{
+			Result<Deal> result = await GetDealFromHubSpot(
+				command.SupplierHubSpotId,
+				command.ObjectId,
+				cancellationToken);
 
-			_unitOfWork
+			if (result.IsFailure)
+			{
+				return result;
+			}
+			deal.EndDate = result.Value.EndDate;
+			deal.StartDate = result.Value.StartDate;
+			deal.DealStatus = result.Value.DealStatus;
+			deal.LastContactDate = result.Value.LastContactDate;
+			deal.Name = result.Value.Name;
+			deal.Description = result.Value.Description;
+			if (result.Value.SourceOwnerId is not null)
+			{
+				await UpdateAccountManagerDeal(deal, result.Value.SourceOwnerId);
+
+			}
+		}
+		_unitOfWork
 				.DealRepository
 				.Update(deal);
 
-			await _unitOfWork.SaveAsync(cancellationToken);
-		}
+		await _unitOfWork.SaveAsync(cancellationToken);
+
 		return Result.Success();
 	}
 
@@ -86,27 +109,15 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		deal.FillOutAccountManager(accountManager);
 	}
 
-	private async Task<Result> GetDealFromHubSpotAsync(
+	private async Task<Result> GetAndCreateDealAsync(
 		long supplierHubSpotId,
 		long objectId,
 		CancellationToken cancellationToken)
 	{
-		Result<string> accessTokenResult = await _hubSpotAuthorizationService
-			.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-				supplierHubSpotId,
-				_unitOfWork,
-				cancellationToken);
-
-		if (accessTokenResult.IsFailure)
-		{
-			return accessTokenResult;
-		}
-
-		Result<Deal> result = await _hubSpotDealService
-			.GetByIdAsync(
-				accessTokenResult.Value,
-				objectId,
-				cancellationToken);
+		Result<Deal> result = await GetDealFromHubSpot(
+			supplierHubSpotId,
+			objectId,
+			cancellationToken);
 
 		if (result.IsFailure)
 		{
@@ -122,6 +133,29 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
+	}
+
+	private async Task<Result<Deal>> GetDealFromHubSpot(
+		long supplierHubSpotId,
+		long objectId,
+		CancellationToken cancellationToken = default)
+	{
+		Result<string> accessTokenResult = await _hubSpotAuthorizationService
+			.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				supplierHubSpotId,
+				_unitOfWork,
+				cancellationToken);
+
+		if (accessTokenResult.IsFailure)
+		{
+			return Result.Failure<Deal>(accessTokenResult.Error);
+		}
+
+		return await _hubSpotDealService
+			.GetByIdAsync(
+				accessTokenResult.Value,
+				objectId,
+				cancellationToken);
 	}
 
 	private async Task<Deal> FillOutDealAssociations(Deal deal, CancellationToken cancellationToken)

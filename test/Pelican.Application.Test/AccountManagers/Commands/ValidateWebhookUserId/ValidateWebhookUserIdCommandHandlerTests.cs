@@ -2,7 +2,7 @@
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.AccountManagers.Commands.ValidateWebhookUserId;
+using Pelican.Application.AccountManagers.HubSpotCommands.ValidateWebhookUserId;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;

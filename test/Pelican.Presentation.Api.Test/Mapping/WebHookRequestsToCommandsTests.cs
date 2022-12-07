@@ -1,9 +1,9 @@
-﻿using Pelican.Application.AccountManagers.Commands.ValidateWebhookUserId;
+﻿using Pelican.Application.AccountManagers.HubSpotCommands.ValidateWebhookUserId;
 using Pelican.Application.Clients.HubSpotCommands.DeleteClient;
 using Pelican.Application.Clients.HubSpotCommands.UpdateClient;
-using Pelican.Application.Contacts.Commands.UpdateContact;
-using Pelican.Application.Deals.HubSpotCommands.DeleteDeal;
-using Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
+using Pelican.Application.Contacts.HubSpotCommands.Update;
+using Pelican.Application.Deals.HubSpotCommands.Delete;
+using Pelican.Application.Deals.HubSpotCommands.Update;
 using Pelican.Presentation.Api.Contracts;
 using Pelican.Presentation.Api.Mapping;
 using Xunit;
@@ -137,16 +137,16 @@ public class HubSpotWebHookRequestsToCommandsTests
 		// Assert
 		Assert.Equal(
 			OBJECT_ID,
-			((UpdateContactCommand)result.First()).ObjectId);
+			((UpdateContactHubSpotCommand)result.First()).ObjectId);
 		Assert.Equal(
 			SUPPLIER_HUBSPOT_ID,
-			((UpdateContactCommand)result.First()).SupplierHubSpotId);
+			((UpdateContactHubSpotCommand)result.First()).SupplierHubSpotId);
 		Assert.Equal(
 			PROPERTY_NAME,
-			((UpdateContactCommand)result.First()).PropertyName);
+			((UpdateContactHubSpotCommand)result.First()).PropertyName);
 		Assert.Equal(
 			PROPERTY_VALUE,
-			((UpdateContactCommand)result.First()).PropertyValue);
+			((UpdateContactHubSpotCommand)result.First()).PropertyValue);
 	}
 
 	[Fact]

@@ -49,29 +49,35 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		UpdateClientHubSpotCommand command,
 		CancellationToken cancellationToken = default)
 	{
-		if (command.PropertyName == "num_associated_contacts")
+		if (client.SourceUpdateTimestamp <= command.UpdateTime)
 		{
-			Result<Client> result = await UpdateClientContactsAsync(
-				client,
-				command.PortalId,
-				command.ObjectId,
-				command.UpdateTime,
-				cancellationToken);
-
-			if (result.IsFailure)
+			if (command.PropertyName == "num_associated_contacts")
 			{
-				return result;
-			}
-		}
-		else
-		{
-			client.UpdateProperty(
-				command.PropertyName,
-				command.PropertyValue,
-				command.UpdateTime);
-		}
+				Result<Client> result = await UpdateClientContactsAsync(
+					client,
+					command.PortalId,
+					command.ObjectId,
+					cancellationToken);
 
-		await _unitOfWork.SaveAsync(cancellationToken);
+				if (result.IsFailure)
+				{
+					return result;
+				}
+			}
+			else
+			{
+				client.UpdateProperty(
+					command.PropertyName,
+					command.PropertyValue);
+			}
+			client.SourceUpdateTimestamp = command.UpdateTime;
+
+			_unitOfWork
+				.ClientRepository
+				.Update(client);
+
+			await _unitOfWork.SaveAsync(cancellationToken);
+		}
 
 		return Result.Success();
 	}
@@ -149,27 +155,23 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		Client client,
 		long portalId,
 		long clientHubSpotId,
-		long updateTime,
 		CancellationToken cancellationToken = default)
 	{
 		Result<Client> result = await GetClientFromHubSpot(
 						clientHubSpotId,
 						portalId,
 						cancellationToken);
-
 		if (result.IsFailure)
 		{
 			return result;
 		}
-
-		client.UpdateClientContacts(result.Value.ClientContacts, result.Value.SourceUpdateTimestamp);
+		client.UpdateClientContacts(result.Value.ClientContacts);
 
 		var newClientContacts = client.ClientContacts.Where(cc => cc.Contact is null).ToList();
 
 		FillOutClientAssociations(client);
 
 		_unitOfWork.ClientContactRepository.AttachAsAdded(newClientContacts);
-		client.SourceUpdateTimestamp = updateTime;
 		return client;
 	}
 }

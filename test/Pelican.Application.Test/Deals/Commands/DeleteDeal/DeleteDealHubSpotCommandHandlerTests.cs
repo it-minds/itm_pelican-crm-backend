@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
-using Pelican.Application.Deals.HubSpotCommands.DeleteDeal;
+using Pelican.Application.Deals.HubSpotCommands.Delete;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;

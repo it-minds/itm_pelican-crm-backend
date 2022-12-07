@@ -6,7 +6,7 @@ using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
+namespace Pelican.Application.Deals.HubSpotCommands.Update;
 
 internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDealHubSpotCommand>
 {
@@ -47,24 +47,33 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 				cancellationToken);
 		}
 
-		if (command.PropertyName == "hs_all_owner_ids")
+		return await UpdateExistingDeal(deal, command, cancellationToken);
+	}
+
+	private async Task<Result> UpdateExistingDeal(
+		Deal deal,
+		UpdateDealHubSpotCommand command,
+		CancellationToken cancellationToken = default)
+	{
+		if (deal.SourceUpdateTimestamp <= command.UpdateTime)
 		{
-			await UpdateAccountManagerDeal(deal, command.PropertyValue);
+			if (command.PropertyName == "hs_all_owner_ids")
+			{
+				await UpdateAccountManagerDeal(deal, command.PropertyValue);
+			}
+			else
+			{
+				deal.UpdateProperty(
+					command.PropertyName,
+					command.PropertyValue);
+			}
+
+			_unitOfWork
+				.DealRepository
+				.Update(deal);
+
+			await _unitOfWork.SaveAsync(cancellationToken);
 		}
-		else
-		{
-			deal.UpdateProperty(
-				command.PropertyName,
-				command.PropertyValue,
-				command.UpdateTime);
-		}
-
-		_unitOfWork
-			.DealRepository
-			.Update(deal);
-
-		await _unitOfWork.SaveAsync(cancellationToken);
-
 		return Result.Success();
 	}
 

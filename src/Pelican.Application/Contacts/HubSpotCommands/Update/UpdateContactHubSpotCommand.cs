@@ -1,7 +1,7 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
 
-namespace Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
-public sealed record UpdateDealHubSpotCommand(
+namespace Pelican.Application.Contacts.HubSpotCommands.Update;
+public sealed record UpdateContactHubSpotCommand(
 	long ObjectId,
 	long SupplierHubSpotId,
 	long UpdateTime,

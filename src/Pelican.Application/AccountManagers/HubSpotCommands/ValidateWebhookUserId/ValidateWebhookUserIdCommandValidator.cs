@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Pelican.Application.AccountManagers.Commands.ValidateWebhookUserId;
+namespace Pelican.Application.AccountManagers.HubSpotCommands.ValidateWebhookUserId;
 
 internal sealed class ValidateWebhookUserIdCommandValidator : AbstractValidator<ValidateWebhookUserIdCommand>
 {

@@ -1,12 +1,12 @@
 ﻿using FluentValidation.TestHelper;
-using Pelican.Application.Contacts.Commands.UpdateContact;
+using Pelican.Application.Contacts.HubSpotCommands.Update;
 using Xunit;
 
 namespace Pelican.Application.Test.Contacts.Commands.UpdateContact;
 
 public class UpdateContactHubSpotCommandValidatorTests
 {
-	private readonly UpdateContactCommandValidator _uut;
+	private readonly UpdateContactHubSpotCommandValidator _uut;
 
 	public UpdateContactHubSpotCommandValidatorTests()
 	{
@@ -17,7 +17,7 @@ public class UpdateContactHubSpotCommandValidatorTests
 	public void UpdateContactommandValidator_EmptyStringOrDefaultValue_ReturnsError()
 	{
 		// Arrange
-		UpdateContactCommand command = new(
+		UpdateContactHubSpotCommand command = new(
 			0,
 			0,
 			0,
@@ -25,7 +25,7 @@ public class UpdateContactHubSpotCommandValidatorTests
 			string.Empty);
 
 		// Act
-		TestValidationResult<UpdateContactCommand> result = _uut.TestValidate(command);
+		TestValidationResult<UpdateContactHubSpotCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.ObjectId);
@@ -38,7 +38,7 @@ public class UpdateContactHubSpotCommandValidatorTests
 	public void UpdateContactommandValidator_NoEmptyStringsOrDefaultValues_ReturnsNoError()
 	{
 		// Arrange
-		UpdateContactCommand command = new(
+		UpdateContactHubSpotCommand command = new(
 			1,
 			1,
 			1,
@@ -46,7 +46,7 @@ public class UpdateContactHubSpotCommandValidatorTests
 			"notEmpty");
 
 		// Act
-		TestValidationResult<UpdateContactCommand> result = _uut.TestValidate(command);
+		TestValidationResult<UpdateContactHubSpotCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.ObjectId);

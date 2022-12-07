@@ -111,12 +111,10 @@ public class DealTests
 
 		string value = "";
 
-		long updateTime = 1;
-
 		Deal inputDeal = new(Guid.NewGuid());
 
 		/// Act
-		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value, updateTime));
+		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
 
 		/// Assert
 		Assert.Equal(
@@ -136,12 +134,10 @@ public class DealTests
 
 		string value = "Hello";
 
-		long updateTime = 1;
-
 		Deal inputDeal = new(Guid.NewGuid());
 
 		/// Act
-		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value, updateTime));
+		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
 
 		/// Assert
 		Assert.Equal(
@@ -161,12 +157,10 @@ public class DealTests
 
 		string value = date.ToString();
 
-		long updateTime = 1;
-
 		Deal inputDeal = new(Guid.NewGuid());
 
 		/// Act
-		Deal returnDeal = inputDeal.UpdateProperty(name, value, updateTime);
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
 
 		/// Assert
 		Assert.Equal(
@@ -181,12 +175,10 @@ public class DealTests
 
 		string value = "Hello";
 
-		long updateTime = 1;
-
 		Deal inputDeal = new(Guid.NewGuid());
 
 		/// Act
-		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value, updateTime));
+		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
 
 		/// Assert
 		Assert.Equal(
@@ -206,12 +198,10 @@ public class DealTests
 
 		string value = date.ToString();
 
-		long updateTime = 1;
-
 		Deal inputDeal = new(Guid.NewGuid());
 
 		/// Act
-		Deal returnDeal = inputDeal.UpdateProperty(name, value, updateTime);
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
 
 		/// Assert
 		Assert.Equal(
@@ -226,12 +216,10 @@ public class DealTests
 
 		string value = "Hello";
 
-		long updateTime = 1;
-
 		Deal inputDeal = new(Guid.NewGuid());
 
 		/// Act
-		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value, updateTime));
+		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
 
 		/// Assert
 		Assert.Equal(
@@ -251,12 +239,10 @@ public class DealTests
 
 		string value = date.ToString();
 
-		long updateTime = 1;
-
 		Deal inputDeal = new(Guid.NewGuid());
 
 		// Act
-		Deal returnDeal = inputDeal.UpdateProperty(name, value, updateTime);
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
 
 		// Assert
 		Assert.Equal(
@@ -270,12 +256,11 @@ public class DealTests
 		/// Arrange
 		string name = "dealstage";
 		string value = "newStatus";
-		long updateTime = 1;
 
 		Deal inputDeal = new(Guid.NewGuid());
 
 		/// Act
-		Deal returnDeal = inputDeal.UpdateProperty(name, value, updateTime);
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
 
 		/// Assert
 		Assert.Equal(
@@ -289,12 +274,11 @@ public class DealTests
 		/// Arrange
 		string name = "description";
 		string value = "newDescription";
-		long updateTime = 1;
 
 		Deal inputDeal = new(Guid.NewGuid());
 
 		/// Act
-		Deal returnDeal = inputDeal.UpdateProperty(name, value, updateTime);
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
 
 		/// Assert
 		Assert.Equal(
@@ -308,13 +292,12 @@ public class DealTests
 		/// Arrange
 		string name = "dealname";
 		string value = "newName";
-		long updateTime = 1;
 
 
 		Deal inputDeal = new(Guid.NewGuid());
 
 		/// Act
-		Deal returnDeal = inputDeal.UpdateProperty(name, value, updateTime);
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
 
 		/// Assert
 		Assert.Equal(
@@ -329,10 +312,9 @@ public class DealTests
 		Faker faker = new();
 		string propertyName = "dealstage";
 		string propertyValue = faker.Lorem.Letter(StringLengths.DealStatus * 2);
-		long updateTime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updateTime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
@@ -347,10 +329,9 @@ public class DealTests
 		Faker faker = new();
 		string propertyName = "description";
 		string propertyValue = faker.Lorem.Letter(StringLengths.DealDescription * 2);
-		long updateTime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updateTime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(StringLengths.DealDescription, _uut.Description!.Length);
@@ -365,10 +346,9 @@ public class DealTests
 		Faker faker = new();
 		string propertyName = "dealname";
 		string propertyValue = faker.Lorem.Letter(StringLengths.DealName * 2);
-		long updateTime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updateTime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(StringLengths.DealName, _uut.Name!.Length);

@@ -5,14 +5,14 @@ using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.Contacts.Commands.UpdateContact;
+namespace Pelican.Application.Contacts.HubSpotCommands.Update;
 
-internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContactCommand>
+internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<UpdateContactHubSpotCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IHubSpotObjectService<Contact> _hubSpotContactService;
 	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
-	public UpdateContactCommandHandler(
+	public UpdateContactHubSpotCommandHandler(
 		IUnitOfWork unitOfWork,
 		IHubSpotObjectService<Contact> hubSpotContactService,
 		IHubSpotAuthorizationService hubSpotAuthorizationService)
@@ -28,7 +28,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 	}
 
 	public async Task<Result> Handle(
-		UpdateContactCommand command,
+		UpdateContactHubSpotCommand command,
 		CancellationToken cancellationToken = default)
 	{
 		Contact? contact = await _unitOfWork
@@ -53,35 +53,38 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 
 	private async Task<Result> UpdateExistingContact(
 		Contact contact,
-		UpdateContactCommand command,
+		UpdateContactHubSpotCommand command,
 		CancellationToken cancellationToken = default)
 	{
-		if (command.PropertyName == "num_associated_deals")
+		if (contact.SourceUpdateTimestamp <= command.UpdateTime)
 		{
-			Result<Contact> result = await UpdateDealContactsAsync(
-				contact,
-				command.SupplierHubSpotId,
-				command.ObjectId,
-				cancellationToken);
-
-			if (result.IsFailure)
+			if (command.PropertyName == "num_associated_deals")
 			{
-				return result;
+				Result<Contact> result = await UpdateDealContactsAsync(
+					contact,
+					command.SupplierHubSpotId,
+					command.ObjectId,
+					cancellationToken);
+
+				if (result.IsFailure)
+				{
+					return result;
+				}
 			}
-		}
-		else
-		{
-			contact.UpdateProperty(
-				command.PropertyName,
-				command.PropertyValue,
-				command.UpdateTime);
-		}
+			else
+			{
+				contact.UpdateProperty(
+					command.PropertyName,
+					command.PropertyValue);
+			}
+			contact.SourceUpdateTimestamp = command.UpdateTime;
 
-		_unitOfWork
-			.ContactRepository
-			.Update(contact);
+			_unitOfWork
+				.ContactRepository
+				.Update(contact);
 
-		await _unitOfWork.SaveAsync(cancellationToken);
+			await _unitOfWork.SaveAsync(cancellationToken);
+		}
 
 		return Result.Success();
 	}
@@ -102,7 +105,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 			return result;
 		}
 
-		contact.UpdateDealContacts(result.Value.DealContacts, result.Value.SourceUpdateTimestamp);
+		contact.UpdateDealContacts(result.Value.DealContacts);
 
 		return contact;
 	}

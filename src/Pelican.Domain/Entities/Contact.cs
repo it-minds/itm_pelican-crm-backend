@@ -82,11 +82,11 @@ public class Contact : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
-	public long? SourceUpdateTimestamp { get; set; }
+	public long SourceUpdateTimestamp { get; set; }
 
 
 	[GraphQLIgnore]
-	public virtual Contact UpdateProperty(string propertyName, string propertyValue, long updateTime)
+	public virtual Contact UpdateProperty(string propertyName, string propertyValue)
 	{
 		switch (propertyName)
 		{
@@ -112,12 +112,11 @@ public class Contact : Entity, ITimeTracked
 			default:
 				throw new InvalidOperationException("Invalid field");
 		}
-		SourceUpdateTimestamp = updateTime;
 		return this;
 	}
 
 	[GraphQLIgnore]
-	public virtual void UpdateDealContacts(ICollection<DealContact>? currentDealContacts, long? updateTime)
+	public virtual void UpdateDealContacts(ICollection<DealContact>? currentDealContacts)
 	{
 		if (currentDealContacts is null)
 		{
@@ -142,7 +141,6 @@ public class Contact : Entity, ITimeTracked
 				DealContacts.Add(dealContact);
 			}
 		}
-		SourceUpdateTimestamp = updateTime;
 	}
 
 	[GraphQLIgnore]

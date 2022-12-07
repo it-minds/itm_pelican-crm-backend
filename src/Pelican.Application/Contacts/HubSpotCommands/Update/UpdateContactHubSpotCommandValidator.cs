@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace Pelican.Application.Contacts.Commands.UpdateContact;
+namespace Pelican.Application.Contacts.HubSpotCommands.Update;
 
-internal sealed class UpdateContactCommandValidator : AbstractValidator<UpdateContactCommand>
+internal sealed class UpdateContactHubSpotCommandValidator : AbstractValidator<UpdateContactHubSpotCommand>
 {
-	public UpdateContactCommandValidator()
+	public UpdateContactHubSpotCommandValidator()
 	{
 		RuleFor(command => command.ObjectId).NotEmpty();
 		RuleFor(command => command.SupplierHubSpotId).NotEmpty();

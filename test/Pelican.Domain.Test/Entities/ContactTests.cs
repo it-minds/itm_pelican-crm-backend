@@ -172,7 +172,7 @@ public class ContactTests
 		long updatetime = 1;
 
 		// Act
-		var result = Record.Exception(() => _uut.UpdateProperty(propertyName, propertyValue, updatetime));
+		var result = Record.Exception(() => _uut.UpdateProperty(propertyName, propertyValue));
 
 		// Assert
 		Assert.Equal(
@@ -190,10 +190,9 @@ public class ContactTests
 		// Arrange
 		string propertyName = "firstname";
 		string propertyValue = "newName";
-		long updatetime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updatetime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(
@@ -207,10 +206,9 @@ public class ContactTests
 		// Arrange
 		string propertyName = "lastname";
 		string propertyValue = "newName";
-		long updatetime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updatetime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(
@@ -224,10 +222,9 @@ public class ContactTests
 		// Arrange
 		string propertyName = "email";
 		string propertyValue = "newEmail";
-		long updatetime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updatetime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(
@@ -241,10 +238,9 @@ public class ContactTests
 		// Arrange
 		string propertyName = "phone";
 		string propertyValue = "12345678";
-		long updatetime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updatetime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(
@@ -258,10 +254,9 @@ public class ContactTests
 		// Arrange
 		string propertyName = "mobilephone";
 		string propertyValue = "12345678";
-		long updatetime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updatetime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(
@@ -275,10 +270,9 @@ public class ContactTests
 		// Arrange
 		string propertyName = "jobtitle";
 		string propertyValue = "jobtitle";
-		long updatetime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updatetime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(
@@ -293,10 +287,9 @@ public class ContactTests
 		Faker faker = new();
 		string propertyName = "firstname";
 		string propertyValue = faker.Lorem.Letter(StringLengths.Name * 2);
-		long updatetime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updatetime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 
@@ -312,10 +305,9 @@ public class ContactTests
 		Faker faker = new();
 		string propertyName = "lastname";
 		string propertyValue = faker.Lorem.Letter(StringLengths.Name * 2);
-		long updatetime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updatetime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(StringLengths.Name, _uut.LastName!.Length);
@@ -330,10 +322,9 @@ public class ContactTests
 		Faker faker = new();
 		string propertyName = "email";
 		string propertyValue = faker.Lorem.Letter(StringLengths.Email * 2);
-		long updatetime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updatetime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(StringLengths.Email, _uut.Email!.Length);
@@ -348,10 +339,9 @@ public class ContactTests
 		Faker faker = new();
 		string propertyName = "phone";
 		string propertyValue = faker.Lorem.Letter(StringLengths.PhoneNumber * 2);
-		long updatetime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updatetime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
@@ -366,10 +356,9 @@ public class ContactTests
 		Faker faker = new();
 		string propertyName = "mobilephone";
 		string propertyValue = faker.Lorem.Letter(StringLengths.PhoneNumber * 2);
-		long updatetime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updatetime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
@@ -384,10 +373,9 @@ public class ContactTests
 		Faker faker = new();
 		string propertyName = "jobtitle";
 		string propertyValue = faker.Lorem.Letter(StringLengths.JobTitle * 2);
-		long updatetime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updatetime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(StringLengths.JobTitle, _uut.JobTitle!.Length);
@@ -401,10 +389,9 @@ public class ContactTests
 		// Arrange
 		string propertyName = "hs_all_owner_ids";
 		string propertyValue = "owner";
-		long updatetime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue, updatetime);
+		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
 		Assert.Equal(
@@ -416,7 +403,7 @@ public class ContactTests
 	public void UpdateDealContacts_ArgumentNull_ReturnsWithoutException()
 	{
 		// Act 
-		var result = Record.Exception(() => _uut.UpdateDealContacts(null, null));
+		var result = Record.Exception(() => _uut.UpdateDealContacts(null));
 
 		// Assert
 		Assert.Null(result);
@@ -439,7 +426,7 @@ public class ContactTests
 		};
 
 		// Act 
-		_uut.UpdateDealContacts(dealContacts, null);
+		_uut.UpdateDealContacts(dealContacts);
 
 		// Assert
 		Assert.Equal(
@@ -468,7 +455,7 @@ public class ContactTests
 		};
 
 		// Act 
-		_uut.UpdateDealContacts(dealContacts, null);
+		_uut.UpdateDealContacts(dealContacts);
 
 		// Assert
 		Assert.False(_uut.DealContacts.First(d => d.SourceDealId == existingDeal.SourceId && d.Contact.Source == Sources.HubSpot).IsActive);
@@ -502,7 +489,7 @@ public class ContactTests
 		};
 
 		// Act 
-		_uut.UpdateDealContacts(newDealContacts, null);
+		_uut.UpdateDealContacts(newDealContacts);
 
 		// Assert
 		Assert.Equal(
@@ -534,7 +521,7 @@ public class ContactTests
 		};
 
 		// Act 
-		_uut.UpdateDealContacts(newDealContacts, null);
+		_uut.UpdateDealContacts(newDealContacts);
 
 		// Assert
 		Assert.True(_uut

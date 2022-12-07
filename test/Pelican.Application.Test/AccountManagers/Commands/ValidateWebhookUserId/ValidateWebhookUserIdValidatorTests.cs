@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using Pelican.Application.AccountManagers.Commands.ValidateWebhookUserId;
+using Pelican.Application.AccountManagers.HubSpotCommands.ValidateWebhookUserId;
 using Xunit;
 
 

@@ -2,7 +2,7 @@
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
+using Pelican.Application.Deals.HubSpotCommands.Update;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
@@ -452,7 +452,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 		Mock<Deal> dealMock = new();
 
 		dealMock
-			.Setup(d => d.UpdateProperty(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>()))
+			.Setup(d => d.UpdateProperty(It.IsAny<string>(), It.IsAny<string>()))
 			.Returns(dealMock.Object);
 
 		SetupDealRepositoryMock(dealMock.Object);

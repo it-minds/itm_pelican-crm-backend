@@ -313,7 +313,7 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, 0, "property", "value")]
+	[InlineData(0, 0, 1, "property", "value")]
 	public async void Handle_ClientFoundClientUpdateCalled_ReturnsSucces(
 		long objectId,
 		long portalId,
@@ -340,8 +340,7 @@ public class UpdateClientCommandHandlerTests
 		clientMock.Verify(
 			c => c.UpdateProperty(
 				propertyName,
-				propertyValue,
-				updateTime),
+				propertyValue),
 			Times.Once);
 
 		_unitOfWorkMock.Verify(
@@ -351,7 +350,7 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, 0, "num_associated_contacts", "0")]
+	[InlineData(0, 0, 1, "num_associated_contacts", "0")]
 	public async void Handle_ClientFoundNumAssociatedHubSpotAuthorizationServiceReturnsFailure_ReturnsFailure(
 		long objectId,
 		long portalId,
@@ -393,7 +392,7 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, 0, "num_associated_contacts", "0")]
+	[InlineData(0, 0, 1, "num_associated_contacts", "0")]
 	public async void Handle_ClientFoundNumAssociatedHubSpotClientServiceReturnsFailure_ReturnsFailure(
 		long objectId,
 		long portalId,
@@ -442,7 +441,7 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, 0, "num_associated_contacts", "0")]
+	[InlineData(0, 0, 1, "num_associated_contacts", "0")]
 	public async void Handle_ClientFoundNumAssociatedHubSpotClientServiceReturnsClient_ReturnsSuccess(
 		long objectId,
 		long portalId,
@@ -487,7 +486,7 @@ public class UpdateClientCommandHandlerTests
 		//Assert
 		clientMock.Verify(
 			c => c.UpdateClientContacts(
-				clientMock.Object.ClientContacts, updateTime),
+				clientMock.Object.ClientContacts),
 			Times.Once);
 
 		_unitOfWorkMock.Verify(

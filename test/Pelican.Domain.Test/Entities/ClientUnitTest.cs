@@ -108,9 +108,11 @@ public class ClientUnitTest
 		// Arragne
 		string propertyName = "invalidName";
 		string propertyValue = "value";
+		long updateTime = 1;
+
 
 		// Act
-		var result = Record.Exception(() => _uut.UpdateProperty(propertyName, propertyValue));
+		var result = Record.Exception(() => _uut.UpdateProperty(propertyName, propertyValue, updateTime));
 
 		// Assert
 		Assert.Equal(
@@ -128,9 +130,10 @@ public class ClientUnitTest
 		// Arragne
 		string propertyName = "name";
 		string propertyValue = "newName";
+		long updateTime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue);
+		_uut.UpdateProperty(propertyName, propertyValue, updateTime);
 
 		// Assert
 		Assert.Equal(
@@ -144,9 +147,10 @@ public class ClientUnitTest
 		// Arragne
 		string propertyName = "city";
 		string propertyValue = "newCity";
+		long updateTime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue);
+		_uut.UpdateProperty(propertyName, propertyValue, updateTime);
 
 		// Assert
 		Assert.Equal(
@@ -160,9 +164,10 @@ public class ClientUnitTest
 		// Arragne
 		string propertyName = "website";
 		string propertyValue = "newWebsite";
+		long updateTime = 1;
 
 		// Act
-		_uut.UpdateProperty(propertyName, propertyValue);
+		_uut.UpdateProperty(propertyName, propertyValue, updateTime);
 
 		// Assert
 		Assert.Equal(
@@ -174,7 +179,7 @@ public class ClientUnitTest
 	public void UpdateClientContacts_ArgumentNull_ReturnsWithoutException()
 	{
 		// Act 
-		var result = Record.Exception(() => _uut.UpdateClientContacts(null));
+		var result = Record.Exception(() => _uut.UpdateClientContacts(null, null));
 
 		// Assert
 		Assert.Null(result);
@@ -197,7 +202,7 @@ public class ClientUnitTest
 		};
 
 		// Act 
-		_uut.UpdateClientContacts(clientContacts);
+		_uut.UpdateClientContacts(clientContacts, null);
 
 		// Assert
 		Assert.Equal(
@@ -226,7 +231,7 @@ public class ClientUnitTest
 		};
 
 		// Act 
-		_uut.UpdateClientContacts(clientContacts);
+		_uut.UpdateClientContacts(clientContacts, null);
 
 		// Assert
 		Assert.False(_uut.ClientContacts.First(d => d.SourceContactId == existingContact.SourceId && existingContact.Source == Sources.HubSpot).IsActive);
@@ -260,7 +265,7 @@ public class ClientUnitTest
 		};
 
 		// Act 
-		_uut.UpdateClientContacts(newClientContacts);
+		_uut.UpdateClientContacts(newClientContacts, null);
 
 		// Assert
 		Assert.Equal(

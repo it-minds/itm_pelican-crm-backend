@@ -20,6 +20,7 @@ public class UpdateContactHubSpotCommandValidatorTests
 		UpdateContactCommand command = new(
 			0,
 			0,
+			0,
 			string.Empty,
 			string.Empty);
 
@@ -38,6 +39,7 @@ public class UpdateContactHubSpotCommandValidatorTests
 	{
 		// Arrange
 		UpdateContactCommand command = new(
+			1,
 			1,
 			1,
 			"notEmpty",

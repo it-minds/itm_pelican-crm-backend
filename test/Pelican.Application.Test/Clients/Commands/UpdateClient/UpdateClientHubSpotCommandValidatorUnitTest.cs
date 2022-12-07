@@ -17,6 +17,7 @@ public class UpdateClientHubSpotCommandValidatorUnitTest
 		UpdateClientHubSpotCommand command = new(
 			0,
 			0,
+			0,
 			string.Empty,
 			string.Empty);
 
@@ -36,6 +37,7 @@ public class UpdateClientHubSpotCommandValidatorUnitTest
 	{
 		// Arrange
 		UpdateClientHubSpotCommand command = new(
+			1,
 			1,
 			1,
 			"notEmpty",

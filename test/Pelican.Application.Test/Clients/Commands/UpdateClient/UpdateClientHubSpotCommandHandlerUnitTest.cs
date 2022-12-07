@@ -80,15 +80,16 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, "0", "0")]
+	[InlineData(0, 0, 1, "0", "0")]
 	public async void Handle_ClientNotFoundRefreshAccessTokenReturnsFailure_ReturnsFailureErrorNullValue(
 		long objectId,
 		long portalId,
+		long updateTime,
 		string propertyName,
 		string propertyValue)
 	{
 		// Arrange
-		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
 		_unitOfWorkMock.Setup(
 			u => u.ClientRepository.FindByCondition(
@@ -117,15 +118,16 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, "0", "0")]
+	[InlineData(0, 0, 0, "0", "0")]
 	public async void Handle_ClientNotFoundGetAccesTokenSuccessButClientNotFoundOnHubSpot_ReturnsFailureAndErrorNullValue(
 		long objectId,
 		long portalId,
+		long updateTime,
 		string propertyName,
 		string propertyValue)
 	{
 		// Arrange
-		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
 		Supplier supplier = new(Guid.NewGuid())
 		{
@@ -168,15 +170,16 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, "0", "0")]
+	[InlineData(0, 0, 0, "0", "0")]
 	public async void Handle_ClientNotFoundClientCreatedWithNoLocalOrRemoteAssociations_ReturnsSuccesAndCreatesNewClient(
 		long objectId,
 		long portalId,
+		long updateTime,
 		string propertyName,
 		string propertyValue)
 	{
 		// Arrange
-		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
 		Supplier supplier = new(Guid.NewGuid())
 		{
@@ -232,15 +235,16 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, "0", "0")]
+	[InlineData(0, 0, 0, "0", "0")]
 	public async void Handle_ClientNotFoundClientCreatedWithRemoteAssociationMatchingLocalAssociation_ReturnsSuccesAndCreatesNewClient(
 		long objectId,
 		long portalId,
+		long updateTime,
 		string propertyName,
 		string propertyValue)
 	{
 		// Arrange
-		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
 		Supplier supplier = new(Guid.NewGuid())
 		{
@@ -309,15 +313,16 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, "property", "value")]
+	[InlineData(0, 0, 0, "property", "value")]
 	public async void Handle_ClientFoundClientUpdateCalled_ReturnsSucces(
 		long objectId,
 		long portalId,
+		long updateTime,
 		string propertyName,
 		string propertyValue)
 	{
 		// Arrange
-		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
 		Mock<Client> clientMock = new();
 
@@ -335,7 +340,8 @@ public class UpdateClientCommandHandlerTests
 		clientMock.Verify(
 			c => c.UpdateProperty(
 				propertyName,
-				propertyValue),
+				propertyValue,
+				updateTime),
 			Times.Once);
 
 		_unitOfWorkMock.Verify(
@@ -345,15 +351,16 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, "num_associated_contacts", "0")]
+	[InlineData(0, 0, 0, "num_associated_contacts", "0")]
 	public async void Handle_ClientFoundNumAssociatedHubSpotAuthorizationServiceReturnsFailure_ReturnsFailure(
 		long objectId,
 		long portalId,
+		long updateTime,
 		string propertyName,
 		string propertyValue)
 	{
 		//Arrange
-		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
 		Mock<Client> clientMock = new();
 
@@ -386,15 +393,16 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, "num_associated_contacts", "0")]
+	[InlineData(0, 0, 0, "num_associated_contacts", "0")]
 	public async void Handle_ClientFoundNumAssociatedHubSpotClientServiceReturnsFailure_ReturnsFailure(
 		long objectId,
 		long portalId,
+		long updateTime,
 		string propertyName,
 		string propertyValue)
 	{
 		//Arrange
-		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
 		Mock<Client> clientMock = new();
 
@@ -434,15 +442,16 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, "num_associated_contacts", "0")]
+	[InlineData(0, 0, 0, "num_associated_contacts", "0")]
 	public async void Handle_ClientFoundNumAssociatedHubSpotClientServiceReturnsClient_ReturnsSuccess(
 		long objectId,
 		long portalId,
+		long updateTime,
 		string propertyName,
 		string propertyValue)
 	{
 		//Arrange
-		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
 		Mock<Client> clientMock = new();
 
@@ -478,7 +487,7 @@ public class UpdateClientCommandHandlerTests
 		//Assert
 		clientMock.Verify(
 			c => c.UpdateClientContacts(
-				clientMock.Object.ClientContacts),
+				clientMock.Object.ClientContacts, updateTime),
 			Times.Once);
 
 		_unitOfWorkMock.Verify(

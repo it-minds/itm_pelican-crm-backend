@@ -73,7 +73,8 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 		{
 			contact.UpdateProperty(
 				command.PropertyName,
-				command.PropertyValue);
+				command.PropertyValue,
+				command.UpdateTime);
 		}
 
 		_unitOfWork
@@ -101,7 +102,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 			return result;
 		}
 
-		contact.UpdateDealContacts(result.Value.DealContacts);
+		contact.UpdateDealContacts(result.Value.DealContacts, result.Value.SourceUpdateTimestamp);
 
 		return contact;
 	}

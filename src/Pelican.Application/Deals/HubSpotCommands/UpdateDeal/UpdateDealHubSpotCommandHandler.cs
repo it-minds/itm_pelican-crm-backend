@@ -55,7 +55,8 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		{
 			deal.UpdateProperty(
 				command.PropertyName,
-				command.PropertyValue);
+				command.PropertyValue,
+				command.UpdateTime);
 		}
 
 		_unitOfWork

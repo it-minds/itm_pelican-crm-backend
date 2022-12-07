@@ -13,6 +13,7 @@ namespace Pelican.Application.Test.Deals.Commands.UpdateDeal;
 public class UpdateDealHubSpotCommandHandlerTests
 {
 	private const long OBJECTID = 0;
+	private const long UPDATETIME = 0;
 	private const long SUPPLIERHUBSPOTID = 0;
 	private const string EMPTY_PROPERTYNAME = "";
 	private const string EMPTY_PROPERTYVALUE = "";
@@ -140,7 +141,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 	public async void Handle_DealNotFoundFailsRefreshingToken_ReturnsFailure()
 	{
 		// Arrange
-		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, UPDATETIME, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
 		Error error = new("0", "error");
 
@@ -168,7 +169,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 	public async void Handle_DealNotFoundFailedFetchingDealFromHubSpot_ReturnsFailure()
 	{
 		// Arrange
-		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, UPDATETIME, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
 		SetupDealRepositoryMock(null);
 
@@ -201,7 +202,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 	public async void Handle_DealNotFoundSuccessFetchingFromHubSpot_NewDealSavedReturnsSuccess()
 	{
 		// Arrange
-		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, UPDATETIME, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
 		SetupDealRepositoryMock(null);
 
@@ -249,7 +250,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 	public async void Handle_DealNotFoundSuccessFetchingFromHubSpotWithAssociationsNotExistingInDb_ReturnsSuccess()
 	{
 		// Arrange
-		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, UPDATETIME, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
 		Contact existingContact = new(Guid.NewGuid())
 		{
@@ -328,7 +329,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 	public async void Handle_DealNotFoundSuccessFetchingFromHubSpotWithAssociations_ReturnsSuccess()
 	{
 		// Arrange
-		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, UPDATETIME, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
 		Deal? existingDeal = null;
 
@@ -413,7 +414,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		SetupDealRepositoryMock(dealMock.Object);
 
-		UpdateDealHubSpotCommand command = new(1, 1, "hs_all_owner_ids", EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(1, 1, 1, "hs_all_owner_ids", EMPTY_PROPERTYVALUE);
 
 		_accountManagerRepositoryMock
 			.Setup(a => a
@@ -446,12 +447,12 @@ public class UpdateDealHubSpotCommandHandlerTests
 	public async void Handle_DealFoundPropertyUpdated_ReturnsSuccess()
 	{
 		// Arrange
-		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
+		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, UPDATETIME, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
 		Mock<Deal> dealMock = new();
 
 		dealMock
-			.Setup(d => d.UpdateProperty(It.IsAny<string>(), It.IsAny<string>()))
+			.Setup(d => d.UpdateProperty(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<long>()))
 			.Returns(dealMock.Object);
 
 		SetupDealRepositoryMock(dealMock.Object);

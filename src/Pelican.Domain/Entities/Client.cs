@@ -1,7 +1,4 @@
-﻿using HotChocolate;
-using Pelican.Domain.Primitives;
-
-namespace Pelican.Domain.Entities;
+﻿namespace Pelican.Domain.Entities;
 public class Client : Entity, ITimeTracked
 {
 	private string _name = string.Empty;
@@ -49,6 +46,9 @@ public class Client : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
+	public long? SourceUpdateTimestamp { get; set; }
+
+
 	public string? Website
 	{
 		get => _website;
@@ -61,7 +61,7 @@ public class Client : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
-	public virtual Client UpdateProperty(string propertyName, string propertyValue)
+	public virtual Client UpdateProperty(string propertyName, string propertyValue, long updateTime)
 	{
 		switch (propertyName)
 		{
@@ -77,6 +77,7 @@ public class Client : Entity, ITimeTracked
 			default:
 				throw new InvalidOperationException($"{propertyName} is not a valid property on Client");
 		}
+		SourceUpdateTimestamp = updateTime;
 		return this;
 	}
 
@@ -115,7 +116,7 @@ public class Client : Entity, ITimeTracked
 
 
 	[GraphQLIgnore]
-	public virtual void UpdateClientContacts(ICollection<ClientContact>? currentClientContacts)
+	public virtual void UpdateClientContacts(ICollection<ClientContact>? currectHubSpotClientContacts, long? updateTime)
 	{
 		if (currentClientContacts is null)
 		{
@@ -140,5 +141,6 @@ public class Client : Entity, ITimeTracked
 				ClientContacts.Add(clientContact);
 			}
 		}
+		SourceUpdateTimestamp = updateTime;
 	}
 }

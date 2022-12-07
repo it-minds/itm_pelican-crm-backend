@@ -47,16 +47,19 @@ internal sealed class HubSpotWebHookRequestsToCommands : IRequestToCommandMapper
 				"contact.propertyChange" => new UpdateContactCommand(
 					request.ObjectId,
 					request.SupplierHubSpotId,
+					request.UpdateTime,
 					request.PropertyName,
 					request.PropertyValue),
 				"deal.propertyChange" => new UpdateDealHubSpotCommand(
 					request.ObjectId,
 					request.SupplierHubSpotId,
+					request.UpdateTime,
 					request.PropertyName,
 					request.PropertyValue),
 				"company.propertyChange" => new UpdateClientHubSpotCommand(
 					request.ObjectId,
 					request.SupplierHubSpotId,
+					request.UpdateTime,
 					request.PropertyName,
 					request.PropertyValue),
 				_ => throw new InvalidDataException("Receiving unhandled event"),

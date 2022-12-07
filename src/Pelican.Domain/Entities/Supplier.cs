@@ -91,7 +91,6 @@ public class Supplier : Entity, ITimeTracked
 
 	public ICollection<AccountManager> AccountManagers { get; set; } = new List<AccountManager>();
 
-
 	public long CreatedAt { get; set; }
 
 	public long? LastUpdatedAt { get; set; }

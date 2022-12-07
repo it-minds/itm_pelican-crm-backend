@@ -55,6 +55,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 				client,
 				command.PortalId,
 				command.ObjectId,
+				command.UpdateTime,
 				cancellationToken);
 
 			if (result.IsFailure)
@@ -66,7 +67,8 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		{
 			client.UpdateProperty(
 				command.PropertyName,
-				command.PropertyValue);
+				command.PropertyValue,
+				command.UpdateTime);
 		}
 
 		await _unitOfWork.SaveAsync(cancellationToken);
@@ -147,6 +149,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		Client client,
 		long portalId,
 		long clientHubSpotId,
+		long updateTime,
 		CancellationToken cancellationToken = default)
 	{
 		Result<Client> result = await GetClientFromHubSpot(
@@ -159,14 +162,14 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			return result;
 		}
 
-		client.UpdateClientContacts(result.Value.ClientContacts);
+		client.UpdateClientContacts(result.Value.ClientContacts, result.Value.SourceUpdateTimestamp);
 
 		var newClientContacts = client.ClientContacts.Where(cc => cc.Contact is null).ToList();
 
 		FillOutClientAssociations(client);
 
 		_unitOfWork.ClientContactRepository.AttachAsAdded(newClientContacts);
-
+		client.SourceUpdateTimestamp = updateTime;
 		return client;
 	}
 }

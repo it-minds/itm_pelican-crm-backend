@@ -21,6 +21,7 @@ public class UpdateDealHubSpotCommandValidatorTests
 		UpdateDealHubSpotCommand command = new(
 			0,
 			0,
+			0,
 			string.Empty,
 			string.Empty);
 
@@ -39,6 +40,7 @@ public class UpdateDealHubSpotCommandValidatorTests
 	{
 		// Arrange
 		UpdateDealHubSpotCommand command = new(
+			1,
 			1,
 			1,
 			"notEmpty",

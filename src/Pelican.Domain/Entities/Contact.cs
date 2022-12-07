@@ -1,7 +1,4 @@
-﻿using HotChocolate;
-using Pelican.Domain.Primitives;
-
-namespace Pelican.Domain.Entities;
+﻿namespace Pelican.Domain.Entities;
 public class Contact : Entity, ITimeTracked
 {
 	private string? _firstName;
@@ -82,8 +79,11 @@ public class Contact : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
+	public long? SourceUpdateTimestamp { get; set; }
+
+
 	[GraphQLIgnore]
-	public virtual Contact UpdateProperty(string propertyName, string propertyValue)
+	public virtual Contact UpdateProperty(string propertyName, string propertyValue, long updateTime)
 	{
 		switch (propertyName)
 		{
@@ -109,11 +109,12 @@ public class Contact : Entity, ITimeTracked
 			default:
 				throw new InvalidOperationException("Invalid field");
 		}
+		SourceUpdateTimestamp = updateTime;
 		return this;
 	}
 
 	[GraphQLIgnore]
-	public virtual void UpdateDealContacts(ICollection<DealContact>? currentDealContacts)
+	public virtual void UpdateDealContacts(ICollection<DealContact>? currectHubSpotDealContacts, long? updateTime)
 	{
 		if (currentDealContacts is null)
 		{
@@ -138,6 +139,7 @@ public class Contact : Entity, ITimeTracked
 				DealContacts.Add(dealContact);
 			}
 		}
+		SourceUpdateTimestamp = updateTime;
 	}
 
 	[GraphQLIgnore]
@@ -145,7 +147,6 @@ public class Contact : Entity, ITimeTracked
 	{
 		FillOutClient(clients);
 		FillOutDealContacts(deals);
-
 		return this;
 	}
 

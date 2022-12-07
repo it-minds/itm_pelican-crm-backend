@@ -222,7 +222,6 @@ public class ClientUnitTest
 			new(Guid.NewGuid())
 			{
 				Contact=new(Guid.NewGuid()),
-				Source = Sources.HubSpot
 			}
 		};
 
@@ -270,7 +269,7 @@ public class ClientUnitTest
 
 		Assert.True(_uut
 			.ClientContacts
-			.First(dc => dc.SourceContactId == "hsId" && dc.Source == Sources.HubSpot)
+			.First(dc => dc.SourceContactId == "hsId" && dc.Contact.Source == Sources.HubSpot)
 			.IsActive);
 	}
 
@@ -366,7 +365,6 @@ public class ClientUnitTest
 			ClientId = _uut.Id,
 			SourceClientId = _uut.SourceId,
 			IsActive = true,
-			Source = Sources.HubSpot,
 		};
 
 		_uut.ClientContacts.Add(existingClientContact);

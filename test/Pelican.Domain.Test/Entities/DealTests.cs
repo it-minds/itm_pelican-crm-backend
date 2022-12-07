@@ -484,7 +484,10 @@ public class DealTests
 		DealContact dealContact = new(Guid.NewGuid())
 		{
 			SourceContactId = contact.SourceId,
-			Source = Sources.HubSpot,
+			Contact = new(Guid.NewGuid())
+			{
+				Source = Sources.HubSpot
+			},
 		};
 
 		inputDeal.DealContacts.Add(dealContact);

@@ -53,10 +53,6 @@ public class AccountManagerDealTests
 			result.SourceAccountManagerId);
 
 		Assert.True(result.IsActive);
-
-		Assert.Equal(
-			Sources.HubSpot,
-			result.Source);
 	}
 
 	[Fact]

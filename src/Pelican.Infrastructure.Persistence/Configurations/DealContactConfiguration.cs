@@ -21,10 +21,6 @@ internal class DealContactConfiguration : IEntityTypeConfiguration<DealContact>
 			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 
-		builder.Property(p => p.Source)
-			.HasMaxLength(StringLengths.Source)
-			.IsRequired();
-
 		builder.HasOne(a => a.Contact)
 			.WithMany(e => e.DealContacts)
 			.HasForeignKey(a => a.ContactId)

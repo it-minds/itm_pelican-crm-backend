@@ -110,7 +110,6 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 						DealId = deal.Id,
 						SourceDealId = deal.SourceId,
 						IsActive = true,
-						Source = Sources.HubSpot
 					})
 					.ToList() ?? new List<AccountManagerDeal>();
 			});
@@ -125,7 +124,7 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			.ForEach(deal =>
 			{
 				deal.AccountManagerDeals = accountManagerDeals
-					.Where(accountManagerDeal => accountManagerDeal.SourceDealId == deal.SourceId && accountManagerDeal.Source == Sources.HubSpot)?
+					.Where(accountManagerDeal => accountManagerDeal.SourceDealId == deal.SourceId && accountManagerDeal.Deal.Source == Sources.HubSpot)?
 					.ToList() ?? new List<AccountManagerDeal>();
 
 				if (deal.Client is not null)
@@ -179,11 +178,11 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			.ForEach(contact =>
 			{
 				contact.DealContacts = dealContacts
-					.Where(dealContact => dealContact.SourceContactId == contact.SourceId && dealContact.Source == Sources.HubSpot)
+					.Where(dealContact => dealContact.SourceContactId == contact.SourceId && dealContact.Contact.Source == Sources.HubSpot)
 					.ToList();
 
 				contact.ClientContacts = clientContacts
-					.Where(clientContact => clientContact.SourceContactId == contact.SourceId && clientContact.Source == Sources.HubSpot)
+					.Where(clientContact => clientContact.SourceContactId == contact.SourceId && clientContact.Contact.Source == Sources.HubSpot)
 					.ToList();
 			});
 

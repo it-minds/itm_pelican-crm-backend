@@ -97,7 +97,7 @@ public class Client : Entity, ITimeTracked
 			}
 
 			Contact? matchingContact = contacts
-				.FirstOrDefault(contacts => contacts.SourceId == item.SourceContactId && contacts.Source == item.Contact!.Source);
+				.FirstOrDefault(contacts => contacts.SourceId == item.SourceContactId && contacts.Source == item.Client.Source);
 
 			if (matchingContact is null)
 			{

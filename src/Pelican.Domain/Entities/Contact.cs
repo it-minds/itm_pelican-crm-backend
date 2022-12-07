@@ -161,7 +161,7 @@ public class Contact : Entity, ITimeTracked
 			.Select(cc =>
 			{
 				Client? matchingClient = clients
-				.FirstOrDefault(client => client.SourceId == cc.SourceClientId && client.Source == cc.Client.Source);
+				.FirstOrDefault(client => client.SourceId == cc.SourceClientId && client.Source == cc.Contact.Source);
 
 				if (matchingClient is not null)
 				{
@@ -187,7 +187,7 @@ public class Contact : Entity, ITimeTracked
 			.Select(dc =>
 			{
 				Deal? matchingDeal = deals
-				.FirstOrDefault(deal => deal.SourceId == dc.SourceDealId && deal.Source == dc.Deal.Source);
+				.FirstOrDefault(deal => deal.SourceId == dc.SourceDealId && deal.Source == dc.Contact.Source);
 
 				if (matchingDeal is not null)
 				{

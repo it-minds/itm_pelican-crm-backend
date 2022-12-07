@@ -53,9 +53,5 @@ public class ClientContactUnitTest
 			result.SourceContactId);
 
 		Assert.True(result.IsActive);
-
-		Assert.Equal(
-			Sources.HubSpot,
-			result.Source);
 	}
 }

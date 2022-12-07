@@ -53,10 +53,6 @@ public class DealContactTests
 			result.SourceContactId);
 
 		Assert.True(result.IsActive);
-
-		Assert.Equal(
-			Sources.HubSpot,
-			result.Source);
 	}
 
 	[Fact]

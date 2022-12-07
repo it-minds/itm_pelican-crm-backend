@@ -21,10 +21,6 @@ internal class ClientContactConfiguration : IEntityTypeConfiguration<ClientConta
 			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 
-		builder.Property(p => p.Source)
-			.HasMaxLength(StringLengths.Source)
-			.IsRequired();
-
 		builder.HasOne(a => a.Contact)
 			.WithMany(e => e.ClientContacts)
 			.HasForeignKey(a => a.ContactId)

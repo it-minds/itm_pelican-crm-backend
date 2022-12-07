@@ -3,6 +3,7 @@ using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.AccountManagers.Commands.ValidateWebhookUserId;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Xunit;
@@ -92,7 +93,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 		// Assert
 		_unitOfWorkMock.Verify(
 			u => u.AccountManagerRepository.FirstOrDefaultAsync(
-				a => a.HubSpotUserId == command.UserId,
+				a => a.SourceUserId == command.UserId && a.Source == Sources.HubSpot,
 				default),
 			Times.Once);
 
@@ -123,7 +124,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 		// Assert
 		_unitOfWorkMock.Verify(
 			u => u.SupplierRepository.FirstOrDefaultAsync(
-				a => a.HubSpotId == command.SupplierHubSpotId,
+				a => a.SourceId == command.SupplierHubSpotId && a.Source == Sources.HubSpot,
 				default),
 			Times.Once);
 

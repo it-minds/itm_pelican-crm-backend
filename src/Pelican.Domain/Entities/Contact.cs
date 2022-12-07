@@ -13,9 +13,11 @@ public class Contact : Entity, ITimeTracked
 	public Contact(Guid id) : base(id) { }
 	public Contact() { }
 
-	public string HubSpotId { get; set; } = string.Empty;
+	public string Source { get; set; } = string.Empty;
 
-	public string? HubSpotOwnerId { get; set; }
+	public string SourceId { get; set; } = string.Empty;
+
+	public string? SourceOwnerId { get; set; }
 
 
 	public string? FirstName
@@ -102,7 +104,7 @@ public class Contact : Entity, ITimeTracked
 				JobTitle = propertyValue;
 				break;
 			case "hs_all_owner_ids":
-				HubSpotOwnerId = propertyValue;
+				SourceOwnerId = propertyValue;
 				break;
 			default:
 				throw new InvalidOperationException("Invalid field");
@@ -111,24 +113,27 @@ public class Contact : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
-	public virtual void UpdateDealContacts(ICollection<DealContact>? currectHubSpotDealContacts)
+	public virtual void UpdateDealContacts(ICollection<DealContact>? currentDealContacts)
 	{
-		if (currectHubSpotDealContacts is null)
+		if (currentDealContacts is null)
 		{
 			return;
 		}
 
 		foreach (DealContact dealContact in DealContacts.Where(dc => dc.IsActive))
 		{
-			if (!currectHubSpotDealContacts.Any(currectHubSpotDealContact => currectHubSpotDealContact.HubSpotDealId == dealContact.HubSpotDealId))
+			if (!currentDealContacts.Any(currentDealContact => currentDealContact.SourceDealId == dealContact.SourceDealId
+			&& currentDealContact.Deal.Source == dealContact.Deal.Source))
 			{
 				dealContact.Deactivate();
 			}
 		}
 
-		foreach (DealContact dealContact in currectHubSpotDealContacts)
+		foreach (DealContact dealContact in currentDealContacts)
 		{
-			if (!DealContacts.Any(dc => dc.HubSpotDealId == dealContact.HubSpotDealId && dc.IsActive))
+			if (!DealContacts.Any(dc => dc.SourceDealId == dealContact.SourceDealId
+			&& dc.IsActive
+			&& dc.Deal.Source == dealContact.Deal.Source))
 			{
 				DealContacts.Add(dealContact);
 			}
@@ -156,7 +161,7 @@ public class Contact : Entity, ITimeTracked
 			.Select(cc =>
 			{
 				Client? matchingClient = clients
-				.FirstOrDefault(client => client.HubSpotId == cc.HubSpotClientId);
+				.FirstOrDefault(client => client.SourceId == cc.SourceClientId && client.Source == cc.Contact.Source);
 
 				if (matchingClient is not null)
 				{
@@ -182,7 +187,7 @@ public class Contact : Entity, ITimeTracked
 			.Select(dc =>
 			{
 				Deal? matchingDeal = deals
-				.FirstOrDefault(deal => deal.HubSpotId == dc.HubSpotDealId);
+				.FirstOrDefault(deal => deal.SourceId == dc.SourceDealId && deal.Source == dc.Contact.Source);
 
 				if (matchingDeal is not null)
 				{

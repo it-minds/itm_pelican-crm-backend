@@ -3,6 +3,7 @@ using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Contacts.Commands.UpdateContact;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Xunit;
@@ -121,7 +122,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 		// Assert
 		_contactRepositoryMock.Verify(
 			repo => repo.FirstOrDefaultAsync(
-				contact => contact.HubSpotId == command.ObjectId.ToString(),
+				contact => contact.SourceId == command.ObjectId.ToString() && contact.Source == Sources.HubSpot,
 				default),
 			Times.Once);
 
@@ -286,7 +287,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 		// Assert
 		_dealRepositoryMock.Verify(
 			repo => repo.FirstOrDefaultAsync(
-				d => d.HubSpotId == existingDealContact.Deal.HubSpotId,
+				d => d.SourceId == existingDealContact.Deal.SourceId && d.Source == Sources.HubSpot,
 				default),
 			Times.Once);
 
@@ -332,7 +333,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 		// Assert
 		_clientRepositoryMock.Verify(
 			repo => repo.FirstOrDefaultAsync(
-				c => c.HubSpotId == existingClientContact.Client.HubSpotId,
+				c => c.SourceId == existingClientContact.Client.SourceId && c.Source == Sources.HubSpot,
 				default),
 			Times.Once);
 
@@ -347,18 +348,18 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 		Deal existingDeal = new(Guid.NewGuid())
 		{
-			HubSpotId = "dealHubSpotId",
+			SourceId = "dealHubSpotId",
 		};
 
 		Mock<Contact> newContactMock = new();
-		newContactMock.Object.HubSpotId = "hubSpotId";
+		newContactMock.Object.SourceId = "hubSpotId";
 
 		newContactMock.Object.DealContacts.Add(new()
 		{
 			Contact = newContactMock.Object,
 			ContactId = newContactMock.Object.Id,
-			HubSpotContactId = newContactMock.Object.HubSpotId,
-			HubSpotDealId = existingDeal.HubSpotId,
+			SourceContactId = newContactMock.Object.SourceId,
+			SourceDealId = existingDeal.SourceId,
 		});
 
 		string accessToken = "accessToken";
@@ -414,18 +415,18 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 		Client existingClient = new(Guid.NewGuid())
 		{
-			HubSpotId = "clientHubSpotId",
+			SourceId = "clientHubSpotId",
 		};
 
 		Mock<Contact> newContactMock = new();
-		newContactMock.Object.HubSpotId = "hubSpotId";
+		newContactMock.Object.SourceId = "hubSpotId";
 
 		newContactMock.Object.ClientContacts.Add(new()
 		{
 			Contact = newContactMock.Object,
 			ContactId = newContactMock.Object.Id,
-			HubSpotContactId = newContactMock.Object.HubSpotId,
-			HubSpotClientId = existingClient.HubSpotId,
+			SourceContactId = newContactMock.Object.SourceId,
+			SourceClientId = existingClient.SourceId,
 		});
 
 		string accessToken = "accessToken";

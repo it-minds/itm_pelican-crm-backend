@@ -14,12 +14,14 @@ public class AccountManagerDealTests
 
 		Deal deal = new(Guid.NewGuid())
 		{
-			HubSpotId = DEAL_HUBSPOTID,
+			SourceId = DEAL_HUBSPOTID,
+			Source = Sources.HubSpot,
 		};
 
 		AccountManager accountManager = new(Guid.NewGuid())
 		{
-			HubSpotId = ACCOUNTMANAGER_HUBSPOTID,
+			SourceId = ACCOUNTMANAGER_HUBSPOTID,
+			Source = Sources.HubSpot
 		};
 
 		// Act
@@ -36,7 +38,7 @@ public class AccountManagerDealTests
 
 		Assert.Equal(
 			DEAL_HUBSPOTID,
-			result.HubSpotDealId);
+			result.SourceDealId);
 
 		Assert.Equal(
 			accountManager,
@@ -48,7 +50,7 @@ public class AccountManagerDealTests
 
 		Assert.Equal(
 			ACCOUNTMANAGER_HUBSPOTID,
-			result.HubSpotAccountManagerId);
+			result.SourceAccountManagerId);
 
 		Assert.True(result.IsActive);
 	}

@@ -2,6 +2,7 @@
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
@@ -32,7 +33,7 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 	{
 		Deal? deal = _unitOfWork
 			.DealRepository
-			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
+			.FindByCondition(d => d.SourceId == command.ObjectId.ToString() && d.Source == Sources.HubSpot)
 			.Include(d => d.AccountManagerDeals)
 			.Include(d => d.Client)
 			.Include(d => d.DealContacts)
@@ -70,7 +71,7 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 	{
 		AccountManager? accountManager = await _unitOfWork.
 			AccountManagerRepository
-			.FirstOrDefaultAsync(a => a.HubSpotId == acccuntManagerHubSpotId);
+			.FirstOrDefaultAsync(a => a.SourceId == acccuntManagerHubSpotId && a.Source == Sources.HubSpot);
 
 		deal.FillOutAccountManager(accountManager);
 	}
@@ -117,7 +118,7 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 	{
 		AccountManager? accountManager = await _unitOfWork
 			.AccountManagerRepository
-			.FirstOrDefaultAsync(a => a.HubSpotId == deal.HubSpotOwnerId, cancellationToken);
+			.FirstOrDefaultAsync(a => a.SourceId == deal.SourceOwnerId && a.Source == Sources.HubSpot, cancellationToken);
 
 		List<Contact>? contacts = new();
 
@@ -125,7 +126,7 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		{
 			Contact? contact = await _unitOfWork
 				.ContactRepository
-				.FirstOrDefaultAsync(c => c.HubSpotId == dc.HubSpotContactId);
+				.FirstOrDefaultAsync(c => c.SourceId == dc.SourceContactId && c.Source == Sources.HubSpot);
 
 			if (contact is not null)
 			{
@@ -139,7 +140,7 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		{
 			client = await _unitOfWork
 				.ClientRepository
-				.FirstOrDefaultAsync(c => c.HubSpotId == deal.Client.HubSpotId, cancellationToken);
+				.FirstOrDefaultAsync(c => c.SourceId == deal.Client.SourceId && c.Source == Sources.HubSpot, cancellationToken);
 		}
 
 		deal.FillOutAssociations(accountManager, client, contacts);

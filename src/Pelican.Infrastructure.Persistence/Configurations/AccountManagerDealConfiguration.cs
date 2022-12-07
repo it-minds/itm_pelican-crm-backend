@@ -13,11 +13,11 @@ internal class AccountManagerDealConfiguration : IEntityTypeConfiguration<Accoun
 		builder.Property(p => p.IsActive)
 			.IsRequired();
 
-		builder.Property(p => p.HubSpotAccountManagerId)
+		builder.Property(p => p.SourceAccountManagerId)
 			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 
-		builder.Property(p => p.HubSpotDealId)
+		builder.Property(p => p.SourceDealId)
 			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 

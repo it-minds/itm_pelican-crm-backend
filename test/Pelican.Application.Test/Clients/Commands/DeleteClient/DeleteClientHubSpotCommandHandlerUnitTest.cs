@@ -2,6 +2,7 @@
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Clients.HubSpotCommands.DeleteClient;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Xunit;
@@ -51,7 +52,7 @@ public class DeleteClientHubSpotCommandHandlerUnitTest
 		_fakeUnitOfWork
 			.Verify(
 				unitOfWork => unitOfWork.ClientRepository
-					.FindByCondition(d => d.HubSpotId == deleteClientCommand.ObjectId.ToString()),
+					.FindByCondition(d => d.SourceId == deleteClientCommand.ObjectId.ToString() && d.Source == Sources.HubSpot),
 				Times.Once());
 
 		_fakeUnitOfWork
@@ -86,7 +87,7 @@ public class DeleteClientHubSpotCommandHandlerUnitTest
 		_fakeUnitOfWork
 		.Verify(
 		unitOfWork => unitOfWork.ClientRepository
-					.FindByCondition(d => d.HubSpotId == deleteClientCommand.ObjectId.ToString()),
+					.FindByCondition(d => d.SourceId == deleteClientCommand.ObjectId.ToString() && d.Source == Sources.HubSpot),
 				Times.Once());
 
 		_fakeUnitOfWork

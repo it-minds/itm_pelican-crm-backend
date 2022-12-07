@@ -12,9 +12,11 @@ public class Deal : Entity, ITimeTracked
 
 	public Deal() { }
 
-	public string HubSpotId { get; set; } = string.Empty;
+	public string Source { get; set; } = string.Empty;
 
-	public string? HubSpotOwnerId { get; set; }
+	public string SourceId { get; set; } = string.Empty;
+
+	public string? SourceOwnerId { get; set; }
 
 	public string? DealStatus
 	{
@@ -125,7 +127,7 @@ public class Deal : Entity, ITimeTracked
 			return;
 		}
 
-		if (oldRelation.HubSpotAccountManagerId != accountManager.HubSpotId)
+		if (oldRelation.SourceAccountManagerId != accountManager.SourceId)
 		{
 			oldRelation.Deactivate();
 
@@ -149,7 +151,7 @@ public class Deal : Entity, ITimeTracked
 		foreach (DealContact dealContact in DealContacts)
 		{
 			Contact? matchingContact = contacts
-				.FirstOrDefault(contact => contact.HubSpotId == dealContact.HubSpotContactId);
+				.FirstOrDefault(contact => contact.SourceId == dealContact.SourceContactId && contact.Source == dealContact.Contact.Source);
 
 			if (matchingContact is null)
 			{

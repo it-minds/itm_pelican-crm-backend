@@ -1,4 +1,5 @@
-﻿using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
+﻿using Pelican.Domain;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Mapping.Deals;
 using Xunit;
 
@@ -73,7 +74,8 @@ public class DealsResponseToDealsTests
 		var result = responses.ToDeals();
 
 		/// Assert
-		Assert.Equal(ID, result.First().HubSpotId);
-		Assert.Equal(OWNERID, result.First().HubSpotOwnerId);
+		Assert.Equal(ID, result.First().SourceId);
+		Assert.Equal(OWNERID, result.First().SourceOwnerId);
+		Assert.Equal(Sources.HubSpot, result.First().Source);
 	}
 }

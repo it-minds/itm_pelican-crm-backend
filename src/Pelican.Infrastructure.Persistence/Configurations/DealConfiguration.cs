@@ -13,11 +13,11 @@ internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 		builder.Property(p => p.DealStatus)
 			.HasMaxLength(StringLengths.DealStatus);
 
-		builder.Property(p => p.HubSpotId)
+		builder.Property(p => p.SourceId)
 			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 
-		builder.Property(p => p.HubSpotOwnerId)
+		builder.Property(p => p.SourceOwnerId)
 			.HasMaxLength(StringLengths.Id);
 
 		builder.Property(p => p.Description)
@@ -25,6 +25,10 @@ internal class DealConfiguration : IEntityTypeConfiguration<Deal>
 
 		builder.Property(p => p.Name)
 			.HasMaxLength(StringLengths.DealName);
+
+		builder.Property(p => p.Source)
+			.HasMaxLength(StringLengths.Source)
+			.IsRequired();
 
 		builder.HasMany(a => a.AccountManagerDeals)
 			.WithOne(e => e.Deal)

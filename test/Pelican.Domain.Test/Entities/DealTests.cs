@@ -7,7 +7,7 @@ public class DealTests
 {
 	private readonly Deal _uut = new Deal(Guid.NewGuid())
 	{
-		HubSpotId = "uutHubSpotId",
+		SourceId = "uutHubSpotId",
 	};
 
 	[Fact]
@@ -475,14 +475,19 @@ public class DealTests
 		// Arrange
 		Contact contact = new(Guid.NewGuid())
 		{
-			HubSpotId = "id",
+			SourceId = "id",
+			Source = Sources.HubSpot,
 		};
 
 		Deal inputDeal = new(Guid.NewGuid());
 
 		DealContact dealContact = new(Guid.NewGuid())
 		{
-			HubSpotContactId = contact.HubSpotId,
+			SourceContactId = contact.SourceId,
+			Contact = new(Guid.NewGuid())
+			{
+				Source = Sources.HubSpot
+			},
 		};
 
 		inputDeal.DealContacts.Add(dealContact);
@@ -506,14 +511,14 @@ public class DealTests
 		// Arrange
 		Contact contact = new(Guid.NewGuid())
 		{
-			HubSpotId = "id",
+			SourceId = "id",
 		};
 
 		Deal inputDeal = new(Guid.NewGuid());
 
 		DealContact dealContact = new(Guid.NewGuid())
 		{
-			HubSpotContactId = "another id",
+			SourceContactId = "another id",
 		};
 
 		inputDeal.DealContacts.Add(dealContact);
@@ -569,7 +574,7 @@ public class DealTests
 
 		AccountManager? oldAccountManager = new(Guid.NewGuid())
 		{
-			HubSpotId = "old",
+			SourceId = "old",
 		};
 
 		inputDeal.AccountManagerDeals = new List<AccountManagerDeal>()
@@ -579,7 +584,7 @@ public class DealTests
 
 		AccountManager? newAccountManager = new(Guid.NewGuid())
 		{
-			HubSpotId = "new",
+			SourceId = "new",
 		};
 
 		/// Act
@@ -597,7 +602,7 @@ public class DealTests
 
 		AccountManager? oldAccountManager = new(Guid.NewGuid())
 		{
-			HubSpotId = "old",
+			SourceId = "old",
 		};
 
 		inputDeal.AccountManagerDeals = new List<AccountManagerDeal>()
@@ -607,7 +612,7 @@ public class DealTests
 
 		AccountManager? newAccountManager = new(Guid.NewGuid())
 		{
-			HubSpotId = "new",
+			SourceId = "new",
 		};
 
 		/// Act
@@ -631,7 +636,7 @@ public class DealTests
 
 		AccountManager? oldAccountManager = new(Guid.NewGuid())
 		{
-			HubSpotId = "old",
+			SourceId = "old",
 		};
 
 		inputDeal.AccountManagerDeals = new List<AccountManagerDeal>()
@@ -641,7 +646,7 @@ public class DealTests
 
 		AccountManager? newAccountManager = new(Guid.NewGuid())
 		{
-			HubSpotId = "old",
+			SourceId = "old",
 		};
 
 		/// Act

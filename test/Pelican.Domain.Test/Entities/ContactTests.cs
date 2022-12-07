@@ -8,7 +8,8 @@ public class ContactTests
 {
 	private readonly Contact _uut = new Contact(Guid.NewGuid())
 	{
-		HubSpotId = "uutHubSpotId",
+		SourceId = "uutHubSpotId",
+		Source = Sources.HubSpot,
 	};
 
 	[Fact]
@@ -394,7 +395,7 @@ public class ContactTests
 		// Assert
 		Assert.Equal(
 			propertyValue,
-			_uut.HubSpotOwnerId);
+			_uut.SourceOwnerId);
 	}
 
 	[Fact]
@@ -415,7 +416,7 @@ public class ContactTests
 		// Arrange
 		Deal newDeal = new(Guid.NewGuid())
 		{
-			HubSpotId = "newHubSpotId",
+			SourceId = "newHubSpotId",
 		};
 
 		ICollection<DealContact> dealContacts = new List<DealContact>()
@@ -438,7 +439,8 @@ public class ContactTests
 		// Arrange
 		Deal existingDeal = new(Guid.NewGuid())
 		{
-			HubSpotId = "hsId",
+			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		_uut.DealContacts.Add(DealContact.Create(existingDeal, _uut));
@@ -455,7 +457,7 @@ public class ContactTests
 		_uut.UpdateDealContacts(dealContacts);
 
 		// Assert
-		Assert.False(_uut.DealContacts.First(d => d.HubSpotDealId == existingDeal.HubSpotId).IsActive);
+		Assert.False(_uut.DealContacts.First(d => d.SourceDealId == existingDeal.SourceId && d.Contact.Source == Sources.HubSpot).IsActive);
 
 		Assert.Equal(
 			2,
@@ -468,14 +470,16 @@ public class ContactTests
 		// Arrange
 		Deal existingDeal = new(Guid.NewGuid())
 		{
-			HubSpotId = "hsId",
+			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		_uut.DealContacts.Add(DealContact.Create(existingDeal, _uut));
 
 		Deal newDeal = new(Guid.NewGuid())
 		{
-			HubSpotId = "hsId",
+			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		ICollection<DealContact> newDealContacts = new List<DealContact>()
@@ -498,14 +502,16 @@ public class ContactTests
 		// Arrange
 		Deal existingDeal = new(Guid.NewGuid())
 		{
-			HubSpotId = "hsId",
+			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		_uut.DealContacts.Add(DealContact.Create(existingDeal, _uut));
 
 		Deal newDeal = new(Guid.NewGuid())
 		{
-			HubSpotId = "hsId",
+			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		ICollection<DealContact> newDealContacts = new List<DealContact>()
@@ -519,7 +525,7 @@ public class ContactTests
 		// Assert
 		Assert.True(_uut
 			.DealContacts
-			.First(dc => dc.HubSpotDealId == "hsId")
+			.First(dc => dc.SourceDealId == "hsId" && dc.Contact.Source == Sources.HubSpot)
 			.IsActive);
 	}
 
@@ -551,10 +557,10 @@ public class ContactTests
 		// Arrange
 		ClientContact existingClientContact = new(Guid.NewGuid())
 		{
-			HubSpotClientId = "hsID",
+			SourceClientId = "hsID",
 			Contact = _uut,
 			ContactId = _uut.Id,
-			HubSpotContactId = _uut.HubSpotId,
+			SourceContactId = _uut.SourceId,
 			IsActive = true,
 		};
 
@@ -562,7 +568,7 @@ public class ContactTests
 
 		Client newClient = new(Guid.NewGuid())
 		{
-			HubSpotId = "another_hsId",
+			SourceId = "another_hsId",
 		};
 
 		// Act
@@ -578,10 +584,10 @@ public class ContactTests
 		// Arrange
 		ClientContact existingClientContact = new(Guid.NewGuid())
 		{
-			HubSpotClientId = "hsID",
+			SourceClientId = "hsID",
 			Contact = _uut,
 			ContactId = _uut.Id,
-			HubSpotContactId = _uut.HubSpotId,
+			SourceContactId = _uut.SourceId,
 			IsActive = true,
 		};
 
@@ -589,7 +595,8 @@ public class ContactTests
 
 		Client newClient = new(Guid.NewGuid())
 		{
-			HubSpotId = "hsID",
+			SourceId = "hsID",
+			Source = Sources.HubSpot,
 		};
 
 		// Act
@@ -635,10 +642,10 @@ public class ContactTests
 		// Arrange
 		DealContact existingDealContact = new(Guid.NewGuid())
 		{
-			HubSpotDealId = "hsID",
+			SourceDealId = "hsID",
 			Contact = _uut,
 			ContactId = _uut.Id,
-			HubSpotContactId = _uut.HubSpotId,
+			SourceContactId = _uut.SourceId,
 			IsActive = true,
 		};
 
@@ -646,7 +653,7 @@ public class ContactTests
 
 		Deal newDeal = new(Guid.NewGuid())
 		{
-			HubSpotId = "another_hsId",
+			SourceId = "another_hsId",
 		};
 
 		// Act
@@ -662,10 +669,10 @@ public class ContactTests
 		// Arrange
 		DealContact existingDealContact = new(Guid.NewGuid())
 		{
-			HubSpotDealId = "hsID",
+			SourceDealId = "hsID",
 			Contact = _uut,
 			ContactId = _uut.Id,
-			HubSpotContactId = _uut.HubSpotId,
+			SourceContactId = _uut.SourceId,
 			IsActive = true,
 		};
 
@@ -673,7 +680,8 @@ public class ContactTests
 
 		Deal newDeal = new(Guid.NewGuid())
 		{
-			HubSpotId = "hsID",
+			SourceId = "hsID",
+			Source = Sources.HubSpot,
 		};
 
 		// Act

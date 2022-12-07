@@ -1,4 +1,5 @@
-﻿using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
+﻿using Pelican.Domain;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
 using Pelican.Infrastructure.HubSpot.Mapping.Auth;
 using Xunit;
 
@@ -24,6 +25,7 @@ public class AccessTokenResponseToSupplierTests
 
 		/// Assert
 		Assert.Equal(HUBDOMAIN, result.WebsiteUrl);
-		Assert.Equal(HUBID, result.HubSpotId);
+		Assert.Equal(HUBID, result.SourceId);
+		Assert.Equal(Sources.HubSpot, result.Source);
 	}
 }

@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Azure;
-using Pelican.Application.Abstractions.Data.Repositories;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
@@ -27,7 +27,7 @@ internal sealed class ValidateWebhookUserIdCommandHandler : ICommandHandler<Vali
 	{
 		AccountManager? accountManager = await _unitOfWork
 			.AccountManagerRepository
-			.FirstOrDefaultAsync(a => a.HubSpotUserId == request.UserId);
+			.FirstOrDefaultAsync(a => a.SourceUserId == request.UserId && a.Source == Sources.HubSpot);
 
 		if (accountManager is not null)
 		{
@@ -36,7 +36,7 @@ internal sealed class ValidateWebhookUserIdCommandHandler : ICommandHandler<Vali
 
 		Supplier? supplier = await _unitOfWork
 			.SupplierRepository
-			.FirstOrDefaultAsync(s => s.HubSpotId == request.SupplierHubSpotId, cancellationToken);
+			.FirstOrDefaultAsync(s => s.SourceId == request.SupplierHubSpotId && s.Source == Sources.HubSpot, cancellationToken);
 
 		if (supplier is null)
 		{

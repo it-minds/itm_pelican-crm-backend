@@ -13,11 +13,11 @@ internal class ClientContactConfiguration : IEntityTypeConfiguration<ClientConta
 		builder.Property(p => p.IsActive)
 			.IsRequired();
 
-		builder.Property(p => p.HubSpotClientId)
+		builder.Property(p => p.SourceClientId)
 			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 
-		builder.Property(p => p.HubSpotContactId)
+		builder.Property(p => p.SourceContactId)
 			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 

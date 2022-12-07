@@ -3,6 +3,7 @@ using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Application.HubSpot.Dtos;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
@@ -61,7 +62,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 	{
 		Supplier? supplier = await unitOfWork
 		.SupplierRepository
-				.FirstOrDefaultAsync(supplier => supplier.HubSpotId == supplierHubSpotId, default);
+				.FirstOrDefaultAsync(supplier => supplier.SourceId == supplierHubSpotId && supplier.Source == Sources.HubSpot, default);
 
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{

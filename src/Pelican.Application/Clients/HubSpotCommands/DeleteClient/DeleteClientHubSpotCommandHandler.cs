@@ -1,5 +1,6 @@
 ﻿using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
@@ -19,7 +20,7 @@ internal sealed class DeleteClientHubSpotCommandHandler : ICommandHandler<Delete
 	{
 		Client? client = _unitOfWork
 			.ClientRepository
-			.FindByCondition(d => d.HubSpotId == command.ObjectId.ToString())
+			.FindByCondition(d => d.SourceId == command.ObjectId.ToString() && d.Source == Sources.HubSpot)
 			.FirstOrDefault();
 
 		if (client is null)

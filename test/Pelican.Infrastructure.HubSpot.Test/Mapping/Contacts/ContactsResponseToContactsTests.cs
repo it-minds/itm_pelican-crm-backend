@@ -1,4 +1,5 @@
-﻿using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
+﻿using Pelican.Domain;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 using Pelican.Infrastructure.HubSpot.Mapping.Contacts;
 using Xunit;
 
@@ -73,7 +74,8 @@ public class ContactsResponseToContactsTests
 		var result = responses.ToContacts();
 
 		/// Assert
-		Assert.Equal(ID, result.First().HubSpotId);
-		Assert.Equal(OWNERID, result.First().HubSpotOwnerId);
+		Assert.Equal(ID, result.First().SourceId);
+		Assert.Equal(OWNERID, result.First().SourceOwnerId);
+		Assert.Equal(Sources.HubSpot, result.First().Source);
 	}
 }

@@ -23,7 +23,7 @@ public class PelicanBogusFakerUnitTest
 		Assert.All(result,
 			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
 		Assert.All(result,
-			item => Assert.NotEqual(default, item.HubSpotId));
+			item => Assert.NotEqual(default, item.SourceId));
 		Assert.All(result,
 			item => Assert.False(string.IsNullOrWhiteSpace(item.RefreshToken)));
 	}
@@ -41,7 +41,7 @@ public class PelicanBogusFakerUnitTest
 		Assert.All(result,
 			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
 		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotId)));
+			item => Assert.False(string.IsNullOrWhiteSpace(item.SourceId)));
 		Assert.All(result,
 			item => Assert.True(Guid.TryParse(item.SupplierId.ToString(), out _)));
 		Assert.All(result,
@@ -76,9 +76,9 @@ public class PelicanBogusFakerUnitTest
 		Assert.All(result,
 			item => Assert.True(Guid.TryParse(item.AccountManagerId.ToString(), out _)));
 		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotAccountManagerId)));
+			item => Assert.False(string.IsNullOrWhiteSpace(item.SourceAccountManagerId)));
 		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotDealId)));
+			item => Assert.False(string.IsNullOrWhiteSpace(item.SourceDealId)));
 	}
 
 	[Theory]
@@ -94,7 +94,7 @@ public class PelicanBogusFakerUnitTest
 		Assert.All(result,
 			item => Assert.True(Guid.TryParse(item.Id.ToString(), out _)));
 		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotId)));
+			item => Assert.False(string.IsNullOrWhiteSpace(item.SourceId)));
 		Assert.All(result,
 			item => Assert.False(string.IsNullOrWhiteSpace(item.Name)));
 	}
@@ -119,9 +119,9 @@ public class PelicanBogusFakerUnitTest
 		Assert.All(result,
 			item => Assert.True(Guid.TryParse(item.ContactId.ToString(), out _)));
 		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotClientId)));
+			item => Assert.False(string.IsNullOrWhiteSpace(item.SourceClientId)));
 		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotContactId)));
+			item => Assert.False(string.IsNullOrWhiteSpace(item.SourceContactId)));
 	}
 
 	[Theory]
@@ -140,7 +140,7 @@ public class PelicanBogusFakerUnitTest
 		Assert.All(result,
 			item => Assert.NotNull(item.ClientContacts));
 		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotId)));
+			item => Assert.False(string.IsNullOrWhiteSpace(item.SourceId)));
 	}
 
 	[Theory]
@@ -161,7 +161,7 @@ public class PelicanBogusFakerUnitTest
 		Assert.All(result,
 			item => Assert.NotNull(item.AccountManagerDeals));
 		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotId)));
+			item => Assert.False(string.IsNullOrWhiteSpace(item.SourceId)));
 	}
 
 	[Theory]
@@ -185,8 +185,8 @@ public class PelicanBogusFakerUnitTest
 		Assert.All(result,
 			item => Assert.True(Guid.TryParse(item.ContactId.ToString(), out _)));
 		Assert.All(result,
-			item => Assert.NotEqual(default, item.HubSpotContactId.ToString()));
+			item => Assert.NotEqual(default, item.SourceContactId.ToString()));
 		Assert.All(result,
-			item => Assert.False(string.IsNullOrWhiteSpace(item.HubSpotContactId)));
+			item => Assert.False(string.IsNullOrWhiteSpace(item.SourceContactId)));
 	}
 }

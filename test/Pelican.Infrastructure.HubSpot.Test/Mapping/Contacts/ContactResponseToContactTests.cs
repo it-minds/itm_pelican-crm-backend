@@ -61,9 +61,10 @@ public class ContactResponseToContactTests
 		Assert.Equal(LASTNAME, result.LastName);
 		Assert.Equal(EMAIL, result.Email);
 		Assert.Equal(PHONE, result.PhoneNumber);
-		Assert.Equal(ID, result.HubSpotId);
+		Assert.Equal(ID, result.SourceId);
 		Assert.Equal(JOBTITLE, result.JobTitle);
-		Assert.Equal(OWNERID, result.HubSpotOwnerId);
+		Assert.Equal(OWNERID, result.SourceOwnerId);
+		Assert.Equal(Sources.HubSpot, result.Source);
 	}
 
 	[Fact]
@@ -176,7 +177,7 @@ public class ContactResponseToContactTests
 
 		/// Assert
 		Assert.Equal(1, result.DealContacts!.Count);
-		Assert.Equal("1", result.DealContacts.First().HubSpotDealId);
+		Assert.Equal("1", result.DealContacts.First().SourceDealId);
 		Assert.Equal(result, result.DealContacts.First().Contact);
 		Assert.Equal(result.Id, result.DealContacts.First().ContactId);
 	}
@@ -274,7 +275,7 @@ public class ContactResponseToContactTests
 
 		/// Assert
 		Assert.Equal(1, result.ClientContacts!.Count);
-		Assert.Equal("1", result.ClientContacts.First().HubSpotClientId);
+		Assert.Equal("1", result.ClientContacts.First().SourceClientId);
 		Assert.Equal(result, result.ClientContacts.First().Contact);
 		Assert.Equal(result.Id, result.ClientContacts.First().ContactId);
 		Assert.True(result.ClientContacts.First().IsActive);

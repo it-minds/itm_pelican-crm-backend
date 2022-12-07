@@ -13,16 +13,15 @@ public class AccountManagerDeal : Entity, ITimeTracked
 
 	public Guid AccountManagerId { get; set; }
 
-	public string HubSpotAccountManagerId { get; set; } = string.Empty;
+	public string SourceAccountManagerId { get; set; } = string.Empty;
 
 	public AccountManager AccountManager { get; set; }
 
 	public Deal Deal { get; set; }
 
-	public string HubSpotDealId { get; set; } = string.Empty;
+	public string SourceDealId { get; set; } = string.Empty;
 
 	public Guid DealId { get; set; }
-
 
 	public long CreatedAt { get; set; }
 
@@ -35,10 +34,10 @@ public class AccountManagerDeal : Entity, ITimeTracked
 		{
 			Deal = deal,
 			DealId = deal.Id,
-			HubSpotDealId = deal.HubSpotId,
+			SourceDealId = deal.SourceId,
 			AccountManager = accountManager,
 			AccountManagerId = accountManager.Id,
-			HubSpotAccountManagerId = accountManager.HubSpotId,
+			SourceAccountManagerId = accountManager.SourceId,
 			IsActive = true,
 		};
 	}

@@ -32,6 +32,14 @@ internal class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
 			.HasMaxLength(StringLengths.Token)
 			.IsRequired();
 
+		builder.Property(p => p.SourceId)
+			.HasMaxLength(StringLengths.Id)
+			.IsRequired();
+
+		builder.Property(p => p.Source)
+			.HasMaxLength(StringLengths.Source)
+			.IsRequired();
+
 		builder.Property(p => p.OfficeLocation)
 			.HasMaxLength(StringLengths.OfficeLocation);
 

@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Entities;
+﻿using Pelican.Domain;
+using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.Deals;
@@ -17,11 +18,12 @@ internal static class DealResponseToDeal
 			StartDate = string.IsNullOrWhiteSpace(response.Properties.StartDate) ? null : Convert.ToDateTime(response.Properties.StartDate).Ticks,
 			EndDate = string.IsNullOrWhiteSpace(response.Properties.EndDate) ? null : Convert.ToDateTime(response.Properties.EndDate).Ticks,
 			LastContactDate = string.IsNullOrWhiteSpace(response.Properties.LastContactDate) ? null : Convert.ToDateTime(response.Properties.LastContactDate).Ticks,
-			HubSpotId = response.Properties.HubSpotObjectId,
-			HubSpotOwnerId = response.Properties.HubSpotOwnerId,
+			SourceId = response.Properties.HubSpotObjectId,
+			SourceOwnerId = response.Properties.HubSpotOwnerId,
 			Name = response.Properties.DealName,
 			Description = response.Properties.Description,
 			DealStatus = response.Properties.DealStage,
+			Source = Sources.HubSpot,
 		};
 
 		result.AccountManagerDeals = new List<AccountManagerDeal>()
@@ -30,8 +32,8 @@ internal static class DealResponseToDeal
 			{
 				Deal = result,
 				DealId = result.Id,
-				HubSpotDealId = result.HubSpotId,
-				HubSpotAccountManagerId = result.HubSpotOwnerId,
+				SourceDealId = result.SourceId,
+				SourceAccountManagerId = result.SourceOwnerId,
 				IsActive = true,
 			}
 		};
@@ -44,9 +46,9 @@ internal static class DealResponseToDeal
 			.Select(association => new DealContact(Guid.NewGuid())
 			{
 				DealId = result.Id,
-				HubSpotDealId = result.HubSpotId,
+				SourceDealId = result.SourceId,
 				Deal = result,
-				HubSpotContactId = association.Id,
+				SourceContactId = association.Id,
 				IsActive = true,
 			})
 			.ToList();
@@ -58,8 +60,9 @@ internal static class DealResponseToDeal
 			.Where(association => association.Type == "deal_to_company")
 			.Select(association => new Client(Guid.NewGuid())
 			{
-				HubSpotId = association.Id,
+				SourceId = association.Id,
 				Deals = new List<Deal>() { result },
+				Source = Sources.HubSpot,
 			})
 			.FirstOrDefault();
 

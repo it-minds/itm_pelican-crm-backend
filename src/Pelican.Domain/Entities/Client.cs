@@ -5,12 +5,15 @@ namespace Pelican.Domain.Entities;
 public class Client : Entity, ITimeTracked
 {
 	private string _name = string.Empty;
-	public string? PictureUrl { get; set; }
 	private string? _website { get; set; }
+
+	public string? PictureUrl { get; set; }
 
 	public Client(Guid id) : base(id) { }
 
 	public Client() { }
+
+	public string Source { get; set; } = string.Empty;
 
 	public string Name
 	{
@@ -23,7 +26,7 @@ public class Client : Entity, ITimeTracked
 		}
 	}
 
-	public string HubSpotId { get; set; } = string.Empty;
+	public string SourceId { get; set; } = string.Empty;
 
 
 	private string? _officeLocation;
@@ -94,7 +97,7 @@ public class Client : Entity, ITimeTracked
 			}
 
 			Contact? matchingContact = contacts
-				.FirstOrDefault(contacts => contacts.HubSpotId == item.HubSpotContactId);
+				.FirstOrDefault(contacts => contacts.SourceId == item.SourceContactId && contacts.Source == item.Client.Source);
 
 			if (matchingContact is null)
 			{
@@ -112,24 +115,27 @@ public class Client : Entity, ITimeTracked
 
 
 	[GraphQLIgnore]
-	public virtual void UpdateClientContacts(ICollection<ClientContact>? currectHubSpotClientContacts)
+	public virtual void UpdateClientContacts(ICollection<ClientContact>? currentClientContacts)
 	{
-		if (currectHubSpotClientContacts is null)
+		if (currentClientContacts is null)
 		{
 			return;
 		}
 
 		foreach (ClientContact clientContact in ClientContacts.Where(dc => dc.IsActive))
 		{
-			if (!currectHubSpotClientContacts.Any(currectHubSpotClientContact => currectHubSpotClientContact.HubSpotContactId == clientContact.HubSpotContactId))
+			if (!currentClientContacts.Any(currentClientContact => currentClientContact.SourceContactId == clientContact.SourceContactId
+			&& currentClientContact.Contact.Source == clientContact.Contact.Source))
 			{
 				clientContact.Deactivate();
 			}
 		}
 
-		foreach (ClientContact clientContact in currectHubSpotClientContacts)
+		foreach (ClientContact clientContact in currentClientContacts)
 		{
-			if (!ClientContacts.Any(dc => dc.HubSpotContactId == clientContact.HubSpotContactId && dc.IsActive))
+			if (!ClientContacts.Any(dc => dc.SourceContactId == clientContact.SourceContactId
+			&& dc.IsActive
+			&& dc.Client.Source == clientContact.Client.Source))
 			{
 				ClientContacts.Add(clientContact);
 			}

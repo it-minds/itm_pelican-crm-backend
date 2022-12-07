@@ -99,11 +99,12 @@ public class OwnerResponseToAccountManagerTests
 		AccountManager result = response.ToAccountManager();
 
 		/// Assert
-		Assert.Equal(ID, result.HubSpotId);
+		Assert.Equal(ID, result.SourceId);
 		Assert.Equal(FIRSTNAME, result.FirstName);
 		Assert.Equal(LASTNAME, result.LastName);
 		Assert.Equal(EMAIL, result.Email);
-		Assert.Equal(USERID, result.HubSpotUserId);
+		Assert.Equal(USERID, result.SourceUserId);
+		Assert.Equal(Sources.HubSpot, result.Source);
 	}
 	[Fact]
 	public void ToAccountManager_FirstNameStringTooLong_FirstNameShortenededAndAppendedWithThreeDots()
@@ -118,8 +119,8 @@ public class OwnerResponseToAccountManagerTests
 		Assert.Equal(StringLengths.Name, result.FirstName.Length);
 		Assert.Equal("...", result.FirstName.Substring(StringLengths.Name - 3));
 		Assert.Equal(response.Firstname.Substring(0, StringLengths.Name - 3), result.FirstName.Substring(0, StringLengths.Name - 3));
-
 	}
+
 	[Fact]
 	public void ToAccountManager_LastNameStringTooLong_LastNameShortenededAndAppendedWithThreeDots()
 	{
@@ -133,8 +134,8 @@ public class OwnerResponseToAccountManagerTests
 		Assert.Equal(StringLengths.Name, result.LastName.Length);
 		Assert.Equal("...", result.LastName.Substring(StringLengths.Name - 3));
 		Assert.Equal(response.Lastname.Substring(0, StringLengths.Name - 3), result.LastName.Substring(0, StringLengths.Name - 3));
-
 	}
+
 	[Fact]
 	public void ToAccountManager_EmailStringTooLong_EmailShortenededAndAppendedWithThreeDots()
 	{
@@ -148,6 +149,5 @@ public class OwnerResponseToAccountManagerTests
 		Assert.Equal(StringLengths.Email, result.Email.Length);
 		Assert.Equal("...", result.Email.Substring(StringLengths.Email - 3));
 		Assert.Equal(response.Email.Substring(0, StringLengths.Email - 3), result.Email.Substring(0, StringLengths.Email - 3));
-
 	}
 }

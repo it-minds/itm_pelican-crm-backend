@@ -24,15 +24,19 @@ internal class ContactConfiguration : IEntityTypeConfiguration<Contact>
 		builder.Property(p => p.PhoneNumber)
 			.HasMaxLength(StringLengths.PhoneNumber);
 
-		builder.Property(p => p.HubSpotId)
+		builder.Property(p => p.SourceId)
 			.HasMaxLength(StringLengths.Id)
 			.IsRequired();
 
-		builder.Property(p => p.HubSpotOwnerId)
+		builder.Property(p => p.SourceOwnerId)
 			.HasMaxLength(StringLengths.Id);
 
 		builder.Property(p => p.JobTitle)
 			.HasMaxLength(StringLengths.JobTitle);
+
+		builder.Property(p => p.Source)
+			.HasMaxLength(StringLengths.Source)
+			.IsRequired();
 
 		builder.HasMany(a => a.ClientContacts)
 			.WithOne(e => e.Contact)

@@ -7,7 +7,8 @@ public class ClientUnitTest
 {
 	private readonly Client _uut = new Client(Guid.NewGuid())
 	{
-		HubSpotId = "uutHubSpotId",
+		SourceId = "uutHubSpotId",
+		Source = Sources.HubSpot
 	};
 
 	[Fact]
@@ -187,7 +188,7 @@ public class ClientUnitTest
 		// Arrange
 		Contact newContact = new(Guid.NewGuid())
 		{
-			HubSpotId = "newHubSpotId",
+			SourceId = "newHubSpotId",
 		};
 
 		ICollection<ClientContact> clientContacts = new List<ClientContact>()
@@ -210,7 +211,8 @@ public class ClientUnitTest
 		// Arrange
 		Contact existingContact = new(Guid.NewGuid())
 		{
-			HubSpotId = "hsId",
+			SourceId = "hsId",
+			Source = Sources.HubSpot
 		};
 
 		_uut.ClientContacts.Add(ClientContact.Create(_uut, existingContact));
@@ -227,7 +229,7 @@ public class ClientUnitTest
 		_uut.UpdateClientContacts(clientContacts);
 
 		// Assert
-		Assert.False(_uut.ClientContacts.First(d => d.HubSpotContactId == existingContact.HubSpotId).IsActive);
+		Assert.False(_uut.ClientContacts.First(d => d.SourceContactId == existingContact.SourceId && existingContact.Source == Sources.HubSpot).IsActive);
 
 		Assert.Equal(
 			2,
@@ -240,14 +242,16 @@ public class ClientUnitTest
 		// Arrange
 		Contact existingContact = new(Guid.NewGuid())
 		{
-			HubSpotId = "hsId",
+			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		_uut.ClientContacts.Add(ClientContact.Create(_uut, existingContact));
 
 		Contact newContact = new(Guid.NewGuid())
 		{
-			HubSpotId = "hsId",
+			SourceId = "hsId",
+			Source = Sources.HubSpot,
 		};
 
 		ICollection<ClientContact> newClientContacts = new List<ClientContact>()
@@ -265,7 +269,7 @@ public class ClientUnitTest
 
 		Assert.True(_uut
 			.ClientContacts
-			.First(dc => dc.HubSpotContactId == "hsId")
+			.First(dc => dc.SourceContactId == "hsId" && dc.Contact.Source == Sources.HubSpot)
 			.IsActive);
 	}
 
@@ -298,7 +302,7 @@ public class ClientUnitTest
 		ClientContact existingClientContact = new(Guid.NewGuid())
 		{
 			Contact = new(Guid.NewGuid()),
-			HubSpotContactId = "hsID",
+			SourceContactId = "hsID",
 			IsActive = true,
 		};
 		existingClientContact.ContactId = existingClientContact.Contact.Id;
@@ -330,7 +334,7 @@ public class ClientUnitTest
 		// Arrange
 		ClientContact existingClientContact = new(Guid.NewGuid())
 		{
-			HubSpotContactId = "hsID",
+			SourceContactId = "hsID",
 			IsActive = true,
 		};
 
@@ -338,7 +342,7 @@ public class ClientUnitTest
 
 		Contact newContact = new(Guid.NewGuid())
 		{
-			HubSpotId = "another_hsId",
+			SourceId = "another_hsId",
 		};
 
 		// Act
@@ -356,10 +360,10 @@ public class ClientUnitTest
 		// Arrange
 		ClientContact existingClientContact = new(Guid.NewGuid())
 		{
-			HubSpotContactId = "hsID",
+			SourceContactId = "hsID",
 			Client = _uut,
 			ClientId = _uut.Id,
-			HubSpotClientId = _uut.HubSpotId,
+			SourceClientId = _uut.SourceId,
 			IsActive = true,
 		};
 
@@ -367,7 +371,8 @@ public class ClientUnitTest
 
 		Contact newContact = new(Guid.NewGuid())
 		{
-			HubSpotId = "hsID",
+			SourceId = "hsID",
+			Source = Sources.HubSpot
 		};
 
 		// Act

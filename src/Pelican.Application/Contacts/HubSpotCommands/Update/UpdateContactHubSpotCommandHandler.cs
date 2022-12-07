@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Abstractions.Data.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain;
@@ -31,11 +32,12 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 		UpdateContactHubSpotCommand command,
 		CancellationToken cancellationToken = default)
 	{
-		Contact? contact = await _unitOfWork
+		Contact? contact = _unitOfWork
 			.ContactRepository
-			.FirstOrDefaultAsync(
-				contact => contact.SourceId == command.ObjectId.ToString() && contact.Source == Sources.HubSpot,
-				cancellationToken);
+			.FindByCondition(d => d.SourceId == command.ObjectId.ToString() && d.Source == Sources.HubSpot)
+			.Include(d => d.ClientContacts)
+			.ThenInclude(d => d.Client)
+			.FirstOrDefault();
 
 		if (contact is null)
 		{
@@ -89,11 +91,7 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 			{
 				return result;
 			}
-			contact.FirstName = result.Value.FirstName;
-			contact.LastName = result.Value.LastName;
-			contact.Email = result.Value.Email;
-			contact.PhoneNumber = result.Value.PhoneNumber;
-			contact.JobTitle = result.Value.JobTitle;
+			contact.UpdatePropertiesFromContact(result.Value);
 			contact.UpdateDealContacts(result.Value.DealContacts);
 		}
 		_unitOfWork

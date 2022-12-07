@@ -79,16 +79,10 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 			{
 				return result;
 			}
-			deal.EndDate = result.Value.EndDate;
-			deal.StartDate = result.Value.StartDate;
-			deal.DealStatus = result.Value.DealStatus;
-			deal.LastContactDate = result.Value.LastContactDate;
-			deal.Name = result.Value.Name;
-			deal.Description = result.Value.Description;
+			deal.UpdatePropertiesFromDeal(result.Value);
 			if (result.Value.SourceOwnerId is not null)
 			{
 				await UpdateAccountManagerDeal(deal, result.Value.SourceOwnerId);
-
 			}
 		}
 		_unitOfWork

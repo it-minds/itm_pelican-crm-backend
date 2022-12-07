@@ -104,6 +104,17 @@ public class Deal : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
+	public virtual void UpdatePropertiesFromDeal(Deal deal)
+	{
+		EndDate = deal.EndDate;
+		StartDate = deal.StartDate;
+		DealStatus = deal.DealStatus;
+		LastContactDate = deal.LastContactDate;
+		Name = deal.Name;
+		Description = deal.Description;
+	}
+
+	[GraphQLIgnore]
 	public virtual Deal FillOutAssociations(AccountManager? accountManager, Client? client, List<Contact>? contacts)
 	{
 		FillOutAccountManager(accountManager);

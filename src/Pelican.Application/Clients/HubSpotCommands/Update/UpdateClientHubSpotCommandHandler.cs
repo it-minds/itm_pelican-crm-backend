@@ -82,9 +82,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			{
 				return result;
 			}
-			client.Website = result.Value.Website;
-			client.Name = result.Value.Name;
-			client.OfficeLocation = result.Value.OfficeLocation;
+			client.UpdatePropertiesFromClient(result.Value);
 			client.UpdateClientContacts(result.Value.ClientContacts);
 		}
 		_unitOfWork

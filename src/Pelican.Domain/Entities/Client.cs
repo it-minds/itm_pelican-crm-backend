@@ -144,4 +144,12 @@ public class Client : Entity, ITimeTracked
 			}
 		}
 	}
+
+	[GraphQLIgnore]
+	public virtual void UpdatePropertiesFromClient(Client client)
+	{
+		Name = client.Name;
+		OfficeLocation = client.OfficeLocation;
+		Website = client.Website;
+	}
 }

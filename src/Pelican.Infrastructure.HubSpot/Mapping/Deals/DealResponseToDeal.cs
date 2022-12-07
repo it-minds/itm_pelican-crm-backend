@@ -15,14 +15,20 @@ internal static class DealResponseToDeal
 
 		Deal result = new(Guid.NewGuid())
 		{
-			StartDate = string.IsNullOrWhiteSpace(response.Properties.StartDate) ? null : Convert.ToDateTime(response.Properties.StartDate).Ticks,
-			EndDate = string.IsNullOrWhiteSpace(response.Properties.EndDate) ? null : Convert.ToDateTime(response.Properties.EndDate).Ticks,
-			LastContactDate = string.IsNullOrWhiteSpace(response.Properties.LastContactDate) ? null : Convert.ToDateTime(response.Properties.LastContactDate).Ticks,
+			StartDate = string.IsNullOrWhiteSpace(response.Properties.StartDate)
+				? null
+				: Convert.ToDateTime(response.Properties.StartDate).Ticks,
+			EndDate = string.IsNullOrWhiteSpace(response.Properties.EndDate)
+				? null
+				: Convert.ToDateTime(response.Properties.EndDate).Ticks,
+			LastContactDate = string.IsNullOrWhiteSpace(response.Properties.LastContactDate)
+				? null
+				: Convert.ToDateTime(response.Properties.LastContactDate).Ticks,
 			SourceId = response.Properties.HubSpotObjectId,
 			SourceOwnerId = response.Properties.HubSpotOwnerId,
 			Name = response.Properties.DealName,
 			Description = response.Properties.Description,
-			DealStatus = response.Properties.DealStage,
+			Status = response.Properties.DealStage,
 			Source = Sources.HubSpot,
 		};
 

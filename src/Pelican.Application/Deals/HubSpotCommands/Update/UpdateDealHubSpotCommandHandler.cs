@@ -47,14 +47,6 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 				cancellationToken);
 		}
 
-		return await UpdateExistingDeal(deal, command, cancellationToken);
-	}
-
-	private async Task<Result> UpdateExistingDeal(
-		Deal deal,
-		UpdateDealHubSpotCommand command,
-		CancellationToken cancellationToken = default)
-	{
 		if ((deal.LastUpdatedAt ?? deal.CreatedAt) <= command.UpdateTime)
 		{
 			if (command.PropertyName == "hs_all_owner_ids")
@@ -88,10 +80,6 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 			}
 		}
 
-		_unitOfWork
-				.DealRepository
-				.Update(deal);
-
 		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
@@ -99,11 +87,17 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 
 	private async Task UpdateAccountManagerDeal(Deal deal, string acccuntManagerHubSpotId)
 	{
-		AccountManager? accountManager = await _unitOfWork.
-			AccountManagerRepository
+		AccountManager? accountManager = await _unitOfWork
+			.AccountManagerRepository
 			.FirstOrDefaultAsync(a => a.SourceId == acccuntManagerHubSpotId && a.Source == Sources.HubSpot);
 
 		deal.FillOutAccountManager(accountManager);
+
+		_unitOfWork
+			.AccountManagerDealRepository
+			.AttachAsAdded(deal
+				.AccountManagerDeals
+				.Where(accountManagerDeal => accountManagerDeal.IsActive));
 	}
 
 	private async Task<Result> GetAndCreateDealAsync(
@@ -111,7 +105,7 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		long objectId,
 		CancellationToken cancellationToken)
 	{
-		Result<Deal> result = await GetDealFromHubSpot(
+		Result<Deal> result = await GetDealFromHubSpotAsync(
 			supplierHubSpotId,
 			objectId,
 			cancellationToken);
@@ -132,7 +126,7 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		return Result.Success();
 	}
 
-	private async Task<Result<Deal>> GetDealFromHubSpot(
+	private async Task<Result<Deal>> GetDealFromHubSpotAsync(
 		long supplierHubSpotId,
 		long objectId,
 		CancellationToken cancellationToken = default)

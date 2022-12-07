@@ -60,7 +60,7 @@ public class DealResponseToDealTests
 		Deal result = response.ToDeal();
 
 		/// Assert
-		Assert.Equal(DEALSTAGE, result.DealStatus);
+		Assert.Equal(DEALSTAGE, result.Status);
 		Assert.Equal(Convert.ToDateTime(CLOSEDATE).Ticks, result.EndDate);
 		Assert.Equal(Convert.ToDateTime(STARTDATE).Ticks, result.StartDate);
 		Assert.Equal(Convert.ToDateTime(LASTCONTACTDATE).Ticks, result.LastContactDate);
@@ -212,9 +212,9 @@ public class DealResponseToDealTests
 		Deal result = response.ToDeal();
 
 		/// Assert
-		Assert.Equal(StringLengths.DealStatus, result.DealStatus!.Length);
-		Assert.Equal("...", result.DealStatus.Substring(StringLengths.DealStatus - 3));
-		Assert.Equal(response.Properties.DealStage.Substring(0, StringLengths.DealStatus - 3), result.DealStatus.Substring(0, StringLengths.DealStatus - 3));
+		Assert.Equal(StringLengths.DealStatus, result.Status!.Length);
+		Assert.Equal("...", result.Status.Substring(StringLengths.DealStatus - 3));
+		Assert.Equal(response.Properties.DealStage.Substring(0, StringLengths.DealStatus - 3), result.Status.Substring(0, StringLengths.DealStatus - 3));
 	}
 
 	[Fact]

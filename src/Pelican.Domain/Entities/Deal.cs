@@ -5,7 +5,7 @@ namespace Pelican.Domain.Entities;
 public class Deal : Entity, ITimeTracked
 {
 	private string? _name;
-	private string? _dealStatus;
+	private string? _status;
 	private string? _description;
 
 	public Deal(Guid id) : base(id) { }
@@ -18,58 +18,47 @@ public class Deal : Entity, ITimeTracked
 
 	public string? SourceOwnerId { get; set; }
 
-	public string? DealStatus
-	{
-		get => _dealStatus;
-		set
-		{
-			_dealStatus = value!.Length > StringLengths.DealStatus
-				? value.Substring(0, StringLengths.DealStatus - 3) + ("...")
-				: value;
-		}
-	}
-
 	public long? EndDate { get; set; }
 
 	public long? StartDate { get; set; }
 
 	public long? LastContactDate { get; set; }
 
-	public string? Name
-	{
-		get => _name;
-		set
-		{
-			_name = value?.Length > StringLengths.DealName
-				? value.Substring(0, StringLengths.DealName - 3) + ("...")
-				: value;
-		}
-	}
-
-	public string? Description
-	{
-		get => _description;
-		set
-		{
-			_description = value?.Length > StringLengths.DealDescription
-				? value.Substring(0, StringLengths.DealDescription - 3) + ("...")
-				: value;
-		}
-	}
-
 	public Guid? ClientId { get; set; }
 
 	public Client? Client { get; set; }
-
 
 	public ICollection<AccountManagerDeal> AccountManagerDeals { get; set; } = new List<AccountManagerDeal>();
 
 	public ICollection<DealContact> DealContacts { get; set; } = new List<DealContact>();
 
-
 	public long CreatedAt { get; set; }
 
 	public long? LastUpdatedAt { get; set; }
+
+	public string? Status
+	{
+		get => _status;
+		set => _status = value!.Length > StringLengths.DealStatus
+			? value[..(StringLengths.DealStatus - 3)] + "..."
+			: value;
+	}
+
+	public string? Name
+	{
+		get => _name;
+		set => _name = value?.Length > StringLengths.DealName
+			? value[..(StringLengths.DealName - 3)] + "..."
+			: value;
+	}
+
+	public string? Description
+	{
+		get => _description;
+		set => _description = value?.Length > StringLengths.DealDescription
+			? value[..(StringLengths.DealDescription - 3)] + "..."
+			: value;
+	}
 
 	[GraphQLIgnore]
 	public virtual Deal UpdateProperty(string propertyName, string propertyValue)
@@ -77,16 +66,16 @@ public class Deal : Entity, ITimeTracked
 		switch (propertyName)
 		{
 			case "enddate":
-				EndDate = Convert.ToDateTime(propertyValue).Ticks;
+				EndDate = long.Parse(propertyValue);
 				break;
 			case "startdate":
-				StartDate = Convert.ToDateTime(propertyValue).Ticks;
+				StartDate = long.Parse(propertyValue);
 				break;
 			case "dealstage":
-				DealStatus = propertyValue;
+				Status = propertyValue;
 				break;
 			case "notes_last_contacted":
-				LastContactDate = Convert.ToDateTime(propertyValue).Ticks;
+				LastContactDate = long.Parse(propertyValue);
 				break;
 			case "dealname":
 				Name = propertyValue;
@@ -162,7 +151,8 @@ public class Deal : Entity, ITimeTracked
 		foreach (DealContact dealContact in DealContacts)
 		{
 			Contact? matchingContact = contacts
-				.FirstOrDefault(contact => contact.SourceId == dealContact.SourceContactId && contact.Source == dealContact.Contact.Source);
+				.FirstOrDefault(contact => contact.SourceId == dealContact.SourceContactId
+					&& contact.Source == dealContact.Contact.Source);
 
 			if (matchingContact is null)
 			{

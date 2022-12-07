@@ -34,11 +34,11 @@ public class DealTests
 		string propertyValue = faker.Lorem.Letter(StringLengths.DealStatus);
 
 		// Act
-		_uut.DealStatus = propertyValue;
+		_uut.Status = propertyValue;
 
 		// Assert
-		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
-		Assert.Equal(propertyValue, _uut.DealStatus);
+		Assert.Equal(StringLengths.DealStatus, _uut.Status!.Length);
+		Assert.Equal(propertyValue, _uut.Status);
 	}
 
 	[Fact]
@@ -82,11 +82,11 @@ public class DealTests
 		string propertyValue = faker.Lorem.Letter(StringLengths.DealStatus * 2);
 
 		// Act
-		_uut.DealStatus = propertyValue;
+		_uut.Status = propertyValue;
 
 		// Assert
-		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3) + "...", _uut.DealStatus);
+		Assert.Equal(StringLengths.DealStatus, _uut.Status!.Length);
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3) + "...", _uut.Status);
 	}
 
 	[Fact]
@@ -266,7 +266,7 @@ public class DealTests
 		/// Assert
 		Assert.Equal(
 			value,
-			returnDeal.DealStatus);
+			returnDeal.Status);
 	}
 
 	[Fact]
@@ -317,9 +317,9 @@ public class DealTests
 		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
-		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
-		Assert.Equal("...", _uut.DealStatus.Substring(StringLengths.DealStatus - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3), _uut.DealStatus.Substring(0, StringLengths.DealStatus - 3));
+		Assert.Equal(StringLengths.DealStatus, _uut.Status!.Length);
+		Assert.Equal("...", _uut.Status.Substring(StringLengths.DealStatus - 3));
+		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3), _uut.Status.Substring(0, StringLengths.DealStatus - 3));
 	}
 
 	[Fact]

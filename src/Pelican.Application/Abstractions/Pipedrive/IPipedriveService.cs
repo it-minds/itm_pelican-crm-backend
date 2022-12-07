@@ -2,7 +2,7 @@
 
 namespace Pelican.Application.Abstractions.Pipedrive;
 
-public interface IPipedriveService<TEntity>
+public interface IPipedriveObjectService<TEntity>
 {
 	Task<Result<TEntity>> GetByIdAsync(
 		string clientDomain,

@@ -38,7 +38,7 @@ public class PipedriveDealServiceTests
 
 
 	[Fact]
-	public async Task GetByIdAsync_ClientReturnsFailure_ReturnFailure()
+	public async Task GetByIdAsync_ClientReturnsFailureResult_ReturnFailure()
 	{
 		/// Arrange
 		Mock<IResponse<DealResponse>> responseMock = new();
@@ -61,7 +61,7 @@ public class PipedriveDealServiceTests
 	}
 
 	[Fact]
-	public async Task GetByIdAsync_ClientReturnsSuccess_ReturnSuccess()
+	public async Task GetByIdAsync_ClientReturnsSuccessResult_ReturnSuccess()
 	{
 		/// Arrange
 		Mock<IResponse<DealResponse>> responseMock = new();
@@ -89,7 +89,7 @@ public class PipedriveDealServiceTests
 	}
 
 	[Fact]
-	public async Task GetAsync_ClientReturnsFailure_ReturnFailure()
+	public async Task GetAsync_ClientReturnsFailureResult_ReturnFailure()
 	{
 		/// Arrange
 		Mock<IResponse<DealsResponse>> responseMock = new();
@@ -112,7 +112,7 @@ public class PipedriveDealServiceTests
 	}
 
 	[Fact]
-	public async Task GetAsync_ClientReturnsSuccess_ReturnSuccess()
+	public async Task GetAsync_ClientReturnsSuccessResult_ReturnSuccess()
 	{
 		/// Arrange
 		Mock<IResponse<DealsResponse>> responseMock = new();

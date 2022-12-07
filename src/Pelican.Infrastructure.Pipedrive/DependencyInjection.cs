@@ -13,7 +13,7 @@ public static class DependencyInjection
 	public static IServiceCollection AddHubSpot(
 		this IServiceCollection services)
 	{
-		services.AddSingleton<IPipedriveService<Deal>, PipedriveDealService>();
+		services.AddSingleton<IPipedriveObjectService<Deal>, PipedriveDealService>();
 
 		return services;
 	}

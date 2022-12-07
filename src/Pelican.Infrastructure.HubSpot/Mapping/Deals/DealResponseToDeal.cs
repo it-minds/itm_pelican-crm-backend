@@ -35,7 +35,6 @@ internal static class DealResponseToDeal
 				SourceDealId = result.SourceId,
 				SourceAccountManagerId = result.SourceOwnerId,
 				IsActive = true,
-				Source= Sources.HubSpot,
 			}
 		};
 
@@ -51,7 +50,6 @@ internal static class DealResponseToDeal
 				Deal = result,
 				SourceContactId = association.Id,
 				IsActive = true,
-				Source = Sources.HubSpot,
 			})
 			.ToList();
 
@@ -64,6 +62,7 @@ internal static class DealResponseToDeal
 			{
 				SourceId = association.Id,
 				Deals = new List<Deal>() { result },
+				Source = Sources.HubSpot,
 			})
 			.FirstOrDefault();
 

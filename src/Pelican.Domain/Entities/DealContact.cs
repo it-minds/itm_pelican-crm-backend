@@ -24,8 +24,6 @@ public class DealContact : Entity, ITimeTracked
 
 	public Contact Contact { get; set; }
 
-	public string Source { get; set; }
-
 	public long CreatedAt { get; set; }
 
 	public long? LastUpdatedAt { get; set; }
@@ -42,7 +40,6 @@ public class DealContact : Entity, ITimeTracked
 			ContactId = contact.Id,
 			SourceContactId = contact.SourceId,
 			IsActive = true,
-			Source = deal.Source,
 		};
 	}
 

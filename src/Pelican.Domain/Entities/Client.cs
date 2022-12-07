@@ -97,7 +97,7 @@ public class Client : Entity, ITimeTracked
 			}
 
 			Contact? matchingContact = contacts
-				.FirstOrDefault(contacts => contacts.SourceId == item.SourceContactId && contacts.Source == Sources.HubSpot);
+				.FirstOrDefault(contacts => contacts.SourceId == item.SourceContactId && contacts.Source == item.Contact!.Source);
 
 			if (matchingContact is null)
 			{
@@ -115,27 +115,27 @@ public class Client : Entity, ITimeTracked
 
 
 	[GraphQLIgnore]
-	public virtual void UpdateClientContacts(ICollection<ClientContact>? currentHubSpotClientContacts)
+	public virtual void UpdateClientContacts(ICollection<ClientContact>? currentClientContacts)
 	{
-		if (currentHubSpotClientContacts is null)
+		if (currentClientContacts is null)
 		{
 			return;
 		}
 
 		foreach (ClientContact clientContact in ClientContacts.Where(dc => dc.IsActive))
 		{
-			if (!currentHubSpotClientContacts.Any(currentHubSpotClientContact => currentHubSpotClientContact.SourceContactId == clientContact.SourceContactId
-			&& currentHubSpotClientContact.Source == Sources.HubSpot))
+			if (!currentClientContacts.Any(currentClientContact => currentClientContact.SourceContactId == clientContact.SourceContactId
+			&& currentClientContact.Contact.Source == clientContact.Contact.Source))
 			{
 				clientContact.Deactivate();
 			}
 		}
 
-		foreach (ClientContact clientContact in currentHubSpotClientContacts)
+		foreach (ClientContact clientContact in currentClientContacts)
 		{
 			if (!ClientContacts.Any(dc => dc.SourceContactId == clientContact.SourceContactId
 			&& dc.IsActive
-			&& dc.Source == Sources.HubSpot))
+			&& dc.Client.Source == clientContact.Client.Source))
 			{
 				ClientContacts.Add(clientContact);
 			}

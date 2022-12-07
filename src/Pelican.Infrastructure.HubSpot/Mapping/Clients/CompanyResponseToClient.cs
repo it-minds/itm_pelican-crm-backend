@@ -33,6 +33,7 @@ internal static class CompanyResponseToClient
 				SourceId = association.Id,
 				Client = result,
 				ClientId = result.Id,
+				Source = Sources.HubSpot,
 			})
 			.ToList();
 
@@ -48,7 +49,6 @@ internal static class CompanyResponseToClient
 				Client = result,
 				ClientId = result.Id,
 				IsActive = true,
-				Source = Sources.HubSpot,
 			})
 			.ToList();
 

@@ -23,8 +23,6 @@ public class AccountManagerDeal : Entity, ITimeTracked
 
 	public Guid DealId { get; set; }
 
-	public string Source { get; set; } = string.Empty;
-
 	public long CreatedAt { get; set; }
 
 	public long? LastUpdatedAt { get; set; }
@@ -41,7 +39,6 @@ public class AccountManagerDeal : Entity, ITimeTracked
 			AccountManagerId = accountManager.Id,
 			SourceAccountManagerId = accountManager.SourceId,
 			IsActive = true,
-			Source = accountManager.Source,
 		};
 	}
 

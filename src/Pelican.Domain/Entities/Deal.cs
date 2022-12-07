@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using HotChocolate;
+﻿using HotChocolate;
 using Pelican.Domain.Primitives;
 using Pelican.Domain.Shared;
+using System.Collections.Generic;
 
 namespace Pelican.Domain.Entities;
 public class Deal : Entity, ITimeTracked

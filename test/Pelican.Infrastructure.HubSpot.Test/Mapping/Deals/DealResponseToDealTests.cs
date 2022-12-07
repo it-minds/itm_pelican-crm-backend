@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Bogus;
+﻿using Bogus;
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain;
@@ -8,6 +7,7 @@ using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Mapping.Deals;
+using System.Linq.Expressions;
 using Xunit;
 
 namespace Pelican.Infrastructure.HubSpot.Test.Mapping.Deals;

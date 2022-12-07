@@ -66,7 +66,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 	{
 		var faker = new Faker<Client>().UseSeed(1341);
 		faker
-			.RuleFor(e => e.Name, f => f.Name.FullName(f.Person.Gender))
+			.RuleFor(e => e.Name, f => f.Company.CompanyName())
 			.RuleFor(e => e.PictureUrl, f => f.Image.PicsumUrl().OrNull(f, 0.0f))
 			.RuleFor(e => e.OfficeLocation, f => f.Address.City().OrNull(f, 0.0f))
 			.RuleFor(e => e.HubSpotId, f => f.Random.Guid().ToString())

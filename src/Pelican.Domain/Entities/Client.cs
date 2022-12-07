@@ -1,4 +1,7 @@
-﻿namespace Pelican.Domain.Entities;
+﻿using HotChocolate;
+using Pelican.Domain.Primitives;
+
+namespace Pelican.Domain.Entities;
 public class Client : Entity, ITimeTracked
 {
 	private string _name = string.Empty;
@@ -116,7 +119,7 @@ public class Client : Entity, ITimeTracked
 
 
 	[GraphQLIgnore]
-	public virtual void UpdateClientContacts(ICollection<ClientContact>? currectHubSpotClientContacts, long? updateTime)
+	public virtual void UpdateClientContacts(ICollection<ClientContact>? currentClientContacts, long? updateTime)
 	{
 		if (currentClientContacts is null)
 		{

@@ -23,7 +23,7 @@ public sealed class PipedriveDealService : ServiceBase<PipedriveSettings>, IPipe
 		long id,
 		CancellationToken cancellationToken)
 	{
-		RestRequest request = new RestRequest($"https://{clientDomain}.pipedrive.com/api/v1/deals/{id}")
+		RestRequest request = new RestRequest($"https://{clientDomain}.pipedrive.com/v1/deals/{id}")
 			.AddHeader("Authorization", $"Bearer {accessToken}");
 
 		IResponse<DealResponse> response = await _client
@@ -38,7 +38,7 @@ public sealed class PipedriveDealService : ServiceBase<PipedriveSettings>, IPipe
 		string accessToken,
 		CancellationToken cancellationToken)
 	{
-		RestRequest request = new RestRequest($"https://{clientDomain}.pipedrive.com/api/v1/deals")
+		RestRequest request = new RestRequest($"https://{clientDomain}.pipedrive.com/v1/deals")
 			.AddHeader("Authorization", $"Bearer {accessToken}");
 
 		IResponse<DealsResponse> response = await _client

@@ -9,6 +9,6 @@ internal sealed class UpdateDealHubSpotCommandValidator : AbstractValidator<Upda
 		RuleFor(command => command.SupplierHubSpotId).NotEmpty();
 		RuleFor(command => command.PropertyName).NotEmpty();
 		RuleFor(command => command.PropertyValue).NotEmpty();
-		RuleFor(command => command.SupplierHubSpotId).NotEmpty();
+		RuleFor(command => command.UpdateTime).NotEmpty();
 	}
 }

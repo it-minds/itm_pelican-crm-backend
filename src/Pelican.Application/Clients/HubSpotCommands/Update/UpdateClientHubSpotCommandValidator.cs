@@ -10,5 +10,6 @@ internal sealed class UpdateClientHubSpotCommandValidator : AbstractValidator<Up
 		RuleFor(command => command.PropertyName).NotEmpty();
 		RuleFor(command => command.PropertyValue).NotEmpty();
 		RuleFor(command => command.PortalId).NotEmpty();
+		RuleFor(command => command.UpdateTime).NotEmpty();
 	}
 }

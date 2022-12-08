@@ -10,5 +10,6 @@ internal sealed class UpdateContactHubSpotCommandValidator : AbstractValidator<U
 		RuleFor(command => command.SupplierHubSpotId).NotEmpty();
 		RuleFor(command => command.PropertyName).NotEmpty();
 		RuleFor(command => command.PropertyValue).NotEmpty();
+		RuleFor(command => command.UpdateTime).NotEmpty();
 	}
 }

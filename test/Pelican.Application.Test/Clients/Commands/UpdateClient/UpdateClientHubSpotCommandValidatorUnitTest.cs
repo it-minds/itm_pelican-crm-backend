@@ -30,6 +30,7 @@ public class UpdateClientHubSpotCommandValidatorUnitTest
 		result.ShouldHaveValidationErrorFor(command => command.PortalId);
 		result.ShouldHaveValidationErrorFor(command => command.PropertyName);
 		result.ShouldHaveValidationErrorFor(command => command.PropertyValue);
+		result.ShouldHaveValidationErrorFor(command => command.UpdateTime);
 	}
 
 	[Fact]
@@ -51,5 +52,6 @@ public class UpdateClientHubSpotCommandValidatorUnitTest
 		result.ShouldNotHaveValidationErrorFor(command => command.PortalId);
 		result.ShouldNotHaveValidationErrorFor(command => command.PropertyName);
 		result.ShouldNotHaveValidationErrorFor(command => command.PropertyValue);
+		result.ShouldNotHaveValidationErrorFor(command => command.UpdateTime);
 	}
 }

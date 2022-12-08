@@ -91,13 +91,15 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 			.AccountManagerRepository
 			.FirstOrDefaultAsync(a => a.SourceId == acccuntManagerHubSpotId && a.Source == Sources.HubSpot);
 
-		deal.FillOutAccountManager(accountManager);
+		if (accountManager is not null
+			&& accountManager.Id != deal.ActiveAccountManagerDeal.AccountManagerId)
+		{
+			deal.SetAccountManager(accountManager);
 
-		_unitOfWork
-			.AccountManagerDealRepository
-			.AttachAsAdded(deal
-				.AccountManagerDeals
-				.Where(accountManagerDeal => accountManagerDeal.IsActive));
+			_unitOfWork
+				.AccountManagerDealRepository
+				.Attach(deal.ActiveAccountManagerDeal);
+		}
 	}
 
 	private async Task<Result> GetAndCreateDealAsync(
@@ -115,11 +117,9 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 			return result;
 		}
 
-		Deal deal = await FillOutDealAssociations(result.Value, cancellationToken);
-
-		await _unitOfWork
+		_unitOfWork
 			.DealRepository
-			.CreateAsync(deal, cancellationToken);
+			.Attach(result.Value);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
@@ -147,39 +147,5 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 				accessTokenResult.Value,
 				objectId,
 				cancellationToken);
-	}
-
-	private async Task<Deal> FillOutDealAssociations(Deal deal, CancellationToken cancellationToken)
-	{
-		AccountManager? accountManager = await _unitOfWork
-			.AccountManagerRepository
-			.FirstOrDefaultAsync(a => a.SourceId == deal.SourceOwnerId && a.Source == Sources.HubSpot, cancellationToken);
-
-		List<Contact>? contacts = new();
-
-		foreach (DealContact dc in deal.DealContacts)
-		{
-			Contact? contact = await _unitOfWork
-				.ContactRepository
-				.FirstOrDefaultAsync(c => c.SourceId == dc.SourceContactId && c.Source == Sources.HubSpot);
-
-			if (contact is not null)
-			{
-				contacts.Add(contact);
-			}
-		}
-
-		Client? client = null;
-
-		if (deal.Client is not null)
-		{
-			client = await _unitOfWork
-				.ClientRepository
-				.FirstOrDefaultAsync(c => c.SourceId == deal.Client.SourceId && c.Source == Sources.HubSpot, cancellationToken);
-		}
-
-		deal.FillOutAssociations(accountManager, client, contacts);
-
-		return deal;
 	}
 }

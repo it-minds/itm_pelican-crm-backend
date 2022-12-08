@@ -31,7 +31,7 @@ public class DealContact : Entity, ITimeTracked
 	[GraphQLIgnore]
 	public static DealContact Create(Deal deal, Contact contact)
 	{
-		return new DealContact(Guid.NewGuid())
+		return new DealContact()
 		{
 			Deal = deal,
 			DealId = deal.Id,

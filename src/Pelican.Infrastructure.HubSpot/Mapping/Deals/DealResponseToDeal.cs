@@ -1,4 +1,6 @@
-﻿using Pelican.Domain;
+﻿using Azure;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 
@@ -6,24 +8,20 @@ namespace Pelican.Infrastructure.HubSpot.Mapping.Deals;
 
 internal static class DealResponseToDeal
 {
-	internal static Deal ToDeal(this DealResponse response)
+	public static async Task<Deal> ToDeal(
+		this DealResponse response,
+		IUnitOfWork unitOfWork)
 	{
 		if (string.IsNullOrWhiteSpace(response.Properties.HubSpotObjectId))
 		{
 			throw new ArgumentNullException(nameof(response));
 		}
 
-		Deal result = new(Guid.NewGuid())
+		Deal result = new()
 		{
-			StartDate = string.IsNullOrWhiteSpace(response.Properties.StartDate)
-				? null
-				: Convert.ToDateTime(response.Properties.StartDate).Ticks,
-			EndDate = string.IsNullOrWhiteSpace(response.Properties.EndDate)
-				? null
-				: Convert.ToDateTime(response.Properties.EndDate).Ticks,
-			LastContactDate = string.IsNullOrWhiteSpace(response.Properties.LastContactDate)
-				? null
-				: Convert.ToDateTime(response.Properties.LastContactDate).Ticks,
+			StartDate = response.Properties.StartDate.ToUnixTimeMillisecondsOrNull(),
+			EndDate = response.Properties.EndDate.ToUnixTimeMillisecondsOrNull(),
+			LastContactDate = response.Properties.LastContactDate.ToUnixTimeMillisecondsOrNull(),
 			SourceId = response.Properties.HubSpotObjectId,
 			SourceOwnerId = response.Properties.HubSpotOwnerId,
 			Name = response.Properties.DealName,
@@ -32,48 +30,37 @@ internal static class DealResponseToDeal
 			Source = Sources.HubSpot,
 		};
 
-		result.AccountManagerDeals = new List<AccountManagerDeal>()
-		{
-			new AccountManagerDeal(Guid.NewGuid())
-			{
-				Deal = result,
-				DealId = result.Id,
-				SourceDealId = result.SourceId,
-				SourceAccountManagerId = result.SourceOwnerId,
-				IsActive = true,
-			}
-		};
+		result.SetAccountManager(await unitOfWork
+			.AccountManagerRepository
+			.FirstOrDefaultAsync(am => am.SourceId == result.SourceOwnerId && am.Source == Sources.HubSpot));
 
-		result.DealContacts = response
+		result.setContacts(response
 			.Associations
 			.Contacts
 			.AssociationList
 			.Where(association => association.Type == "deal_to_contact")
-			.Select(association => new DealContact(Guid.NewGuid())
-			{
-				DealId = result.Id,
-				SourceDealId = result.SourceId,
-				Deal = result,
-				SourceContactId = association.Id,
-				IsActive = true,
-			})
-			.ToList();
+			.Select(async association => await unitOfWork
+				.ContactRepository
+				.FirstOrDefaultAsync(c => c.SourceId == association.Id && c.Source == Sources.HubSpot))
+			.Select(t => t.Result));
 
-		result.Client = response
+		result.SetClient(response
 			.Associations
 			.Companies
 			.AssociationList
 			.Where(association => association.Type == "deal_to_company")
-			.Select(association => new Client(Guid.NewGuid())
-			{
-				SourceId = association.Id,
-				Deals = new List<Deal>() { result },
-				Source = Sources.HubSpot,
-			})
-			.FirstOrDefault();
-
-		result.ClientId = result.Client?.Id;
+			.Select(async association => await unitOfWork
+				.ClientRepository
+				.FirstOrDefaultAsync(c => c.SourceId == association.Id && c.Source == Sources.HubSpot))
+			.Select(t => t.Result)
+			.Where(c => c is not null)
+			.FirstOrDefault());
 
 		return result;
 	}
+
+	private static long? ToUnixTimeMillisecondsOrNull(this string stringDate)
+		=> string.IsNullOrWhiteSpace(stringDate)
+		? null
+		: new DateTimeOffset(Convert.ToDateTime(stringDate)).ToUnixTimeMilliseconds();
 }

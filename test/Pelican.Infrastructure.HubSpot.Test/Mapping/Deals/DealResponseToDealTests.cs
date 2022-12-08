@@ -1,4 +1,6 @@
 ﻿using Bogus;
+using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
@@ -19,6 +21,8 @@ public class DealResponseToDealTests
 	private const string DEALNAME = "dealname";
 	private const string DEALDESCRIPTION = "dealdescription";
 	private const string DEALSOURCE = "HubSpot";
+
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 
 	private readonly DealResponse response = new()
 	{
@@ -43,7 +47,7 @@ public class DealResponseToDealTests
 		defaultResponse.Properties.HubSpotOwnerId = OWNERID;
 
 		/// Act
-		Exception result = Record.Exception(() => defaultResponse.ToDeal());
+		Exception result = Record.Exception(() => defaultResponse.ToDeal(_unitOfWorkMock.Object));
 
 		/// Assert
 		Assert.NotNull(result);
@@ -57,7 +61,7 @@ public class DealResponseToDealTests
 	public void ToDeal_WithoutAssociations_ReturnCorrectProperties()
 	{
 		/// Act
-		Deal result = response.ToDeal();
+		Deal result = response.ToDeal(_unitOfWorkMock.Object);
 
 		/// Assert
 		Assert.Equal(DEALSTAGE, result.Status);
@@ -75,7 +79,7 @@ public class DealResponseToDealTests
 	public void ToDeal_WithoutAssociations_ReturnDealWithEmptyDealContacts()
 	{
 		/// Act
-		Deal result = response.ToDeal();
+		Deal result = response.ToDeal(_unitOfWorkMock.Object);
 
 		/// Assert
 		Assert.Equal(0, result.DealContacts!.Count);
@@ -85,7 +89,7 @@ public class DealResponseToDealTests
 	public void ToDeal_WithoutAssociations_ReturnDealWithEmptyClient()
 	{
 		/// Act
-		Deal result = response.ToDeal();
+		Deal result = response.ToDeal(_unitOfWorkMock.Object);
 
 		/// Assert
 		Assert.Null(result.Client!);
@@ -101,7 +105,7 @@ public class DealResponseToDealTests
 		};
 
 		/// act
-		Deal result = response.ToDeal();
+		Deal result = response.ToDeal(_unitOfWorkMock.Object);
 
 		/// assert
 		Assert.Equal(0, result.DealContacts!.Count);
@@ -117,7 +121,7 @@ public class DealResponseToDealTests
 		};
 
 		/// act
-		Deal result = response.ToDeal();
+		Deal result = response.ToDeal(_unitOfWorkMock.Object);
 
 		/// assert
 		Assert.Null(result.Client);
@@ -137,7 +141,7 @@ public class DealResponseToDealTests
 		};
 
 		/// act
-		Deal result = response.ToDeal();
+		Deal result = response.ToDeal(_unitOfWorkMock.Object);
 
 		/// assert
 		Assert.Equal(0, result.DealContacts!.Count);
@@ -157,7 +161,7 @@ public class DealResponseToDealTests
 		};
 
 		/// act
-		Deal result = response.ToDeal();
+		Deal result = response.ToDeal(_unitOfWorkMock.Object);
 
 		/// assert
 		Assert.Null(result.Client);
@@ -177,7 +181,7 @@ public class DealResponseToDealTests
 		};
 
 		/// act
-		Deal result = response.ToDeal();
+		Deal result = response.ToDeal(_unitOfWorkMock.Object);
 
 		/// assert
 		Assert.Equal(1, result.DealContacts!.Count);
@@ -194,7 +198,7 @@ public class DealResponseToDealTests
 		response.Properties.DealName = faker.Lorem.Letter(StringLengths.DealName * 2);
 
 		/// Act
-		Deal result = response.ToDeal();
+		Deal result = response.ToDeal(_unitOfWorkMock.Object);
 
 		/// Assert
 		Assert.Equal(StringLengths.DealName, result.Name!.Length);
@@ -209,7 +213,7 @@ public class DealResponseToDealTests
 		response.Properties.DealStage = faker.Lorem.Letter(StringLengths.DealStatus * 2);
 
 		/// Act
-		Deal result = response.ToDeal();
+		Deal result = response.ToDeal(_unitOfWorkMock.Object);
 
 		/// Assert
 		Assert.Equal(StringLengths.DealStatus, result.Status!.Length);
@@ -224,7 +228,7 @@ public class DealResponseToDealTests
 		response.Properties.Description = faker.Lorem.Letter(StringLengths.DealDescription * 2);
 
 		/// Act
-		Deal result = response.ToDeal();
+		Deal result = response.ToDeal(_unitOfWorkMock.Object);
 
 		/// Assert
 		Assert.Equal(StringLengths.DealDescription, result.Description!.Length);
@@ -246,7 +250,7 @@ public class DealResponseToDealTests
 		};
 
 		/// act
-		Deal result = response.ToDeal();
+		Deal result = response.ToDeal(_unitOfWorkMock.Object);
 
 		/// assert
 		Assert.Equal("1", result.Client!.SourceId);

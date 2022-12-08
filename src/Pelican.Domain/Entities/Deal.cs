@@ -1,5 +1,6 @@
 ﻿using HotChocolate;
 using Pelican.Domain.Primitives;
+using Pelican.Domain.Shared;
 
 namespace Pelican.Domain.Entities;
 public class Deal : Entity, ITimeTracked
@@ -60,6 +61,11 @@ public class Deal : Entity, ITimeTracked
 			: value;
 	}
 
+	public AccountManagerDeal ActiveAccountManagerDeal
+	{
+		get => AccountManagerDeals.First(am => am.IsActive);
+	}
+
 	[GraphQLIgnore]
 	public virtual Deal UpdateProperty(string propertyName, string propertyValue)
 	{
@@ -101,70 +107,46 @@ public class Deal : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
-	public virtual Deal FillOutAssociations(AccountManager? accountManager, Client? client, List<Contact>? contacts)
-	{
-		FillOutAccountManager(accountManager);
-		Client = client;
-		FillOutDealContacts(contacts);
-
-		return this;
-	}
-
-	[GraphQLIgnore]
-	public virtual void FillOutAccountManager(AccountManager? accountManager)
+	public virtual void SetAccountManager(AccountManager? accountManager)
 	{
 		if (accountManager is null)
 		{
-			return;
+			throw new ArgumentNullException(nameof(accountManager));
 		}
 
-		AccountManagerDeal? oldRelation = AccountManagerDeals
-			.FirstOrDefault(a => a.IsActive == true);
-
-		if (oldRelation is null)
+		if (ActiveAccountManagerDeal.SourceAccountManagerId != accountManager.SourceId)
 		{
-			AccountManagerDeals.Add(AccountManagerDeal.Create(this, accountManager));
-			return;
-		}
-
-		if (oldRelation.SourceAccountManagerId != accountManager.SourceId)
-		{
-			oldRelation.Deactivate();
-
-			AccountManagerDeals.Add(AccountManagerDeal.Create(this, accountManager));
-		}
-		else
-		{
-			oldRelation.AccountManager = accountManager;
-			oldRelation.AccountManagerId = accountManager.Id;
+			ActiveAccountManagerDeal.Deactivate();
+			AccountManagerDeal accountManagerDeal = AccountManagerDeal.Create(this, accountManager);
+			AccountManagerDeals.Add(accountManagerDeal);
+			accountManager.AccountManagerDeals.Add(accountManagerDeal);
 		}
 	}
 
-	private void FillOutDealContacts(List<Contact>? contacts)
+	public void setContacts(IEnumerable<Contact?> contacts)
 	{
-		if (contacts is null)
-		{
-			DealContacts.Clear();
-			return;
-		}
-
-		foreach (DealContact dealContact in DealContacts)
-		{
-			Contact? matchingContact = contacts
-				.FirstOrDefault(contact => contact.SourceId == dealContact.SourceContactId
-					&& contact.Source == dealContact.Contact.Source);
-
-			if (matchingContact is null)
+		DealContacts = contacts
+			.Select(contact =>
 			{
-				continue;
-			}
+				if (contact is not null)
+				{
+					DealContact dealContact = DealContact.Create(this, contact);
+					contact.DealContacts.Add(dealContact);
+					return dealContact;
+				}
+				return null;
+			})
+			.Where(dc => dc is not null)
+			.ToList()!;
+	}
 
-			dealContact.Contact = matchingContact;
-			dealContact.ContactId = matchingContact.Id;
+	public void SetClient(Client? client)
+	{
+		Client = client;
+		if (client is not null)
+		{
+			client.Deals.Add(this);
+			ClientId = client.Id;
 		}
-
-		DealContacts = DealContacts
-			.Where(dc => dc.Contact is not null)
-			.ToList();
 	}
 }

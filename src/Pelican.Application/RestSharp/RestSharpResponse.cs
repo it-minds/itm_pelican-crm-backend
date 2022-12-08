@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Abstractions.Infrastructure;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Shared;
 using RestSharp;
 
@@ -31,7 +32,7 @@ public class RestSharpResponse<TResponse> : RestResponse<TResponse>, IResponse<T
 		Data = response.Data;
 	}
 
-	public Result<TResult> GetResult<TResult>(
+	public Result<TResult> GetResultV1<TResult>(
 		Func<TResponse, TResult> mappingFunc)
 	{
 		if (IsSuccessful && Data is not null)
@@ -39,6 +40,30 @@ public class RestSharpResponse<TResponse> : RestResponse<TResponse>, IResponse<T
 			try
 			{
 				return Result.Success(mappingFunc(Data));
+			}
+			catch (Exception ex)
+			{
+				return Result.Failure<TResult>(new Error(
+					"MappingError",
+					ex.Message));
+			}
+		}
+
+		return Result.Failure<TResult>(
+				new Error(
+					StatusCode.ToString(),
+					ErrorException?.Message! ?? "Error while fetching"));
+	}
+
+	public async Task<Result<TResult>> GetResult<TResult>(
+		Func<TResponse, IUnitOfWork, Task<TResult>> mappingFunc,
+		IUnitOfWork unitOfWork)
+	{
+		if (IsSuccessful && Data is not null)
+		{
+			try
+			{
+				return Result.Success(await mappingFunc(Data, unitOfWork));
 			}
 			catch (Exception ex)
 			{

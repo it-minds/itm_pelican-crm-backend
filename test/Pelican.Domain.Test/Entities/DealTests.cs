@@ -156,7 +156,7 @@ public class DealTests
 
 		string name = "enddate";
 
-		string value = date.ToString();
+		string value = ticks.ToString();
 
 		Deal inputDeal = new(Guid.NewGuid());
 
@@ -197,7 +197,7 @@ public class DealTests
 
 		string name = "startdate";
 
-		string value = date.ToString();
+		string value = ticks.ToString();
 
 		Deal inputDeal = new(Guid.NewGuid());
 
@@ -238,7 +238,7 @@ public class DealTests
 
 		string name = "notes_last_contacted";
 
-		string value = date.ToString();
+		string value = ticks.ToString();
 
 		Deal inputDeal = new(Guid.NewGuid());
 

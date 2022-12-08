@@ -1,11 +1,14 @@
-﻿using Pelican.Domain.Entities;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.Deals;
 
 internal static class DealsResponseToDeals
 {
-	internal static List<Deal> ToDeals(this DealsResponse responses)
+	internal static async Task<List<Deal>> ToDeals(
+		this DealsResponse responses,
+		IUnitOfWork unitOfWork)
 	{
 		if (responses.Results is null)
 		{
@@ -16,7 +19,7 @@ internal static class DealsResponseToDeals
 
 		foreach (DealResponse response in responses.Results)
 		{
-			Deal result = response.ToDeal();
+			Deal result = await response.ToDeal(unitOfWork);
 			results.Add(result);
 		}
 

@@ -1,4 +1,6 @@
-﻿using Pelican.Domain;
+﻿using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Domain;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Mapping.Deals;
 using Xunit;
@@ -19,6 +21,8 @@ public class DealsResponseToDealsTests
 		}
 	};
 
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
+
 	readonly DealsResponse responses = new();
 
 	[Fact]
@@ -28,7 +32,7 @@ public class DealsResponseToDealsTests
 		responses.Results = null!;
 
 		/// Act
-		var result = Record.Exception(() => responses.ToDeals());
+		var result = Record.Exception(() => responses.ToDeals(_unitOfWorkMock.Object));
 
 		/// Assert
 		Assert.NotNull(result);
@@ -45,7 +49,7 @@ public class DealsResponseToDealsTests
 		responses.Results = new List<DealResponse>();
 
 		/// Act
-		var result = Record.Exception(() => responses.ToDeals());
+		var result = Record.Exception(() => responses.ToDeals(_unitOfWorkMock.Object));
 
 		/// Assert
 		Assert.Null(result);
@@ -58,7 +62,7 @@ public class DealsResponseToDealsTests
 		responses.Results = new List<DealResponse>() { response };
 
 		/// Act
-		var result = Record.Exception(() => responses.ToDeals());
+		var result = Record.Exception(() => responses.ToDeals(_unitOfWorkMock.Object));
 
 		/// Assert
 		Assert.Null(result);
@@ -71,7 +75,7 @@ public class DealsResponseToDealsTests
 		responses.Results = new List<DealResponse>() { response };
 
 		/// Act
-		var result = responses.ToDeals();
+		var result = responses.ToDeals(_unitOfWorkMock.Object);
 
 		/// Assert
 		Assert.Equal(ID, result.First().SourceId);

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Infrastructure;
@@ -39,7 +40,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 			.PostAsync<GetAccessTokenResponse>(request, cancellationToken);
 
 		return response
-			.GetResult(GetAccessTokenResponseToRefreshAccessTokens.ToRefreshAccessTokens);
+			.GetResultV1(GetAccessTokenResponseToRefreshAccessTokens.ToRefreshAccessTokens);
 	}
 
 	public async Task<Result<Supplier>> DecodeAccessTokenAsync(
@@ -52,7 +53,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 			.GetAsync<AccessTokenResponse>(request, cancellationToken);
 
 		return response
-			.GetResult(AccessTokenResponseToSupplier.ToSupplier);
+			.GetResultV1(AccessTokenResponseToSupplier.ToSupplier);
 	}
 
 	public async Task<Result<string>> RefreshAccessTokenFromSupplierHubSpotIdAsync(
@@ -61,8 +62,10 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 		CancellationToken cancellationToken)
 	{
 		Supplier? supplier = await unitOfWork
-		.SupplierRepository
-				.FirstOrDefaultAsync(supplier => supplier.SourceId == supplierHubSpotId && supplier.Source == Sources.HubSpot, default);
+			.SupplierRepository
+			.FindByCondition(supplier => supplier.SourceId == supplierHubSpotId && supplier.Source == Sources.HubSpot)
+			.AsNoTracking()
+			.FirstOrDefaultAsync();
 
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{
@@ -81,7 +84,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 				cancellationToken);
 
 		return response
-			.GetResult(RefreshAccessTokenResponseToAccessToken.ToAccessToken);
+			.GetResultV1(RefreshAccessTokenResponseToAccessToken.ToAccessToken);
 	}
 
 	public async Task<Result<string>> RefreshAccessTokenFromRefreshTokenAsync(
@@ -100,6 +103,6 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 				cancellationToken);
 
 		return response
-			.GetResult(RefreshAccessTokenResponseToAccessToken.ToAccessToken);
+			.GetResultV1(RefreshAccessTokenResponseToAccessToken.ToAccessToken);
 	}
 }

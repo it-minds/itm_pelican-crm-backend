@@ -35,7 +35,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 				entity => entity.Id == id,
 				cancellationToken);
 	}
-
 	public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
 		=> _pelicanContext
 			.Set<T>()
@@ -61,6 +60,20 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 		await _pelicanContext
 			.Set<T>()
 			.AddAsync(entity, cancellationToken);
+
+		return entity;
+	}
+
+	public T Attach(T entity)
+	{
+		if (entity is null)
+		{
+			throw new ArgumentNullException(nameof(entity));
+		}
+
+		_pelicanContext
+			.Set<T>()
+			.Attach(entity);
 
 		return entity;
 	}
@@ -99,5 +112,14 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 		{
 			_pelicanContext.Entry(entity).State = EntityState.Added;
 		}
+	}
+
+	public void AttachAsAdded(T entity)
+	{
+		_pelicanContext
+			.Set<T>()
+			.Attach(entity);
+
+		_pelicanContext.Entry(entity).State = EntityState.Added;
 	}
 }

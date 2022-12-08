@@ -498,7 +498,7 @@ public class UpdateClientCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue")]
-	public async void Handle_ClientFoundLastCommandUpdateTimeOlderThanLastUpdateAuthServiceReturnsFailure_ReturnsFailure(
+	public async void Handle_ClientFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtAuthServiceReturnsFailure_ReturnsFailure(
 		long objectId,
 		long portalId,
 		long updateTime,
@@ -543,7 +543,7 @@ public class UpdateClientCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue")]
-	public async void Handle_ClientFoundLastCommandUpdateTimeOlderThanLastUpdateClientServiceReturnsFailure_ReturnsFailure(
+	public async void Handle_ClientFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtClientServiceReturnsFailure_ReturnsFailure(
 		long objectId,
 		long portalId,
 		long updateTime,
@@ -598,7 +598,7 @@ public class UpdateClientCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue", "testName", "testOfficeLocation", "testWebsite")]
-	public async void Handle_ClientFoundLastCommandUpdateTimeOlderThanLastUpdateClientServiceReturnsSuccessClientUpdated_ReturnsFailure(
+	public async void Handle_ClientFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtClientServiceReturnsSuccessClientUpdated_ReturnsFailure(
 		long objectId,
 		long portalId,
 		long updateTime,

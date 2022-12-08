@@ -599,7 +599,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue")]
-	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateAuthServiceReturnsFailure_ReturnsFailure(
+	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtAuthServiceReturnsFailure_ReturnsFailure(
 		long objectId,
 		long portalId,
 		long updateTime,
@@ -643,7 +643,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue")]
-	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateContactServiceReturnsFailure_ReturnsFailure(
+	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtContactServiceReturnsFailure_ReturnsFailure(
 		long objectId,
 		long portalId,
 		long updateTime,
@@ -696,7 +696,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue", "testFirstName", "testLatName", "testEmail", "testJobTitle", "testPhoneNumber", "testSourceOwnerId")]
-	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateContactServiceReturnsSuccessClientUpdated_ReturnsSuccess(
+	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtContactServiceReturnsSuccessClientUpdated_ReturnsSuccess(
 		long objectId,
 		long portalId,
 		long updateTime,

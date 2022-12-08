@@ -481,7 +481,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue")]
-	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateAuthServiceReturnsFailure_ReturnsFailure(
+	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtAuthServiceReturnsFailure_ReturnsFailure(
 		long objectId,
 		long portalId,
 		long updateTime,
@@ -526,7 +526,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue")]
-	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateDealServiceReturnsFailure_ReturnsFailure(
+	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtDealServiceReturnsFailure_ReturnsFailure(
 		long objectId,
 		long portalId,
 		long updateTime,
@@ -581,7 +581,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue", 123, 42123, 23123, "testDealStage", "testDealName", "testDealDescription")]
-	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateDealServiceReturnsSuccessClientUpdated_ReturnsSuccess(
+	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtDealServiceReturnsSuccessClientUpdated_ReturnsSuccess(
 		long objectId,
 		long portalId,
 		long updateTime,
@@ -655,7 +655,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue", 123, 42123, 23123, "testDealStage", "testDealName", "testDealDescription", "testSourceOwnerId")]
-	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateSourceOwnerIdNotNullClientUpdated_ReturnsSuccess(
+	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtSourceOwnerIdNotNullClientUpdated_ReturnsSuccess(
 		long objectId,
 		long portalId,
 		long updateTime,

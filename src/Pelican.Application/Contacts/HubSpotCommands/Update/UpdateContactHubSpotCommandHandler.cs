@@ -77,7 +77,6 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 					command.PropertyName,
 					command.PropertyValue);
 			}
-			contact.SourceUpdateTimestamp = command.UpdateTime;
 		}
 		else
 		{
@@ -92,6 +91,8 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 			contact.UpdatePropertiesFromContact(result.Value);
 			contact.UpdateDealContacts(result.Value.DealContacts);
 		}
+		contact.SourceUpdateTimestamp = command.UpdateTime;
+
 		_unitOfWork
 				.ContactRepository
 				.Update(contact);

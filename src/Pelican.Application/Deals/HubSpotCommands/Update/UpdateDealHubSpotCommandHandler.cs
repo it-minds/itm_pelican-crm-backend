@@ -85,6 +85,8 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 				await UpdateAccountManagerDeal(deal, result.Value.SourceOwnerId);
 			}
 		}
+		deal.SourceUpdateTimestamp = command.UpdateTime;
+
 		_unitOfWork
 				.DealRepository
 				.Update(deal);

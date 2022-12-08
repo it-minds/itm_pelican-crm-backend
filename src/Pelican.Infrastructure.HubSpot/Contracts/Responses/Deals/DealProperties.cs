@@ -33,4 +33,7 @@ internal sealed class DealProperties
 
 	[JsonPropertyName("description")]
 	public string Description { get; set; } = string.Empty;
+
+	[JsonPropertyName("occurredAt")]
+	public long CreatedUnixTime { get; set; }
 }

@@ -18,7 +18,7 @@ public record HubSpotWebHookRequest
 	[JsonPropertyName("portalId")]
 	public long SupplierHubSpotId { get; set; }
 
-	[JsonPropertyName("occuredAt")]
+	[JsonPropertyName("occurredAt")]
 	public long UpdateTime { get; set; }
 
 	[JsonPropertyName("sourceId")]

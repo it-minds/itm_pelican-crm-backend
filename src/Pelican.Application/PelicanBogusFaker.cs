@@ -23,7 +23,7 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.SourceId, f => f.Random.Guid().ToString())
 			.RuleFor(e => e.SourceUserId, f => f.Random.Long(1))
 			.RuleFor(e => e.Id, f => f.Random.Guid())
-			.RuleFor(e => e.Source, () => new Random().Next(2) <= 2 ? Sources.HubSpot : Sources.Pipedrive);
+			.RuleFor(e => e.Source, () => new Random().Next(2) <= 1 ? Sources.HubSpot : Sources.Pipedrive);
 		return faker.Generate(count);
 	}
 

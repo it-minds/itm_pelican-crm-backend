@@ -79,7 +79,9 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 			{
 				return result;
 			}
+
 			deal.UpdatePropertiesFromDeal(result.Value);
+
 			if (result.Value.SourceOwnerId is not null)
 			{
 				await UpdateAccountManagerDeal(deal, result.Value.SourceOwnerId);

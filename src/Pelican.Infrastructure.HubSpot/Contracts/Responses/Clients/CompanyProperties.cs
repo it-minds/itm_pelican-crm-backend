@@ -18,5 +18,5 @@ internal sealed class CompanyProperties : HubSpotObjectProperties
 	public string City { get; set; } = string.Empty;
 
 	[JsonPropertyName("occurredAt")]
-	public long CreatedUnixTime { get; set; }
+	public long ChangedUnixTime { get; set; }
 }

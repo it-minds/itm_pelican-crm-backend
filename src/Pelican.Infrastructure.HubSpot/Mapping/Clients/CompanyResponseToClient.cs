@@ -21,7 +21,7 @@ internal static class CompanyResponseToClient
 			Website = response.Properties.Domain,
 			OfficeLocation = response.Properties.City,
 			Source = Sources.HubSpot,
-			SourceUpdateTimestamp = response.Properties.CreatedUnixTime,
+			SourceUpdateTimestamp = response.Properties.ChangedUnixTime,
 		};
 
 		result.Deals = response

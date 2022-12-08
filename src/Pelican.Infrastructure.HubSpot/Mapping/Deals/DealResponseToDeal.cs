@@ -24,7 +24,7 @@ internal static class DealResponseToDeal
 			Description = response.Properties.Description,
 			DealStatus = response.Properties.DealStage,
 			Source = Sources.HubSpot,
-			SourceUpdateTimestamp = response.Properties.CreatedUnixTime,
+			SourceUpdateTimestamp = response.Properties.ChangedUnixTime,
 		};
 
 		result.AccountManagerDeals = new List<AccountManagerDeal>()

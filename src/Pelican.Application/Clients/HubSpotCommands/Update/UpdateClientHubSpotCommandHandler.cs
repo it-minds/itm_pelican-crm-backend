@@ -49,7 +49,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		UpdateClientHubSpotCommand command,
 		CancellationToken cancellationToken = default)
 	{
-		if (client.SourceUpdateTimestamp <= command.UpdateTime)
+		if (client.SourceUpdateTimestamp <= command.UpdateTime || client.CreatedAt <= command.UpdateTime)
 		{
 			if (command.PropertyName == "num_associated_contacts")
 			{

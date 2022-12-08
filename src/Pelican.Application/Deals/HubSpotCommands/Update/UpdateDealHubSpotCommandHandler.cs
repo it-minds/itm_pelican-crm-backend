@@ -55,7 +55,7 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		UpdateDealHubSpotCommand command,
 		CancellationToken cancellationToken = default)
 	{
-		if (deal.SourceUpdateTimestamp <= command.UpdateTime)
+		if (deal.SourceUpdateTimestamp <= command.UpdateTime || deal.CreatedAt <= command.UpdateTime)
 		{
 			if (command.PropertyName == "hs_all_owner_ids")
 			{

@@ -23,7 +23,7 @@ internal static class ContactResponseToContact
 			JobTitle = response.Properties.JobTitle,
 			SourceOwnerId = response.Properties.HubSpotOwnerId,
 			Source = Sources.HubSpot,
-			SourceUpdateTimestamp = response.Properties.CreatedUnixTime,
+			SourceUpdateTimestamp = response.Properties.ChangedUnixTime,
 		};
 
 		result.ClientContacts = response

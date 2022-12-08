@@ -35,5 +35,5 @@ internal sealed class DealProperties
 	public string Description { get; set; } = string.Empty;
 
 	[JsonPropertyName("occurredAt")]
-	public long CreatedUnixTime { get; set; }
+	public long ChangedUnixTime { get; set; }
 }

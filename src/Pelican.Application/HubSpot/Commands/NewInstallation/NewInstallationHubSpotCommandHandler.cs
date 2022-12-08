@@ -72,7 +72,6 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 		Result<List<Deal>> dealsResult = await _hubSpotDealService
 			.GetAsync(accessToken, cancellationToken);
 
-
 		if (Result.FirstFailureOrSuccess(new Result[]
 				{
 					accountManagersResult,

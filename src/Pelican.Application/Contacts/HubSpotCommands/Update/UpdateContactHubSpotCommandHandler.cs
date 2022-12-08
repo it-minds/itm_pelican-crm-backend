@@ -56,7 +56,7 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 		UpdateContactHubSpotCommand command,
 		CancellationToken cancellationToken = default)
 	{
-		if (contact.SourceUpdateTimestamp <= command.UpdateTime)
+		if (contact.SourceUpdateTimestamp <= command.UpdateTime && contact.CreatedAt <= command.UpdateTime)
 		{
 			if (command.PropertyName == "num_associated_deals")
 			{

@@ -511,6 +511,7 @@ public class UpdateClientCommandHandlerTests
 		Mock<Client> clientMock = new();
 
 		clientMock.Object.SourceUpdateTimestamp = 10;
+		clientMock.Object.CreatedAt = 5;
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork
@@ -555,6 +556,8 @@ public class UpdateClientCommandHandlerTests
 		Mock<Client> clientMock = new();
 
 		clientMock.Object.SourceUpdateTimestamp = 10;
+		clientMock.Object.CreatedAt = 5;
+
 
 		string accessToken = "accessTokent";
 
@@ -611,6 +614,7 @@ public class UpdateClientCommandHandlerTests
 		Mock<Client> clientMock = new();
 
 		clientMock.Object.SourceUpdateTimestamp = 10;
+		clientMock.Object.CreatedAt = 5;
 
 		string accessToken = "accessToken";
 

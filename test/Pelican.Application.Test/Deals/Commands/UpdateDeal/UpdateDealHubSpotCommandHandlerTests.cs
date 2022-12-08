@@ -494,6 +494,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 		Mock<Deal> dealMock = new();
 
 		dealMock.Object.SourceUpdateTimestamp = 10;
+		dealMock.Object.CreatedAt = 5;
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork
@@ -538,6 +539,8 @@ public class UpdateDealHubSpotCommandHandlerTests
 		Mock<Deal> dealMock = new();
 
 		dealMock.Object.SourceUpdateTimestamp = 10;
+		dealMock.Object.CreatedAt = 5;
+
 
 		string accessToken = "accessToken";
 
@@ -597,6 +600,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 		Mock<Deal> dealMock = new();
 
 		dealMock.Object.SourceUpdateTimestamp = 10;
+		dealMock.Object.CreatedAt = 5;
 
 		string accessToken = "accessToken";
 
@@ -671,6 +675,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 		Mock<Deal> dealMock = new();
 
 		dealMock.Object.SourceUpdateTimestamp = 10;
+		dealMock.Object.CreatedAt = 5;
 
 		string accessToken = "accessToken";
 

@@ -613,12 +613,11 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 		contactMock.Object.SourceUpdateTimestamp = 10;
 
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork
-				.ContactRepository
-				.FindByCondition(
-					It.IsAny<Expression<Func<Contact, bool>>>()))
-			.Returns(new List<Contact> { contactMock.Object }.AsQueryable());
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contactMock.Object);
 
 		_hubSpotAuthorizationServiceMock.Setup(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
@@ -643,7 +642,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue")]
-	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateClientServiceReturnsFailure_ReturnsFailure(
+	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateContactServiceReturnsFailure_ReturnsFailure(
 		long objectId,
 		long portalId,
 		long updateTime,
@@ -659,12 +658,11 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 		string accessToken = "accessTokent";
 
-		_unitOfWorkMock
-			.Setup(unitOfWork => unitOfWork
-				.ContactRepository
-				.FindByCondition(
-					It.IsAny<Expression<Func<Contact, bool>>>()))
-			.Returns(new List<Contact> { contactMock.Object }.AsQueryable());
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contactMock.Object);
 
 		_hubSpotAuthorizationServiceMock.Setup(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
@@ -696,7 +694,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue", "testFirstName", "testLatName", "testEmail", "testJobTitle", "testPhoneNumber", "testSourceOwnerId")]
-	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateClientServiceReturnsSuccessClientUpdated_ReturnsFailure(
+	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateContactServiceReturnsSuccessClientUpdated_ReturnsSuccess(
 		long objectId,
 		long portalId,
 		long updateTime,

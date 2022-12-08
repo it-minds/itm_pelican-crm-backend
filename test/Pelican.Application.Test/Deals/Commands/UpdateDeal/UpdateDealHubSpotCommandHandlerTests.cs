@@ -525,7 +525,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue")]
-	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateClientServiceReturnsFailure_ReturnsFailure(
+	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateDealServiceReturnsFailure_ReturnsFailure(
 		long objectId,
 		long portalId,
 		long updateTime,
@@ -578,7 +578,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 	[Theory]
 	[InlineData(0, 0, 1, "testProperty", "testValue", 123, 42123, 23123, "testDealStage", "testDealName", "testDealDescription")]
-	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateClientServiceReturnsSuccessClientUpdated_ReturnsFailure(
+	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateDealServiceReturnsSuccessClientUpdated_ReturnsSuccess(
 		long objectId,
 		long portalId,
 		long updateTime,
@@ -641,6 +641,92 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		//Assert
 		dealMock.Verify(x => x.UpdatePropertiesFromDeal(dealResult), Times.Once);
+
+		_unitOfWorkMock.Verify(
+			u => u.SaveAsync(default),
+			Times.Once);
+
+		Assert.True(result.IsSuccess);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 1, "testProperty", "testValue", 123, 42123, 23123, "testDealStage", "testDealName", "testDealDescription", "testSourceOwnerId")]
+	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateSourceOwnerIdNotNullClientUpdated_ReturnsSuccess(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue,
+		long testEndDate,
+		long testStartDate,
+		long testLastContactDate,
+		string testDealStatus,
+		string testDealName,
+		string testDealDescription,
+		string testSourceOwnerId)
+	{
+		//Arrange
+		UpdateDealHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Deal> dealMock = new();
+
+		dealMock.Object.SourceUpdateTimestamp = 10;
+
+		string accessToken = "accessToken";
+
+		Deal dealResult = new()
+		{
+			EndDate = testEndDate,
+			StartDate = testStartDate,
+			LastContactDate = testLastContactDate,
+			DealStatus = testDealStatus,
+			Name = testDealName,
+			Description = testDealDescription,
+			SourceOwnerId = testSourceOwnerId,
+
+			AccountManagerDeals = new List<AccountManagerDeal>()
+			{
+				new AccountManagerDeal(Guid.NewGuid())
+			},
+		};
+		Mock<AccountManager> accountManagerMock = new();
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.DealRepository
+				.FindByCondition(
+					It.IsAny<Expression<Func<Deal, bool>>>()))
+			.Returns(new List<Deal> { dealMock.Object }.AsQueryable());
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.AccountManagerRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync(accountManagerMock.Object);
+
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(accessToken));
+
+		_hubSpotDealServiceMock
+			.Setup(h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(dealResult));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		dealMock.Verify(x => x.UpdatePropertiesFromDeal(dealResult), Times.Once);
+
+		dealMock.Verify(x => x.FillOutAccountManager(accountManagerMock.Object), Times.Once);
 
 		_unitOfWorkMock.Verify(
 			u => u.SaveAsync(default),

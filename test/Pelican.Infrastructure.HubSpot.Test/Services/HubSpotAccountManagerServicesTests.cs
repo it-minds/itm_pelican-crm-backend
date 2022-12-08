@@ -46,7 +46,7 @@ public class HubSpotAccountManagerServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<OwnerResponse, AccountManager>>()))
+			.Setup(r => r.GetResultV1(It.IsAny<Func<OwnerResponse, AccountManager>>()))
 			.Returns(Result.Failure<AccountManager>(Error.NullValue));
 
 		/// Act
@@ -71,7 +71,7 @@ public class HubSpotAccountManagerServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<OwnerResponse, AccountManager>>()))
+			.Setup(r => r.GetResultV1(It.IsAny<Func<OwnerResponse, AccountManager>>()))
 			.Returns(deal);
 
 		/// Act
@@ -97,7 +97,7 @@ public class HubSpotAccountManagerServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<OwnersResponse, List<AccountManager>>>()))
+			.Setup(r => r.GetResultV1(It.IsAny<Func<OwnersResponse, List<AccountManager>>>()))
 			.Returns(Result.Failure<List<AccountManager>>(Error.NullValue));
 
 		/// Act
@@ -122,7 +122,7 @@ public class HubSpotAccountManagerServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<OwnersResponse, List<AccountManager>>>()))
+			.Setup(r => r.GetResultV1(It.IsAny<Func<OwnersResponse, List<AccountManager>>>()))
 			.Returns(deals);
 
 		/// Act

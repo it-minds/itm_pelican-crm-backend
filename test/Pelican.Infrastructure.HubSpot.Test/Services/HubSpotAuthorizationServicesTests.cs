@@ -88,7 +88,7 @@ public class HubSpotAuthorizationServicesTests
 		Mock<IResponse<GetAccessTokenResponse>> responseMock = new();
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<GetAccessTokenResponse, RefreshAccessTokens>>()))
+			.Setup(r => r.GetResultV1(It.IsAny<Func<GetAccessTokenResponse, RefreshAccessTokens>>()))
 			.Returns(Result.Failure<RefreshAccessTokens>(Error.NullValue));
 
 		_hubSpotClientMock
@@ -112,7 +112,7 @@ public class HubSpotAuthorizationServicesTests
 		Mock<IResponse<GetAccessTokenResponse>> responseMock = new();
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<GetAccessTokenResponse, RefreshAccessTokens>>()))
+			.Setup(r => r.GetResultV1(It.IsAny<Func<GetAccessTokenResponse, RefreshAccessTokens>>()))
 			.Returns(Result.Success(new RefreshAccessTokens()));
 
 		_hubSpotClientMock
@@ -135,7 +135,7 @@ public class HubSpotAuthorizationServicesTests
 		Mock<IResponse<AccessTokenResponse>> responseMock = new();
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<AccessTokenResponse, Supplier>>()))
+			.Setup(r => r.GetResultV1(It.IsAny<Func<AccessTokenResponse, Supplier>>()))
 			.Returns(Result.Failure<Supplier>(Error.NullValue));
 
 		_hubSpotClientMock
@@ -159,7 +159,7 @@ public class HubSpotAuthorizationServicesTests
 		Mock<IResponse<AccessTokenResponse>> responseMock = new();
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<AccessTokenResponse, Supplier>>()))
+			.Setup(r => r.GetResultV1(It.IsAny<Func<AccessTokenResponse, Supplier>>()))
 			.Returns(Result.Success(new Supplier()));
 
 		_hubSpotClientMock
@@ -228,7 +228,7 @@ public class HubSpotAuthorizationServicesTests
 		Mock<IResponse<RefreshAccessTokenResponse>> responseMock = new();
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<RefreshAccessTokenResponse, string>>()))
+			.Setup(r => r.GetResultV1(It.IsAny<Func<RefreshAccessTokenResponse, string>>()))
 			.Returns(Result.Failure<string>(Error.NullValue));
 
 		_hubSpotClientMock
@@ -260,7 +260,7 @@ public class HubSpotAuthorizationServicesTests
 		Mock<IResponse<RefreshAccessTokenResponse>> responseMock = new();
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<RefreshAccessTokenResponse, string>>()))
+			.Setup(r => r.GetResultV1(It.IsAny<Func<RefreshAccessTokenResponse, string>>()))
 			.Returns(Result.Success(ACCESS));
 
 		_hubSpotClientMock
@@ -284,7 +284,7 @@ public class HubSpotAuthorizationServicesTests
 		Mock<IResponse<RefreshAccessTokenResponse>> responseMock = new();
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<RefreshAccessTokenResponse, string>>()))
+			.Setup(r => r.GetResultV1(It.IsAny<Func<RefreshAccessTokenResponse, string>>()))
 			.Returns(Result.Failure<string>(Error.NullValue));
 
 		_hubSpotClientMock
@@ -308,7 +308,7 @@ public class HubSpotAuthorizationServicesTests
 		Mock<IResponse<RefreshAccessTokenResponse>> responseMock = new();
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<RefreshAccessTokenResponse, string>>()))
+			.Setup(r => r.GetResultV1(It.IsAny<Func<RefreshAccessTokenResponse, string>>()))
 			.Returns(Result.Success("token"));
 
 		_hubSpotClientMock

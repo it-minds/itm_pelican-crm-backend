@@ -60,7 +60,7 @@ public class RestSharpResponseTests
 		_uut.ErrorException = new("message");
 
 		// Act
-		var result = _uut.GetResult(func);
+		var result = _uut.GetResultV1(func);
 
 		// Assert
 		Assert.True(result.IsFailure);
@@ -79,7 +79,7 @@ public class RestSharpResponseTests
 		_uut.IsSuccessStatusCode = true;
 
 		// Act
-		var result = _uut.GetResult(func);
+		var result = _uut.GetResultV1(func);
 
 		// Assert
 		Assert.True(result.IsFailure);
@@ -100,7 +100,7 @@ public class RestSharpResponseTests
 		_uut.Data = "hello";
 
 		// Act
-		var result = _uut.GetResult(func);
+		var result = _uut.GetResultV1(func);
 
 		// Assert
 		Assert.True(result.IsSuccess);
@@ -119,7 +119,7 @@ public class RestSharpResponseTests
 		_uut.Data = "hello";
 
 		// Act
-		var result = _uut.GetResult(func);
+		var result = _uut.GetResultV1(func);
 
 		// Assert
 		Assert.True(result.IsFailure);

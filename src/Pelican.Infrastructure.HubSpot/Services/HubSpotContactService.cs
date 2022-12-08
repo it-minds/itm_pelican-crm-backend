@@ -30,7 +30,7 @@ internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHub
 			.GetAsync<ContactResponse>(request, cancellationToken);
 
 		return response
-			.GetResult(ContactResponseToContact.ToContact);
+			.GetResultV1(ContactResponseToContact.ToContact);
 	}
 
 	public async Task<Result<List<Contact>>> GetAsync(
@@ -45,6 +45,6 @@ internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHub
 			.GetAsync<ContactsResponse>(request, cancellationToken);
 
 		return response
-			.GetResult(ContactsResponseToContacts.ToContacts);
+			.GetResultV1(ContactsResponseToContacts.ToContacts);
 	}
 }

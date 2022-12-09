@@ -98,14 +98,18 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		string acccuntManagerHubSpotId,
 		CancellationToken cancellationToken)
 	{
+		if (deal.ActiveAccountManagerDeal?.SourceAccountManagerId == acccuntManagerHubSpotId)
+		{
+			return;
+		}
+
 		AccountManager? accountManager = await _unitOfWork
 			.AccountManagerRepository
 			.FirstOrDefaultAsync(
 				a => a.SourceId == acccuntManagerHubSpotId && a.Source == Sources.HubSpot,
 				cancellationToken);
 
-		if (accountManager is not null
-			&& accountManager.Id != deal.ActiveAccountManagerDeal?.AccountManagerId)
+		if (accountManager is not null)
 		{
 			deal.SetAccountManager(accountManager);
 

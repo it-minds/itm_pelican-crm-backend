@@ -374,6 +374,37 @@ public class UpdateDealHubSpotCommandHandlerTests
 	}
 
 	[Fact]
+	public async void Handle_DealFoundAccountManagerAssociationUpdatedIdEqualToActive_ReturnsSuccess()
+	{
+		// Arrange
+		Mock<Deal> dealMock = new(Guid.NewGuid());
+		dealMock.Object.AccountManagerDeals = new List<AccountManagerDeal>()
+		{
+			new AccountManagerDeal()
+			{
+				SourceAccountManagerId="equal",
+				IsActive=true,
+			}
+		};
+
+		SetupDealRepositoryMock(dealMock.Object);
+
+		UpdateDealHubSpotCommand command = new(1, 1, "hs_all_owner_ids", "equal");
+
+		// Act
+		Result result = await _uut.Handle(command, default);
+
+		// Assert
+		_unitOfWorkMock.Verify(
+			x => x.SaveAsync(default),
+			Times.Once);
+
+		Assert.True(result.IsSuccess);
+
+		Assert.Equal(Error.None, result.Error);
+	}
+
+	[Fact]
 	public async void Handle_DealFoundAccountManagerAssociationUpdated_ReturnsSuccess()
 	{
 		// Arrange

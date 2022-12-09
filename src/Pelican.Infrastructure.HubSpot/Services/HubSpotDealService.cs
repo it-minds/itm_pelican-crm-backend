@@ -38,7 +38,8 @@ internal sealed class HubSpotDealService : ServiceBase<HubSpotSettings>, IHubSpo
 		return await response
 			.GetResult(
 				DealResponseToDeal.ToDeal,
-				_unitOfWork);
+				_unitOfWork,
+				cancellationToken);
 	}
 
 	public async Task<Result<List<Deal>>> GetAsync(
@@ -57,6 +58,7 @@ internal sealed class HubSpotDealService : ServiceBase<HubSpotSettings>, IHubSpo
 		return await response
 			.GetResult(
 				DealsResponseToDeals.ToDeals,
-				_unitOfWork);
+				_unitOfWork,
+				cancellationToken);
 	}
 }

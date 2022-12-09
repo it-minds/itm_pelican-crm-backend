@@ -66,8 +66,11 @@ public class HubSpotDealServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResultV1(It.IsAny<Func<DealResponse, Deal>>()))
-			.Returns(Result.Failure<Deal>(Error.NullValue));
+			.Setup(r => r.GetResult(
+				It.IsAny<Func<DealResponse, IUnitOfWork, CancellationToken, Task<Deal>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<Deal>(Error.NullValue));
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -91,8 +94,11 @@ public class HubSpotDealServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResultV1(It.IsAny<Func<DealResponse, Deal>>()))
-			.Returns(deal);
+			.Setup(r => r.GetResult(
+				It.IsAny<Func<DealResponse, IUnitOfWork, CancellationToken, Task<Deal>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(deal));
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -117,8 +123,11 @@ public class HubSpotDealServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResultV1(It.IsAny<Func<DealsResponse, List<Deal>>>()))
-			.Returns(Result.Failure<List<Deal>>(Error.NullValue));
+			.Setup(r => r.GetResult(
+				It.IsAny<Func<DealsResponse, IUnitOfWork, CancellationToken, Task<List<Deal>>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<List<Deal>>(Error.NullValue));
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -142,8 +151,11 @@ public class HubSpotDealServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResultV1(It.IsAny<Func<DealsResponse, List<Deal>>>()))
-			.Returns(deals);
+			.Setup(r => r.GetResult(
+				It.IsAny<Func<DealsResponse, IUnitOfWork, CancellationToken, Task<List<Deal>>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(deals));
 
 		/// Act
 		var result = await _uut.GetAsync("", default);

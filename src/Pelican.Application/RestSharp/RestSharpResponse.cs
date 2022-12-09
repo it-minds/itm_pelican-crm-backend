@@ -56,14 +56,15 @@ public class RestSharpResponse<TResponse> : RestResponse<TResponse>, IResponse<T
 	}
 
 	public async Task<Result<TResult>> GetResult<TResult>(
-		Func<TResponse, IUnitOfWork, Task<TResult>> mappingFunc,
-		IUnitOfWork unitOfWork)
+		Func<TResponse, IUnitOfWork, CancellationToken, Task<TResult>> mappingFunc,
+		IUnitOfWork unitOfWork,
+		CancellationToken cancellationToken)
 	{
 		if (IsSuccessful && Data is not null)
 		{
 			try
 			{
-				return Result.Success(await mappingFunc(Data, unitOfWork));
+				return Result.Success(await mappingFunc(Data, unitOfWork, cancellationToken));
 			}
 			catch (Exception ex)
 			{

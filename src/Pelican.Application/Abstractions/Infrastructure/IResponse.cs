@@ -8,6 +8,7 @@ public interface IResponse<TResponse>
 	Result<TResult> GetResultV1<TResult>(Func<TResponse, TResult> mappingFunc);
 
 	Task<Result<TResult>> GetResult<TResult>(
-		Func<TResponse, IUnitOfWork, Task<TResult>> mappingFunc,
-		IUnitOfWork unitOfWork);
+		Func<TResponse, IUnitOfWork, CancellationToken, Task<TResult>> mappingFunc,
+		IUnitOfWork unitOfWork,
+		CancellationToken cancellationToken);
 }

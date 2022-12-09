@@ -29,7 +29,9 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 			?? throw new ArgumentNullException(nameof(hubSpotAuthorizationService));
 	}
 
-	public async Task<Result> Handle(UpdateDealHubSpotCommand command, CancellationToken cancellationToken = default)
+	public async Task<Result> Handle(
+		UpdateDealHubSpotCommand command,
+		CancellationToken cancellationToken = default)
 	{
 		Deal? deal = _unitOfWork
 			.DealRepository
@@ -51,7 +53,10 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		{
 			if (command.PropertyName == "hs_all_owner_ids")
 			{
-				await UpdateAccountManagerDeal(deal, command.PropertyValue);
+				await UpdateAccountManagerDealAsync(
+					deal,
+					command.PropertyValue,
+					cancellationToken);
 			}
 			else
 			{
@@ -76,7 +81,10 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 
 			if (result.Value.SourceOwnerId is not null)
 			{
-				await UpdateAccountManagerDeal(deal, result.Value.SourceOwnerId);
+				await UpdateAccountManagerDealAsync(
+					deal,
+					result.Value.SourceOwnerId,
+					cancellationToken);
 			}
 		}
 
@@ -85,20 +93,25 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		return Result.Success();
 	}
 
-	private async Task UpdateAccountManagerDeal(Deal deal, string acccuntManagerHubSpotId)
+	private async Task UpdateAccountManagerDealAsync(
+		Deal deal,
+		string acccuntManagerHubSpotId,
+		CancellationToken cancellationToken)
 	{
 		AccountManager? accountManager = await _unitOfWork
 			.AccountManagerRepository
-			.FirstOrDefaultAsync(a => a.SourceId == acccuntManagerHubSpotId && a.Source == Sources.HubSpot);
+			.FirstOrDefaultAsync(
+				a => a.SourceId == acccuntManagerHubSpotId && a.Source == Sources.HubSpot,
+				cancellationToken);
 
 		if (accountManager is not null
-			&& accountManager.Id != deal.ActiveAccountManagerDeal.AccountManagerId)
+			&& accountManager.Id != deal.ActiveAccountManagerDeal?.AccountManagerId)
 		{
 			deal.SetAccountManager(accountManager);
 
 			_unitOfWork
 				.AccountManagerDealRepository
-				.Attach(deal.ActiveAccountManagerDeal);
+				.Attach(deal.ActiveAccountManagerDeal!);
 		}
 	}
 

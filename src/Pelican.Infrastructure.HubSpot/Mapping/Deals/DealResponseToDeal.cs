@@ -10,7 +10,8 @@ internal static class DealResponseToDeal
 {
 	public static async Task<Deal> ToDeal(
 		this DealResponse response,
-		IUnitOfWork unitOfWork)
+		IUnitOfWork unitOfWork,
+		CancellationToken cancellationToken)
 	{
 		if (string.IsNullOrWhiteSpace(response.Properties.HubSpotObjectId))
 		{
@@ -32,7 +33,9 @@ internal static class DealResponseToDeal
 
 		result.SetAccountManager(await unitOfWork
 			.AccountManagerRepository
-			.FirstOrDefaultAsync(am => am.SourceId == result.SourceOwnerId && am.Source == Sources.HubSpot));
+			.FirstOrDefaultAsync(
+				am => am.SourceId == result.SourceOwnerId && am.Source == Sources.HubSpot,
+				cancellationToken));
 
 		result.SetContacts(response
 			.Associations
@@ -41,7 +44,9 @@ internal static class DealResponseToDeal
 			.Where(association => association.Type == "deal_to_contact")
 			.Select(async association => await unitOfWork
 				.ContactRepository
-				.FirstOrDefaultAsync(c => c.SourceId == association.Id && c.Source == Sources.HubSpot))
+				.FirstOrDefaultAsync(
+					c => c.SourceId == association.Id && c.Source == Sources.HubSpot,
+					cancellationToken))
 			.Select(t => t.Result));
 
 		result.SetClient(response
@@ -51,7 +56,9 @@ internal static class DealResponseToDeal
 			.Where(association => association.Type == "deal_to_company")
 			.Select(async association => await unitOfWork
 				.ClientRepository
-				.FirstOrDefaultAsync(c => c.SourceId == association.Id && c.Source == Sources.HubSpot))
+				.FirstOrDefaultAsync(
+					c => c.SourceId == association.Id && c.Source == Sources.HubSpot,
+					cancellationToken))
 			.Select(t => t.Result)
 			.Where(c => c is not null)
 			.FirstOrDefault());

@@ -63,9 +63,9 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 	{
 		Supplier? supplier = await unitOfWork
 			.SupplierRepository
-			.FindByCondition(supplier => supplier.SourceId == supplierHubSpotId && supplier.Source == Sources.HubSpot)
-			.AsNoTracking()
-			.FirstOrDefaultAsync();
+			.FirstOrDefaultAsync(
+				supplier => supplier.SourceId == supplierHubSpotId && supplier.Source == Sources.HubSpot,
+				cancellationToken);
 
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{

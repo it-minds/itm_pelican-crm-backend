@@ -8,7 +8,8 @@ internal static class DealsResponseToDeals
 {
 	internal static async Task<List<Deal>> ToDeals(
 		this DealsResponse responses,
-		IUnitOfWork unitOfWork)
+		IUnitOfWork unitOfWork,
+		CancellationToken cancellationToken)
 	{
 		if (responses.Results is null)
 		{
@@ -19,7 +20,7 @@ internal static class DealsResponseToDeals
 
 		foreach (DealResponse response in responses.Results)
 		{
-			Deal result = await response.ToDeal(unitOfWork);
+			Deal result = await response.ToDeal(unitOfWork, cancellationToken);
 			results.Add(result);
 		}
 

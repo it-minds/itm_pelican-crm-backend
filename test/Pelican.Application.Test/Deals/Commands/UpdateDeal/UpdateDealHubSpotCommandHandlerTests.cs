@@ -22,51 +22,42 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 	private readonly UpdateDealHubSpotCommandHandler _uut;
 
-	private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-	private readonly Mock<IHubSpotObjectService<Deal>> _hubSpotDealServiceMock;
-	private readonly Mock<IHubSpotAuthorizationService> _hubSpotAuthorizationServiceMock;
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
+	private readonly Mock<IHubSpotObjectService<Deal>> _hubSpotDealServiceMock = new();
+	private readonly Mock<IHubSpotAuthorizationService> _hubSpotAuthorizationServiceMock = new();
 
-	private readonly Mock<IGenericRepository<Deal>> _dealRepositoryMock;
-	private readonly Mock<IGenericRepository<AccountManager>> _accountManagerRepositoryMock;
-	private readonly Mock<IGenericRepository<Client>> _clientRepositoryMock;
-	private readonly Mock<IGenericRepository<Contact>> _contactRepositoryMock;
+	private readonly Mock<IGenericRepository<Deal>> _dealRepositoryMock = new();
+	private readonly Mock<IGenericRepository<AccountManager>> _accountManagerRepositoryMock = new();
+	private readonly Mock<IGenericRepository<Client>> _clientRepositoryMock = new();
+	private readonly Mock<IGenericRepository<Contact>> _contactRepositoryMock = new();
+	private readonly Mock<IGenericRepository<AccountManagerDeal>> _accountManagerDealRepositoryMock = new();
 
 	public UpdateDealHubSpotCommandHandlerTests()
 	{
-		_unitOfWorkMock = new();
-		_hubSpotDealServiceMock = new();
-		_hubSpotAuthorizationServiceMock = new();
-
-		_dealRepositoryMock = new();
-		_accountManagerRepositoryMock = new();
-		_clientRepositoryMock = new();
-		_contactRepositoryMock = new();
-
 		_uut = new(
 			_unitOfWorkMock.Object,
 			_hubSpotDealServiceMock.Object,
 			_hubSpotAuthorizationServiceMock.Object);
 
 		_unitOfWorkMock
-			.Setup(
-				u => u.DealRepository)
+			.Setup(u => u.DealRepository)
 			.Returns(_dealRepositoryMock.Object);
 
-
 		_unitOfWorkMock
-			.Setup(
-				u => u.AccountManagerRepository)
+			.Setup(u => u.AccountManagerRepository)
 			.Returns(_accountManagerRepositoryMock.Object);
 
 		_unitOfWorkMock
-			.Setup(
-				u => u.ClientRepository)
+			.Setup(u => u.ClientRepository)
 			.Returns(_clientRepositoryMock.Object);
 
 		_unitOfWorkMock
-			.Setup(
-				u => u.ContactRepository)
+			.Setup(u => u.ContactRepository)
 			.Returns(_contactRepositoryMock.Object);
+
+		_unitOfWorkMock
+			.Setup(u => u.AccountManagerDealRepository)
+			.Returns(_accountManagerDealRepositoryMock.Object);
 	}
 
 	private void SetupDealRepositoryMock(Deal? deal)
@@ -210,10 +201,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 		newDealMock.Object.SourceId = "hubspotId";
 		newDealMock.Object.SourceOwnerId = "ownerId";
 
-		newDealMock
-			.Setup(d => d.FillOutAssociations(It.IsAny<AccountManager>(), It.IsAny<Client>(), It.IsAny<List<Contact>>()))
-			.Returns(newDealMock.Object);
-
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
 				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
@@ -233,10 +220,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 		Result result = await _uut.Handle(command, default);
 
 		// Assert
-		_dealRepositoryMock.Verify(
-			x => x.CreateAsync(newDealMock.Object, default),
-			Times.Once);
-
 		_unitOfWorkMock.Verify(
 			x => x.SaveAsync(default),
 			Times.Once);
@@ -279,10 +262,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 			}
 		};
 
-		newDealMock
-			.Setup(d => d.FillOutAssociations(It.IsAny<AccountManager>(), It.IsAny<Client>(), It.IsAny<List<Contact>>()))
-			.Returns(newDealMock.Object);
-
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
 				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
@@ -312,10 +291,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 		Result result = await _uut.Handle(command, default);
 
 		// Assert
-		_dealRepositoryMock.Verify(
-			x => x.CreateAsync(newDealMock.Object, default),
-			Times.Once);
-
 		_unitOfWorkMock.Verify(
 			x => x.SaveAsync(default),
 			Times.Once);
@@ -360,10 +335,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 			}
 		};
 
-		newDealMock
-			.Setup(d => d.FillOutAssociations(It.IsAny<AccountManager>(), It.IsAny<Client>(), It.IsAny<List<Contact>>()))
-			.Returns(newDealMock.Object);
-
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
 				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
@@ -393,10 +364,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 		Result result = await _uut.Handle(command, default);
 
 		// Assert
-		_dealRepositoryMock.Verify(
-			x => x.CreateAsync(newDealMock.Object, default),
-			Times.Once);
-
 		_unitOfWorkMock.Verify(
 			x => x.SaveAsync(default),
 			Times.Once);
@@ -418,22 +385,18 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		_accountManagerRepositoryMock
 			.Setup(a => a
-				.FirstOrDefaultAsync(It.IsAny<Expression<Func<AccountManager, bool>>>(), default))
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					default))
 			.ReturnsAsync(new AccountManager(Guid.NewGuid()));
+
+		_accountManagerDealRepositoryMock
+			.Setup(a => a.Attach(It.IsAny<AccountManagerDeal>()));
 
 		// Act
 		Result result = await _uut.Handle(command, default);
 
 		// Assert
-		_dealRepositoryMock.Verify(
-			x => x.FindByCondition(
-				d => d.SourceId == command.ObjectId.ToString() && d.Source == Sources.HubSpot),
-			Times.Once);
-
-		_dealRepositoryMock.Verify(
-			x => x.Update(dealMock.Object),
-			Times.Once);
-
 		_unitOfWorkMock.Verify(
 			x => x.SaveAsync(default),
 			Times.Once);
@@ -461,15 +424,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 		Result result = await _uut.Handle(command, default);
 
 		// Assert
-		_dealRepositoryMock.Verify(
-			x => x.FindByCondition(
-				d => d.SourceId == command.ObjectId.ToString() && d.Source == Sources.HubSpot),
-			Times.Once);
-
-		_dealRepositoryMock.Verify(
-			x => x.Update(dealMock.Object),
-			Times.Once);
-
 		_unitOfWorkMock.Verify(
 			x => x.SaveAsync(default),
 			Times.Once);

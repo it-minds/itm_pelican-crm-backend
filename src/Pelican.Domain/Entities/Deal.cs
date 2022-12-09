@@ -1,4 +1,5 @@
-﻿using HotChocolate;
+﻿using System.Collections.Generic;
+using HotChocolate;
 using Pelican.Domain.Primitives;
 using Pelican.Domain.Shared;
 
@@ -61,7 +62,7 @@ public class Deal : Entity, ITimeTracked
 			: value;
 	}
 
-	public AccountManagerDeal ActiveAccountManagerDeal
+	public AccountManagerDeal? ActiveAccountManagerDeal
 	{
 		get => AccountManagerDeals.FirstOrDefault(am => am.IsActive);
 	}
@@ -109,30 +110,22 @@ public class Deal : Entity, ITimeTracked
 	[GraphQLIgnore]
 	public virtual void SetAccountManager(AccountManager? accountManager)
 	{
-		if (accountManager is null && ActiveAccountManagerDeal is null)
-		{
-			return;
-		}
 		if (accountManager is null)
 		{
-			ActiveAccountManagerDeal.Deactivate();
+			ActiveAccountManagerDeal?.Deactivate();
 			return;
 		}
 		if (ActiveAccountManagerDeal?.SourceAccountManagerId != accountManager.SourceId)
 		{
-			if (ActiveAccountManagerDeal is not null)
-			{
-				ActiveAccountManagerDeal.Deactivate();
-			}
+			ActiveAccountManagerDeal?.Deactivate();
 			AccountManagerDeal accountManagerDeal = AccountManagerDeal.Create(this, accountManager);
 			AccountManagerDeals.Add(accountManagerDeal);
 			accountManager.AccountManagerDeals.Add(accountManagerDeal);
 		}
 	}
 
-	public void setContacts(IEnumerable<Contact?> contacts)
-	{
-		DealContacts = contacts
+	public void SetContacts(IEnumerable<Contact?>? contacts)
+		=> DealContacts = contacts?
 			.Select(contact =>
 			{
 				if (contact is not null)
@@ -144,12 +137,12 @@ public class Deal : Entity, ITimeTracked
 				return null;
 			})
 			.Where(dc => dc is not null)
-			.ToList()!;
-	}
+			.ToList() as ICollection<DealContact> ?? new List<DealContact>();
 
 	public void SetClient(Client? client)
 	{
 		Client = client;
+		ClientId = null;
 		if (client is not null)
 		{
 			client.Deals.Add(this);

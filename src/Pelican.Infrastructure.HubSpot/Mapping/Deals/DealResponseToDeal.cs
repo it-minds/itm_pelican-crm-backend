@@ -34,7 +34,7 @@ internal static class DealResponseToDeal
 			.AccountManagerRepository
 			.FirstOrDefaultAsync(am => am.SourceId == result.SourceOwnerId && am.Source == Sources.HubSpot));
 
-		result.setContacts(response
+		result.SetContacts(response
 			.Associations
 			.Contacts
 			.AssociationList

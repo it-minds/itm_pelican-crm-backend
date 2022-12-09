@@ -357,13 +357,13 @@ public class DealTests
 	}
 
 	[Fact]
-	public void FillOutAssociations_NullAccountManager_EmptyAccountManagerDeals()
+	public void SetAccountManager_AccountManagerDealsEmptyArgNull_EmptyAccountManagerDeals()
 	{
 		// Arrange
 		Deal inputDeal = new(Guid.NewGuid());
 
 		// Act
-		inputDeal.FillOutAssociations(null, null, null);
+		inputDeal.SetAccountManager(null);
 
 		// Assert
 		Assert.Equal(
@@ -372,26 +372,52 @@ public class DealTests
 	}
 
 	[Fact]
-	public void FillOutAssociations_NullClient_NullClient()
+	public void SetAccountManager_ActiveAccountManagerDealEmptyArgNull_NullActiveAccountManagerDeal()
 	{
 		// Arrange
 		Deal inputDeal = new(Guid.NewGuid());
+		inputDeal.AccountManagerDeals.Add(new() { IsActive = true });
 
 		// Act
-		inputDeal.FillOutAssociations(null, null, null);
+		inputDeal.SetAccountManager(null);
 
 		// Assert
-		Assert.Null(inputDeal.Client);
+		Assert.Null(inputDeal.ActiveAccountManagerDeal);
+
+		Assert.Equal(
+			1,
+			inputDeal.AccountManagerDeals.Count);
 	}
 
 	[Fact]
-	public void FillOutAssociations_NullContacts_EmptyDealContacts()
+	public void SetAccountManager_AccountManagerDealsEmptyArgNewAccountManagerDeal_AccountManagerDealAddedAsActive()
+	{
+		// Arrange
+		Deal inputDeal = new(Guid.NewGuid());
+
+		AccountManager accountManager = new();
+
+		// Act
+		inputDeal.SetAccountManager(accountManager);
+
+		// Assert
+		Assert.Equal(
+			accountManager,
+			inputDeal.ActiveAccountManagerDeal!.AccountManager);
+
+		Assert.Equal(
+			1,
+			inputDeal.AccountManagerDeals.Count);
+	}
+
+	[Fact]
+	public void SetContacts_DealContactsEmptyArgsNull_DealContactsEmpty()
 	{
 		// Arrange
 		Deal inputDeal = new(Guid.NewGuid());
 
 		// Act
-		inputDeal.FillOutAssociations(null, null, null);
+		inputDeal.SetContacts(null);
 
 		// Assert
 		Assert.Equal(
@@ -400,267 +426,82 @@ public class DealTests
 	}
 
 	[Fact]
-	public void FillOutAssociations_WithAccountManager_AccountManagerDealsContainsAccountManager()
+	public void SetContacts_DealContactsEmptyArgsEmptyList_DealContactsEmpty()
 	{
 		// Arrange
 		Deal inputDeal = new(Guid.NewGuid());
 
-		AccountManager accountManager = new(Guid.NewGuid());
-
 		// Act
-		inputDeal.FillOutAssociations(accountManager, null, null);
+		inputDeal.SetContacts(new List<Contact>());
 
 		// Assert
 		Assert.Equal(
-			accountManager,
-			inputDeal.AccountManagerDeals.First().AccountManager);
+			0,
+			inputDeal.DealContacts.Count);
 	}
 
 	[Fact]
-	public void FillOutAssociations_WithClient_ClientAssignet()
+	public void SetContacts_DealContactsEmptyArgsNonEmptyList_DealContactsSet()
+	{
+		// Arrange
+		Deal inputDeal = new(Guid.NewGuid());
+
+		// Act
+		inputDeal.SetContacts(new List<Contact>() { new() });
+
+		// Assert
+		Assert.Equal(
+			1,
+			inputDeal.DealContacts.Count);
+	}
+
+	[Fact]
+	public void SetContacts_DealContactsEmptyArgsListContainingNull_DealContactsSet()
+	{
+		// Arrange
+		Deal inputDeal = new(Guid.NewGuid());
+
+		// Act
+		inputDeal.SetContacts(new List<Contact?>() { new(), null });
+
+		// Assert
+		Assert.Equal(
+			1,
+			inputDeal.DealContacts.Count);
+	}
+
+	[Fact]
+	public void SetClient_ArgNull_ClientAndClientIdNull()
+	{
+		// Arrange
+		Deal inputDeal = new(Guid.NewGuid());
+
+		// Act
+		inputDeal.SetClient(null);
+
+		// Assert
+		Assert.Null(inputDeal.Client);
+		Assert.Null(inputDeal.ClientId);
+	}
+
+	[Fact]
+	public void SetClient_ArgNewClient_ClientAndClientIdSet()
 	{
 		// Arrange
 		Deal inputDeal = new(Guid.NewGuid());
 
 		Client client = new(Guid.NewGuid());
-
 		// Act
-		inputDeal.FillOutAssociations(null, client, null);
+		inputDeal.SetClient(client);
 
 		// Assert
 		Assert.Equal(
 			client,
 			inputDeal.Client);
-	}
-
-	[Fact]
-	public void FillOutAssociations_WithEmptyContacts_ContactsAssignet()
-	{
-		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		List<Contact> contacts = new();
-
-		// Act
-		inputDeal.FillOutAssociations(null, null, contacts);
-
-		// Assert
-		Assert.Equal(
-			0,
-			inputDeal.DealContacts.Count);
-	}
-
-	[Fact]
-	public void FillOutAssociations_WithContactsEmptyDealContacts_EmptyDealContacts()
-	{
-		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		List<Contact> contacts = new()
-		{
-			new Contact(Guid.NewGuid()),
-		};
-
-		// Act
-		inputDeal.FillOutAssociations(null, null, contacts);
-
-		// Assert
-		Assert.Equal(
-			0,
-			inputDeal.DealContacts.Count);
-	}
-
-	[Fact]
-	public void FillOutAssociations_WithContactsExistingInDealContacts_AssignedToDealContacts()
-	{
-		// Arrange
-		Contact contact = new(Guid.NewGuid())
-		{
-			SourceId = "id",
-			Source = Sources.HubSpot,
-		};
-
-		Deal inputDeal = new(Guid.NewGuid());
-
-		DealContact dealContact = new(Guid.NewGuid())
-		{
-			SourceContactId = contact.SourceId,
-			Contact = new(Guid.NewGuid())
-			{
-				Source = Sources.HubSpot
-			},
-		};
-
-		inputDeal.DealContacts.Add(dealContact);
-
-		// Act
-		inputDeal.FillOutAssociations(null, null, new List<Contact>() { contact });
-
-		// Assert
-		Assert.Equal(
-			1,
-			inputDeal.DealContacts.Count);
 
 		Assert.Equal(
-			contact,
-			inputDeal.DealContacts.First().Contact);
-	}
-
-	[Fact]
-	public void FillOutAssociations_WithContactsNotExistingInDealContacts_EmptyDealContacts()
-	{
-		// Arrange
-		Contact contact = new(Guid.NewGuid())
-		{
-			SourceId = "id",
-		};
-
-		Deal inputDeal = new(Guid.NewGuid());
-
-		DealContact dealContact = new(Guid.NewGuid())
-		{
-			SourceContactId = "another id",
-		};
-
-		inputDeal.DealContacts.Add(dealContact);
-
-		// Act
-		inputDeal.FillOutAssociations(null, null, new List<Contact>() { contact });
-
-		// Assert
-		Assert.Equal(
-			0,
-			inputDeal.DealContacts.Count);
-	}
-
-	[Fact]
-	public void FillOutAccountManager_AccountManangerNull_ThrowsNoException()
-	{
-		/// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		/// Act
-		var result = Record.Exception(() => inputDeal.FillOutAccountManager(null));
-
-		/// Assert
-		Assert.Null(result);
-	}
-
-	[Fact]
-	public void FillOutAccountManager_EmptyAccountManangerDeals_NewAccountManagerAdded()
-	{
-		/// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		AccountManager? accountManager = new(Guid.NewGuid());
-
-		/// Act
-		inputDeal.FillOutAccountManager(accountManager);
-
-		/// Assert
-		Assert.Equal(
-			1,
-			inputDeal.AccountManagerDeals.Count);
-
-		Assert.Equal(
-			accountManager,
-			inputDeal.AccountManagerDeals.First().AccountManager);
-	}
-
-	[Fact]
-	public void FillOutAccountManager_AccountManagerDealExists_OldAccountManagerDeactivated()
-	{
-		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		AccountManager? oldAccountManager = new(Guid.NewGuid())
-		{
-			SourceId = "old",
-		};
-
-		inputDeal.AccountManagerDeals = new List<AccountManagerDeal>()
-		{
-			AccountManagerDeal.Create(inputDeal,oldAccountManager),
-		};
-
-		AccountManager? newAccountManager = new(Guid.NewGuid())
-		{
-			SourceId = "new",
-		};
-
-		/// Act
-		inputDeal.FillOutAccountManager(newAccountManager);
-
-		/// Assert
-		Assert.False(inputDeal.AccountManagerDeals.First(a => a.AccountManager == oldAccountManager).IsActive);
-	}
-
-	[Fact]
-	public void FillOutAccountManager_AccountManagerDealExists_NewAccountManagerAdded()
-	{
-		/// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		AccountManager? oldAccountManager = new(Guid.NewGuid())
-		{
-			SourceId = "old",
-		};
-
-		inputDeal.AccountManagerDeals = new List<AccountManagerDeal>()
-		{
-			AccountManagerDeal.Create(inputDeal,oldAccountManager),
-		};
-
-		AccountManager? newAccountManager = new(Guid.NewGuid())
-		{
-			SourceId = "new",
-		};
-
-		/// Act
-		inputDeal.FillOutAccountManager(newAccountManager);
-
-		/// Assert
-		Assert.Equal(
-			2,
-			inputDeal.AccountManagerDeals.Count);
-
-		Assert.Equal(
-			newAccountManager,
-			inputDeal.AccountManagerDeals.First(a => a.AccountManager == newAccountManager).AccountManager);
-	}
-
-	[Fact]
-	public void FillOutAccountManager_SameAccountMaangerDealAlreadyExists_NewAccountManagerAdded()
-	{
-		/// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		AccountManager? oldAccountManager = new(Guid.NewGuid())
-		{
-			SourceId = "old",
-		};
-
-		inputDeal.AccountManagerDeals = new List<AccountManagerDeal>()
-		{
-			AccountManagerDeal.Create(inputDeal,oldAccountManager),
-		};
-
-		AccountManager? newAccountManager = new(Guid.NewGuid())
-		{
-			SourceId = "old",
-		};
-
-		/// Act
-		inputDeal.FillOutAccountManager(newAccountManager);
-
-		/// Assert
-		Assert.Equal(
-			1,
-			inputDeal.AccountManagerDeals.Count);
-
-		Assert.Equal(
-			newAccountManager,
-			inputDeal.AccountManagerDeals.First(a => a.AccountManager == newAccountManager).AccountManager);
+			client.Id,
+			inputDeal.ClientId);
 	}
 
 	[Theory]

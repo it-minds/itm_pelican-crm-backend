@@ -246,7 +246,7 @@ public class CompanyResponseToClientTests
 		{
 			new()
 			{
-				Type = "company_to_deal",
+				Type = "company_to_deal_unlabeled",
 				Id = "1"
 			},
 		};
@@ -269,7 +269,7 @@ public class CompanyResponseToClientTests
 		{
 			new()
 			{
-				Type = "company_to_contact",
+				Type = "company_to_contact_unlabeled",
 				Id = "1"
 			},
 		};

@@ -1,7 +1,4 @@
-﻿using HotChocolate;
-using Pelican.Domain.Primitives;
-
-namespace Pelican.Domain.Entities;
+﻿namespace Pelican.Domain.Entities;
 public class Client : Entity, ITimeTracked
 {
 	private string _name = string.Empty;

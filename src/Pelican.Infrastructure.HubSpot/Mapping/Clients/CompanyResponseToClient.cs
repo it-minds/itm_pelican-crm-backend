@@ -27,7 +27,7 @@ internal static class CompanyResponseToClient
 			.Associations
 			.Deals
 			.AssociationList
-			.Where(association => association.Type == "company_to_deal")
+			.Where(association => association.Type == "company_to_deal_unlabeled")
 			.Select(association => new Deal(Guid.NewGuid())
 			{
 				SourceId = association.Id,
@@ -41,7 +41,7 @@ internal static class CompanyResponseToClient
 			.Associations
 			.Contacts
 			.AssociationList
-			.Where(association => association.Type == "company_to_contact")
+			.Where(association => association.Type == "company_to_contact_unlabeled")
 			.Select(association => new ClientContact(Guid.NewGuid())
 			{
 				SourceContactId = association.Id,

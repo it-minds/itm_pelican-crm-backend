@@ -13,5 +13,4 @@ public interface IGenericRepository<T>
 	void Update(T entity);
 	void Delete(T entity);
 	void AttachAsAdded(IEnumerable<T> entities);
-	void AttachAsAdded(T entity);
 }

@@ -67,7 +67,7 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		}
 		else
 		{
-			Result<Deal> result = await GetDealFromHubSpot(
+			Result<Deal> result = await GetDealFromHubSpotAsync(
 				command.SupplierHubSpotId,
 				command.ObjectId,
 				cancellationToken);

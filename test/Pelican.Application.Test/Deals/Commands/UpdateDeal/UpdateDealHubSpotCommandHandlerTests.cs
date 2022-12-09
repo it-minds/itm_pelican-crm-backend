@@ -407,6 +407,40 @@ public class UpdateDealHubSpotCommandHandlerTests
 	}
 
 	[Fact]
+	public async void Handle_DealFoundAccountManagerAssociationUpdatedAccountManagerNotFound_ReturnsSuccessWithoutChanges()
+	{
+		// Arrange
+		Mock<Deal> dealMock = new(Guid.NewGuid());
+
+		SetupDealRepositoryMock(dealMock.Object);
+
+		UpdateDealHubSpotCommand command = new(
+			1,
+			1,
+			"hs_all_owner_ids",
+			EMPTY_PROPERTYVALUE);
+
+		_accountManagerRepositoryMock
+			.Setup(a => a
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					default))
+			.ReturnsAsync((AccountManager)null!);
+
+		// Act
+		Result result = await _uut.Handle(command, default);
+
+		// Assert
+		_unitOfWorkMock.Verify(
+			x => x.SaveAsync(default),
+			Times.Once);
+
+		Assert.True(result.IsSuccess);
+
+		Assert.Equal(Error.None, result.Error);
+	}
+
+	[Fact]
 	public async void Handle_DealFoundPropertyUpdated_ReturnsSuccess()
 	{
 		// Arrange

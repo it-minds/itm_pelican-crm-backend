@@ -113,13 +113,4 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 			_pelicanContext.Entry(entity).State = EntityState.Added;
 		}
 	}
-
-	public void AttachAsAdded(T entity)
-	{
-		_pelicanContext
-			.Set<T>()
-			.Attach(entity);
-
-		_pelicanContext.Entry(entity).State = EntityState.Added;
-	}
 }

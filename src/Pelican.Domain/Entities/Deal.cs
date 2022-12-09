@@ -63,7 +63,7 @@ public class Deal : Entity, ITimeTracked
 
 	public AccountManagerDeal ActiveAccountManagerDeal
 	{
-		get => AccountManagerDeals.First(am => am.IsActive);
+		get => AccountManagerDeals.FirstOrDefault(am => am.IsActive);
 	}
 
 	[GraphQLIgnore]
@@ -109,14 +109,21 @@ public class Deal : Entity, ITimeTracked
 	[GraphQLIgnore]
 	public virtual void SetAccountManager(AccountManager? accountManager)
 	{
+		if (accountManager is null && ActiveAccountManagerDeal is null)
+		{
+			return;
+		}
 		if (accountManager is null)
 		{
-			throw new ArgumentNullException(nameof(accountManager));
-		}
-
-		if (ActiveAccountManagerDeal.SourceAccountManagerId != accountManager.SourceId)
-		{
 			ActiveAccountManagerDeal.Deactivate();
+			return;
+		}
+		if (ActiveAccountManagerDeal?.SourceAccountManagerId != accountManager.SourceId)
+		{
+			if (ActiveAccountManagerDeal is not null)
+			{
+				ActiveAccountManagerDeal.Deactivate();
+			}
 			AccountManagerDeal accountManagerDeal = AccountManagerDeal.Create(this, accountManager);
 			AccountManagerDeals.Add(accountManagerDeal);
 			accountManager.AccountManagerDeals.Add(accountManagerDeal);

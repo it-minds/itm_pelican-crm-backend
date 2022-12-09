@@ -29,7 +29,7 @@ internal sealed class HubSpotAccountManagerService : ServiceBase<HubSpotSettings
 			.GetAsync<OwnerResponse>(request, cancellationToken);
 
 		return response
-			.GetResultV1(OwnerResponseToAccountManager.ToAccountManager);
+			.GetResult(OwnerResponseToAccountManager.ToAccountManager);
 	}
 
 	public async Task<Result<List<AccountManager>>> GetAsync(
@@ -43,6 +43,6 @@ internal sealed class HubSpotAccountManagerService : ServiceBase<HubSpotSettings
 			.GetAsync<OwnersResponse>(request, cancellationToken);
 
 		return response
-			.GetResultV1(OwnersResponseToAccountManagers.ToAccountManagers);
+			.GetResult(OwnersResponseToAccountManagers.ToAccountManagers);
 	}
 }

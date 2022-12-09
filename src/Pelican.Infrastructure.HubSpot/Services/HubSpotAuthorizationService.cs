@@ -40,7 +40,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 			.PostAsync<GetAccessTokenResponse>(request, cancellationToken);
 
 		return response
-			.GetResultV1(GetAccessTokenResponseToRefreshAccessTokens.ToRefreshAccessTokens);
+			.GetResult(GetAccessTokenResponseToRefreshAccessTokens.ToRefreshAccessTokens);
 	}
 
 	public async Task<Result<Supplier>> DecodeAccessTokenAsync(
@@ -53,7 +53,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 			.GetAsync<AccessTokenResponse>(request, cancellationToken);
 
 		return response
-			.GetResultV1(AccessTokenResponseToSupplier.ToSupplier);
+			.GetResult(AccessTokenResponseToSupplier.ToSupplier);
 	}
 
 	public async Task<Result<string>> RefreshAccessTokenFromSupplierHubSpotIdAsync(
@@ -84,7 +84,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 				cancellationToken);
 
 		return response
-			.GetResultV1(RefreshAccessTokenResponseToAccessToken.ToAccessToken);
+			.GetResult(RefreshAccessTokenResponseToAccessToken.ToAccessToken);
 	}
 
 	public async Task<Result<string>> RefreshAccessTokenFromRefreshTokenAsync(
@@ -103,6 +103,6 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 				cancellationToken);
 
 		return response
-			.GetResultV1(RefreshAccessTokenResponseToAccessToken.ToAccessToken);
+			.GetResult(RefreshAccessTokenResponseToAccessToken.ToAccessToken);
 	}
 }

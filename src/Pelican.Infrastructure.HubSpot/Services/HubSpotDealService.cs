@@ -36,7 +36,7 @@ internal sealed class HubSpotDealService : ServiceBase<HubSpotSettings>, IHubSpo
 				cancellationToken);
 
 		return await response
-			.GetResult(
+			.GetResultWithUnitOfWork(
 				DealResponseToDeal.ToDeal,
 				_unitOfWork,
 				cancellationToken);
@@ -56,7 +56,7 @@ internal sealed class HubSpotDealService : ServiceBase<HubSpotSettings>, IHubSpo
 				cancellationToken);
 
 		return await response
-			.GetResult(
+			.GetResultWithUnitOfWork(
 				DealsResponseToDeals.ToDeals,
 				_unitOfWork,
 				cancellationToken);

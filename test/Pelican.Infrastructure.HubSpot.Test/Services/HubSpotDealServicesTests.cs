@@ -66,7 +66,7 @@ public class HubSpotDealServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(
+			.Setup(r => r.GetResultWithUnitOfWork(
 				It.IsAny<Func<DealResponse, IUnitOfWork, CancellationToken, Task<Deal>>>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
@@ -94,7 +94,7 @@ public class HubSpotDealServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(
+			.Setup(r => r.GetResultWithUnitOfWork(
 				It.IsAny<Func<DealResponse, IUnitOfWork, CancellationToken, Task<Deal>>>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
@@ -123,7 +123,7 @@ public class HubSpotDealServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(
+			.Setup(r => r.GetResultWithUnitOfWork(
 				It.IsAny<Func<DealsResponse, IUnitOfWork, CancellationToken, Task<List<Deal>>>>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
@@ -151,7 +151,7 @@ public class HubSpotDealServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(
+			.Setup(r => r.GetResultWithUnitOfWork(
 				It.IsAny<Func<DealsResponse, IUnitOfWork, CancellationToken, Task<List<Deal>>>>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))

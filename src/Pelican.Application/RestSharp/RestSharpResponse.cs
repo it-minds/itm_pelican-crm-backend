@@ -32,7 +32,7 @@ public class RestSharpResponse<TResponse> : RestResponse<TResponse>, IResponse<T
 		Data = response.Data;
 	}
 
-	public Result<TResult> GetResultV1<TResult>(
+	public Result<TResult> GetResult<TResult>(
 		Func<TResponse, TResult> mappingFunc)
 	{
 		if (IsSuccessful && Data is not null)
@@ -55,7 +55,7 @@ public class RestSharpResponse<TResponse> : RestResponse<TResponse>, IResponse<T
 					ErrorException?.Message! ?? "Error while fetching"));
 	}
 
-	public async Task<Result<TResult>> GetResult<TResult>(
+	public async Task<Result<TResult>> GetResultWithUnitOfWork<TResult>(
 		Func<TResponse, IUnitOfWork, CancellationToken, Task<TResult>> mappingFunc,
 		IUnitOfWork unitOfWork,
 		CancellationToken cancellationToken)

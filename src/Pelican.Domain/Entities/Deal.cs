@@ -124,6 +124,7 @@ public class Deal : Entity, ITimeTracked
 		}
 	}
 
+	[GraphQLIgnore]
 	public virtual void SetContacts(IEnumerable<Contact?>? contacts)
 		=> DealContacts = contacts?
 			.Select(contact =>
@@ -139,6 +140,7 @@ public class Deal : Entity, ITimeTracked
 			.Where(dc => dc is not null)
 			.ToList() as ICollection<DealContact> ?? new List<DealContact>();
 
+	[GraphQLIgnore]
 	public virtual void SetClient(Client? client)
 	{
 		Client = client;

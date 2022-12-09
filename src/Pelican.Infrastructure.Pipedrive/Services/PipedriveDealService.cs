@@ -30,7 +30,7 @@ public sealed class PipedriveDealService : ServiceBase<PipedriveSettings>, IPipe
 			.GetAsync<DealResponse>(request, cancellationToken);
 
 		return response
-			.GetResultV1(DealResponseToDeal.ToDeal);
+			.GetResult(DealResponseToDeal.ToDeal);
 	}
 
 	public async Task<Result<List<Deal>>> GetAsync(
@@ -45,7 +45,7 @@ public sealed class PipedriveDealService : ServiceBase<PipedriveSettings>, IPipe
 			.GetAsync<DealsResponse>(request, cancellationToken);
 
 		return response
-			.GetResultV1(DealsResponseToDeals.ToDeals);
+			.GetResult(DealsResponseToDeals.ToDeals);
 	}
 }
 

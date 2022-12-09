@@ -71,6 +71,20 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 					command.PropertyValue);
 			}
 		}
+		else if (command.PropertyName == "num_associated_deals")
+		{
+			Result<Client> result = await UpdateDealsAsync(
+				client,
+				command.PortalId,
+				command.ObjectId,
+				cancellationToken);
+
+			if (result.IsFailure)
+			{
+				return result;
+			}
+		}
+
 		else
 		{
 			Result<Client> result = await GetClientFromHubSpot(
@@ -186,6 +200,41 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		FillOutClientAssociations(client);
 
 		_unitOfWork.ClientContactRepository.AttachAsAdded(newClientContacts);
+
+		return client;
+	}
+
+	private async Task<Result<Client>> UpdateDealsAsync(
+		Client client,
+		long portalId,
+		long clientHubSpotId,
+		CancellationToken cancellationToken = default)
+	{
+		Result<Client> result = await GetClientFromHubSpot(
+						clientHubSpotId,
+						portalId,
+						cancellationToken);
+		if (result.IsFailure)
+		{
+			return result;
+		}
+
+		List<Deal> deals = new();
+
+		foreach (Deal item in result.Value.Deals)
+		{
+			Deal? matchingDeal = _unitOfWork
+				.DealRepository
+				.FindByCondition(
+					d => d.SourceId == item.SourceId && d.Source == Sources.HubSpot)
+				.FirstOrDefault();
+
+			if (matchingDeal is not null)
+			{
+				deals.Add(matchingDeal);
+			}
+		}
+		client.Deals = deals;
 
 		return client;
 	}

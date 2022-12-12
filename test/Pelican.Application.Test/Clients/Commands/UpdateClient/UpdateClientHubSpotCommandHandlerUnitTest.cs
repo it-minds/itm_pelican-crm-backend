@@ -1,12 +1,4 @@
 ﻿using System.Linq.Expressions;
-using Moq;
-using Pelican.Application.Abstractions.Data.Repositories;
-using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Clients.HubSpotCommands.UpdateClient;
-using Pelican.Domain;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Shared;
-using Xunit;
 
 namespace Pelican.Application.Test.Clients.Commands.UpdateClient;
 

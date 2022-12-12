@@ -78,43 +78,33 @@ public class Client : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
-	public virtual void FillOutClientContacts(IEnumerable<Contact>? contacts)
+	public virtual void SetClientContacts(IEnumerable<ClientContact>? hubSpotClientContacts)
 	{
-		if (contacts is null)
+		foreach (ClientContact clientContact in ClientContacts.Where(dc => dc.IsActive))
 		{
-			ClientContacts.Clear();
-			return;
+			if (!hubSpotClientContacts.Any(hubSpotClientContacts => hubSpotClientContacts.SourceContactId == clientContact.SourceContactId
+			&& hubSpotClientContacts.Contact.Source == clientContact.Contact.Source))
+				if (!hubSpotClientContacts.Any(hubSpotClientContacts => hubSpotClientContacts?.SourceContactId == clientContact.SourceContactId))
+				{
+					clientContact.Deactivate();
+				}
 		}
-
-		foreach (ClientContact item in ClientContacts)
+		foreach (ClientContact? clientContact in hubSpotClientContacts)
 		{
-			if (item.Contact is not null)
+			if (!ClientContacts.Any(dc => dc.SourceContactId == clientContact?.SourceContactId
+			&& dc.IsActive
+			&& dc.Client.Source == clientContact.Client.Source))
 			{
-				continue;
+				ClientContacts.Add(clientContact);
 			}
-
-			Contact? matchingContact = contacts
-				.FirstOrDefault(contacts => contacts.SourceId == item.SourceContactId && contacts.Source == item.Client.Source);
-
-			if (matchingContact is null)
-			{
-				continue;
-			}
-
-			item.Contact = matchingContact;
-			item.ContactId = matchingContact.Id;
 		}
-
-		ClientContacts = ClientContacts
-			.Where(cc => cc.Contact is not null)
-			.ToList();
 	}
 
-
 	[GraphQLIgnore]
-	public virtual void UpdateClientContacts(ICollection<ClientContact>? currentClientContacts)
+	public virtual void SetDeals(IEnumerable<Deal>? deals)
 	{
-		if (currentClientContacts is null)
+		Deals = deals?.ToList();
+		foreach (Deal deal in deals)
 		{
 			return;
 		}
@@ -134,7 +124,7 @@ public class Client : Entity, ITimeTracked
 			&& dc.IsActive
 			&& dc.Client.Source == clientContact.Client.Source))
 			{
-				ClientContacts.Add(clientContact);
+				deal.Client = this;
 			}
 		}
 	}
@@ -147,3 +137,4 @@ public class Client : Entity, ITimeTracked
 		Website = client.Website;
 	}
 }
+

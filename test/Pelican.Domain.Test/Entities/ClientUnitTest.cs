@@ -1,9 +1,4 @@
-﻿using Bogus;
-using Moq;
-using Pelican.Domain.Entities;
-using Xunit;
-
-namespace Pelican.Domain.Test.Entities;
+﻿namespace Pelican.Domain.Test.Entities;
 public class ClientUnitTest
 {
 	private readonly Client _uut = new Client(Guid.NewGuid())

@@ -1,12 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Pelican.Application.Abstractions.Data.Repositories;
-using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Abstractions.Messaging;
-using Pelican.Domain;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Shared;
-
-namespace Pelican.Application.Clients.HubSpotCommands.UpdateClient;
+﻿namespace Pelican.Application.Clients.HubSpotCommands.UpdateClient;
 internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<UpdateClientHubSpotCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;
@@ -107,29 +99,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 
 		return Result.Success();
 	}
-	private Client FillOutClientAssociations(
-		Client client)
-	{
-		List<Contact> contacts = new();
 
-		foreach (ClientContact item in client.ClientContacts)
-		{
-			Contact? matchingContact = _unitOfWork
-				.ContactRepository
-				.FindByCondition(
-					d => d.SourceId == item.SourceContactId && d.Source == Sources.HubSpot)
-				.FirstOrDefault();
-
-			if (matchingContact is not null)
-			{
-				contacts.Add(matchingContact);
-			}
-		}
-
-		client.FillOutClientContacts(contacts);
-
-		return client;
-	}
 	private async Task<Result> GetAndCreateClientAsync(
 		long objectId,
 		long portalId,
@@ -144,8 +114,6 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		{
 			return result;
 		}
-
-		FillOutClientAssociations(result.Value);
 
 		await _unitOfWork
 			.ClientRepository
@@ -193,11 +161,10 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		{
 			return result;
 		}
+
 		client.UpdateClientContacts(result.Value.ClientContacts);
 
 		var newClientContacts = client.ClientContacts.Where(cc => cc.Contact is null).ToList();
-
-		FillOutClientAssociations(client);
 
 		_unitOfWork.ClientContactRepository.AttachAsAdded(newClientContacts);
 
@@ -218,23 +185,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		{
 			return result;
 		}
-
-		List<Deal> deals = new();
-
-		foreach (Deal item in result.Value.Deals)
-		{
-			Deal? matchingDeal = _unitOfWork
-				.DealRepository
-				.FindByCondition(
-					d => d.SourceId == item.SourceId && d.Source == Sources.HubSpot)
-				.FirstOrDefault();
-
-			if (matchingDeal is not null)
-			{
-				deals.Add(matchingDeal);
-			}
-		}
-		client.Deals = deals;
+		client.SetDeals(result.Value.Deals);
 
 		return client;
 	}

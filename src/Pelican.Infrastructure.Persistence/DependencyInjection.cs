@@ -74,10 +74,10 @@ public static class DependencyInjection
 		////Readd the below lines later when frontend is done testing with seeded data
 		//if (app.Environment.IsDevelopment())
 		//{
-		app
-			.Services
-			.GetRequiredService<DevelopmentSeeder>()
-			.SeedEntireDb(20);
+		//app
+		//	.Services
+		//	.GetRequiredService<DevelopmentSeeder>()
+		//	.SeedEntireDb(20);
 		//}
 
 		return app;

@@ -19,61 +19,6 @@ public class Contact : Entity, ITimeTracked
 
 	public string? SourceOwnerId { get; set; }
 
-
-	public string? FirstName
-	{
-		get => _firstName;
-		set
-		{
-			_firstName = value?.Length > StringLengths.Name
-				? value.Substring(0, StringLengths.Name - 3) + ("...")
-				: value;
-		}
-	}
-	public string? LastName
-	{
-		get => _lastName;
-		set
-		{
-			_lastName = value?.Length > StringLengths.Name
-				? value.Substring(0, StringLengths.Name - 3) + ("...")
-				: value;
-		}
-	}
-
-	public string? PhoneNumber
-	{
-		get => _phoneNumber;
-		set
-		{
-			_phoneNumber = value?.Length > StringLengths.PhoneNumber
-				? value.Substring(0, StringLengths.PhoneNumber - 3) + ("...")
-				: value;
-		}
-	}
-
-	public string? Email
-	{
-		get => _email;
-		set
-		{
-			_email = value?.Length > StringLengths.Email
-				? value.Substring(0, StringLengths.Email - 3) + ("...")
-				: value;
-		}
-	}
-
-	public string? JobTitle
-	{
-		get => _jobTitle;
-		set
-		{
-			_jobTitle = value?.Length > StringLengths.JobTitle
-				? value.Substring(0, StringLengths.JobTitle - 3) + ("...")
-				: value;
-		}
-	}
-
 	public ICollection<ClientContact> ClientContacts { get; set; } = new List<ClientContact>();
 
 	public ICollection<DealContact> DealContacts { get; set; } = new List<DealContact>();
@@ -81,6 +26,47 @@ public class Contact : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 
 	public long? LastUpdatedAt { get; set; }
+
+
+	public string? FirstName
+	{
+		get => _firstName;
+		set => _firstName = value?.Length > StringLengths.Name
+			? value[..(StringLengths.Name - 3)] + "..."
+			: value;
+	}
+
+	public string? LastName
+	{
+		get => _lastName;
+		set => _lastName = value?.Length > StringLengths.Name
+			? value[..(StringLengths.Name - 3)] + "..."
+			: value;
+	}
+
+	public string? PhoneNumber
+	{
+		get => _phoneNumber;
+		set => _phoneNumber = value?.Length > StringLengths.PhoneNumber
+			? value[..(StringLengths.PhoneNumber - 3)] + "..."
+			: value;
+	}
+
+	public string? Email
+	{
+		get => _email;
+		set => _email = value?.Length > StringLengths.Email
+			? value[..(StringLengths.Email - 3)] + "..."
+			: value;
+	}
+
+	public string? JobTitle
+	{
+		get => _jobTitle;
+		set => _jobTitle = value?.Length > StringLengths.JobTitle
+			? value[..(StringLengths.JobTitle - 3)] + "..."
+			: value;
+	}
 
 	[GraphQLIgnore]
 	public virtual Contact UpdateProperty(string propertyName, string propertyValue)
@@ -211,13 +197,34 @@ public class Contact : Entity, ITimeTracked
 			.ToList();
 	}
 
-	public void SetDealContacts(IEnumerable<Deal?> enumerable)
-	{
-		throw new NotImplementedException();
-	}
+	public void SetDealContacts(IEnumerable<Deal?> deals)
+		=> DealContacts = deals?
+			.Select(deal =>
+			{
+				if (deal is not null)
+				{
+					DealContact dealContact = DealContact.Create(deal, this);
+					deal.DealContacts.Add(dealContact);
+					return dealContact;
+				}
+				return null;
+			})
+			.Where(dc => dc is not null)
+			.ToList() as ICollection<DealContact> ?? new List<DealContact>();
 
-	public void SetClientContacts(IEnumerable<Client?> enumerable)
-	{
-		throw new NotImplementedException();
-	}
+
+	public void SetClientContacts(IEnumerable<Client?> clients)
+		=> ClientContacts = clients?
+			.Select(client =>
+			{
+				if (client is not null)
+				{
+					ClientContact clientContact = ClientContact.Create(client, this);
+					client.ClientContacts.Add(clientContact);
+					return clientContact;
+				}
+				return null;
+			})
+			.Where(dc => dc is not null)
+			.ToList() as ICollection<ClientContact> ?? new List<ClientContact>();
 }

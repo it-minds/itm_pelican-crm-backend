@@ -33,7 +33,7 @@ public class ClientContact : Entity, ITimeTracked
 	[GraphQLIgnore]
 	public static ClientContact Create(Client client, Contact contact)
 	{
-		return new(Guid.NewGuid())
+		return new()
 		{
 			Client = client,
 			ClientId = client.Id,

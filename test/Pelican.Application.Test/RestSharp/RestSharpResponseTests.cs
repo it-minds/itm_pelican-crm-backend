@@ -130,7 +130,7 @@ public class RestSharpResponseTests
 	}
 
 	[Fact]
-	public async Task GetResult_NotSuccessful_ReturnFailureAsync()
+	public async Task GetResultWithUnitOfWork_NotSuccessful_ReturnFailureAsync()
 	{
 		// Arrange
 		Task<string> func(string x, IUnitOfWork unitOfWork, CancellationToken cancellationToken) => Task.Run(() => x);
@@ -154,7 +154,7 @@ public class RestSharpResponseTests
 	}
 
 	[Fact]
-	public async Task GetResult_dataIsNull_ReturnFailureAsync()
+	public async Task GetResultWithUnitOfWork_dataIsNull_ReturnFailureAsync()
 	{
 		// Arrange
 		Task<string> func(string x, IUnitOfWork unitOfWork, CancellationToken cancellationToken) => Task.Run(() => x);
@@ -176,29 +176,7 @@ public class RestSharpResponseTests
 	}
 
 	[Fact]
-	public async Task GetResult_SuccessMappingData_ReturnSuccessAsync()
-	{
-		// Arrange
-		Task<string> func(string x, IUnitOfWork unitOfWork, CancellationToken cancellationToken) => Task.Run(() => x);
-
-		_uut.IsSuccessStatusCode = true;
-		_uut.ResponseStatus = ResponseStatus.Completed;
-		_uut.Data = "hello";
-
-		// Act
-		var result = await _uut.GetResultWithUnitOfWork(
-			func,
-			_unitOfWorkMock.Object,
-			default);
-
-		// Assert
-		Assert.True(result.IsSuccess);
-
-		Assert.Equal(_uut.Data, result.Value);
-	}
-
-	[Fact]
-	public async Task GetResult_FailureMappingData_ReturnFailureAsync()
+	public async Task GetResultWithUnitOfWork_FailureMappingData_ReturnFailureAsync()
 	{
 		// Arrange
 		Task<string> func(string x, IUnitOfWork unitOfWork, CancellationToken cancellationToken) => throw new InvalidCastException("err");
@@ -219,5 +197,27 @@ public class RestSharpResponseTests
 		Assert.Equal("MappingError", result.Error.Code);
 
 		Assert.Equal("err", result.Error.Message);
+	}
+
+	[Fact]
+	public async Task GetResultWithUnitOfWork_SuccessMappingData_ReturnSuccessAsync()
+	{
+		// Arrange
+		Task<string> func(string x, IUnitOfWork unitOfWork, CancellationToken cancellationToken) => Task.Run(() => x);
+
+		_uut.IsSuccessStatusCode = true;
+		_uut.ResponseStatus = ResponseStatus.Completed;
+		_uut.Data = "hello";
+
+		// Act
+		var result = await _uut.GetResultWithUnitOfWork(
+			func,
+			_unitOfWorkMock.Object,
+			default);
+
+		// Assert
+		Assert.True(result.IsSuccess);
+
+		Assert.Equal(_uut.Data, result.Value);
 	}
 }

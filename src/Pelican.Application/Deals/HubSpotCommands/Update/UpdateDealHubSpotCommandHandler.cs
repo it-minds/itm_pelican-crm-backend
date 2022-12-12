@@ -109,10 +109,10 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 				a => a.SourceId == acccuntManagerHubSpotId && a.Source == Sources.HubSpot,
 				cancellationToken);
 
+		deal.SetAccountManager(accountManager);
+
 		if (accountManager is not null)
 		{
-			deal.SetAccountManager(accountManager);
-
 			_unitOfWork
 				.AccountManagerDealRepository
 				.Attach(deal.ActiveAccountManagerDeal!);

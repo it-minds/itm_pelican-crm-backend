@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Extensions;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
@@ -65,9 +66,4 @@ internal static class DealResponseToDeal
 
 		return result;
 	}
-
-	private static long? ToUnixTimeMillisecondsOrNull(this string stringDate)
-		=> string.IsNullOrWhiteSpace(stringDate)
-		? null
-		: new DateTimeOffset(Convert.ToDateTime(stringDate)).ToUnixTimeMilliseconds();
 }

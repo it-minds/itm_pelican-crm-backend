@@ -210,4 +210,14 @@ public class Contact : Entity, ITimeTracked
 			.Where(dc => dc.Deal is not null)
 			.ToList();
 	}
+
+	public void SetDealContacts(IEnumerable<Deal?> enumerable)
+	{
+		throw new NotImplementedException();
+	}
+
+	public void SetClientContacts(IEnumerable<Client?> enumerable)
+	{
+		throw new NotImplementedException();
+	}
 }

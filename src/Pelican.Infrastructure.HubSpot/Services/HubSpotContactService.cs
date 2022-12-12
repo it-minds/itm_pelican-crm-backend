@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Abstractions.HubSpot;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
@@ -12,10 +13,12 @@ namespace Pelican.Infrastructure.HubSpot.Services;
 
 internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHubSpotObjectService<Contact>
 {
+	private readonly IUnitOfWork _unitOfWork;
 	public HubSpotContactService(
-		IClient<HubSpotSettings> hubSpotClient)
+		IClient<HubSpotSettings> hubSpotClient, IUnitOfWork unitOfWork)
 		: base(hubSpotClient)
-	{ }
+		=> _unitOfWork = unitOfWork;
+
 
 	public async Task<Result<Contact>> GetByIdAsync(
 		string accessToken,
@@ -29,8 +32,11 @@ internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHub
 		IResponse<ContactResponse> response = await _client
 			.GetAsync<ContactResponse>(request, cancellationToken);
 
-		return response
-			.GetResultV1(ContactResponseToContact.ToContact);
+		return await response
+			.GetResultWithUnitOfWork(
+				ContactResponseToContact.ToContact,
+				_unitOfWork,
+				cancellationToken);
 	}
 
 	public async Task<Result<List<Contact>>> GetAsync(
@@ -44,7 +50,10 @@ internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHub
 		IResponse<ContactsResponse> response = await _client
 			.GetAsync<ContactsResponse>(request, cancellationToken);
 
-		return response
-			.GetResultV1(ContactsResponseToContacts.ToContacts);
+		return await response
+			.GetResultGetResultWithUnitOfWork(
+				ContactsResponseToContacts.ToContacts,
+				_unitOfWork,
+				cancellationToken);
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Pelican.Domain;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 
@@ -6,14 +7,17 @@ namespace Pelican.Infrastructure.HubSpot.Mapping.Contacts;
 
 internal static class ContactResponseToContact
 {
-	internal static Contact ToContact(this ContactResponse response)
+	internal static Contact ToContact(
+		this ContactResponse response,
+		IUnitOfWork unitOfWork,
+		CancellationToken cancellationToken)
 	{
 		if (string.IsNullOrWhiteSpace(response.Properties.HubSpotObjectId))
 		{
 			throw new ArgumentNullException(nameof(response));
 		}
 
-		Contact result = new(Guid.NewGuid())
+		Contact result = new()
 		{
 			FirstName = response.Properties.FirstName,
 			LastName = response.Properties.LastName,
@@ -25,35 +29,29 @@ internal static class ContactResponseToContact
 			Source = Sources.HubSpot,
 		};
 
-		result.ClientContacts = response
+		result.SetClientContacts(response
 			.Associations
 			.Companies
 			.AssociationList
 			.Where(association => association.Type == "contact_to_company")
-			.Select(association => new ClientContact(Guid.NewGuid())
-			{
-				ContactId = result.Id,
-				SourceContactId = result.SourceId,
-				Contact = result,
-				IsActive = true,
-				SourceClientId = association.Id,
-			})
-			.ToList();
+			.Select(async association => await unitOfWork
+				.ClientRepository
+				.FirstOrDefaultAsync(
+					c => c.SourceId == association.Id && c.Source == Sources.HubSpot,
+					cancellationToken))
+			.Select(t => t.Result));
 
-		result.DealContacts = response
+		result.SetDealContacts(response
 			.Associations
 			.Deals
 			.AssociationList
 			.Where(association => association.Type == "contact_to_deal")
-			.Select(association => new DealContact(Guid.NewGuid())
-			{
-				Contact = result,
-				ContactId = result.Id,
-				SourceContactId = result.SourceId,
-				SourceDealId = association.Id,
-				IsActive = true,
-			})
-			.ToList();
+			.Select(async association => await unitOfWork
+				.DealRepository
+				.FirstOrDefaultAsync(
+					d => d.SourceId == association.Id && d.Source == Sources.HubSpot,
+					cancellationToken))
+			.Select(t => t.Result));
 
 		return result;
 	}

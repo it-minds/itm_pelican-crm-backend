@@ -94,10 +94,6 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 			contact.UpdateDealContacts(result.Value.DealContacts);
 		}
 
-		_unitOfWork
-			.ContactRepository
-			.Update(contact);
-
 		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
@@ -120,6 +116,9 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 		}
 
 		contact.UpdateDealContacts(result.Value.DealContacts);
+		var newDealContact = contact.DealContacts.Where(cc => cc.Deal is null).ToList();
+		_unitOfWork.DealContactRepository.AttachAsAdded(newDealContact);
+		contact = await FillOutContactAssociationsAsync(contact, cancellationToken);
 
 		return contact;
 	}
@@ -163,7 +162,7 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 			Deal? deal = await _unitOfWork
 				.DealRepository
 				.FirstOrDefaultAsync(
-					d => d.SourceId == dealContact.Deal.SourceId && d.Source == Sources.HubSpot,
+					d => d.SourceId == dealContact.SourceDealId && d.Source == Sources.HubSpot,
 					cancellationToken);
 
 			if (deal is not null)

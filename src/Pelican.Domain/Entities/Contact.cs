@@ -185,7 +185,7 @@ public class Contact : Entity, ITimeTracked
 			.ToList();
 	}
 
-	private void FillOutDealContacts(IEnumerable<Deal>? deals)
+	public virtual void FillOutDealContacts(IEnumerable<Deal>? deals)
 	{
 		if (deals is null)
 		{

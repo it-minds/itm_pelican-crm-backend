@@ -7,7 +7,7 @@ namespace Pelican.Infrastructure.HubSpot.Mapping.Contacts;
 
 internal static class ContactResponseToContact
 {
-	internal static Contact ToContact(
+	public static Task<Contact> ToContact(
 		this ContactResponse response,
 		IUnitOfWork unitOfWork,
 		CancellationToken cancellationToken)

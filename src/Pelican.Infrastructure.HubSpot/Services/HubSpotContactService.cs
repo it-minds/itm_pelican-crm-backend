@@ -14,10 +14,11 @@ namespace Pelican.Infrastructure.HubSpot.Services;
 internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHubSpotObjectService<Contact>
 {
 	private readonly IUnitOfWork _unitOfWork;
+
 	public HubSpotContactService(
 		IClient<HubSpotSettings> hubSpotClient, IUnitOfWork unitOfWork)
 		: base(hubSpotClient)
-		=> _unitOfWork = unitOfWork;
+		=> _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
 
 	public async Task<Result<Contact>> GetByIdAsync(
@@ -51,7 +52,7 @@ internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHub
 			.GetAsync<ContactsResponse>(request, cancellationToken);
 
 		return await response
-			.GetResultGetResultWithUnitOfWork(
+			.GetResultWithUnitOfWork(
 				ContactsResponseToContacts.ToContacts,
 				_unitOfWork,
 				cancellationToken);

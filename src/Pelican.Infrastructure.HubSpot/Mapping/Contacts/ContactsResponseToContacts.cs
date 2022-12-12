@@ -6,7 +6,7 @@ namespace Pelican.Infrastructure.HubSpot.Mapping.Contacts;
 
 internal static class ContactsResponseToContacts
 {
-	internal static List<Contact> ToContacts(
+	internal static async Task<List<Contact>> ToContacts(
 		this ContactsResponse responses,
 		IUnitOfWork unitOfWork,
 		CancellationToken cancellationToken)
@@ -20,7 +20,7 @@ internal static class ContactsResponseToContacts
 
 		foreach (ContactResponse response in responses.Results)
 		{
-			Contact result = response.ToContact(unitOfWork, cancellationToken);
+			Contact result = await response.ToContact(unitOfWork, cancellationToken);
 			results.Add(result);
 		}
 

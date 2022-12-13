@@ -45,9 +45,9 @@ internal static class CompanyResponseToClient
 			.AssociationList
 			.Where(association => association.Type == "company_to_contact_unlabeled")
 			.Select(async association => await unitOfWork
-				.ClientContactRepository
+				.ContactRepository
 				.FirstOrDefaultAsync(
-					c => c.Client.SourceId == association.Id && c.Client.Source == Sources.HubSpot,
+					c => c.SourceId == association.Id && c.Source == Sources.HubSpot,
 					cancellationToken))
 			.Select(t => t.Result));
 

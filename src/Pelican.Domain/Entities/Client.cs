@@ -78,33 +78,28 @@ public class Client : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
-	public virtual void SetClientContacts(IEnumerable<ClientContact>? hubSpotClientContacts)
+	public virtual void SetClientContacts(IEnumerable<Contact?>? contacts)
 	{
-		foreach (ClientContact clientContact in ClientContacts.Where(dc => dc.IsActive))
-		{
-			if (!hubSpotClientContacts.Any(hubSpotClientContacts => hubSpotClientContacts.SourceContactId == clientContact.SourceContactId
-			&& hubSpotClientContacts.Contact.Source == clientContact.Contact.Source))
-				if (!hubSpotClientContacts.Any(hubSpotClientContacts => hubSpotClientContacts?.SourceContactId == clientContact.SourceContactId))
-				{
-					clientContact.Deactivate();
-				}
-		}
-		foreach (ClientContact? clientContact in hubSpotClientContacts)
-		{
-			if (!ClientContacts.Any(dc => dc.SourceContactId == clientContact?.SourceContactId
-			&& dc.IsActive
-			&& dc.Client.Source == clientContact.Client.Source))
+		ClientContacts = contacts?
+			.Select(contact =>
 			{
-				ClientContacts.Add(clientContact);
-			}
-		}
+				if (contact is not null)
+				{
+					ClientContact clientContact = ClientContact.Create(this, contact);
+					contact.ClientContacts.Add(clientContact);
+					return clientContact;
+				}
+				return null;
+			})
+			.Where(cc => cc is not null)
+			.ToList() as ICollection<ClientContact> ?? new List<ClientContact>();
 	}
 
 	[GraphQLIgnore]
-	public virtual void SetDeals(IEnumerable<Deal>? deals)
+	public virtual void SetDeals(IEnumerable<Deal?>? deals)
 	{
-		Deals = deals?.ToList();
-		foreach (Deal deal in deals)
+		Deals = (List<Deal>)deals?.Where(deal => deal is not null).ToList()! ?? new List<Deal>();
+		foreach (Deal deal in Deals)
 		{
 			return;
 		}

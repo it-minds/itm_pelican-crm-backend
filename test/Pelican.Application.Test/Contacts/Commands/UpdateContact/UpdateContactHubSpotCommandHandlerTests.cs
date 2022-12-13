@@ -611,7 +611,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 		Mock<Contact> contactMock = new();
 
-		contactMock.Object.SourceUpdateTimestamp = 10;
+		contactMock.Object.LastUpdatedAt = 10;
 		contactMock.Object.CreatedAt = 5;
 
 		_contactRepositoryMock
@@ -655,7 +655,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 		Mock<Contact> contactMock = new();
 
-		contactMock.Object.SourceUpdateTimestamp = 10;
+		contactMock.Object.LastUpdatedAt = 10;
 		contactMock.Object.CreatedAt = 5;
 
 		string accessToken = "accessTokent";
@@ -714,7 +714,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 		Mock<Contact> contactMock = new();
 
-		contactMock.Object.SourceUpdateTimestamp = 10;
+		contactMock.Object.LastUpdatedAt = 10;
 		contactMock.Object.CreatedAt = 5;
 
 		string accessToken = "accessToken";

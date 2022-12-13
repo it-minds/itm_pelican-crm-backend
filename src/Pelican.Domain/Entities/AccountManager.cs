@@ -19,8 +19,6 @@ public class AccountManager : Entity, ITimeTracked
 
 	public long SourceUserId { get; set; }
 
-	public long? SourceUpdateTimestamp { get; set; }
-
 	public string FirstName
 	{
 		get => _firstName;

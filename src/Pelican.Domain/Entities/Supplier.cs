@@ -21,7 +21,6 @@ public class Supplier : Entity, ITimeTracked
 
 	public string RefreshToken { get; set; } = string.Empty;
 
-
 	public string? Name
 	{
 		get => _name;

@@ -71,9 +71,6 @@ public class Deal : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
-	public long? SourceUpdateTimestamp { get; set; }
-
-
 	[GraphQLIgnore]
 	public virtual Deal UpdateProperty(string propertyName, string propertyValue)
 	{

@@ -493,7 +493,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		Mock<Deal> dealMock = new();
 
-		dealMock.Object.SourceUpdateTimestamp = 10;
+		dealMock.Object.LastUpdatedAt = 10;
 		dealMock.Object.CreatedAt = 5;
 
 		_unitOfWorkMock
@@ -538,7 +538,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		Mock<Deal> dealMock = new();
 
-		dealMock.Object.SourceUpdateTimestamp = 10;
+		dealMock.Object.LastUpdatedAt = 10;
 		dealMock.Object.CreatedAt = 5;
 
 
@@ -599,7 +599,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		Mock<Deal> dealMock = new();
 
-		dealMock.Object.SourceUpdateTimestamp = 10;
+		dealMock.Object.LastUpdatedAt = 10;
 		dealMock.Object.CreatedAt = 5;
 
 		string accessToken = "accessToken";
@@ -674,7 +674,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		Mock<Deal> dealMock = new();
 
-		dealMock.Object.SourceUpdateTimestamp = 10;
+		dealMock.Object.LastUpdatedAt = 10;
 		dealMock.Object.CreatedAt = 5;
 
 		string accessToken = "accessToken";

@@ -25,7 +25,4 @@ internal sealed class ContactProperties : HubSpotObjectProperties
 
 	[JsonPropertyName("hubspot_owner_id")]
 	public string HubSpotOwnerId { get; set; } = string.Empty;
-
-	[JsonPropertyName("occurredAt")]
-	public long ChangedUnixTime { get; set; }
 }

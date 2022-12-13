@@ -56,7 +56,7 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 		UpdateContactHubSpotCommand command,
 		CancellationToken cancellationToken = default)
 	{
-		if (contact.SourceUpdateTimestamp <= command.UpdateTime && contact.CreatedAt <= command.UpdateTime)
+		if ((contact.LastUpdatedAt ?? contact.CreatedAt) <= command.UpdateTime)
 		{
 			if (command.PropertyName == "num_associated_deals")
 			{
@@ -84,18 +84,19 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 				command.SupplierHubSpotId,
 				command.ObjectId,
 				cancellationToken);
+
 			if (result.IsFailure)
 			{
 				return result;
 			}
+
 			contact.UpdatePropertiesFromContact(result.Value);
 			contact.UpdateDealContacts(result.Value.DealContacts);
 		}
-		contact.SourceUpdateTimestamp = command.UpdateTime;
 
 		_unitOfWork
-				.ContactRepository
-				.Update(contact);
+			.ContactRepository
+			.Update(contact);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
@@ -109,9 +110,9 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 		CancellationToken cancellationToken = default)
 	{
 		Result<Contact> result = await GetContactFromHubSpot(
-						supplierHubSpotId,
-						contactHubSpotId,
-						cancellationToken);
+			supplierHubSpotId,
+			contactHubSpotId,
+			cancellationToken);
 
 		if (result.IsFailure)
 		{
@@ -129,9 +130,9 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 		CancellationToken cancellationToken = default)
 	{
 		Result<Contact> result = await GetContactFromHubSpot(
-						supplierHubSpotId,
-						objectId,
-						cancellationToken);
+			supplierHubSpotId,
+			objectId,
+			cancellationToken);
 
 		if (result.IsFailure)
 		{

@@ -294,7 +294,6 @@ public class DealTests
 		string name = "dealname";
 		string value = "newName";
 
-
 		Deal inputDeal = new(Guid.NewGuid());
 
 		/// Act

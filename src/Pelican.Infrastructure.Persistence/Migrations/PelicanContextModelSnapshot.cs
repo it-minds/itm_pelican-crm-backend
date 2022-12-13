@@ -71,9 +71,6 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<long?>("SourceUpdateTimestamp")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("SourceUserId")
                         .HasColumnType("bigint");
 
@@ -161,9 +158,6 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<long?>("SourceUpdateTimestamp")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Website")
                         .HasMaxLength(1000)
@@ -262,9 +256,6 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<long?>("SourceUpdateTimestamp")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
                     b.ToTable("Contacts", (string)null);
@@ -316,9 +307,6 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                     b.Property<string>("SourceOwnerId")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<long?>("SourceUpdateTimestamp")
-                        .HasColumnType("bigint");
 
                     b.Property<long?>("StartDate")
                         .HasColumnType("bigint");

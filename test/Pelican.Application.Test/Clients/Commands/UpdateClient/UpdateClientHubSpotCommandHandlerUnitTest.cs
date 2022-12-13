@@ -313,7 +313,7 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, 1, "property", "value")]
+	[InlineData(0, 0, 2, "property", "value")]
 	public async void Handle_ClientFoundClientUpdateCalled_ReturnsSucces(
 		long objectId,
 		long portalId,
@@ -325,6 +325,8 @@ public class UpdateClientCommandHandlerTests
 		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
 		Mock<Client> clientMock = new();
+
+		clientMock.Object.CreatedAt = 1;
 
 		_unitOfWorkMock.Setup(
 			unitOfWork => unitOfWork.ClientRepository.FindByCondition(
@@ -510,7 +512,7 @@ public class UpdateClientCommandHandlerTests
 
 		Mock<Client> clientMock = new();
 
-		clientMock.Object.SourceUpdateTimestamp = 10;
+		clientMock.Object.LastUpdatedAt = 10;
 		clientMock.Object.CreatedAt = 5;
 
 		_unitOfWorkMock
@@ -555,7 +557,7 @@ public class UpdateClientCommandHandlerTests
 
 		Mock<Client> clientMock = new();
 
-		clientMock.Object.SourceUpdateTimestamp = 10;
+		clientMock.Object.LastUpdatedAt = 10;
 		clientMock.Object.CreatedAt = 5;
 
 
@@ -613,7 +615,7 @@ public class UpdateClientCommandHandlerTests
 
 		Mock<Client> clientMock = new();
 
-		clientMock.Object.SourceUpdateTimestamp = 10;
+		clientMock.Object.LastUpdatedAt = 10;
 		clientMock.Object.CreatedAt = 5;
 
 		string accessToken = "accessToken";

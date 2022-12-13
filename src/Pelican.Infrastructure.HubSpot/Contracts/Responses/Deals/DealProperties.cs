@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Pelican.Infrastructure.HubSpot.Abstractions;
 
 namespace Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 
-internal sealed class DealProperties
+internal sealed class DealProperties : HubSpotObjectProperties
 {
 	[JsonPropertyName("enddate")]
 	public string EndDate { get; set; } = string.Empty;
@@ -13,9 +14,6 @@ internal sealed class DealProperties
 	[JsonPropertyName("notes_last_contacted")]
 	public string LastContactDate { get; set; } = string.Empty;
 
-	[JsonPropertyName("createdate")]
-	public string CreateDate { get; set; } = string.Empty;
-
 	[JsonPropertyName("dealname")]
 	public string DealName { get; set; } = string.Empty;
 
@@ -25,15 +23,10 @@ internal sealed class DealProperties
 	[JsonPropertyName("hs_lastmodifieddate")]
 	public string LastModifiedDate { get; set; } = string.Empty;
 
-	[JsonPropertyName("hs_object_id")]
-	public string HubSpotObjectId { get; set; } = string.Empty;
-
 	[JsonPropertyName("hubspot_owner_id")]
 	public string HubSpotOwnerId { get; set; } = string.Empty;
 
 	[JsonPropertyName("description")]
 	public string Description { get; set; } = string.Empty;
 
-	[JsonPropertyName("occurredAt")]
-	public long ChangedUnixTime { get; set; }
 }

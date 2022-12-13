@@ -170,7 +170,6 @@ public class ContactTests
 		// Arrange
 		string propertyName = "invalidName";
 		string propertyValue = "value";
-		long updatetime = 1;
 
 		// Act
 		var result = Record.Exception(() => _uut.UpdateProperty(propertyName, propertyValue));

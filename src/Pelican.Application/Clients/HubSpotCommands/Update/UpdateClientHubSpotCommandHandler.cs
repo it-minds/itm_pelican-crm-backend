@@ -49,7 +49,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		UpdateClientHubSpotCommand command,
 		CancellationToken cancellationToken = default)
 	{
-		if (client.SourceUpdateTimestamp <= command.UpdateTime && client.CreatedAt <= command.UpdateTime)
+		if ((client.LastUpdatedAt ?? client.CreatedAt) <= command.UpdateTime)
 		{
 			if (command.PropertyName == "num_associated_contacts")
 			{
@@ -70,7 +70,6 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 					command.PropertyName,
 					command.PropertyValue);
 			}
-			client.SourceUpdateTimestamp = command.UpdateTime;
 		}
 		else
 		{
@@ -85,11 +84,13 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			client.UpdatePropertiesFromClient(result.Value);
 			client.UpdateClientContacts(result.Value.ClientContacts);
 		}
+
 		_unitOfWork
 				.ClientRepository
 				.Update(client);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
+
 		return Result.Success();
 	}
 	private Client FillOutClientAssociations(
@@ -121,9 +122,10 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		CancellationToken cancellationToken = default)
 	{
 		Result<Client> result = await GetClientFromHubSpot(
-						objectId,
-						portalId,
-						cancellationToken);
+			objectId,
+			portalId,
+			cancellationToken);
+
 		if (result.IsFailure)
 		{
 			return result;
@@ -169,9 +171,10 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		CancellationToken cancellationToken = default)
 	{
 		Result<Client> result = await GetClientFromHubSpot(
-						clientHubSpotId,
-						portalId,
-						cancellationToken);
+			clientHubSpotId,
+			portalId,
+			cancellationToken);
+
 		if (result.IsFailure)
 		{
 			return result;
@@ -183,6 +186,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		FillOutClientAssociations(client);
 
 		_unitOfWork.ClientContactRepository.AttachAsAdded(newClientContacts);
+
 		return client;
 	}
 }

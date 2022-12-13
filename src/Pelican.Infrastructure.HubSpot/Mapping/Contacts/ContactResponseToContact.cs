@@ -53,6 +53,6 @@ internal static class ContactResponseToContact
 					cancellationToken))
 			.Select(t => t.Result));
 
-		return result;
+		return Task.FromResult(result);
 	}
 }

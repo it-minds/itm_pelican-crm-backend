@@ -4,7 +4,7 @@
 
 namespace Pelican.Infrastructure.Persistence.Migrations
 {
-    public partial class SourceUpdateTime : Migration
+    public partial class SourceUpdateTimeAdded : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,22 +12,19 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                 name: "SourceUpdateTimestamp",
                 table: "Deals",
                 type: "bigint",
-                nullable: false,
-                defaultValue: 0L);
+                nullable: true);
 
             migrationBuilder.AddColumn<long>(
                 name: "SourceUpdateTimestamp",
                 table: "Contacts",
                 type: "bigint",
-                nullable: false,
-                defaultValue: 0L);
+                nullable: true);
 
             migrationBuilder.AddColumn<long>(
                 name: "SourceUpdateTimestamp",
                 table: "Clients",
                 type: "bigint",
-                nullable: false,
-                defaultValue: 0L);
+                nullable: true);
 
             migrationBuilder.AddColumn<long>(
                 name: "SourceUpdateTimestamp",

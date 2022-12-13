@@ -12,8 +12,8 @@ using Pelican.Infrastructure.Persistence;
 namespace Pelican.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(PelicanContext))]
-    [Migration("20221208085708_SourceUpdateTime")]
-    partial class SourceUpdateTime
+    [Migration("20221213082056_SourceUpdateTimeAdded")]
+    partial class SourceUpdateTimeAdded
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -164,7 +164,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<long>("SourceUpdateTimestamp")
+                    b.Property<long?>("SourceUpdateTimestamp")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Website")
@@ -264,7 +264,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<long>("SourceUpdateTimestamp")
+                    b.Property<long?>("SourceUpdateTimestamp")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -319,7 +319,7 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<long>("SourceUpdateTimestamp")
+                    b.Property<long?>("SourceUpdateTimestamp")
                         .HasColumnType("bigint");
 
                     b.Property<long?>("StartDate")

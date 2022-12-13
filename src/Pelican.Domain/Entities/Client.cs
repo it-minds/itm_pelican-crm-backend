@@ -49,7 +49,7 @@ public class Client : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
-	public long SourceUpdateTimestamp { get; set; }
+	public long? SourceUpdateTimestamp { get; set; }
 
 
 	public string? Website

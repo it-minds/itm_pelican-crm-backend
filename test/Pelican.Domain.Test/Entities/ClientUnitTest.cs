@@ -109,7 +109,6 @@ public class ClientUnitTest
 		// Arragne
 		string propertyName = "invalidName";
 		string propertyValue = "value";
-		long updateTime = 1;
 
 
 		// Act
@@ -131,7 +130,6 @@ public class ClientUnitTest
 		// Arragne
 		string propertyName = "name";
 		string propertyValue = "newName";
-		long updateTime = 1;
 
 		// Act
 		_uut.UpdateProperty(propertyName, propertyValue);
@@ -148,7 +146,6 @@ public class ClientUnitTest
 		// Arragne
 		string propertyName = "city";
 		string propertyValue = "newCity";
-		long updateTime = 1;
 
 		// Act
 		_uut.UpdateProperty(propertyName, propertyValue);
@@ -165,7 +162,6 @@ public class ClientUnitTest
 		// Arragne
 		string propertyName = "website";
 		string propertyValue = "newWebsite";
-		long updateTime = 1;
 
 		// Act
 		_uut.UpdateProperty(propertyName, propertyValue);

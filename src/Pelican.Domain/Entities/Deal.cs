@@ -71,7 +71,7 @@ public class Deal : Entity, ITimeTracked
 
 	public long? LastUpdatedAt { get; set; }
 
-	public long SourceUpdateTimestamp { get; set; }
+	public long? SourceUpdateTimestamp { get; set; }
 
 
 	[GraphQLIgnore]

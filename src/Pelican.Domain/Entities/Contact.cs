@@ -1,4 +1,5 @@
-﻿using HotChocolate;
+﻿using System.Collections.Generic;
+using HotChocolate;
 using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
@@ -99,28 +100,21 @@ public class Contact : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
-	public virtual void UpdatePropertiesFromContact(Contact contact)
-	{
-		FirstName = contact.FirstName;
-		LastName = contact.LastName;
-		Email = contact.Email;
-		PhoneNumber = contact.PhoneNumber;
-		JobTitle = contact.JobTitle;
-		SourceOwnerId = contact.SourceOwnerId;
-	}
-
-	[GraphQLIgnore]
 	public virtual void UpdateDealContacts(ICollection<DealContact>? currentDealContacts)
 	{
 		if (currentDealContacts is null)
 		{
+			DealContacts
+				.ToList()
+				.ForEach(dc => dc.Deactivate());
+
 			return;
 		}
 
 		foreach (DealContact dealContact in DealContacts.Where(dc => dc.IsActive))
 		{
-			if (!currentDealContacts.Any(currentDealContact => currentDealContact.SourceDealId == dealContact.SourceDealId
-			&& currentDealContact.Deal.Source == dealContact.Deal.Source))
+			if (!currentDealContacts.Any(currentDealContact => currentDealContact.SourceContactId == dealContact.SourceContactId
+			&& currentDealContact.Contact.Source == dealContact.Contact.Source))
 			{
 				dealContact.Deactivate();
 			}
@@ -128,9 +122,9 @@ public class Contact : Entity, ITimeTracked
 
 		foreach (DealContact dealContact in currentDealContacts)
 		{
-			if (!DealContacts.Any(dc => dc.SourceDealId == dealContact.SourceDealId
+			if (!DealContacts.Any(dc => dc.SourceContactId == dealContact.SourceContactId
 			&& dc.IsActive
-			&& dc.Deal.Source == dealContact.Deal.Source))
+			&& dc.Contact.Source == dealContact.Contact.Source))
 			{
 				DealContacts.Add(dealContact);
 			}
@@ -138,65 +132,6 @@ public class Contact : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
-	public virtual Contact FillOutAssociations(IEnumerable<Client>? clients, IEnumerable<Deal>? deals)
-	{
-		FillOutClient(clients);
-		FillOutDealContacts(deals);
-		return this;
-	}
-
-	private void FillOutClient(IEnumerable<Client>? clients)
-	{
-		if (clients is null)
-		{
-			ClientContacts.Clear();
-			return;
-		}
-
-		ClientContacts = ClientContacts
-			.Select(cc =>
-			{
-				Client? matchingClient = clients
-				.FirstOrDefault(client => client.SourceId == cc.SourceClientId && client.Source == cc.Contact.Source);
-
-				if (matchingClient is not null)
-				{
-					cc.Client = matchingClient;
-					cc.ClientId = matchingClient.Id;
-				}
-
-				return cc;
-			})
-			.Where(cc => cc.Client is not null)
-			.ToList();
-	}
-
-	public virtual void FillOutDealContacts(IEnumerable<Deal>? deals)
-	{
-		if (deals is null)
-		{
-			DealContacts.Clear();
-			return;
-		}
-
-		DealContacts = DealContacts
-			.Select(dc =>
-			{
-				Deal? matchingDeal = deals
-				.FirstOrDefault(deal => deal.SourceId == dc.SourceDealId && deal.Source == dc.Contact.Source);
-
-				if (matchingDeal is not null)
-				{
-					dc.Deal = matchingDeal;
-					dc.DealId = matchingDeal.Id;
-				}
-
-				return dc;
-			})
-			.Where(dc => dc.Deal is not null)
-			.ToList();
-	}
-
 	public void SetDealContacts(IEnumerable<Deal?> deals)
 		=> DealContacts = deals?
 			.Select(deal =>
@@ -212,7 +147,7 @@ public class Contact : Entity, ITimeTracked
 			.Where(dc => dc is not null)
 			.ToList() as ICollection<DealContact> ?? new List<DealContact>();
 
-
+	[GraphQLIgnore]
 	public void SetClientContacts(IEnumerable<Client?> clients)
 		=> ClientContacts = clients?
 			.Select(client =>

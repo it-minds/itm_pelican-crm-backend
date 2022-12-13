@@ -37,7 +37,8 @@ internal static class ContactResponseToContact
 			.Select(async association => await unitOfWork
 				.ClientRepository
 				.FirstOrDefaultAsync(
-					c => c.SourceId == association.Id && c.Source == Sources.HubSpot,
+					c => c.SourceId == association.Id 
+						&& c.Source == Sources.HubSpot,
 					cancellationToken))
 			.Select(t => t.Result));
 
@@ -49,7 +50,8 @@ internal static class ContactResponseToContact
 			.Select(async association => await unitOfWork
 				.DealRepository
 				.FirstOrDefaultAsync(
-					d => d.SourceId == association.Id && d.Source == Sources.HubSpot,
+					d => d.SourceId == association.Id 
+						&& d.Source == Sources.HubSpot,
 					cancellationToken))
 			.Select(t => t.Result));
 

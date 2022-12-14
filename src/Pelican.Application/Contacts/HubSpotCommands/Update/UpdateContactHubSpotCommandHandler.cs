@@ -13,7 +13,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IHubSpotObjectService<Contact> _hubSpotContactService;
 	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
-	
+
 	public UpdateContactCommandHandler(
 		IUnitOfWork unitOfWork,
 		IHubSpotObjectService<Contact> hubSpotContactService,
@@ -33,12 +33,12 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 		UpdateContactCommand command,
 		CancellationToken cancellationToken = default)
 	{
-		Contact? contact = await _unitOfWork
+		Contact? contact = _unitOfWork
 			.ContactRepository
 			.FindByCondition(contact => contact.SourceId == command.ObjectId.ToString() && contact.Source == Sources.HubSpot)
 			.Include(c => c.ClientContacts)
 			.Include(c => c.DealContacts)
-			.FirstOrDefaultAsync(cancellationToken);
+			.FirstOrDefault();
 
 		if (contact is null)
 		{

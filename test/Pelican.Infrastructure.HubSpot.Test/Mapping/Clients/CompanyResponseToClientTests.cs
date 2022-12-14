@@ -1,4 +1,6 @@
 ﻿using Bogus;
+using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
@@ -12,6 +14,8 @@ public class CompanyResponseToClientTests
 	private const string ID = "id";
 	private const string NAME = "name";
 	private const string LOCATION = "location";
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
+	private readonly CancellationToken cancellationToken = new();
 
 	private readonly CompanyResponse response = new()
 	{

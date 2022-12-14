@@ -76,6 +76,25 @@ public class Client : Entity, ITimeTracked
 		}
 		return this;
 	}
+	[GraphQLIgnore]
+	public virtual void updateClientContact(IEnumerable<ClientContact> clientContacts)
+	{
+		foreach (var item in ClientContacts)
+		{
+			if (!clientContacts.Any(cc => cc.SourceContactId == item.SourceContactId && cc.Client.Source == Sources.HubSpot))
+			{
+				item.Deactivate();
+			}
+		}
+
+		foreach (var item in clientContacts)
+		{
+			if (!ClientContacts.Any(cc => cc.SourceContactId == item.SourceContactId && cc.Client.Source == Sources.HubSpot))
+			{
+				ClientContacts.Add(item);
+			}
+		}
+	}
 
 	[GraphQLIgnore]
 	public virtual void SetClientContacts(IEnumerable<Contact?>? contacts)
@@ -86,7 +105,6 @@ public class Client : Entity, ITimeTracked
 				if (contact is not null)
 				{
 					ClientContact clientContact = ClientContact.Create(this, contact);
-					contact.ClientContacts.Add(clientContact);
 					return clientContact;
 				}
 				return null;

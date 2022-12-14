@@ -18,9 +18,6 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		Client? client = _unitOfWork
 			.ClientRepository
 			.FindByCondition(d => d.SourceId == command.ObjectId.ToString() && d.Source == Sources.HubSpot)
-			.Include(d => d.ClientContacts)
-				.ThenInclude(cc => cc.Contact)
-			.Include(d => d.Deals)
 			.FirstOrDefault();
 
 		if (client is null)
@@ -65,16 +62,11 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		}
 		else if (command.PropertyName == "num_associated_deals")
 		{
-			Result<Client> result = await UpdateDealsAsync(
+			await UpdateDealsAsync(
 				client,
 				command.PortalId,
 				command.ObjectId,
 				cancellationToken);
-
-			if (result.IsFailure)
-			{
-				return result;
-			}
 		}
 
 		else
@@ -146,8 +138,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			objectId,
 			cancellationToken);
 	}
-	private async Task<Result<Client>> UpdateClientContactsAsync(
-		Client client,
+	private async Task<Result> UpdateClientContactsAsync(
 		long portalId,
 		long clientHubSpotId,
 		CancellationToken cancellationToken = default)
@@ -162,13 +153,17 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			return result;
 		}
 
-		client.UpdateClientContacts(result.Value.ClientContacts);
+		Client client = _unitOfWork
+			.ClientRepository
+				.FindByCondition(d => d.SourceId == clientHubSpotId.ToString() && d.Source == Sources.HubSpot)
+				.Include(x => x.ClientContacts)
+				.ThenInclude(x => x.Contact)
+				.FirstOrDefault()!;
 
-		var newClientContacts = client.ClientContacts.Where(cc => cc.Contact is null).ToList();
+		client.updateClientContact(result.Value.ClientContacts);
+		_unitOfWork.ClientRepository.Attach(client);
 
-		_unitOfWork.ClientContactRepository.AttachAsAdded(newClientContacts);
-
-		return client;
+		return Result.Success();
 	}
 
 	private async Task<Result<Client>> UpdateDealsAsync(

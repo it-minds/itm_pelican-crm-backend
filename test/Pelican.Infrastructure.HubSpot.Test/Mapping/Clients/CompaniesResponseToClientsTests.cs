@@ -1,4 +1,6 @@
-﻿using Pelican.Domain;
+﻿using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Domain;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
 using Pelican.Infrastructure.HubSpot.Mapping.Clients;
 using Xunit;
@@ -9,6 +11,8 @@ public class CompaniesResponseToClientsTests
 {
 	const string ID = "id";
 	const string NAME = "name";
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
+	private readonly CancellationToken cancellationToken = new();
 
 	readonly CompanyResponse response = new()
 	{
@@ -28,7 +32,7 @@ public class CompaniesResponseToClientsTests
 		responses.Results = null!;
 
 		/// Act
-		var result = Record.Exception(() => responses.ToClients());
+		var result = Record.ExceptionAsync(() => responses.ToClients(_unitOfWorkMock.Object, cancellationToken));
 
 		/// Assert
 		Assert.NotNull(result);
@@ -45,7 +49,7 @@ public class CompaniesResponseToClientsTests
 		responses.Results = new List<CompanyResponse>();
 
 		/// Act
-		var result = Record.Exception(() => responses.ToClients());
+		var result = Record.ExceptionAsync(() => responses.ToClients(_unitOfWorkMock.Object, cancellationToken));
 
 		/// Assert
 		Assert.Null(result);
@@ -58,7 +62,7 @@ public class CompaniesResponseToClientsTests
 		responses.Results = new List<CompanyResponse>() { response };
 
 		/// Act
-		var result = Record.Exception(() => responses.ToClients());
+		var result = Record.ExceptionAsync(() => responses.ToClients(_unitOfWorkMock.Object, cancellationToken));
 
 		/// Assert
 		Assert.Null(result);
@@ -71,10 +75,10 @@ public class CompaniesResponseToClientsTests
 		responses.Results = new List<CompanyResponse>() { response };
 
 		/// Act
-		var result = responses.ToClients();
+		var result = responses.ToClients(_unitOfWorkMock.Object, cancellationToken);
 
 		/// Assert
-		Assert.Equal(ID, result.First().SourceId);
+		Assert.Equal(ID, result.SourceId);
 		Assert.Equal(NAME, result.First().Name);
 		Assert.Equal(Sources.HubSpot, result.First().Source);
 	}

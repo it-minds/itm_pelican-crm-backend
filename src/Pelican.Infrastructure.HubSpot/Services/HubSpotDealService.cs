@@ -1,20 +1,9 @@
-using System.Runtime.CompilerServices;
-using Pelican.Application.Abstractions.Data.Repositories;
-using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Abstractions.Infrastructure;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Settings.HubSpot;
-using Pelican.Domain.Shared;
-using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
-using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
-using Pelican.Infrastructure.HubSpot.Extensions;
-using Pelican.Infrastructure.HubSpot.Mapping.Deals;
-using RestSharp;
-
 namespace Pelican.Infrastructure.HubSpot.Services;
 
 internal sealed class HubSpotDealService : ServiceBase<HubSpotSettings>, IHubSpotObjectService<Deal>
 {
+	private readonly IUnitOfWork _unitOfWork;
+
 	public HubSpotDealService(
 		IClient<HubSpotSettings> hubSpotClient,
 		IUnitOfWork unitOfWork)

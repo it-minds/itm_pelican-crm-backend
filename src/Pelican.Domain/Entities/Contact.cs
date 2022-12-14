@@ -100,6 +100,18 @@ public class Contact : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
+	public virtual void UpdatePropertiesFromContact(Contact contact)
+	{
+		FirstName = contact.FirstName;
+		LastName = contact.LastName;
+		Email = contact.Email;
+		PhoneNumber = contact.PhoneNumber;
+		JobTitle = contact.JobTitle;
+		SourceOwnerId = contact.SourceOwnerId;
+		UpdateDealContacts(contact.DealContacts);
+	}
+
+	[GraphQLIgnore]
 	public virtual void UpdateDealContacts(ICollection<DealContact>? currentDealContacts)
 	{
 		if (currentDealContacts is null)

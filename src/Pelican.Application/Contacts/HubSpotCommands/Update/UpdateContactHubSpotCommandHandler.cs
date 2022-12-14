@@ -48,10 +48,31 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 				cancellationToken);
 		}
 
-		if (command.PropertyName == "num_associated_deals")
+		if ((contact.LastUpdatedAt ?? contact.CreatedAt) <= command.UpdateTime)
 		{
-			Result<Contact> result = await UpdateDealContactsAsync(
-				contact,
+			if (command.PropertyName == "num_associated_deals")
+			{
+				Result<Contact> result = await UpdateDealContactsAsync(
+					contact,
+					command.SupplierHubSpotId,
+					command.ObjectId,
+					cancellationToken);
+
+				if (result.IsFailure)
+				{
+					return result;
+				}
+			}
+			else
+			{
+				contact.UpdateProperty(
+					command.PropertyName,
+					command.PropertyValue);
+			}
+		}
+		else
+		{
+			Result<Contact> result = await GetContactFromHubSpotAsync(
 				command.SupplierHubSpotId,
 				command.ObjectId,
 				cancellationToken);
@@ -60,13 +81,13 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 			{
 				return result;
 			}
+
+			contact.UpdatePropertiesFromContact(result.Value);
 		}
-		else
-		{
-			contact.UpdateProperty(
-				command.PropertyName,
-				command.PropertyValue);
-		}
+
+		_unitOfWork
+			.ContactRepository
+			.Attach(contact);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
@@ -79,7 +100,7 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 		long contactHubSpotId,
 		CancellationToken cancellationToken = default)
 	{
-		Result<Contact> result = await GetContactFromHubSpot(
+		Result<Contact> result = await GetContactFromHubSpotAsync(
 			supplierHubSpotId,
 			contactHubSpotId,
 			cancellationToken);
@@ -91,10 +112,6 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 
 		contact.UpdateDealContacts(result.Value.DealContacts);
 
-		_unitOfWork
-			.ContactRepository
-			.Attach(contact);
-
 		return contact;
 	}
 
@@ -103,7 +120,7 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 		long objectId,
 		CancellationToken cancellationToken = default)
 	{
-		Result<Contact> result = await GetContactFromHubSpot(
+		Result<Contact> result = await GetContactFromHubSpotAsync(
 			supplierHubSpotId,
 			objectId,
 			cancellationToken);
@@ -122,7 +139,7 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 		return Result.Success();
 	}
 
-	private async Task<Result<Contact>> GetContactFromHubSpot(
+	private async Task<Result<Contact>> GetContactFromHubSpotAsync(
 		long supplierHubSpotId,
 		long objectId,
 		CancellationToken cancellationToken = default)

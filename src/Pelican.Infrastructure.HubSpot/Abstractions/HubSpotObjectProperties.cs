@@ -9,4 +9,7 @@ internal abstract class HubSpotObjectProperties
 
 	[JsonPropertyName("hs_object_id")]
 	public string HubSpotObjectId { get; set; } = String.Empty;
+
+	[JsonPropertyName("occurredAt")]
+	public long ChangedUnixTime { get; set; }
 }

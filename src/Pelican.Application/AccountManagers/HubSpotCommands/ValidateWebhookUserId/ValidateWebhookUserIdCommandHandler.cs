@@ -5,7 +5,7 @@ using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.AccountManagers.Commands.ValidateWebhookUserId;
+namespace Pelican.Application.AccountManagers.HubSpotCommands.ValidateWebhookUserId;
 
 internal sealed class ValidateWebhookUserIdCommandHandler : ICommandHandler<ValidateWebhookUserIdCommand>
 {

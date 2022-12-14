@@ -49,25 +49,45 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		UpdateClientHubSpotCommand command,
 		CancellationToken cancellationToken = default)
 	{
-		if (command.PropertyName == "num_associated_contacts")
+		if ((client.LastUpdatedAt ?? client.CreatedAt) <= command.UpdateTime)
 		{
-			Result<Client> result = await UpdateClientContactsAsync(
-				client,
-				command.PortalId,
-				command.ObjectId,
-				cancellationToken);
-
-			if (result.IsFailure)
+			if (command.PropertyName == "num_associated_contacts")
 			{
-				return result;
+				Result<Client> result = await UpdateClientContactsAsync(
+					client,
+					command.PortalId,
+					command.ObjectId,
+					cancellationToken);
+
+				if (result.IsFailure)
+				{
+					return result;
+				}
+			}
+			else
+			{
+				client.UpdateProperty(
+					command.PropertyName,
+					command.PropertyValue);
 			}
 		}
 		else
 		{
-			client.UpdateProperty(
-				command.PropertyName,
-				command.PropertyValue);
+			Result<Client> result = await GetClientFromHubSpot(
+						command.ObjectId,
+						command.PortalId,
+						cancellationToken);
+			if (result.IsFailure)
+			{
+				return result;
+			}
+			client.UpdatePropertiesFromClient(result.Value);
+			client.UpdateClientContacts(result.Value.ClientContacts);
 		}
+
+		_unitOfWork
+				.ClientRepository
+				.Update(client);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
@@ -102,9 +122,10 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		CancellationToken cancellationToken = default)
 	{
 		Result<Client> result = await GetClientFromHubSpot(
-						objectId,
-						portalId,
-						cancellationToken);
+			objectId,
+			portalId,
+			cancellationToken);
+
 		if (result.IsFailure)
 		{
 			return result;
@@ -150,15 +171,14 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		CancellationToken cancellationToken = default)
 	{
 		Result<Client> result = await GetClientFromHubSpot(
-						clientHubSpotId,
-						portalId,
-						cancellationToken);
+			clientHubSpotId,
+			portalId,
+			cancellationToken);
 
 		if (result.IsFailure)
 		{
 			return result;
 		}
-
 		client.UpdateClientContacts(result.Value.ClientContacts);
 
 		var newClientContacts = client.ClientContacts.Where(cc => cc.Contact is null).ToList();

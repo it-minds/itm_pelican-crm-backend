@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
+using Pelican.Application.Deals.HubSpotCommands.Update;
 using Xunit;
 
 
@@ -21,6 +21,7 @@ public class UpdateDealHubSpotCommandValidatorTests
 		UpdateDealHubSpotCommand command = new(
 			0,
 			0,
+			0,
 			string.Empty,
 			string.Empty);
 
@@ -32,6 +33,7 @@ public class UpdateDealHubSpotCommandValidatorTests
 		result.ShouldHaveValidationErrorFor(command => command.SupplierHubSpotId);
 		result.ShouldHaveValidationErrorFor(command => command.PropertyName);
 		result.ShouldHaveValidationErrorFor(command => command.PropertyValue);
+		result.ShouldHaveValidationErrorFor(command => command.UpdateTime);
 	}
 
 	[Fact]
@@ -39,6 +41,7 @@ public class UpdateDealHubSpotCommandValidatorTests
 	{
 		// Arrange
 		UpdateDealHubSpotCommand command = new(
+			1,
 			1,
 			1,
 			"notEmpty",
@@ -52,6 +55,7 @@ public class UpdateDealHubSpotCommandValidatorTests
 		result.ShouldNotHaveValidationErrorFor(command => command.SupplierHubSpotId);
 		result.ShouldNotHaveValidationErrorFor(command => command.PropertyName);
 		result.ShouldNotHaveValidationErrorFor(command => command.PropertyValue);
+		result.ShouldNotHaveValidationErrorFor(command => command.UpdateTime);
 	}
 
 }

@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Moq;
 using Pelican.Domain.Entities;
 using Xunit;
 
@@ -699,5 +700,28 @@ public class ContactTests
 		Assert.Equal(
 			newDeal.Id,
 			_uut.DealContacts.First().DealId);
+	}
+
+	[Theory]
+	[InlineData("testFirstName", "testLastName", "testEmail", "testPhoneNumber", "testJobTitle")]
+	public void UpdatePropertiesFromContact_PropertiesSet(string testFirstName, string testLastName, string testEmail, string testPhoneNumber, string testJobtTitle)
+	{
+		//Arrange
+		Mock<Contact> contactMock = new();
+		contactMock.Object.FirstName = testFirstName;
+		contactMock.Object.LastName = testLastName;
+		contactMock.Object.Email = testEmail;
+		contactMock.Object.PhoneNumber = testPhoneNumber;
+		contactMock.Object.JobTitle = testJobtTitle;
+
+		//Act
+		_uut.UpdatePropertiesFromContact(contactMock.Object);
+
+		//Assert
+		Assert.Equal(testFirstName, _uut.FirstName);
+		Assert.Equal(testLastName, _uut.LastName);
+		Assert.Equal(testEmail, _uut.Email);
+		Assert.Equal(testPhoneNumber, _uut.PhoneNumber);
+		Assert.Equal(testJobtTitle, _uut.JobTitle);
 	}
 }

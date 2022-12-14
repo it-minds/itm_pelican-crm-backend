@@ -125,7 +125,7 @@ public class Client : Entity, ITimeTracked
 		foreach (ClientContact clientContact in ClientContacts.Where(dc => dc.IsActive))
 		{
 			if (!currentClientContacts.Any(currentClientContact => currentClientContact.SourceContactId == clientContact.SourceContactId
-			&& currentClientContact.Contact.Source == clientContact.Contact.Source))
+			&& currentClientContact.Client.Source == clientContact.Client.Source))
 			{
 				clientContact.Deactivate();
 			}
@@ -140,5 +140,13 @@ public class Client : Entity, ITimeTracked
 				ClientContacts.Add(clientContact);
 			}
 		}
+	}
+
+	[GraphQLIgnore]
+	public virtual void UpdatePropertiesFromClient(Client client)
+	{
+		Name = client.Name;
+		OfficeLocation = client.OfficeLocation;
+		Website = client.Website;
 	}
 }

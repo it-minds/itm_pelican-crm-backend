@@ -1,6 +1,6 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
 
-namespace Pelican.Application.AccountManagers.Commands.ValidateWebhookUserId;
+namespace Pelican.Application.AccountManagers.HubSpotCommands.ValidateWebhookUserId;
 
 public sealed record ValidateWebhookUserIdCommand(
 	long UserId,

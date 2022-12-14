@@ -2,7 +2,7 @@
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Contacts.Commands.UpdateContact;
+using Pelican.Application.Contacts.HubSpotCommands.Update;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
@@ -11,7 +11,7 @@ using Xunit;
 namespace Pelican.Application.Test.Contacts.Commands.UpdateContact;
 public class UpdateContactHubSpotCommandHandlerTests
 {
-	private readonly UpdateContactCommandHandler _uut;
+	private readonly UpdateContactHubSpotCommandHandler _uut;
 
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly Mock<IHubSpotObjectService<Contact>> _hubSpotContactServiceMock = new();
@@ -23,6 +23,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 	private const long OBJECT_ID = 123;
 	private const long SUPPLIER_HUBSPOT_ID = 456;
+	private const long UPDATETIME = 213;
 	private const string NAME = "name";
 	private const string VALUE = "value";
 
@@ -50,7 +51,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public void UpdateContactCommandHandler_UnitOfWorkNull_ThrowsArgumentNullException()
 	{
 		// Act
-		var result = Record.Exception(() => new UpdateContactCommandHandler(
+		var result = Record.Exception(() => new UpdateContactHubSpotCommandHandler(
 			null!,
 			_hubSpotContactServiceMock.Object,
 			_hubSpotAuthorizationServiceMock.Object));
@@ -67,7 +68,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public void UpdateContactCommandHandler_HubSpotContactServiceNull_ThrowsArgumentNullException()
 	{
 		// Act
-		var result = Record.Exception(() => new UpdateContactCommandHandler(
+		var result = Record.Exception(() => new UpdateContactHubSpotCommandHandler(
 			_unitOfWorkMock.Object,
 			null!,
 			_hubSpotAuthorizationServiceMock.Object));
@@ -84,7 +85,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public void UpdateContactCommandHandler_HubSpotAuthorizationServiceNull_ThrowsArgumentNullException()
 	{
 		// Act
-		var result = Record.Exception(() => new UpdateContactCommandHandler(
+		var result = Record.Exception(() => new UpdateContactHubSpotCommandHandler(
 			_unitOfWorkMock.Object,
 			_hubSpotContactServiceMock.Object,
 			null!));
@@ -101,7 +102,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundAccessTokenNotFound_ContactRepositoryCalledReturnsFailure()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATETIME, NAME, VALUE);
 
 		_contactRepositoryMock
 			.Setup(repo => repo.FirstOrDefaultAsync(
@@ -123,8 +124,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 		_contactRepositoryMock.Verify(
 			repo => repo.FirstOrDefaultAsync(
 				contact => contact.SourceId == command.ObjectId.ToString() && contact.Source == Sources.HubSpot,
-				default),
-			Times.Once);
+				default), Times.Once);
 
 		_hubSpotAuthorizationServiceMock
 			.Verify(h => h
@@ -141,7 +141,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFailedFetchingContactFromHubSpot_HubSpotContactServiceCalledReturnsFailure()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATETIME, NAME, VALUE);
 
 		string accessToken = "accessToken";
 
@@ -187,7 +187,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithoutAssociations_DependencyCallsAssertedReturnsSuccess()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATETIME, NAME, VALUE);
 
 		Mock<Contact> newContactMock = new();
 
@@ -252,7 +252,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithDealContacts_DealsLoadedFromRepositoriesReturnsSuccess()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATETIME, NAME, VALUE);
 
 		DealContact existingDealContact = new(Guid.NewGuid());
 
@@ -298,7 +298,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithClientContacts_ClientLoadedFromRepositoriesReturnsSuccess()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATETIME, NAME, VALUE);
 
 		ClientContact existingClientContact = new(Guid.NewGuid());
 
@@ -344,7 +344,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithDealContacts_UnitOfWorkCreateAndSaveCalledReturnsSuccess()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATETIME, NAME, VALUE);
 
 		Deal existingDeal = new(Guid.NewGuid())
 		{
@@ -411,7 +411,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithClientContacts_UnitOfWorkCreateAndSaveCalled()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATETIME, NAME, VALUE);
 
 		Client existingClient = new(Guid.NewGuid())
 		{
@@ -476,7 +476,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactFoundFirstnameUpdated_DependenciesCalledReturnSuccess()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATETIME, NAME, VALUE);
 
 		Mock<Contact> contactMock = new();
 
@@ -509,7 +509,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactFoundDealAssociationsUpdatedFailedFetchingFromHubSpot_ReturnsFailureUpdateDealContactsNotCalled()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATETIME, "num_associated_deals", VALUE);
 
 		string accessToken = "accessToken";
 
@@ -554,7 +554,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactFoundDealAssociationsUpdatedSuccessFetchingFromHubSpot_UpdateDealContactsCalledReturnSuccess()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATETIME, "num_associated_deals", VALUE);
 
 		string accessToken = "accessToken";
 
@@ -592,6 +592,177 @@ public class UpdateContactHubSpotCommandHandlerTests
 		// Assert
 		contactMock.Verify(
 			c => c.UpdateDealContacts(dealContactsFromHubSpot),
+			Times.Once);
+
+		Assert.True(result.IsSuccess);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 1, "testProperty", "testValue")]
+	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtAuthServiceReturnsFailure_ReturnsFailure(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateContactHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Contact> contactMock = new();
+
+		contactMock.Object.LastUpdatedAt = 10;
+		contactMock.Object.CreatedAt = 5;
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contactMock.Object);
+
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<string>(Error.NullValue));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		_hubSpotAuthorizationServiceMock.Verify(
+			c => c.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				portalId,
+				_unitOfWorkMock.Object,
+				default),
+			Times.Once);
+
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 1, "testProperty", "testValue")]
+	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtContactServiceReturnsFailure_ReturnsFailure(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateContactHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Contact> contactMock = new();
+
+		contactMock.Object.LastUpdatedAt = 10;
+		contactMock.Object.CreatedAt = 5;
+
+		string accessToken = "accessTokent";
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contactMock.Object);
+
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(accessToken));
+
+		_hubSpotContactServiceMock
+			.Setup(h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<Contact>(Error.NullValue));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		_hubSpotContactServiceMock.Verify(
+			c => c.GetByIdAsync(
+				accessToken,
+				command.ObjectId,
+				default),
+			Times.Once);
+
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 1, "testProperty", "testValue", "testFirstName", "testLatName", "testEmail", "testJobTitle", "testPhoneNumber", "testSourceOwnerId")]
+	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtContactServiceReturnsSuccessClientUpdated_ReturnsSuccess(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue,
+		string testFirstName,
+		string testLastName,
+		string testEmail,
+		string testJobTitle,
+		string testPhoneNumber,
+		string testSourceOwnerId)
+	{
+		//Arrange
+		UpdateContactHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Contact> contactMock = new();
+
+		contactMock.Object.LastUpdatedAt = 10;
+		contactMock.Object.CreatedAt = 5;
+
+		string accessToken = "accessToken";
+
+		Contact contactResult = new()
+		{
+			FirstName = testFirstName,
+			LastName = testLastName,
+			Email = testEmail,
+			JobTitle = testJobTitle,
+			PhoneNumber = testPhoneNumber,
+			SourceOwnerId = testSourceOwnerId,
+			DealContacts = new List<DealContact>()
+			{
+				new DealContact(Guid.NewGuid())
+			},
+		};
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<Contact, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contactMock.Object);
+
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(accessToken));
+
+		_hubSpotContactServiceMock
+			.Setup(h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(contactResult));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		contactMock.Verify(x => x.UpdatePropertiesFromContact(contactResult), Times.Once);
+
+		contactMock.Verify(x => x.UpdateDealContacts(contactResult.DealContacts), Times.Once);
+
+		_unitOfWorkMock.Verify(
+			u => u.SaveAsync(default),
 			Times.Once);
 
 		Assert.True(result.IsSuccess);

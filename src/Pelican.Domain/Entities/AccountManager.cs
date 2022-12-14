@@ -77,7 +77,7 @@ public class AccountManager : Entity, ITimeTracked
 
 	public Guid SupplierId { get; set; }
 
-	public Supplier Supplier { get; set; }
+	public Supplier? Supplier { get; set; }
 
 	public ICollection<AccountManagerDeal> AccountManagerDeals { get; set; } = new List<AccountManagerDeal>();
 

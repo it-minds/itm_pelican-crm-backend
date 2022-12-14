@@ -6,7 +6,7 @@ using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.Deals.HubSpotCommands.UpdateDeal;
+namespace Pelican.Application.Deals.HubSpotCommands.Update;
 
 internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDealHubSpotCommand>
 {
@@ -41,26 +41,56 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 
 		if (deal is null)
 		{
-			return await GetDealFromHubSpotAsync(
+			return await GetAndCreateDealAsync(
 				command.SupplierHubSpotId,
 				command.ObjectId,
 				cancellationToken);
 		}
 
-		if (command.PropertyName == "hs_all_owner_ids")
+		return await UpdateExistingDeal(deal, command, cancellationToken);
+	}
+
+	private async Task<Result> UpdateExistingDeal(
+		Deal deal,
+		UpdateDealHubSpotCommand command,
+		CancellationToken cancellationToken = default)
+	{
+		if ((deal.LastUpdatedAt ?? deal.CreatedAt) <= command.UpdateTime)
 		{
-			await UpdateAccountManagerDeal(deal, command.PropertyValue);
+			if (command.PropertyName == "hs_all_owner_ids")
+			{
+				await UpdateAccountManagerDeal(deal, command.PropertyValue);
+			}
+			else
+			{
+				deal.UpdateProperty(
+					command.PropertyName,
+					command.PropertyValue);
+			}
 		}
 		else
 		{
-			deal.UpdateProperty(
-				command.PropertyName,
-				command.PropertyValue);
+			Result<Deal> result = await GetDealFromHubSpot(
+				command.SupplierHubSpotId,
+				command.ObjectId,
+				cancellationToken);
+
+			if (result.IsFailure)
+			{
+				return result;
+			}
+
+			deal.UpdatePropertiesFromDeal(result.Value);
+
+			if (result.Value.SourceOwnerId is not null)
+			{
+				await UpdateAccountManagerDeal(deal, result.Value.SourceOwnerId);
+			}
 		}
 
 		_unitOfWork
-			.DealRepository
-			.Update(deal);
+				.DealRepository
+				.Update(deal);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
@@ -76,27 +106,15 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		deal.FillOutAccountManager(accountManager);
 	}
 
-	private async Task<Result> GetDealFromHubSpotAsync(
+	private async Task<Result> GetAndCreateDealAsync(
 		long supplierHubSpotId,
 		long objectId,
 		CancellationToken cancellationToken)
 	{
-		Result<string> accessTokenResult = await _hubSpotAuthorizationService
-			.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-				supplierHubSpotId,
-				_unitOfWork,
-				cancellationToken);
-
-		if (accessTokenResult.IsFailure)
-		{
-			return accessTokenResult;
-		}
-
-		Result<Deal> result = await _hubSpotDealService
-			.GetByIdAsync(
-				accessTokenResult.Value,
-				objectId,
-				cancellationToken);
+		Result<Deal> result = await GetDealFromHubSpot(
+			supplierHubSpotId,
+			objectId,
+			cancellationToken);
 
 		if (result.IsFailure)
 		{
@@ -112,6 +130,29 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
+	}
+
+	private async Task<Result<Deal>> GetDealFromHubSpot(
+		long supplierHubSpotId,
+		long objectId,
+		CancellationToken cancellationToken = default)
+	{
+		Result<string> accessTokenResult = await _hubSpotAuthorizationService
+			.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				supplierHubSpotId,
+				_unitOfWork,
+				cancellationToken);
+
+		if (accessTokenResult.IsFailure)
+		{
+			return Result.Failure<Deal>(accessTokenResult.Error);
+		}
+
+		return await _hubSpotDealService
+			.GetByIdAsync(
+				accessTokenResult.Value,
+				objectId,
+				cancellationToken);
 	}
 
 	private async Task<Deal> FillOutDealAssociations(Deal deal, CancellationToken cancellationToken)

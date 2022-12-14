@@ -21,7 +21,6 @@ public class Supplier : Entity, ITimeTracked
 
 	public string RefreshToken { get; set; } = string.Empty;
 
-
 	public string? Name
 	{
 		get => _name;
@@ -90,7 +89,6 @@ public class Supplier : Entity, ITimeTracked
 	public string? PipedriveDomain { get; set; }
 
 	public ICollection<AccountManager> AccountManagers { get; set; } = new List<AccountManager>();
-
 
 	public long CreatedAt { get; set; }
 

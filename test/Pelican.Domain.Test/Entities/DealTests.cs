@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Moq;
 using Pelican.Domain.Entities;
 using Xunit;
 
@@ -660,5 +661,36 @@ public class DealTests
 		Assert.Equal(
 			newAccountManager,
 			inputDeal.AccountManagerDeals.First(a => a.AccountManager == newAccountManager).AccountManager);
+	}
+
+	[Theory]
+	[InlineData(12, 12, "testDealStatus", 12, "testName", "testDescription")]
+	public void UpdatePropertiesFromDeal_PropertiesSet(
+		long testEndDate,
+		long testStartDate,
+		string testDealStatus,
+		long testLastContactDate,
+		string testName,
+		string testDescription)
+	{
+		//Arrange
+		Mock<Deal> dealMock = new();
+		dealMock.Object.EndDate = testEndDate;
+		dealMock.Object.StartDate = testStartDate;
+		dealMock.Object.DealStatus = testDealStatus;
+		dealMock.Object.LastContactDate = testLastContactDate;
+		dealMock.Object.Name = testName;
+		dealMock.Object.Description = testDescription;
+
+		//Act
+		_uut.UpdatePropertiesFromDeal(dealMock.Object);
+
+		//Assert
+		Assert.Equal(testEndDate, _uut.EndDate);
+		Assert.Equal(testStartDate, _uut.StartDate);
+		Assert.Equal(testDealStatus, _uut.DealStatus);
+		Assert.Equal(testLastContactDate, _uut.LastContactDate);
+		Assert.Equal(testName, _uut.Name);
+		Assert.Equal(testDescription, _uut.Description);
 	}
 }

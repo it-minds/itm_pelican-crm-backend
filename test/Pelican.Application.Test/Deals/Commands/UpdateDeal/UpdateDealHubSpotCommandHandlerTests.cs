@@ -632,11 +632,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 			Status = testDealStatus,
 			Name = testDealName,
 			Description = testDealDescription,
-
-			AccountManagerDeals = new List<AccountManagerDeal>()
-			{
-				new AccountManagerDeal(Guid.NewGuid())
-			},
 		};
 
 		_unitOfWorkMock

@@ -13,9 +13,6 @@ namespace Pelican.Infrastructure.HubSpot.Test.Services;
 
 public class HubSpotDealServicesTests
 {
-	private const string ID = "Id";
-	private const string OWNERID = "OwnerId";
-
 	private readonly Mock<IClient<HubSpotSettings>> _hubSpotClientMock = new();
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly HubSpotDealService _uut;

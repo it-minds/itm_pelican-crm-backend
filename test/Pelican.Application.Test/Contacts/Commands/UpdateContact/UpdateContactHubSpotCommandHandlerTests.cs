@@ -429,7 +429,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 		_contactRepositoryMock
 			.Setup(repo => repo.FindByCondition(It.IsAny<Expression<Func<Contact, bool>>>()))
-			.Returns((IQueryable<Contact>)contactMock.Object);
+			.Returns(new List<Contact>() { contactMock.Object }.AsQueryable());
 
 		// Act
 		var result = await _uut.Handle(command, default);
@@ -507,7 +507,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 		_contactRepositoryMock
 			.Setup(repo => repo.FindByCondition(It.IsAny<Expression<Func<Contact, bool>>>()))
-			.Returns((IQueryable<Contact>)contactMock.Object);
+			.Returns(new List<Contact>() { contactMock.Object }.AsQueryable());
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(

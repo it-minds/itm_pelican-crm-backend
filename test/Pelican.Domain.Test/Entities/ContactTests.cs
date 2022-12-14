@@ -6,7 +6,7 @@ namespace Pelican.Domain.Test.Entities;
 
 public class ContactTests
 {
-	private readonly Contact _uut = new Contact(Guid.NewGuid())
+	private readonly Contact _uut = new()
 	{
 		SourceId = "uutHubSpotId",
 		Source = Sources.HubSpot,
@@ -100,7 +100,7 @@ public class ContactTests
 		// Assert
 
 		Assert.Equal(StringLengths.Name, _uut.FirstName!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3) + "...", _uut.FirstName);
+		Assert.Equal(propertyValue[..(StringLengths.Name - 3)] + "...", _uut.FirstName);
 	}
 
 	[Fact]
@@ -115,7 +115,7 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.Name, _uut.LastName!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3) + "...", _uut.LastName);
+		Assert.Equal(propertyValue[..(StringLengths.Name - 3)] + "...", _uut.LastName);
 	}
 
 	[Fact]
@@ -130,7 +130,7 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.Email, _uut.Email!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Email - 3) + "...", _uut.Email);
+		Assert.Equal(propertyValue[..(StringLengths.Email - 3)] + "...", _uut.Email);
 	}
 
 	[Fact]
@@ -145,7 +145,7 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3) + "...", _uut.PhoneNumber);
+		Assert.Equal(propertyValue[..(StringLengths.PhoneNumber - 3)] + "...", _uut.PhoneNumber);
 	}
 
 	[Fact]
@@ -160,7 +160,7 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.JobTitle, _uut.JobTitle!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.JobTitle - 3) + "...", _uut.JobTitle);
+		Assert.Equal(propertyValue[..(StringLengths.JobTitle - 3)] + "...", _uut.JobTitle);
 	}
 
 	[Fact]
@@ -293,8 +293,8 @@ public class ContactTests
 		// Assert
 
 		Assert.Equal(StringLengths.Name, _uut.FirstName!.Length);
-		Assert.Equal("...", _uut.FirstName.Substring(StringLengths.Name - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.FirstName.Substring(0, StringLengths.Name - 3));
+		Assert.Equal("...", _uut.FirstName[(StringLengths.Name - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.Name - 3)], _uut.FirstName[..(StringLengths.Name - 3)]);
 	}
 
 	[Fact]
@@ -310,8 +310,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.Name, _uut.LastName!.Length);
-		Assert.Equal("...", _uut.LastName.Substring(StringLengths.Name - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.LastName.Substring(0, StringLengths.Name - 3));
+		Assert.Equal("...", _uut.LastName[(StringLengths.Name - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.Name - 3)], _uut.LastName[..(StringLengths.Name - 3)]);
 	}
 
 	[Fact]
@@ -327,8 +327,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.Email, _uut.Email!.Length);
-		Assert.Equal("...", _uut.Email.Substring(StringLengths.Email - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Email - 3), _uut.Email.Substring(0, StringLengths.Email - 3));
+		Assert.Equal("...", _uut.Email[(StringLengths.Email - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.Email - 3)], _uut.Email[..(StringLengths.Email - 3)]);
 	}
 
 	[Fact]
@@ -344,8 +344,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
-		Assert.Equal("...", _uut.PhoneNumber.Substring(StringLengths.PhoneNumber - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3), _uut.PhoneNumber.Substring(0, StringLengths.PhoneNumber - 3));
+		Assert.Equal("...", _uut.PhoneNumber[(StringLengths.PhoneNumber - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.PhoneNumber - 3)], _uut.PhoneNumber[..(StringLengths.PhoneNumber - 3)]);
 	}
 
 	[Fact]
@@ -361,8 +361,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
-		Assert.Equal("...", _uut.PhoneNumber.Substring(StringLengths.PhoneNumber - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3), _uut.PhoneNumber.Substring(0, StringLengths.PhoneNumber - 3));
+		Assert.Equal("...", _uut.PhoneNumber[(StringLengths.PhoneNumber - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.PhoneNumber - 3)], _uut.PhoneNumber[..(StringLengths.PhoneNumber - 3)]);
 	}
 
 	[Fact]
@@ -378,8 +378,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.JobTitle, _uut.JobTitle!.Length);
-		Assert.Equal("...", _uut.JobTitle.Substring(StringLengths.JobTitle - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.JobTitle - 3), _uut.JobTitle.Substring(0, StringLengths.JobTitle - 3));
+		Assert.Equal("...", _uut.JobTitle[(StringLengths.JobTitle - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.JobTitle - 3)], _uut.JobTitle[..(StringLengths.JobTitle - 3)]);
 	}
 
 	[Fact]

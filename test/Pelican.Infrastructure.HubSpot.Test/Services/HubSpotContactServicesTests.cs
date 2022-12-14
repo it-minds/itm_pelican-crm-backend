@@ -5,6 +5,7 @@ using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Services;
 using RestSharp;
 using Xunit;
@@ -63,8 +64,11 @@ public class HubSpotContactServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<ContactResponse, Contact>>()))
-			.Returns(Result.Failure<Contact>(Error.NullValue));
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<ContactResponse, IUnitOfWork, CancellationToken, Task<Contact>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<Contact>(Error.NullValue));
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -88,8 +92,11 @@ public class HubSpotContactServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<ContactResponse, Contact>>()))
-			.Returns(Contact);
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<ContactResponse, IUnitOfWork, CancellationToken, Task<Contact>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Contact);
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -114,8 +121,11 @@ public class HubSpotContactServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<ContactsResponse, List<Contact>>>()))
-			.Returns(Result.Failure<List<Contact>>(Error.NullValue));
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<ContactsResponse, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<List<Contact>>(Error.NullValue));
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -139,8 +149,11 @@ public class HubSpotContactServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<ContactsResponse, List<Contact>>>()))
-			.Returns(Contacts);
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<ContactsResponse, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Contacts);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);

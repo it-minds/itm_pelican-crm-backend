@@ -1,4 +1,5 @@
-﻿using Bogus;
+﻿using System.Linq.Expressions;
+using Bogus;
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain;
@@ -7,7 +8,6 @@ using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Mapping.Deals;
-using System.Linq.Expressions;
 using Xunit;
 
 namespace Pelican.Infrastructure.HubSpot.Test.Mapping.Deals;
@@ -105,14 +105,6 @@ public class DealResponseToDealTests
 					It.IsAny<CancellationToken>()))
 			.ReturnsAsync((AccountManager)null!);
 
-		_unitOfWorkMock
-			.Setup(u => u
-				.ContactRepository
-				.FirstOrDefaultAsync(
-					It.IsAny<Expression<Func<Contact, bool>>>(),
-					It.IsAny<CancellationToken>()))
-			.ReturnsAsync((Contact)null!);
-
 		// act
 		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
 
@@ -136,14 +128,6 @@ public class DealResponseToDealTests
 					It.IsAny<Expression<Func<AccountManager, bool>>>(),
 					It.IsAny<CancellationToken>()))
 			.ReturnsAsync((AccountManager)null!);
-
-		_unitOfWorkMock
-			.Setup(u => u
-				.ClientRepository
-				.FirstOrDefaultAsync(
-					It.IsAny<Expression<Func<Client, bool>>>(),
-					It.IsAny<CancellationToken>()))
-			.ReturnsAsync((Client)null!);
 
 		// act
 		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
@@ -173,14 +157,6 @@ public class DealResponseToDealTests
 					It.IsAny<CancellationToken>()))
 			.ReturnsAsync((AccountManager)null!);
 
-		_unitOfWorkMock
-			.Setup(u => u
-				.ContactRepository
-				.FirstOrDefaultAsync(
-					It.IsAny<Expression<Func<Contact, bool>>>(),
-					It.IsAny<CancellationToken>()))
-			.ReturnsAsync((Contact)null!);
-
 		// act
 		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
 
@@ -208,14 +184,6 @@ public class DealResponseToDealTests
 					It.IsAny<Expression<Func<AccountManager, bool>>>(),
 					It.IsAny<CancellationToken>()))
 			.ReturnsAsync((AccountManager)null!);
-
-		_unitOfWorkMock
-			.Setup(u => u
-				.ClientRepository
-				.FirstOrDefaultAsync(
-					It.IsAny<Expression<Func<Client, bool>>>(),
-					It.IsAny<CancellationToken>()))
-			.ReturnsAsync((Client)null!);
 
 		// act
 		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
@@ -299,77 +267,5 @@ public class DealResponseToDealTests
 		// assert
 		Assert.Equal("1", result.Client!.SourceId);
 		Assert.Equal(result, result.Client!.Deals!.First());
-	}
-
-	[Fact]
-	public async Task ToDeal_NameStringTooLong_NameShortenededAndAppendedWithThreeDots()
-	{
-		// Arrange
-		Faker faker = new();
-		response.Properties.DealName = faker.Lorem.Letter(StringLengths.DealName * 2);
-
-		_unitOfWorkMock
-			.Setup(u => u
-				.AccountManagerRepository
-				.FirstOrDefaultAsync(
-					It.IsAny<Expression<Func<AccountManager, bool>>>(),
-					It.IsAny<CancellationToken>()))
-			.ReturnsAsync((AccountManager)null!);
-
-		// Act
-		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
-
-		// Assert
-		Assert.Equal(StringLengths.DealName, result.Name!.Length);
-		Assert.Equal("...", result.Name[(StringLengths.DealName - 3)..]);
-		Assert.Equal(response.Properties.DealName[..(StringLengths.DealName - 3)], result.Name[..(StringLengths.DealName - 3)]);
-	}
-
-	[Fact]
-	public async Task ToDeal_DealStatusStringTooLong_DealStatusShortenededAndAppendedWithThreeDots()
-	{
-		// Arrange
-		Faker faker = new();
-		response.Properties.DealStage = faker.Lorem.Letter(StringLengths.DealStatus * 2);
-
-		_unitOfWorkMock
-			.Setup(u => u
-				.AccountManagerRepository
-				.FirstOrDefaultAsync(
-					It.IsAny<Expression<Func<AccountManager, bool>>>(),
-					It.IsAny<CancellationToken>()))
-			.ReturnsAsync((AccountManager)null!);
-
-		// Act
-		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
-
-		// Assert
-		Assert.Equal(StringLengths.DealStatus, result.Status!.Length);
-		Assert.Equal("...", result.Status[(StringLengths.DealStatus - 3)..]);
-		Assert.Equal(response.Properties.DealStage[..(StringLengths.DealStatus - 3)], result.Status[..(StringLengths.DealStatus - 3)]);
-	}
-
-	[Fact]
-	public async Task ToDeal_DescriptionStringTooLong_DescriptionShortenededAndAppendedWithThreeDots()
-	{
-		//Arrange
-		Faker faker = new();
-		response.Properties.Description = faker.Lorem.Letter(StringLengths.DealDescription * 2);
-
-		_unitOfWorkMock
-			.Setup(u => u
-				.AccountManagerRepository
-				.FirstOrDefaultAsync(
-					It.IsAny<Expression<Func<AccountManager, bool>>>(),
-					It.IsAny<CancellationToken>()))
-			.ReturnsAsync((AccountManager)null!);
-
-		// Act
-		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
-
-		// Assert
-		Assert.Equal(StringLengths.DealDescription, result.Description!.Length);
-		Assert.Equal("...", result.Description[(StringLengths.DealDescription - 3)..]);
-		Assert.Equal(response.Properties.Description[..(StringLengths.DealDescription - 3)], result.Description[..(StringLengths.DealDescription - 3)]);
 	}
 }

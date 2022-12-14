@@ -1,4 +1,5 @@
-﻿using Bogus;
+﻿using System.Linq.Expressions;
+using Bogus;
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain;
@@ -55,7 +56,7 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public async Task ToContact_WithoutAssociations_ReturnCorrectProperties()
+	public async Task ToContact_WithoutAssociations_ReturnCorrectPropertiesAndAssociations()
 	{
 		/// Act
 		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
@@ -69,57 +70,30 @@ public class ContactResponseToContactTests
 		Assert.Equal(JOBTITLE, result.JobTitle);
 		Assert.Equal(OWNERID, result.SourceOwnerId);
 		Assert.Equal(Sources.HubSpot, result.Source);
-	}
 
-	[Fact]
-	public async Task ToContact_WithoutAssociations_ReturnContactWithEmptyDealContacts()
-	{
-		/// Act
-		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
-
-		/// Assert
 		Assert.Equal(0, result.DealContacts!.Count);
-	}
-
-	[Fact]
-	public async Task ToContact_WithoutAssociations_ReturnContactWithEmptyClientContacts()
-	{
-		/// Act
-		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
-
-		/// Assert
 		Assert.Equal(0, result.ClientContacts!.Count);
 	}
 
 	[Fact]
-	public async Task ToContact_WithDefaultDeals_ReturnContactEmptyDealContacts()
+	public async Task ToContact_WithDefaultDeals_ReturnContactEmptyDealContactsAndEmptyClientContacts()
 	{
 		/// Arrange
 		response.Associations.Deals.AssociationList = new List<Association>()
 		{
 			new(),
 		};
+		response.Associations.Companies.AssociationList = new List<Association>()
+		{
+			new(),
+		};
+
 
 		/// Act
 		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(0, result.DealContacts!.Count);
-	}
-
-	[Fact]
-	public async Task ToContact_WithDefaultCompanies_ReturnContactEmptyClientContacts()
-	{
-		/// Arrange
-		response.Associations.Companies.AssociationList = new List<Association>()
-		{
-			new(),
-		};
-
-		/// Act
-		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
-
-		/// Assert
 		Assert.Equal(0, result.ClientContacts!.Count);
 	}
 
@@ -176,6 +150,14 @@ public class ContactResponseToContactTests
 			},
 		};
 
+		_unitOfWorkMock
+			.Setup(u => u
+				.DealRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<Deal, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync(new Deal() { SourceId = "1" });
+
 		/// Act
 		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
@@ -184,81 +166,6 @@ public class ContactResponseToContactTests
 		Assert.Equal("1", result.DealContacts.First().SourceDealId);
 		Assert.Equal(result, result.DealContacts.First().Contact);
 		Assert.Equal(result.Id, result.DealContacts.First().ContactId);
-	}
-
-	[Fact]
-	public async Task ToContact_FirstNameStringTooLong_FirstNameShortenededAndAppendedWithThreeDots()
-	{
-		Faker faker = new();
-		response.Properties.FirstName = faker.Lorem.Letter(StringLengths.Name * 2);
-
-		/// Act
-		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
-
-		/// Assert
-		Assert.Equal(StringLengths.Name, result.FirstName!.Length);
-		Assert.Equal("...", result.FirstName.Substring(StringLengths.Name - 3));
-		Assert.Equal(response.Properties.FirstName.Substring(0, StringLengths.Name - 3), result.FirstName.Substring(0, StringLengths.Email - 3));
-	}
-
-	[Fact]
-	public async Task ToContact_LastNameStringTooLong_LastNameShortenededAndAppendedWithThreeDots()
-	{
-		Faker faker = new();
-		response.Properties.LastName = faker.Lorem.Letter(StringLengths.Name * 2);
-
-		/// Act
-		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
-
-		/// Assert
-		Assert.Equal(StringLengths.Name, result.LastName!.Length);
-		Assert.Equal("...", result.LastName.Substring(StringLengths.Name - 3));
-		Assert.Equal(response.Properties.LastName.Substring(0, StringLengths.Name - 3), result.LastName.Substring(0, StringLengths.Name - 3));
-	}
-
-	[Fact]
-	public async Task ToContact_EmailStringTooLong_EmailShortenededAndAppendedWithThreeDots()
-	{
-		Faker faker = new();
-		response.Properties.Email = faker.Lorem.Letter(StringLengths.Email * 2);
-
-		/// Act
-		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
-
-		/// Assert
-		Assert.Equal(StringLengths.Email, result.Email!.Length);
-		Assert.Equal("...", result.Email.Substring(StringLengths.Email - 3));
-		Assert.Equal(response.Properties.Email.Substring(0, StringLengths.Email - 3), result.Email.Substring(0, StringLengths.Email - 3));
-	}
-
-	[Fact]
-	public async Task ToContact_PhoneStringTooLong_PhoneShortenededAndAppendedWithThreeDots()
-	{
-		Faker faker = new();
-		response.Properties.Phone = faker.Lorem.Letter(StringLengths.PhoneNumber * 2);
-
-		/// Act
-		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
-
-		/// Assert
-		Assert.Equal(StringLengths.PhoneNumber, result.PhoneNumber!.Length);
-		Assert.Equal("...", result.PhoneNumber.Substring(StringLengths.PhoneNumber - 3));
-		Assert.Equal(response.Properties.Phone.Substring(0, StringLengths.PhoneNumber - 3), result.PhoneNumber.Substring(0, StringLengths.PhoneNumber - 3));
-	}
-
-	[Fact]
-	public async Task ToContact_JobTitleStringTooLong_JobTitleShortenededAndAppendedWithThreeDots()
-	{
-		Faker faker = new();
-		response.Properties.JobTitle = faker.Lorem.Letter(StringLengths.JobTitle * 2);
-
-		/// Act
-		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
-
-		/// Assert
-		Assert.Equal(StringLengths.JobTitle, result.JobTitle!.Length);
-		Assert.Equal("...", result.JobTitle.Substring(StringLengths.JobTitle - 3));
-		Assert.Equal(response.Properties.JobTitle.Substring(0, StringLengths.JobTitle - 3), result.JobTitle.Substring(0, StringLengths.JobTitle - 3));
 	}
 
 	[Fact]
@@ -273,6 +180,14 @@ public class ContactResponseToContactTests
 				Id = "1"
 			},
 		};
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.ClientRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<Client, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync(new Client() { SourceId = "1" });
 
 		/// Act
 		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);

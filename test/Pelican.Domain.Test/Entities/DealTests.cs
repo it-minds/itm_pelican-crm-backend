@@ -478,37 +478,6 @@ public class DealTests
 	}
 
 	[Fact]
-	public void SetAccountManager_AccountManagerDealsNotEmptyArgNewAccountManagerDeal_AccountManagerDealAddedAsActive()
-	{
-		// Arrange
-		Deal inputDeal = new(Guid.NewGuid())
-		{
-			AccountManagerDeals = new List<AccountManagerDeal>()
-			{
-				new(Guid.NewGuid())
-				{
-					IsActive = true,
-					SourceAccountManagerId = "first",
-				},
-			}
-		};
-
-		AccountManager accountManager = new() { SourceId = "new" };
-
-		// Act
-		inputDeal.SetAccountManager(accountManager);
-
-		// Assert
-		Assert.Equal(
-			accountManager,
-			inputDeal.ActiveAccountManagerDeal!.AccountManager);
-
-		Assert.Equal(
-			2,
-			inputDeal.AccountManagerDeals.Count);
-	}
-
-	[Fact]
 	public void SetContacts_DealContactsEmptyArgsNull_DealContactsEmpty()
 	{
 		// Arrange

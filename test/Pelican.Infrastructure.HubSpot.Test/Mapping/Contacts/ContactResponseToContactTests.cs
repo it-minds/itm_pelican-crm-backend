@@ -1,4 +1,6 @@
 ﻿using Bogus;
+using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
@@ -18,6 +20,8 @@ public class ContactResponseToContactTests
 	private const string JOBTITLE = "jobtitle";
 	private const string OWNERID = "ownerid";
 
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
+
 	private readonly ContactResponse response = new()
 	{
 		Properties = new()
@@ -33,14 +37,14 @@ public class ContactResponseToContactTests
 	};
 
 	[Fact]
-	public void ToContact_ResponseMissingHubSpotId_ThrowsException()
+	public async Task ToContact_ResponseMissingHubSpotId_ThrowsException()
 	{
 		/// Arrange
 		ContactResponse defaultResponse = new();
 		defaultResponse.Properties.HubSpotOwnerId = OWNERID;
 
 		/// Act
-		Exception result = Record.Exception(() => defaultResponse.ToContact());
+		Exception result = await Record.ExceptionAsync(() => defaultResponse.ToContact(_unitOfWorkMock.Object, default));
 
 		/// Assert
 		Assert.NotNull(result);
@@ -51,10 +55,10 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_WithoutAssociations_ReturnCorrectProperties()
+	public async Task ToContact_WithoutAssociations_ReturnCorrectProperties()
 	{
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(FIRSTNAME, result.FirstName);
@@ -68,27 +72,27 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_WithoutAssociations_ReturnContactWithEmptyDealContacts()
+	public async Task ToContact_WithoutAssociations_ReturnContactWithEmptyDealContacts()
 	{
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(0, result.DealContacts!.Count);
 	}
 
 	[Fact]
-	public void ToContact_WithoutAssociations_ReturnContactWithEmptyClientContacts()
+	public async Task ToContact_WithoutAssociations_ReturnContactWithEmptyClientContacts()
 	{
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(0, result.ClientContacts!.Count);
 	}
 
 	[Fact]
-	public void ToContact_WithDefaultDeals_ReturnContactEmptyDealContacts()
+	public async Task ToContact_WithDefaultDeals_ReturnContactEmptyDealContacts()
 	{
 		/// Arrange
 		response.Associations.Deals.AssociationList = new List<Association>()
@@ -97,14 +101,14 @@ public class ContactResponseToContactTests
 		};
 
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(0, result.DealContacts!.Count);
 	}
 
 	[Fact]
-	public void ToContact_WithDefaultCompanies_ReturnContactEmptyClientContacts()
+	public async Task ToContact_WithDefaultCompanies_ReturnContactEmptyClientContacts()
 	{
 		/// Arrange
 		response.Associations.Companies.AssociationList = new List<Association>()
@@ -113,14 +117,14 @@ public class ContactResponseToContactTests
 		};
 
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(0, result.ClientContacts!.Count);
 	}
 
 	[Fact]
-	public void ToContact_WithNotMatchingAssociations_ReturnContactEmptyDealContacts()
+	public async Task ToContact_WithNotMatchingAssociations_ReturnContactEmptyDealContacts()
 	{
 		/// Arrange
 		response.Associations.Deals.AssociationList = new List<Association>()
@@ -133,14 +137,14 @@ public class ContactResponseToContactTests
 		};
 
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(0, result.DealContacts!.Count);
 	}
 
 	[Fact]
-	public void ToContact_WithNotMatchingAssociations_ReturnContactEmptyClientContacts()
+	public async Task ToContact_WithNotMatchingAssociations_ReturnContactEmptyClientContacts()
 	{
 		/// Arrange
 		response.Associations.Companies.AssociationList = new List<Association>()
@@ -153,14 +157,14 @@ public class ContactResponseToContactTests
 		};
 
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(0, result.ClientContacts!.Count);
 	}
 
 	[Fact]
-	public void ToContact_WithMatchingAssociations_ReturnContactWithDeals()
+	public async Task ToContact_WithMatchingAssociations_ReturnContactWithDeals()
 	{
 		/// Arrange
 		response.Associations.Deals.AssociationList = new List<Association>()
@@ -173,7 +177,7 @@ public class ContactResponseToContactTests
 		};
 
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(1, result.DealContacts!.Count);
@@ -183,13 +187,13 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_FirstNameStringTooLong_FirstNameShortenededAndAppendedWithThreeDots()
+	public async Task ToContact_FirstNameStringTooLong_FirstNameShortenededAndAppendedWithThreeDots()
 	{
 		Faker faker = new();
 		response.Properties.FirstName = faker.Lorem.Letter(StringLengths.Name * 2);
 
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(StringLengths.Name, result.FirstName!.Length);
@@ -198,13 +202,13 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_LastNameStringTooLong_LastNameShortenededAndAppendedWithThreeDots()
+	public async Task ToContact_LastNameStringTooLong_LastNameShortenededAndAppendedWithThreeDots()
 	{
 		Faker faker = new();
 		response.Properties.LastName = faker.Lorem.Letter(StringLengths.Name * 2);
 
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(StringLengths.Name, result.LastName!.Length);
@@ -213,13 +217,13 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_EmailStringTooLong_EmailShortenededAndAppendedWithThreeDots()
+	public async Task ToContact_EmailStringTooLong_EmailShortenededAndAppendedWithThreeDots()
 	{
 		Faker faker = new();
 		response.Properties.Email = faker.Lorem.Letter(StringLengths.Email * 2);
 
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(StringLengths.Email, result.Email!.Length);
@@ -228,13 +232,13 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_PhoneStringTooLong_PhoneShortenededAndAppendedWithThreeDots()
+	public async Task ToContact_PhoneStringTooLong_PhoneShortenededAndAppendedWithThreeDots()
 	{
 		Faker faker = new();
 		response.Properties.Phone = faker.Lorem.Letter(StringLengths.PhoneNumber * 2);
 
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(StringLengths.PhoneNumber, result.PhoneNumber!.Length);
@@ -243,13 +247,13 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_JobTitleStringTooLong_JobTitleShortenededAndAppendedWithThreeDots()
+	public async Task ToContact_JobTitleStringTooLong_JobTitleShortenededAndAppendedWithThreeDots()
 	{
 		Faker faker = new();
 		response.Properties.JobTitle = faker.Lorem.Letter(StringLengths.JobTitle * 2);
 
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(StringLengths.JobTitle, result.JobTitle!.Length);
@@ -258,7 +262,7 @@ public class ContactResponseToContactTests
 	}
 
 	[Fact]
-	public void ToContact_WithMatchingAssociations_ReturnContactWithClientContacts()
+	public async Task ToContact_WithMatchingAssociations_ReturnContactWithClientContacts()
 	{
 		/// Arrange
 		response.Associations.Companies.AssociationList = new List<Association>()
@@ -271,7 +275,7 @@ public class ContactResponseToContactTests
 		};
 
 		/// Act
-		Contact result = response.ToContact();
+		Contact result = await response.ToContact(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(1, result.ClientContacts!.Count);

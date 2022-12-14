@@ -217,12 +217,6 @@ public class UpdateContactHubSpotCommandHandlerTests
 		var result = await _uut.Handle(command, default);
 
 		// Assert
-		newContactMock.Verify(
-			contact => contact.FillOutAssociations(
-				Enumerable.Empty<Client>(),
-				Enumerable.Empty<Deal>()),
-			Times.Once);
-
 		_dealRepositoryMock.Verify(
 			repo => repo.FirstOrDefaultAsync(
 				It.IsAny<Expression<Func<Deal, bool>>>(),

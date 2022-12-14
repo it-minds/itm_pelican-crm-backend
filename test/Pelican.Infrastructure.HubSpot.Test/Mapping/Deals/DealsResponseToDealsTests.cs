@@ -1,4 +1,8 @@
-﻿using Pelican.Domain;
+﻿using System.Linq.Expressions;
+using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Domain;
+using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Mapping.Deals;
 using Xunit;
@@ -19,16 +23,18 @@ public class DealsResponseToDealsTests
 		}
 	};
 
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
+
 	readonly DealsResponse responses = new();
 
 	[Fact]
-	public void ToDeals_ArgResultsNull_ThrowException()
+	public async Task ToDeals_ArgResultsNull_ThrowException()
 	{
 		/// Arrange
 		responses.Results = null!;
 
 		/// Act
-		var result = Record.Exception(() => responses.ToDeals());
+		var result = await Record.ExceptionAsync(() => responses.ToDeals(_unitOfWorkMock.Object, default));
 
 		/// Assert
 		Assert.NotNull(result);
@@ -39,39 +45,87 @@ public class DealsResponseToDealsTests
 	}
 
 	[Fact]
-	public void ToDeals_ArgResultsNotNull_ThrowNoException()
+	public async Task ToDeals_ArgResultsNotNull_ThrowNoException()
 	{
 		/// Arrange 
 		responses.Results = new List<DealResponse>();
 
 		/// Act
-		var result = Record.Exception(() => responses.ToDeals());
+		var result = await Record.ExceptionAsync(() => responses.ToDeals(_unitOfWorkMock.Object, default));
 
 		/// Assert
 		Assert.Null(result);
 	}
 
 	[Fact]
-	public void ToDeals_ArgResultsNotNullNotEmpty_ThrowNoException()
+	public async Task ToDeals_ArgResultsNotNullNotEmpty_ThrowNoException()
 	{
 		/// Arrange 
 		responses.Results = new List<DealResponse>() { response };
 
+		_unitOfWorkMock
+			.Setup(u => u
+				.AccountManagerRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((AccountManager)null!);
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.ContactRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<Contact, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((Contact)null!);
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.ClientRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<Client, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((Client)null!);
+
 		/// Act
-		var result = Record.Exception(() => responses.ToDeals());
+		var result = await Record.ExceptionAsync(() => responses.ToDeals(_unitOfWorkMock.Object, default));
 
 		/// Assert
 		Assert.Null(result);
 	}
 
 	[Fact]
-	public void ToDeals_SingleResponse_ReturnSingle()
+	public async Task ToDeals_SingleResponse_ReturnSingle()
 	{
 		/// Arrange
 		responses.Results = new List<DealResponse>() { response };
 
+		_unitOfWorkMock
+			.Setup(u => u
+				.AccountManagerRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((AccountManager)null!);
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.ContactRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<Contact, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((Contact)null!);
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.ClientRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<Client, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((Client)null!);
+
 		/// Act
-		var result = responses.ToDeals();
+		var result = await responses.ToDeals(_unitOfWorkMock.Object, default);
 
 		/// Assert
 		Assert.Equal(ID, result.First().SourceId);

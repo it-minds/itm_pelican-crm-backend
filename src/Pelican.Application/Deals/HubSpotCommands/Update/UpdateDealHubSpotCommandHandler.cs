@@ -29,7 +29,9 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 			?? throw new ArgumentNullException(nameof(hubSpotAuthorizationService));
 	}
 
-	public async Task<Result> Handle(UpdateDealHubSpotCommand command, CancellationToken cancellationToken = default)
+	public async Task<Result> Handle(
+		UpdateDealHubSpotCommand command,
+		CancellationToken cancellationToken = default)
 	{
 		Deal? deal = _unitOfWork
 			.DealRepository
@@ -47,19 +49,14 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 				cancellationToken);
 		}
 
-		return await UpdateExistingDeal(deal, command, cancellationToken);
-	}
-
-	private async Task<Result> UpdateExistingDeal(
-		Deal deal,
-		UpdateDealHubSpotCommand command,
-		CancellationToken cancellationToken = default)
-	{
 		if ((deal.LastUpdatedAt ?? deal.CreatedAt) <= command.UpdateTime)
 		{
 			if (command.PropertyName == "hs_all_owner_ids")
 			{
-				await UpdateAccountManagerDeal(deal, command.PropertyValue);
+				await UpdateAccountManagerDealAsync(
+					deal,
+					command.PropertyValue,
+					cancellationToken);
 			}
 			else
 			{
@@ -70,7 +67,7 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		}
 		else
 		{
-			Result<Deal> result = await GetDealFromHubSpot(
+			Result<Deal> result = await GetDealFromHubSpotAsync(
 				command.SupplierHubSpotId,
 				command.ObjectId,
 				cancellationToken);
@@ -81,29 +78,35 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 			}
 
 			deal.UpdatePropertiesFromDeal(result.Value);
-
-			if (result.Value.SourceOwnerId is not null)
-			{
-				await UpdateAccountManagerDeal(deal, result.Value.SourceOwnerId);
-			}
+			deal.UpdateAccountManager(result.Value.AccountManagerDeals.FirstOrDefault()?.AccountManager);
 		}
 
 		_unitOfWork
-				.DealRepository
-				.Update(deal);
+			.DealRepository
+			.Attach(deal);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
 	}
 
-	private async Task UpdateAccountManagerDeal(Deal deal, string acccuntManagerHubSpotId)
+	private async Task UpdateAccountManagerDealAsync(
+		Deal deal,
+		string accountManagerHubSpotId,
+		CancellationToken cancellationToken)
 	{
-		AccountManager? accountManager = await _unitOfWork.
-			AccountManagerRepository
-			.FirstOrDefaultAsync(a => a.SourceId == acccuntManagerHubSpotId && a.Source == Sources.HubSpot);
+		if (deal.ActiveAccountManagerDeal?.SourceAccountManagerId == accountManagerHubSpotId)
+		{
+			return;
+		}
 
-		deal.FillOutAccountManager(accountManager);
+		AccountManager? accountManager = await _unitOfWork
+			.AccountManagerRepository
+			.FirstOrDefaultAsync(
+				a => a.SourceId == accountManagerHubSpotId && a.Source == Sources.HubSpot,
+				cancellationToken);
+
+		deal.UpdateAccountManager(accountManager);
 	}
 
 	private async Task<Result> GetAndCreateDealAsync(
@@ -111,7 +114,7 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		long objectId,
 		CancellationToken cancellationToken)
 	{
-		Result<Deal> result = await GetDealFromHubSpot(
+		Result<Deal> result = await GetDealFromHubSpotAsync(
 			supplierHubSpotId,
 			objectId,
 			cancellationToken);
@@ -121,18 +124,16 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 			return result;
 		}
 
-		Deal deal = await FillOutDealAssociations(result.Value, cancellationToken);
-
-		await _unitOfWork
+		_unitOfWork
 			.DealRepository
-			.CreateAsync(deal, cancellationToken);
+			.Attach(result.Value);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
 	}
 
-	private async Task<Result<Deal>> GetDealFromHubSpot(
+	private async Task<Result<Deal>> GetDealFromHubSpotAsync(
 		long supplierHubSpotId,
 		long objectId,
 		CancellationToken cancellationToken = default)
@@ -153,39 +154,5 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 				accessTokenResult.Value,
 				objectId,
 				cancellationToken);
-	}
-
-	private async Task<Deal> FillOutDealAssociations(Deal deal, CancellationToken cancellationToken)
-	{
-		AccountManager? accountManager = await _unitOfWork
-			.AccountManagerRepository
-			.FirstOrDefaultAsync(a => a.SourceId == deal.SourceOwnerId && a.Source == Sources.HubSpot, cancellationToken);
-
-		List<Contact>? contacts = new();
-
-		foreach (DealContact dc in deal.DealContacts)
-		{
-			Contact? contact = await _unitOfWork
-				.ContactRepository
-				.FirstOrDefaultAsync(c => c.SourceId == dc.SourceContactId && c.Source == Sources.HubSpot);
-
-			if (contact is not null)
-			{
-				contacts.Add(contact);
-			}
-		}
-
-		Client? client = null;
-
-		if (deal.Client is not null)
-		{
-			client = await _unitOfWork
-				.ClientRepository
-				.FirstOrDefaultAsync(c => c.SourceId == deal.Client.SourceId && c.Source == Sources.HubSpot, cancellationToken);
-		}
-
-		deal.FillOutAssociations(accountManager, client, contacts);
-
-		return deal;
 	}
 }

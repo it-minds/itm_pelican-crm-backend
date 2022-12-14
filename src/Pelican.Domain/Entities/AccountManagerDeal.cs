@@ -30,7 +30,7 @@ public class AccountManagerDeal : Entity, ITimeTracked
 	[GraphQLIgnore]
 	public static AccountManagerDeal Create(Deal deal, AccountManager accountManager)
 	{
-		return new AccountManagerDeal(Guid.NewGuid())
+		return new AccountManagerDeal()
 		{
 			Deal = deal,
 			DealId = deal.Id,

@@ -108,7 +108,7 @@ public class Deal : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
-	public virtual void SetAccountManager(AccountManager? accountManager)
+	public virtual void UpdateAccountManager(AccountManager? accountManager)
 	{
 		if (accountManager is null)
 		{
@@ -120,6 +120,17 @@ public class Deal : Entity, ITimeTracked
 			ActiveAccountManagerDeal?.Deactivate();
 			AccountManagerDeal accountManagerDeal = AccountManagerDeal.Create(this, accountManager);
 			AccountManagerDeals.Add(accountManagerDeal);
+			accountManager.AccountManagerDeals.Add(accountManagerDeal);
+		}
+	}
+
+	[GraphQLIgnore]
+	public virtual void SetAccountManager(AccountManager? accountManager)
+	{
+		if (accountManager is not null)
+		{
+			AccountManagerDeal accountManagerDeal = AccountManagerDeal.Create(this, accountManager);
+			AccountManagerDeals = new List<AccountManagerDeal>() { accountManagerDeal };
 			accountManager.AccountManagerDeals.Add(accountManagerDeal);
 		}
 	}

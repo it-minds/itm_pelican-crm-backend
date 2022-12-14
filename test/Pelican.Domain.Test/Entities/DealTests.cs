@@ -6,7 +6,7 @@ using Xunit;
 namespace Pelican.Domain.Test.Entities;
 public class DealTests
 {
-	private readonly Deal _uut = new Deal(Guid.NewGuid())
+	private readonly Deal _uut = new()
 	{
 		SourceId = "uutHubSpotId",
 	};
@@ -71,7 +71,7 @@ public class DealTests
 		// Assert
 
 		Assert.Equal(StringLengths.DealName, _uut.Name!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealName - 3) + "...", _uut.Name);
+		Assert.Equal(propertyValue[..(StringLengths.DealName - 3)] + "...", _uut.Name);
 	}
 
 	[Fact]
@@ -86,7 +86,7 @@ public class DealTests
 
 		// Assert
 		Assert.Equal(StringLengths.DealStatus, _uut.Status!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3) + "...", _uut.Status);
+		Assert.Equal(propertyValue[..(StringLengths.DealStatus - 3)] + "...", _uut.Status);
 	}
 
 	[Fact]
@@ -101,7 +101,7 @@ public class DealTests
 
 		// Assert
 		Assert.Equal(StringLengths.DealDescription, _uut.Description!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealDescription - 3) + "...", _uut.Description);
+		Assert.Equal(propertyValue[..(StringLengths.DealDescription - 3)] + "...", _uut.Description);
 	}
 
 	[Fact]
@@ -318,8 +318,8 @@ public class DealTests
 
 		// Assert
 		Assert.Equal(StringLengths.DealStatus, _uut.Status!.Length);
-		Assert.Equal("...", _uut.Status.Substring(StringLengths.DealStatus - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3), _uut.Status.Substring(0, StringLengths.DealStatus - 3));
+		Assert.Equal("...", _uut.Status[(StringLengths.DealStatus - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.DealStatus - 3)], _uut.Status[..(StringLengths.DealStatus - 3)]);
 	}
 
 	[Fact]
@@ -335,8 +335,8 @@ public class DealTests
 
 		// Assert
 		Assert.Equal(StringLengths.DealDescription, _uut.Description!.Length);
-		Assert.Equal("...", _uut.Description.Substring(StringLengths.DealDescription - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealDescription - 3), _uut.Description.Substring(0, StringLengths.DealDescription - 3));
+		Assert.Equal("...", _uut.Description[(StringLengths.DealDescription - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.DealDescription - 3)], _uut.Description[..(StringLengths.DealDescription - 3)]);
 	}
 
 	[Fact]
@@ -352,8 +352,93 @@ public class DealTests
 
 		// Assert
 		Assert.Equal(StringLengths.DealName, _uut.Name!.Length);
-		Assert.Equal("...", _uut.Name.Substring(StringLengths.DealName - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealName - 3), _uut.Name.Substring(0, StringLengths.DealName - 3));
+		Assert.Equal("...", _uut.Name[(StringLengths.DealName - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.DealName - 3)], _uut.Name[..(StringLengths.DealName - 3)]);
+	}
+
+	[Fact]
+	public void UpdateAccountManager_AccountManagerDealsEmptyArgNull_EmptyAccountManagerDeals()
+	{
+		// Arrange
+		Deal inputDeal = new(Guid.NewGuid());
+
+		// Act
+		inputDeal.UpdateAccountManager(null);
+
+		// Assert
+		Assert.Equal(
+			0,
+			inputDeal.AccountManagerDeals.Count);
+	}
+
+	[Fact]
+	public void UpdateAccountManager_ActiveAccountManagerDealEmptyArgNull_NullActiveAccountManagerDeal()
+	{
+		// Arrange
+		Deal inputDeal = new(Guid.NewGuid());
+		inputDeal.AccountManagerDeals.Add(new() { IsActive = true });
+
+		// Act
+		inputDeal.UpdateAccountManager(null);
+
+		// Assert
+		Assert.Null(inputDeal.ActiveAccountManagerDeal);
+
+		Assert.Equal(
+			1,
+			inputDeal.AccountManagerDeals.Count);
+	}
+
+	[Fact]
+	public void UpdateAccountManager_AccountManagerDealsEmptyArgNewAccountManagerDeal_AccountManagerDealAddedAsActive()
+	{
+		// Arrange
+		Deal inputDeal = new(Guid.NewGuid());
+
+		AccountManager accountManager = new();
+
+		// Act
+		inputDeal.UpdateAccountManager(accountManager);
+
+		// Assert
+		Assert.Equal(
+			accountManager,
+			inputDeal.ActiveAccountManagerDeal!.AccountManager);
+
+		Assert.Equal(
+			1,
+			inputDeal.AccountManagerDeals.Count);
+	}
+
+	[Fact]
+	public void UpdateAccountManager_AccountManagerDealsNotEmptyArgNewAccountManagerDeal_AccountManagerDealAddedAsActive()
+	{
+		// Arrange
+		Deal inputDeal = new(Guid.NewGuid())
+		{
+			AccountManagerDeals = new List<AccountManagerDeal>()
+			{
+				new(Guid.NewGuid())
+				{
+					IsActive = true,
+					SourceAccountManagerId = "first",
+				},
+			}
+		};
+
+		AccountManager accountManager = new() { SourceId = "new" };
+
+		// Act
+		inputDeal.UpdateAccountManager(accountManager);
+
+		// Assert
+		Assert.Equal(
+			accountManager,
+			inputDeal.ActiveAccountManagerDeal!.AccountManager);
+
+		Assert.Equal(
+			2,
+			inputDeal.AccountManagerDeals.Count);
 	}
 
 	[Fact]
@@ -368,24 +453,6 @@ public class DealTests
 		// Assert
 		Assert.Equal(
 			0,
-			inputDeal.AccountManagerDeals.Count);
-	}
-
-	[Fact]
-	public void SetAccountManager_ActiveAccountManagerDealEmptyArgNull_NullActiveAccountManagerDeal()
-	{
-		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-		inputDeal.AccountManagerDeals.Add(new() { IsActive = true });
-
-		// Act
-		inputDeal.SetAccountManager(null);
-
-		// Assert
-		Assert.Null(inputDeal.ActiveAccountManagerDeal);
-
-		Assert.Equal(
-			1,
 			inputDeal.AccountManagerDeals.Count);
 	}
 
@@ -407,37 +474,6 @@ public class DealTests
 
 		Assert.Equal(
 			1,
-			inputDeal.AccountManagerDeals.Count);
-	}
-
-	[Fact]
-	public void SetAccountManager_AccountManagerDealsNotEmptyArgNewAccountManagerDeal_AccountManagerDealAddedAsActive()
-	{
-		// Arrange
-		Deal inputDeal = new(Guid.NewGuid())
-		{
-			AccountManagerDeals = new List<AccountManagerDeal>()
-			{
-				new(Guid.NewGuid())
-				{
-					IsActive = true,
-					SourceAccountManagerId = "first",
-				},
-			}
-		};
-
-		AccountManager accountManager = new() { SourceId = "new" };
-
-		// Act
-		inputDeal.SetAccountManager(accountManager);
-
-		// Assert
-		Assert.Equal(
-			accountManager,
-			inputDeal.ActiveAccountManagerDeal!.AccountManager);
-
-		Assert.Equal(
-			2,
 			inputDeal.AccountManagerDeals.Count);
 	}
 

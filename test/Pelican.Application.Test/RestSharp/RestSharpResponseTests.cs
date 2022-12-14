@@ -50,7 +50,7 @@ public class RestSharpResponseTests
 	}
 
 	[Fact]
-	public void GetResultV1_NotSuccessful_ReturnFailure()
+	public void GetResult_NotSuccessful_ReturnFailure()
 	{
 		// Arrange
 		Func<string, string> func = x => x;
@@ -71,7 +71,7 @@ public class RestSharpResponseTests
 	}
 
 	[Fact]
-	public void GetResultV1_dataIsNull_ReturnFailure()
+	public void GetResult_dataIsNull_ReturnFailure()
 	{
 		// Arrange
 		Func<string, string> func = x => x;
@@ -90,7 +90,7 @@ public class RestSharpResponseTests
 	}
 
 	[Fact]
-	public void GetResultV1_SuccessMappingData_ReturnSuccess()
+	public void GetResult_SuccessMappingData_ReturnSuccess()
 	{
 		// Arrange
 		static string func(string x) => x;
@@ -109,7 +109,7 @@ public class RestSharpResponseTests
 	}
 
 	[Fact]
-	public void GetResultV1_FailureMappingData_ReturnFailure()
+	public void GetResult_FailureMappingData_ReturnFailure()
 	{
 		// Arrange
 		Func<string, string> func = x => throw new InvalidCastException("err");

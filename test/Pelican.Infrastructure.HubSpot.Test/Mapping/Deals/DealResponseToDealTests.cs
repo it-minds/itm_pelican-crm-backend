@@ -321,8 +321,8 @@ public class DealResponseToDealTests
 
 		// Assert
 		Assert.Equal(StringLengths.DealName, result.Name!.Length);
-		Assert.Equal("...", result.Name.Substring(StringLengths.DealName - 3));
-		Assert.Equal(response.Properties.DealName.Substring(0, StringLengths.DealName - 3), result.Name.Substring(0, StringLengths.DealName - 3));
+		Assert.Equal("...", result.Name[(StringLengths.DealName - 3)..]);
+		Assert.Equal(response.Properties.DealName[..(StringLengths.DealName - 3)], result.Name[..(StringLengths.DealName - 3)]);
 	}
 
 	[Fact]
@@ -345,8 +345,8 @@ public class DealResponseToDealTests
 
 		// Assert
 		Assert.Equal(StringLengths.DealStatus, result.Status!.Length);
-		Assert.Equal("...", result.Status.Substring(StringLengths.DealStatus - 3));
-		Assert.Equal(response.Properties.DealStage.Substring(0, StringLengths.DealStatus - 3), result.Status.Substring(0, StringLengths.DealStatus - 3));
+		Assert.Equal("...", result.Status[(StringLengths.DealStatus - 3)..]);
+		Assert.Equal(response.Properties.DealStage[..(StringLengths.DealStatus - 3)], result.Status[..(StringLengths.DealStatus - 3)]);
 	}
 
 	[Fact]
@@ -369,7 +369,7 @@ public class DealResponseToDealTests
 
 		// Assert
 		Assert.Equal(StringLengths.DealDescription, result.Description!.Length);
-		Assert.Equal("...", result.Description.Substring(StringLengths.DealDescription - 3));
-		Assert.Equal(response.Properties.Description.Substring(0, StringLengths.DealDescription - 3), result.Description.Substring(0, StringLengths.DealDescription - 3));
+		Assert.Equal("...", result.Description[(StringLengths.DealDescription - 3)..]);
+		Assert.Equal(response.Properties.Description[..(StringLengths.DealDescription - 3)], result.Description[..(StringLengths.DealDescription - 3)]);
 	}
 }

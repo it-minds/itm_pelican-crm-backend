@@ -78,15 +78,12 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 			}
 
 			deal.UpdatePropertiesFromDeal(result.Value);
-
-			if (result.Value.SourceOwnerId is not null)
-			{
-				await UpdateAccountManagerDealAsync(
-					deal,
-					result.Value.SourceOwnerId,
-					cancellationToken);
-			}
+			deal.UpdateAccountManager(result.Value.AccountManagerDeals.FirstOrDefault()?.AccountManager);
 		}
+
+		_unitOfWork
+			.DealRepository
+			.Attach(deal);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
@@ -109,14 +106,7 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 				a => a.SourceId == accountManagerHubSpotId && a.Source == Sources.HubSpot,
 				cancellationToken);
 
-		deal.SetAccountManager(accountManager);
-
-		if (accountManager is not null)
-		{
-			_unitOfWork
-				.AccountManagerDealRepository
-				.Attach(deal.ActiveAccountManagerDeal!);
-		}
+		deal.UpdateAccountManager(accountManager);
 	}
 
 	private async Task<Result> GetAndCreateDealAsync(

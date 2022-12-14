@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Infrastructure;
@@ -61,8 +62,10 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 		CancellationToken cancellationToken)
 	{
 		Supplier? supplier = await unitOfWork
-		.SupplierRepository
-				.FirstOrDefaultAsync(supplier => supplier.SourceId == supplierHubSpotId && supplier.Source == Sources.HubSpot, default);
+			.SupplierRepository
+			.FirstOrDefaultAsync(
+				supplier => supplier.SourceId == supplierHubSpotId && supplier.Source == Sources.HubSpot,
+				cancellationToken);
 
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{

@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Abstractions.HubSpot;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
@@ -12,9 +13,13 @@ namespace Pelican.Infrastructure.HubSpot.Services;
 
 internal sealed class HubSpotDealService : ServiceBase<HubSpotSettings>, IHubSpotObjectService<Deal>
 {
+	private readonly IUnitOfWork _unitOfWork;
+
 	public HubSpotDealService(
-		IClient<HubSpotSettings> hubSpotClient) : base(hubSpotClient)
-	{ }
+		IClient<HubSpotSettings> hubSpotClient,
+		IUnitOfWork unitOfWork)
+		: base(hubSpotClient)
+		=> _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
 	public async Task<Result<Deal>> GetByIdAsync(
 		string accessToken,
@@ -26,10 +31,15 @@ internal sealed class HubSpotDealService : ServiceBase<HubSpotSettings>, IHubSpo
 			.AddDealQueryParams();
 
 		IResponse<DealResponse> response = await _client
-			.GetAsync<DealResponse>(request, cancellationToken);
+			.GetAsync<DealResponse>(
+				request,
+				cancellationToken);
 
-		return response
-			.GetResult(DealResponseToDeal.ToDeal);
+		return await response
+			.GetResultWithUnitOfWork(
+				DealResponseToDeal.ToDeal,
+				_unitOfWork,
+				cancellationToken);
 	}
 
 	public async Task<Result<List<Deal>>> GetAsync(
@@ -41,9 +51,14 @@ internal sealed class HubSpotDealService : ServiceBase<HubSpotSettings>, IHubSpo
 			.AddDealQueryParams();
 
 		IResponse<DealsResponse> response = await _client
-			.GetAsync<DealsResponse>(request, cancellationToken);
+			.GetAsync<DealsResponse>(
+				request,
+				cancellationToken);
 
-		return response
-			.GetResult(DealsResponseToDeals.ToDeals);
+		return await response
+			.GetResultWithUnitOfWork(
+				DealsResponseToDeals.ToDeals,
+				_unitOfWork,
+				cancellationToken);
 	}
 }

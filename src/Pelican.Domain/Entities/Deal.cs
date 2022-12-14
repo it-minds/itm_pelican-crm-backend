@@ -1,6 +1,7 @@
 using HotChocolate;
 using Pelican.Domain.Extensions;
 using Pelican.Domain.Primitives;
+using Pelican.Domain.Shared;
 
 namespace Pelican.Domain.Entities;
 public class Deal : Entity, ITimeTracked

@@ -144,7 +144,7 @@ public class Contact : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
-	public void SetDealContacts(IEnumerable<Deal?> deals)
+	public void SetDealContacts(IEnumerable<Deal?>? deals)
 		=> DealContacts = deals?
 			.Select(deal =>
 			{
@@ -160,7 +160,7 @@ public class Contact : Entity, ITimeTracked
 			.ToList() as ICollection<DealContact> ?? new List<DealContact>();
 
 	[GraphQLIgnore]
-	public void SetClientContacts(IEnumerable<Client?> clients)
+	public void SetClientContacts(IEnumerable<Client?>? clients)
 		=> ClientContacts = clients?
 			.Select(client =>
 			{

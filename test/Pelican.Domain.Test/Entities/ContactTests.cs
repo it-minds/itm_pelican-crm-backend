@@ -554,6 +554,19 @@ public class ContactTests
 	}
 
 	[Fact]
+	public void SetDealContacts_ArgsNull_DealContactsEmpty()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetDealContacts(null);
+
+		// Assert
+		Assert.Empty(input.DealContacts);
+	}
+
+	[Fact]
 	public void SetDealContacts_ArgsEmptyList_DealContactsEmpty()
 	{
 		// Arrange
@@ -594,6 +607,19 @@ public class ContactTests
 		Assert.Equal(
 			1,
 			input.DealContacts.Count);
+	}
+
+	[Fact]
+	public void SetClientContacts_ArgsNull_ClientContactsEmpty()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetClientContacts(null);
+
+		// Assert
+		Assert.Empty(input.ClientContacts);
 	}
 
 	[Fact]

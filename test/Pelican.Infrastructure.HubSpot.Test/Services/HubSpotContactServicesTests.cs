@@ -63,7 +63,7 @@ public class HubSpotContactServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResultV1(It.IsAny<Func<ContactResponse, Contact>>()))
+			.Setup(r => r.GetResult(It.IsAny<Func<ContactResponse, Contact>>()))
 			.Returns(Result.Failure<Contact>(Error.NullValue));
 
 		/// Act
@@ -88,7 +88,7 @@ public class HubSpotContactServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResultV1(It.IsAny<Func<ContactResponse, Contact>>()))
+			.Setup(r => r.GetResult(It.IsAny<Func<ContactResponse, Contact>>()))
 			.Returns(Contact);
 
 		/// Act
@@ -114,7 +114,7 @@ public class HubSpotContactServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResultV1(It.IsAny<Func<ContactsResponse, List<Contact>>>()))
+			.Setup(r => r.GetResult(It.IsAny<Func<ContactsResponse, List<Contact>>>()))
 			.Returns(Result.Failure<List<Contact>>(Error.NullValue));
 
 		/// Act
@@ -139,7 +139,7 @@ public class HubSpotContactServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResultV1(It.IsAny<Func<ContactsResponse, List<Contact>>>()))
+			.Setup(r => r.GetResult(It.IsAny<Func<ContactsResponse, List<Contact>>>()))
 			.Returns(Contacts);
 
 		/// Act

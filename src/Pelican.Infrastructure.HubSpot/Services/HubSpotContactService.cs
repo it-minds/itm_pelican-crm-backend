@@ -16,7 +16,8 @@ internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHub
 	private readonly IUnitOfWork _unitOfWork;
 
 	public HubSpotContactService(
-		IClient<HubSpotSettings> hubSpotClient, IUnitOfWork unitOfWork)
+		IClient<HubSpotSettings> hubSpotClient,
+		IUnitOfWork unitOfWork)
 		: base(hubSpotClient)
 		=> _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 

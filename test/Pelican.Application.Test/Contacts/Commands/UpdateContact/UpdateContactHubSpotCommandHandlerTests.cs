@@ -5,6 +5,7 @@ using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Contacts.Commands.UpdateContact;
+using Pelican.Application.Contacts.HubSpotCommands.Update;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
@@ -13,7 +14,7 @@ using Xunit;
 namespace Pelican.Application.Test.Contacts.Commands.UpdateContact;
 public class UpdateContactHubSpotCommandHandlerTests
 {
-	private readonly UpdateContactCommandHandler _uut;
+	private readonly UpdateContactHubSpotCommandHandler _uut;
 
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly Mock<IHubSpotObjectService<Contact>> _hubSpotContactServiceMock = new();
@@ -25,6 +26,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 	private const long OBJECT_ID = 123;
 	private const long SUPPLIER_HUBSPOT_ID = 456;
+	private const long UPDATE_TIME = 1;
 	private const string NAME = "name";
 	private const string VALUE = "value";
 
@@ -49,10 +51,10 @@ public class UpdateContactHubSpotCommandHandlerTests
 	}
 
 	[Fact]
-	public void UpdateContactCommandHandler_UnitOfWorkNull_ThrowsArgumentNullException()
+	public void UpdateContactHubSpotCommandHandler_UnitOfWorkNull_ThrowsArgumentNullException()
 	{
 		// Act
-		var result = Record.Exception(() => new UpdateContactCommandHandler(
+		var result = Record.Exception(() => new UpdateContactHubSpotCommandHandler(
 			null!,
 			_hubSpotContactServiceMock.Object,
 			_hubSpotAuthorizationServiceMock.Object));
@@ -66,10 +68,10 @@ public class UpdateContactHubSpotCommandHandlerTests
 	}
 
 	[Fact]
-	public void UpdateContactCommandHandler_HubSpotContactServiceNull_ThrowsArgumentNullException()
+	public void UpdateContactHubSpotCommandHandler_HubSpotContactServiceNull_ThrowsArgumentNullException()
 	{
 		// Act
-		var result = Record.Exception(() => new UpdateContactCommandHandler(
+		var result = Record.Exception(() => new UpdateContactHubSpotCommandHandler(
 			_unitOfWorkMock.Object,
 			null!,
 			_hubSpotAuthorizationServiceMock.Object));
@@ -83,10 +85,10 @@ public class UpdateContactHubSpotCommandHandlerTests
 	}
 
 	[Fact]
-	public void UpdateContactCommandHandler_HubSpotAuthorizationServiceNull_ThrowsArgumentNullException()
+	public void UpdateContactHubSpotCommandHandler_HubSpotAuthorizationServiceNull_ThrowsArgumentNullException()
 	{
 		// Act
-		var result = Record.Exception(() => new UpdateContactCommandHandler(
+		var result = Record.Exception(() => new UpdateContactHubSpotCommandHandler(
 			_unitOfWorkMock.Object,
 			_hubSpotContactServiceMock.Object,
 			null!));
@@ -103,7 +105,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundAccessTokenNotFound_ContactRepositoryCalledReturnsFailure()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID,UPDATE_TIME, NAME, VALUE);
 
 		_contactRepositoryMock
 			.Setup(repo => repo
@@ -141,7 +143,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFailedFetchingContactFromHubSpot_HubSpotContactServiceCalledReturnsFailure()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID,UPDATE_TIME, NAME, VALUE);
 
 		string accessToken = "accessToken";
 
@@ -185,7 +187,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithoutAssociations_DependencyCallsAssertedReturnsSuccess()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID,UPDATE_TIME, NAME, VALUE);
 
 		Mock<Contact> newContactMock = new();
 
@@ -233,7 +235,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithDealContacts_DealsLoadedFromRepositoriesReturnsSuccess()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID,UPDATE_TIME, NAME, VALUE);
 
 		DealContact existingDealContact = new();
 
@@ -271,7 +273,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithClientContacts_ClientLoadedFromRepositoriesReturnsSuccess()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID,UPDATE_TIME, NAME, VALUE);
 
 		ClientContact existingClientContact = new();
 
@@ -309,7 +311,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithDealContacts_UnitOfWorkCreateAndSaveCalledReturnsSuccess()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID,UPDATE_TIME, NAME, VALUE);
 
 		Deal existingDeal = new()
 		{
@@ -367,7 +369,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithClientContacts_UnitOfWorkCreateAndSaveCalled()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATE_TIME, NAME, VALUE);
 
 		Client existingClient = new()
 		{
@@ -422,7 +424,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactFoundFirstnameUpdated_DependenciesCalledReturnSuccess()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATE_TIME, NAME, VALUE);
 
 		Mock<Contact> contactMock = new();
 
@@ -449,7 +451,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactFoundDealAssociationsUpdatedFailedFetchingFromHubSpot_ReturnsFailureUpdateDealContactsNotCalled()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATE_TIME, "num_associated_deals", VALUE);
 
 		string accessToken = "accessToken";
 
@@ -492,7 +494,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactFoundDealAssociationsUpdatedSuccessFetchingFromHubSpot_UpdateDealContactsCalledReturnSuccess()
 	{
 		// Arrange
-		UpdateContactCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, "num_associated_deals", VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATE_TIME, "num_associated_deals", VALUE);
 
 		string accessToken = "accessToken";
 

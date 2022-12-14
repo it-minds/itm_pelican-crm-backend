@@ -2,19 +2,20 @@
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Contacts.HubSpotCommands.Update;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
 namespace Pelican.Application.Contacts.Commands.UpdateContact;
 
-internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContactCommand>
+internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<UpdateContactHubSpotCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IHubSpotObjectService<Contact> _hubSpotContactService;
 	private readonly IHubSpotAuthorizationService _hubSpotAuthorizationService;
 
-	public UpdateContactCommandHandler(
+	public UpdateContactHubSpotCommandHandler(
 		IUnitOfWork unitOfWork,
 		IHubSpotObjectService<Contact> hubSpotContactService,
 		IHubSpotAuthorizationService hubSpotAuthorizationService)
@@ -30,7 +31,7 @@ internal sealed class UpdateContactCommandHandler : ICommandHandler<UpdateContac
 	}
 
 	public async Task<Result> Handle(
-		UpdateContactCommand command,
+		UpdateContactHubSpotCommand command,
 		CancellationToken cancellationToken = default)
 	{
 		Contact? contact = _unitOfWork

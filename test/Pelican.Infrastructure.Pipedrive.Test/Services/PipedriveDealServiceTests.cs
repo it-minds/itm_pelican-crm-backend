@@ -50,7 +50,7 @@ public class PipedriveDealServiceTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResultV1(It.IsAny<Func<DealResponse, Deal>>()))
+			.Setup(r => r.GetResult(It.IsAny<Func<DealResponse, Deal>>()))
 			.Returns(Result.Failure<Deal>(Error.NullValue));
 
 		/// Act
@@ -75,7 +75,7 @@ public class PipedriveDealServiceTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResultV1(It.IsAny<Func<DealResponse, Deal>>()))
+			.Setup(r => r.GetResult(It.IsAny<Func<DealResponse, Deal>>()))
 			.Returns(deal);
 
 		/// Act
@@ -101,7 +101,7 @@ public class PipedriveDealServiceTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResultV1(It.IsAny<Func<DealsResponse, List<Deal>>>()))
+			.Setup(r => r.GetResult(It.IsAny<Func<DealsResponse, List<Deal>>>()))
 			.Returns(Result.Failure<List<Deal>>(Error.NullValue));
 
 		/// Act
@@ -126,7 +126,7 @@ public class PipedriveDealServiceTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResultV1(It.IsAny<Func<DealsResponse, List<Deal>>>()))
+			.Setup(r => r.GetResult(It.IsAny<Func<DealsResponse, List<Deal>>>()))
 			.Returns(deals);
 
 		/// Act

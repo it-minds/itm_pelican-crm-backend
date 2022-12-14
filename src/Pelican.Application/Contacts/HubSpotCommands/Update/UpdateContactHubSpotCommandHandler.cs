@@ -2,12 +2,11 @@
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Contacts.HubSpotCommands.Update;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
-namespace Pelican.Application.Contacts.Commands.UpdateContact;
+namespace Pelican.Application.Contacts.HubSpotCommands.Update;
 
 internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<UpdateContactHubSpotCommand>
 {
@@ -81,9 +80,9 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 		CancellationToken cancellationToken = default)
 	{
 		Result<Contact> result = await GetContactFromHubSpot(
-						supplierHubSpotId,
-						contactHubSpotId,
-						cancellationToken);
+			supplierHubSpotId,
+			contactHubSpotId,
+			cancellationToken);
 
 		if (result.IsFailure)
 		{
@@ -105,9 +104,9 @@ internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<Updat
 		CancellationToken cancellationToken = default)
 	{
 		Result<Contact> result = await GetContactFromHubSpot(
-						supplierHubSpotId,
-						objectId,
-						cancellationToken);
+			supplierHubSpotId,
+			objectId,
+			cancellationToken);
 
 		if (result.IsFailure)
 		{

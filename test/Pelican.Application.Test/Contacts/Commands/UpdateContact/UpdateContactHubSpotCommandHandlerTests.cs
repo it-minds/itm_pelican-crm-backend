@@ -4,14 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Contacts.Commands.UpdateContact;
 using Pelican.Application.Contacts.HubSpotCommands.Update;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Xunit;
 
-namespace Pelican.Application.Test.Contacts.Commands.UpdateContact;
+namespace Pelican.Application.Test.Contacts.HubSpotCommands.Update;
 public class UpdateContactHubSpotCommandHandlerTests
 {
 	private readonly UpdateContactHubSpotCommandHandler _uut;
@@ -105,7 +104,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundAccessTokenNotFound_ContactRepositoryCalledReturnsFailure()
 	{
 		// Arrange
-		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID,UPDATE_TIME, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATE_TIME, NAME, VALUE);
 
 		_contactRepositoryMock
 			.Setup(repo => repo
@@ -143,7 +142,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFailedFetchingContactFromHubSpot_HubSpotContactServiceCalledReturnsFailure()
 	{
 		// Arrange
-		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID,UPDATE_TIME, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATE_TIME, NAME, VALUE);
 
 		string accessToken = "accessToken";
 
@@ -187,7 +186,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithoutAssociations_DependencyCallsAssertedReturnsSuccess()
 	{
 		// Arrange
-		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID,UPDATE_TIME, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATE_TIME, NAME, VALUE);
 
 		Mock<Contact> newContactMock = new();
 
@@ -235,7 +234,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithDealContacts_DealsLoadedFromRepositoriesReturnsSuccess()
 	{
 		// Arrange
-		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID,UPDATE_TIME, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATE_TIME, NAME, VALUE);
 
 		DealContact existingDealContact = new();
 
@@ -273,7 +272,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithClientContacts_ClientLoadedFromRepositoriesReturnsSuccess()
 	{
 		// Arrange
-		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID,UPDATE_TIME, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATE_TIME, NAME, VALUE);
 
 		ClientContact existingClientContact = new();
 
@@ -311,7 +310,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 	public async void Handle_ContactNotFoundFetchingContactWithDealContacts_UnitOfWorkCreateAndSaveCalledReturnsSuccess()
 	{
 		// Arrange
-		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID,UPDATE_TIME, NAME, VALUE);
+		UpdateContactHubSpotCommand command = new(OBJECT_ID, SUPPLIER_HUBSPOT_ID, UPDATE_TIME, NAME, VALUE);
 
 		Deal existingDeal = new()
 		{

@@ -549,7 +549,7 @@ public class DealTests
 		Mock<Deal> dealMock = new();
 		dealMock.Object.EndDate = testEndDate;
 		dealMock.Object.StartDate = testStartDate;
-		dealMock.Object.DealStatus = testDealStatus;
+		dealMock.Object.Status = testDealStatus;
 		dealMock.Object.LastContactDate = testLastContactDate;
 		dealMock.Object.Name = testName;
 		dealMock.Object.Description = testDescription;
@@ -560,7 +560,7 @@ public class DealTests
 		//Assert
 		Assert.Equal(testEndDate, _uut.EndDate);
 		Assert.Equal(testStartDate, _uut.StartDate);
-		Assert.Equal(testDealStatus, _uut.DealStatus);
+		Assert.Equal(testDealStatus, _uut.Status);
 		Assert.Equal(testLastContactDate, _uut.LastContactDate);
 		Assert.Equal(testName, _uut.Name);
 		Assert.Equal(testDescription, _uut.Description);

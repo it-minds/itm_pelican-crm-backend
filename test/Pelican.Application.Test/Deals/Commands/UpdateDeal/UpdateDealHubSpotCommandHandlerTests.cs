@@ -389,7 +389,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		SetupDealRepositoryMock(dealMock.Object);
 
-		UpdateDealHubSpotCommand command = new(1, 1, "hs_all_owner_ids", "equal");
+		UpdateDealHubSpotCommand command = new(1, 1, 1, "hs_all_owner_ids", "equal");
 
 		// Act
 		Result result = await _uut.Handle(command, default);
@@ -446,6 +446,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 		SetupDealRepositoryMock(dealMock.Object);
 
 		UpdateDealHubSpotCommand command = new(
+			1,
 			1,
 			1,
 			"hs_all_owner_ids",
@@ -628,7 +629,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 			EndDate = testEndDate,
 			StartDate = testStartDate,
 			LastContactDate = testLastContactDate,
-			DealStatus = testDealStatus,
+			Status = testDealStatus,
 			Name = testDealName,
 			Description = testDealDescription,
 
@@ -703,7 +704,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 			EndDate = testEndDate,
 			StartDate = testStartDate,
 			LastContactDate = testLastContactDate,
-			DealStatus = testDealStatus,
+			Status = testDealStatus,
 			Name = testDealName,
 			Description = testDealDescription,
 			SourceOwnerId = testSourceOwnerId,
@@ -749,8 +750,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		//Assert
 		dealMock.Verify(x => x.UpdatePropertiesFromDeal(dealResult), Times.Once);
-
-		dealMock.Verify(x => x.FillOutAccountManager(accountManagerMock.Object), Times.Once);
 
 		_unitOfWorkMock.Verify(
 			u => u.SaveAsync(default),

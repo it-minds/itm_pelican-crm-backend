@@ -101,7 +101,7 @@ public class Deal : Entity, ITimeTracked
 	{
 		EndDate = deal.EndDate;
 		StartDate = deal.StartDate;
-		DealStatus = deal.DealStatus;
+		Status = deal.Status;
 		LastContactDate = deal.LastContactDate;
 		Name = deal.Name;
 		Description = deal.Description;

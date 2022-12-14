@@ -1,4 +1,5 @@
 ﻿using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
@@ -15,25 +16,40 @@ public class HubSpotDealServicesTests
 	private const string ID = "Id";
 	private const string OWNERID = "OwnerId";
 
-	private readonly Mock<IClient<HubSpotSettings>> _hubSpotClientMock;
+	private readonly Mock<IClient<HubSpotSettings>> _hubSpotClientMock = new();
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly HubSpotDealService _uut;
 
 	public HubSpotDealServicesTests()
 	{
-		_hubSpotClientMock = new();
-		_uut = new HubSpotDealService(_hubSpotClientMock.Object);
+		_uut = new HubSpotDealService(
+			_hubSpotClientMock.Object,
+			_unitOfWorkMock.Object);
 	}
 
 	[Fact]
 	public void HubSpotDealService_ClientNull_ThrowException()
 	{
 		// Act
-		var result = Record.Exception(() => new HubSpotDealService(null!));
+		var result = Record.Exception(() => new HubSpotDealService(null!, _unitOfWorkMock.Object));
 
 		// Assert
 		Assert.IsType<ArgumentNullException>(result);
 		Assert.Contains(
 			"client",
+			result.Message);
+	}
+
+	[Fact]
+	public void HubSpotDealService_UnitOfWorkNull_ThrowException()
+	{
+		// Act
+		var result = Record.Exception(() => new HubSpotDealService(_hubSpotClientMock.Object, null!));
+
+		// Assert
+		Assert.IsType<ArgumentNullException>(result);
+		Assert.Contains(
+			"unitOfWork",
 			result.Message);
 	}
 
@@ -50,8 +66,11 @@ public class HubSpotDealServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<DealResponse, Deal>>()))
-			.Returns(Result.Failure<Deal>(Error.NullValue));
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<DealResponse, IUnitOfWork, CancellationToken, Task<Deal>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<Deal>(Error.NullValue));
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -75,8 +94,11 @@ public class HubSpotDealServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<DealResponse, Deal>>()))
-			.Returns(deal);
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<DealResponse, IUnitOfWork, CancellationToken, Task<Deal>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(deal));
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -101,8 +123,11 @@ public class HubSpotDealServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<DealsResponse, List<Deal>>>()))
-			.Returns(Result.Failure<List<Deal>>(Error.NullValue));
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<DealsResponse, IUnitOfWork, CancellationToken, Task<List<Deal>>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<List<Deal>>(Error.NullValue));
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -126,8 +151,11 @@ public class HubSpotDealServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<DealsResponse, List<Deal>>>()))
-			.Returns(deals);
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<DealsResponse, IUnitOfWork, CancellationToken, Task<List<Deal>>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(deals));
 
 		/// Act
 		var result = await _uut.GetAsync("", default);

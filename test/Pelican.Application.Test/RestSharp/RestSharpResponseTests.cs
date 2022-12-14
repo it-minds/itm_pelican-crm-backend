@@ -1,4 +1,7 @@
-﻿using Pelican.Application.RestSharp;
+﻿using HotChocolate.Types;
+using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.RestSharp;
 using RestSharp;
 using Xunit;
 
@@ -7,6 +10,7 @@ namespace Pelican.Application.Test.RestSharp;
 public class RestSharpResponseTests
 {
 	private readonly RestSharpResponse<string> _uut;
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 
 	public RestSharpResponseTests()
 	{
@@ -123,5 +127,97 @@ public class RestSharpResponseTests
 		Assert.Equal("MappingError", result.Error.Code);
 
 		Assert.Equal("err", result.Error.Message);
+	}
+
+	[Fact]
+	public async Task GetResultWithUnitOfWork_NotSuccessful_ReturnFailureAsync()
+	{
+		// Arrange
+		Task<string> func(string x, IUnitOfWork unitOfWork, CancellationToken cancellationToken) => Task.Run(() => x);
+
+		_uut.IsSuccessStatusCode = false;
+		_uut.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+		_uut.ErrorException = new("message");
+
+		// Act
+		var result = await _uut.GetResultWithUnitOfWork(
+			func,
+			_unitOfWorkMock.Object,
+			default);
+
+		// Assert
+		Assert.True(result.IsFailure);
+
+		Assert.Equal(_uut.StatusCode.ToString(), result.Error.Code);
+
+		Assert.Equal(_uut.ErrorException.Message, result.Error.Message);
+	}
+
+	[Fact]
+	public async Task GetResultWithUnitOfWork_dataIsNull_ReturnFailureAsync()
+	{
+		// Arrange
+		Task<string> func(string x, IUnitOfWork unitOfWork, CancellationToken cancellationToken) => Task.Run(() => x);
+
+		_uut.IsSuccessStatusCode = true;
+
+		// Act
+		var result = await _uut.GetResultWithUnitOfWork(
+			func,
+			_unitOfWorkMock.Object,
+			default);
+
+		// Assert
+		Assert.True(result.IsFailure);
+
+		Assert.Equal(_uut.StatusCode.ToString(), result.Error.Code);
+
+		Assert.Equal("Error while fetching", result.Error.Message);
+	}
+
+	[Fact]
+	public async Task GetResultWithUnitOfWork_FailureMappingData_ReturnFailureAsync()
+	{
+		// Arrange
+		Task<string> func(string x, IUnitOfWork unitOfWork, CancellationToken cancellationToken) => throw new InvalidCastException("err");
+
+		_uut.IsSuccessStatusCode = true;
+		_uut.ResponseStatus = ResponseStatus.Completed;
+		_uut.Data = "hello";
+
+		// Act
+		var result = await _uut.GetResultWithUnitOfWork(
+			func,
+			_unitOfWorkMock.Object,
+			default);
+
+		// Assert
+		Assert.True(result.IsFailure);
+
+		Assert.Equal("MappingError", result.Error.Code);
+
+		Assert.Equal("err", result.Error.Message);
+	}
+
+	[Fact]
+	public async Task GetResultWithUnitOfWork_SuccessMappingData_ReturnSuccessAsync()
+	{
+		// Arrange
+		Task<string> func(string x, IUnitOfWork unitOfWork, CancellationToken cancellationToken) => Task.Run(() => x);
+
+		_uut.IsSuccessStatusCode = true;
+		_uut.ResponseStatus = ResponseStatus.Completed;
+		_uut.Data = "hello";
+
+		// Act
+		var result = await _uut.GetResultWithUnitOfWork(
+			func,
+			_unitOfWorkMock.Object,
+			default);
+
+		// Assert
+		Assert.True(result.IsSuccess);
+
+		Assert.Equal(_uut.Data, result.Value);
 	}
 }

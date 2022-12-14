@@ -1,6 +1,10 @@
-﻿using Bogus;
+﻿using System.Linq.Expressions;
+using Bogus;
+using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Mapping.Deals;
@@ -18,7 +22,8 @@ public class DealResponseToDealTests
 	private const string LASTCONTACTDATE = "1999-04-25T00:00:00.000Z";
 	private const string DEALNAME = "dealname";
 	private const string DEALDESCRIPTION = "dealdescription";
-	private const string DEALSOURCE = "HubSpot";
+
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 
 	private readonly DealResponse response = new()
 	{
@@ -36,16 +41,16 @@ public class DealResponseToDealTests
 	};
 
 	[Fact]
-	public void ToDeal_ResponseMissingHubSpotId_ThrowsException()
+	public async Task ToDeal_ResponseMissingHubSpotId_ThrowsException()
 	{
-		/// Arrange
+		// Arrange
 		DealResponse defaultResponse = new();
 		defaultResponse.Properties.HubSpotOwnerId = OWNERID;
 
-		/// Act
-		Exception result = Record.Exception(() => defaultResponse.ToDeal());
+		// Act
+		Exception result = await Record.ExceptionAsync(() => defaultResponse.ToDeal(_unitOfWorkMock.Object, default));
 
-		/// Assert
+		// Assert
 		Assert.NotNull(result);
 
 		Assert.Equal(
@@ -54,79 +59,103 @@ public class DealResponseToDealTests
 	}
 
 	[Fact]
-	public void ToDeal_WithoutAssociations_ReturnCorrectProperties()
+	public async Task ToDeal_WithoutAssociations_ReturnCorrectPropertiesAndAssociations()
 	{
-		/// Act
-		Deal result = response.ToDeal();
+		// Arrange
+		_unitOfWorkMock
+			.Setup(u => u
+				.AccountManagerRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((AccountManager)null!);
 
-		/// Assert
-		Assert.Equal(DEALSTAGE, result.DealStatus);
-		Assert.Equal(Convert.ToDateTime(CLOSEDATE).Ticks, result.EndDate);
-		Assert.Equal(Convert.ToDateTime(STARTDATE).Ticks, result.StartDate);
-		Assert.Equal(Convert.ToDateTime(LASTCONTACTDATE).Ticks, result.LastContactDate);
+		// Act
+		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
+
+		// Assert
+		Assert.Equal(DEALSTAGE, result.Status);
+		Assert.Equal(new DateTimeOffset(Convert.ToDateTime(CLOSEDATE)).ToUnixTimeMilliseconds(), result.EndDate);
+		Assert.Equal(new DateTimeOffset(Convert.ToDateTime(STARTDATE)).ToUnixTimeMilliseconds(), result.StartDate);
+		Assert.Equal(new DateTimeOffset(Convert.ToDateTime(LASTCONTACTDATE)).ToUnixTimeMilliseconds(), result.LastContactDate);
 		Assert.Equal(ID, result.SourceId);
 		Assert.Equal(OWNERID, result.SourceOwnerId);
 		Assert.Equal(DEALNAME, result.Name);
 		Assert.Equal(DEALDESCRIPTION, result.Description);
 		Assert.Equal(Sources.HubSpot, result.Source);
-	}
 
-	[Fact]
-	public void ToDeal_WithoutAssociations_ReturnDealWithEmptyDealContacts()
-	{
-		/// Act
-		Deal result = response.ToDeal();
-
-		/// Assert
 		Assert.Equal(0, result.DealContacts!.Count);
-	}
-
-	[Fact]
-	public void ToDeal_WithoutAssociations_ReturnDealWithEmptyClient()
-	{
-		/// Act
-		Deal result = response.ToDeal();
-
-		/// Assert
 		Assert.Null(result.Client!);
 	}
 
 	[Fact]
-	public void ToDeal_WithDefaultAssociations_ReturnEmptyDealContacts()
+	public async Task ToDeal_WithDefaultAssociations_ReturnEmptyDealContacts()
 	{
-		/// arrange
+		// arrange
 		response.Associations.Contacts.AssociationList = new List<Association>()
 		{
 			new(),
 		};
 
-		/// act
-		Deal result = response.ToDeal();
+		_unitOfWorkMock
+			.Setup(u => u
+				.AccountManagerRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((AccountManager)null!);
 
-		/// assert
+		_unitOfWorkMock
+			.Setup(u => u
+				.ContactRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<Contact, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((Contact)null!);
+
+		// act
+		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
+
+		// assert
 		Assert.Equal(0, result.DealContacts!.Count);
 	}
 
 	[Fact]
-	public void ToDeal_WithDefaultAssociations_ReturnEmptyClient()
+	public async Task ToDeal_WithDefaultAssociations_ReturnEmptyClient()
 	{
-		/// arrange
+		// arrange
 		response.Associations.Companies.AssociationList = new List<Association>()
 		{
 			new(),
 		};
 
-		/// act
-		Deal result = response.ToDeal();
+		_unitOfWorkMock
+			.Setup(u => u
+				.AccountManagerRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((AccountManager)null!);
 
-		/// assert
+		_unitOfWorkMock
+			.Setup(u => u
+				.ClientRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<Client, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((Client)null!);
+
+		// act
+		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
+
+		// assert
 		Assert.Null(result.Client);
 	}
 
 	[Fact]
-	public void ToDeal_WithnotMatchingAssociations_ReturnEmptyDealContacts()
+	public async Task ToDeal_WithnotMatchingAssociations_ReturnEmptyDealContacts()
 	{
-		/// arrange
+		// arrange
 		response.Associations.Contacts.AssociationList = new List<Association>()
 		{
 			new()
@@ -136,17 +165,33 @@ public class DealResponseToDealTests
 			},
 		};
 
-		/// act
-		Deal result = response.ToDeal();
+		_unitOfWorkMock
+			.Setup(u => u
+				.AccountManagerRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((AccountManager)null!);
 
-		/// assert
+		_unitOfWorkMock
+			.Setup(u => u
+				.ContactRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<Contact, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((Contact)null!);
+
+		// act
+		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
+
+		// assert
 		Assert.Equal(0, result.DealContacts!.Count);
 	}
 
 	[Fact]
-	public void ToDeal_WithnotMatchingAssociations_ReturnEmptyClient()
+	public async Task ToDeal_WithnotMatchingAssociations_ReturnEmptyClient()
 	{
-		/// arrange
+		// arrange
 		response.Associations.Companies.AssociationList = new List<Association>()
 		{
 			new()
@@ -156,17 +201,33 @@ public class DealResponseToDealTests
 			},
 		};
 
-		/// act
-		Deal result = response.ToDeal();
+		_unitOfWorkMock
+			.Setup(u => u
+				.AccountManagerRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((AccountManager)null!);
 
-		/// assert
+		_unitOfWorkMock
+			.Setup(u => u
+				.ClientRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<Client, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((Client)null!);
+
+		// act
+		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
+
+		// assert
 		Assert.Null(result.Client);
 	}
 
 	[Fact]
-	public void ToDeal_WithMatchingAssociations_ReturnWithDealContacts()
+	public async Task ToDeal_WithMatchingAssociations_ReturnWithDealContacts()
 	{
-		/// arrange
+		// arrange
 		response.Associations.Contacts.AssociationList = new List<Association>()
 		{
 			new()
@@ -176,10 +237,26 @@ public class DealResponseToDealTests
 			},
 		};
 
-		/// act
-		Deal result = response.ToDeal();
+		_unitOfWorkMock
+			.Setup(u => u
+				.AccountManagerRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((AccountManager)null!);
 
-		/// assert
+		_unitOfWorkMock
+			.Setup(u => u
+				.ContactRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<Contact, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync(new Contact() { SourceId = "1" });
+
+		// act
+		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
+
+		// assert
 		Assert.Equal(1, result.DealContacts!.Count);
 		Assert.Equal("1", result.DealContacts.First().SourceContactId);
 		Assert.Equal(result, result.DealContacts.First().Deal);
@@ -188,54 +265,9 @@ public class DealResponseToDealTests
 	}
 
 	[Fact]
-	public void ToDeal_NameStringTooLong_NameShortenededAndAppendedWithThreeDots()
+	public async Task ToDeal_WithMatchingAssociations_ReturnWithClient()
 	{
-		Faker faker = new();
-		response.Properties.DealName = faker.Lorem.Letter(StringLengths.DealName * 2);
-
-		/// Act
-		Deal result = response.ToDeal();
-
-		/// Assert
-		Assert.Equal(StringLengths.DealName, result.Name!.Length);
-		Assert.Equal("...", result.Name.Substring(StringLengths.DealName - 3));
-		Assert.Equal(response.Properties.DealName.Substring(0, StringLengths.DealName - 3), result.Name.Substring(0, StringLengths.DealName - 3));
-	}
-
-	[Fact]
-	public void ToDeal_DealStatusStringTooLong_DealStatusShortenededAndAppendedWithThreeDots()
-	{
-		Faker faker = new();
-		response.Properties.DealStage = faker.Lorem.Letter(StringLengths.DealStatus * 2);
-
-		/// Act
-		Deal result = response.ToDeal();
-
-		/// Assert
-		Assert.Equal(StringLengths.DealStatus, result.DealStatus!.Length);
-		Assert.Equal("...", result.DealStatus.Substring(StringLengths.DealStatus - 3));
-		Assert.Equal(response.Properties.DealStage.Substring(0, StringLengths.DealStatus - 3), result.DealStatus.Substring(0, StringLengths.DealStatus - 3));
-	}
-
-	[Fact]
-	public void ToDeal_DescriptionStringTooLong_DescriptionShortenededAndAppendedWithThreeDots()
-	{
-		Faker faker = new();
-		response.Properties.Description = faker.Lorem.Letter(StringLengths.DealDescription * 2);
-
-		/// Act
-		Deal result = response.ToDeal();
-
-		/// Assert
-		Assert.Equal(StringLengths.DealDescription, result.Description!.Length);
-		Assert.Equal("...", result.Description.Substring(StringLengths.DealDescription - 3));
-		Assert.Equal(response.Properties.Description.Substring(0, StringLengths.DealDescription - 3), result.Description.Substring(0, StringLengths.DealDescription - 3));
-	}
-
-	[Fact]
-	public void ToDeal_WithMatchingAssociations_ReturnWithClient()
-	{
-		/// arrange
+		// arrange
 		response.Associations.Companies.AssociationList = new List<Association>()
 		{
 			new()
@@ -245,11 +277,99 @@ public class DealResponseToDealTests
 			},
 		};
 
-		/// act
-		Deal result = response.ToDeal();
+		_unitOfWorkMock
+			.Setup(u => u
+				.AccountManagerRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((AccountManager)null!);
 
-		/// assert
+		_unitOfWorkMock
+			.Setup(u => u
+				.ClientRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<Client, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync(new Client() { SourceId = "1" });
+
+		// act
+		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
+
+		// assert
 		Assert.Equal("1", result.Client!.SourceId);
 		Assert.Equal(result, result.Client!.Deals!.First());
+	}
+
+	[Fact]
+	public async Task ToDeal_NameStringTooLong_NameShortenededAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		response.Properties.DealName = faker.Lorem.Letter(StringLengths.DealName * 2);
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.AccountManagerRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((AccountManager)null!);
+
+		// Act
+		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
+
+		// Assert
+		Assert.Equal(StringLengths.DealName, result.Name!.Length);
+		Assert.Equal("...", result.Name[(StringLengths.DealName - 3)..]);
+		Assert.Equal(response.Properties.DealName[..(StringLengths.DealName - 3)], result.Name[..(StringLengths.DealName - 3)]);
+	}
+
+	[Fact]
+	public async Task ToDeal_DealStatusStringTooLong_DealStatusShortenededAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		response.Properties.DealStage = faker.Lorem.Letter(StringLengths.DealStatus * 2);
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.AccountManagerRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((AccountManager)null!);
+
+		// Act
+		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
+
+		// Assert
+		Assert.Equal(StringLengths.DealStatus, result.Status!.Length);
+		Assert.Equal("...", result.Status[(StringLengths.DealStatus - 3)..]);
+		Assert.Equal(response.Properties.DealStage[..(StringLengths.DealStatus - 3)], result.Status[..(StringLengths.DealStatus - 3)]);
+	}
+
+	[Fact]
+	public async Task ToDeal_DescriptionStringTooLong_DescriptionShortenededAndAppendedWithThreeDots()
+	{
+		//Arrange
+		Faker faker = new();
+		response.Properties.Description = faker.Lorem.Letter(StringLengths.DealDescription * 2);
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.AccountManagerRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<AccountManager, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync((AccountManager)null!);
+
+		// Act
+		Deal result = await response.ToDeal(_unitOfWorkMock.Object, default);
+
+		// Assert
+		Assert.Equal(StringLengths.DealDescription, result.Description!.Length);
+		Assert.Equal("...", result.Description[(StringLengths.DealDescription - 3)..]);
+		Assert.Equal(response.Properties.Description[..(StringLengths.DealDescription - 3)], result.Description[..(StringLengths.DealDescription - 3)]);
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Moq;
 using Pelican.Domain.Entities;
 using Xunit;
 
@@ -527,5 +528,114 @@ public class ContactTests
 			.DealContacts
 			.First(dc => dc.SourceDealId == "hsId" && dc.Contact.Source == Sources.HubSpot)
 			.IsActive);
+	}
+
+	[Theory]
+	[InlineData("testFirstName", "testLastName", "testEmail", "testPhoneNumber", "testJobTitle")]
+	public void UpdatePropertiesFromContact_PropertiesSet(string testFirstName, string testLastName, string testEmail, string testPhoneNumber, string testJobtTitle)
+	{
+		//Arrange
+		Mock<Contact> contactMock = new();
+		contactMock.Object.FirstName = testFirstName;
+		contactMock.Object.LastName = testLastName;
+		contactMock.Object.Email = testEmail;
+		contactMock.Object.PhoneNumber = testPhoneNumber;
+		contactMock.Object.JobTitle = testJobtTitle;
+
+		//Act
+		_uut.UpdatePropertiesFromContact(contactMock.Object);
+
+		//Assert
+		Assert.Equal(testFirstName, _uut.FirstName);
+		Assert.Equal(testLastName, _uut.LastName);
+		Assert.Equal(testEmail, _uut.Email);
+		Assert.Equal(testPhoneNumber, _uut.PhoneNumber);
+		Assert.Equal(testJobtTitle, _uut.JobTitle);
+	}
+
+	[Fact]
+	public void SetDealContacts_ArgsEmptyList_DealContactsEmpty()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetDealContacts(new List<Deal>());
+
+		// Assert
+		Assert.Empty(input.DealContacts);
+	}
+
+	[Fact]
+	public void SetDealContacts_ArgsNonEmptyList_DealContactsSet()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetDealContacts(new List<Deal>() { new() });
+
+		// Assert
+		Assert.Equal(
+			1,
+			input.DealContacts.Count);
+	}
+
+	[Fact]
+	public void SetDealContacts_ArgsListContainingNull_DealContactsSet()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetDealContacts(new List<Deal?>() { new(), null });
+
+		// Assert
+		Assert.Equal(
+			1,
+			input.DealContacts.Count);
+	}
+
+	[Fact]
+	public void SetClientContacts_ArgsEmptyList_ClientContactsEmpty()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetClientContacts(new List<Client>());
+
+		// Assert
+		Assert.Empty(input.ClientContacts);
+	}
+
+	[Fact]
+	public void SetClientContacts_ArgsNonEmptyList_ClientContactsSet()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetClientContacts(new List<Client>() { new() });
+
+		// Assert
+		Assert.Equal(
+			1,
+			input.ClientContacts.Count);
+	}
+
+	[Fact]
+	public void SetClientContacts_ArgsListContainingNull_ClientContactsSet()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetClientContacts(new List<Client?>() { new(), null });
+
+		// Assert
+		Assert.Equal(
+			1,
+			input.ClientContacts.Count);
 	}
 }

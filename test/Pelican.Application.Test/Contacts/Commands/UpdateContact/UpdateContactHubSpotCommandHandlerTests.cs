@@ -533,4 +533,170 @@ public class UpdateContactHubSpotCommandHandlerTests
 
 		Assert.True(result.IsSuccess);
 	}
+
+
+	[Theory]
+	[InlineData(0, 0, 1, "testProperty", "testValue")]
+	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtAuthServiceReturnsFailure_ReturnsFailure(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateContactHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Contact> contactMock = new();
+
+		contactMock.Object.LastUpdatedAt = 10;
+		contactMock.Object.CreatedAt = 5;
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FindByCondition(It.IsAny<Expression<Func<Contact, bool>>>()))
+			.Returns(new List<Contact>() { contactMock.Object }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<string>(Error.NullValue));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		_hubSpotAuthorizationServiceMock.Verify(
+			c => c.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				portalId,
+				_unitOfWorkMock.Object,
+				default),
+			Times.Once);
+
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 1, "testProperty", "testValue")]
+	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtContactServiceReturnsFailure_ReturnsFailure(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateContactHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Contact> contactMock = new();
+
+		contactMock.Object.LastUpdatedAt = 10;
+		contactMock.Object.CreatedAt = 5;
+
+		string accessToken = "accessTokent";
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FindByCondition(It.IsAny<Expression<Func<Contact, bool>>>()))
+			.Returns(new List<Contact>() { contactMock.Object }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(accessToken));
+
+		_hubSpotContactServiceMock
+			.Setup(h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<Contact>(Error.NullValue));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		_hubSpotContactServiceMock.Verify(
+			c => c.GetByIdAsync(
+				accessToken,
+				command.ObjectId,
+				default),
+			Times.Once);
+
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 1, "testProperty", "testValue", "testFirstName", "testLatName", "testEmail", "testJobTitle", "testPhoneNumber", "testSourceOwnerId")]
+	public async void Handle_ContactFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtContactServiceReturnsSuccessClientUpdated_ReturnsSuccess(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue,
+		string testFirstName,
+		string testLastName,
+		string testEmail,
+		string testJobTitle,
+		string testPhoneNumber,
+		string testSourceOwnerId)
+	{
+		//Arrange
+		UpdateContactHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Contact> contactMock = new();
+
+		contactMock.Object.LastUpdatedAt = 10;
+		contactMock.Object.CreatedAt = 5;
+
+		string accessToken = "accessToken";
+
+		Contact contactResult = new()
+		{
+			FirstName = testFirstName,
+			LastName = testLastName,
+			Email = testEmail,
+			JobTitle = testJobTitle,
+			PhoneNumber = testPhoneNumber,
+			SourceOwnerId = testSourceOwnerId,
+			DealContacts = new List<DealContact>()
+			{
+				new DealContact(Guid.NewGuid())
+			},
+		};
+
+		_contactRepositoryMock
+			.Setup(repo => repo.FindByCondition(It.IsAny<Expression<Func<Contact, bool>>>()))
+			.Returns(new List<Contact>() { contactMock.Object }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(accessToken));
+
+		_hubSpotContactServiceMock
+			.Setup(h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(contactResult));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		contactMock.Verify(
+			x => x.UpdatePropertiesFromContact(contactResult),
+			Times.Once);
+
+		_unitOfWorkMock.Verify(
+			u => u.SaveAsync(default),
+			Times.Once);
+
+		Assert.True(result.IsSuccess);
+	}
 }

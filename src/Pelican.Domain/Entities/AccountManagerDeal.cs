@@ -5,8 +5,6 @@ using Pelican.Domain.Primitives;
 
 public class AccountManagerDeal : Entity, ITimeTracked
 {
-	public AccountManagerDeal(Guid id) : base(id) { }
-
 	public AccountManagerDeal() { }
 
 	public bool IsActive { get; set; }

@@ -4,8 +4,6 @@ using Pelican.Domain.Primitives;
 namespace Pelican.Domain.Entities;
 public class ClientContact : Entity, ITimeTracked
 {
-	public ClientContact(Guid id) : base(id) { }
-
 	public ClientContact() { }
 
 

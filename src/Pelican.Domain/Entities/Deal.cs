@@ -10,8 +10,6 @@ public class Deal : Entity, ITimeTracked
 	private string? _status;
 	private string? _description;
 
-	public Deal(Guid id) : base(id) { }
-
 	public Deal() { }
 
 	public string Source { get; set; } = string.Empty;

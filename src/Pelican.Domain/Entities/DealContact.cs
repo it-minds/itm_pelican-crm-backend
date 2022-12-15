@@ -5,8 +5,6 @@ namespace Pelican.Domain.Entities;
 
 public class DealContact : Entity, ITimeTracked
 {
-	public DealContact(Guid id) : base(id) { }
-
 	public DealContact() { }
 
 	public bool IsActive { get; set; }

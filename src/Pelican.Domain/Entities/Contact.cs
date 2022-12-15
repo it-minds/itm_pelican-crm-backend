@@ -11,7 +11,6 @@ public class Contact : Entity, ITimeTracked
 	private string? _jobTitle;
 	private string? _email;
 
-	public Contact(Guid id) : base(id) { }
 	public Contact() { }
 
 	public string Source { get; set; } = string.Empty;

@@ -11,8 +11,6 @@ public class Supplier : Entity, ITimeTracked
 	private string? _websiteUrl;
 	private string? _officeLocation;
 
-	public Supplier(Guid id) : base(id) { }
-
 	public Supplier() { }
 
 	public string Source { get; set; } = string.Empty;

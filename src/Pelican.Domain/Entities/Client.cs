@@ -119,7 +119,7 @@ public class Client : Entity, ITimeTracked
 	[GraphQLIgnore]
 	public virtual void SetDeals(IEnumerable<Deal?>? deals)
 	{
-		Deals = (List<Deal>)deals?.Where(deal => deal is not null).ToList()! as ICollection<Deal> ?? new List<Deal>();
+		Deals = deals?.Where(deal => deal is not null).ToList()! as ICollection<Deal> ?? new List<Deal>();
 		foreach (Deal deal in Deals)
 		{
 			deal.ClientId = Id;

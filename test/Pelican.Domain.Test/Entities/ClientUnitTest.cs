@@ -281,4 +281,59 @@ public class ClientUnitTest
 		Assert.Equal(testOfficeLocation, _uut.OfficeLocation);
 		Assert.Equal(testWebsite, _uut.Website);
 	}
+
+	[Fact]
+	public void SetDeal_DealListEmpty_NewListDealCreated()
+	{
+		//Act
+		_uut.SetDeals(null);
+
+		//Assert
+		Assert.Equal(new List<Deal>(), _uut.Deals);
+	}
+
+	[Fact]
+	public void SetDeal_DealListNotEmpty_DealsEqualToDealList()
+	{
+		//Arrange
+		List<Deal> deals = new List<Deal>()
+		{
+			new Deal()
+			{
+				Name = "testDealName",
+			}
+		};
+		//Act
+		_uut.SetDeals(deals);
+
+		//Assert
+		Assert.Equal(deals, _uut.Deals);
+	}
+	[Fact]
+	public void SetClientContacts_ClientContactsListEmpty_NewListClientContactsCreated()
+	{
+		//Act
+		_uut.SetClientContacts(null);
+
+		//Assert
+		Assert.Equal(new List<ClientContact>(), _uut.ClientContacts);
+	}
+
+	[Fact]
+	public void SetClientContacts_ClientContactsListNotEmpty_ClientContactsDealsEqualToDealList()
+	{
+		//Arrange
+		List<Contact> contacts = new()
+		{
+			new Contact()
+			{
+				FirstName = "testFirstName",
+			}
+		};
+		//Act
+		_uut.SetClientContacts(contacts);
+
+		//Assert
+		Assert.Equal(contacts.First().FirstName, _uut.ClientContacts.First().Contact.FirstName);
+	}
 }

@@ -11,7 +11,9 @@ public class AccountManager : Entity, ITimeTracked
 
 	public AccountManager(Guid id) : base(id) { }
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 	public AccountManager() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 	public string SourceId { get; set; } = string.Empty;
 

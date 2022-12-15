@@ -26,6 +26,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		Client? client = _unitOfWork
 			.ClientRepository
 			.FindByCondition(d => d.SourceId == command.ObjectId.ToString() && d.Source == Sources.HubSpot)
+			.Include(x => x.ClientContacts)
 			.FirstOrDefault();
 
 		if (client is null)
@@ -98,10 +99,6 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			client.UpdateClientContacts(result.Value.ClientContacts);
 		}
 
-		_unitOfWork
-				.ClientRepository
-				.Update(client);
-
 		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
@@ -172,7 +169,6 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			.ClientRepository
 				.FindByCondition(d => d.SourceId == clientHubSpotId.ToString() && d.Source == Sources.HubSpot)
 				.Include(x => x.ClientContacts)
-				.ThenInclude(x => x.Contact)
 				.FirstOrDefault()!;
 
 		client.UpdateClientContacts(result.Value.ClientContacts);

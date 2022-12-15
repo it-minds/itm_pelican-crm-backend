@@ -82,9 +82,9 @@ public class Client : Entity, ITimeTracked
 	[GraphQLIgnore]
 	public virtual void UpdateClientContacts(IEnumerable<ClientContact> clientContacts)
 	{
-		foreach (var item in ClientContacts)
+		foreach (var item in ClientContacts.Where(x => x.IsActive))
 		{
-			if (!clientContacts.Any(cc => cc.SourceContactId == item.SourceContactId && cc.Client.Source == Sources.HubSpot))
+			if (!clientContacts.Any(cc => cc.SourceContactId == item.SourceContactId && cc.Client.Source == Source))
 			{
 				item.Deactivate();
 			}
@@ -92,7 +92,7 @@ public class Client : Entity, ITimeTracked
 
 		foreach (var item in clientContacts)
 		{
-			if (!ClientContacts.Any(cc => cc.SourceContactId == item.SourceContactId && cc.Client.Source == Sources.HubSpot))
+			if (!ClientContacts.Any(cc => cc.SourceContactId == item.SourceContactId && cc.Client.Source == Source && cc.IsActive))
 			{
 				ClientContacts.Add(item);
 			}

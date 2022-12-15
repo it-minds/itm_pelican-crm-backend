@@ -7,8 +7,6 @@ public class Client : Entity, ITimeTracked
 	private string _name = string.Empty;
 	private string? _website { get; set; }
 
-	public string? PictureUrl { get; set; }
-
 	public Client(Guid id) : base(id) { }
 
 	public Client() { }

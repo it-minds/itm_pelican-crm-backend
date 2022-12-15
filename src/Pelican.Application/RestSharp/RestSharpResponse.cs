@@ -1,4 +1,9 @@
-﻿namespace Pelican.Application.RestSharp;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.Infrastructure;
+using Pelican.Domain.Shared;
+using RestSharp;
+
+namespace Pelican.Application.RestSharp;
 
 public class RestSharpResponse<TResponse> : RestResponse<TResponse>, IResponse<TResponse> where TResponse : class
 {

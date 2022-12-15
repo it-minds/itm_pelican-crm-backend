@@ -1,4 +1,7 @@
-﻿namespace Pelican.Application.Abstractions.Infrastructure;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Domain.Shared;
+
+namespace Pelican.Application.Abstractions.Infrastructure;
 
 public interface IResponse<TResponse>
 {

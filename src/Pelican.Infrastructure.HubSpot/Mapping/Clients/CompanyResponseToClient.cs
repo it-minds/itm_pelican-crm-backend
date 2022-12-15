@@ -27,8 +27,7 @@ internal static class CompanyResponseToClient
 			Source = Sources.HubSpot,
 		};
 
-		result.SetDeals(response
-			.Associations
+		result.SetDeals(response.Associations
 			.Deals
 			.AssociationList
 			.Where(association => association.Type == "company_to_deal_unlabeled")

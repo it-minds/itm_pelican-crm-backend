@@ -1,4 +1,12 @@
 ﻿using System.Linq.Expressions;
+using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Application.Clients.HubSpotCommands.UpdateClient;
+using Pelican.Domain;
+using Pelican.Domain.Entities;
+using Pelican.Domain.Shared;
+using Xunit;
 
 namespace Pelican.Application.Test.Clients.Commands.UpdateClient;
 
@@ -222,634 +230,595 @@ public class UpdateClientCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, "0", "0")]
+	[InlineData(0, 0, 0, "0", "0")]
 	public async void Handle_ClientNotFoundClientCreatedWithRemoteAssociationMatchingLocalAssociation_ReturnsSuccesAndCreatesNewClient(
 		long objectId,
 		long portalId,
+		long updateTime,
 		string propertyName,
 		string propertyValue)
 	{
 		// Arrange
-		UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
-		[Theory]
-		[InlineData(0, 0, 0, "0", "0")]
-		public async void Handle_ClientNotFoundClientCreatedWithRemoteAssociationMatchingLocalAssociation_ReturnsSuccesAndCreatesNewClient(
-			long objectId,
-			long portalId,
-			long updateTime,
-			string propertyName,
-			string propertyValue)
+		Supplier supplier = new(Guid.NewGuid())
 		{
-			// Arrange
-			UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
-
-			Supplier supplier = new(Guid.NewGuid())
-			{
-				RefreshToken = "token",
-			};
-			Mock<Client> clientMock = new();
-			ClientContact clientContact = new();
-			List<ClientContact> clientContactList = new();
-			Contact contact = new(Guid.NewGuid())
-			{
-				SourceId = "HubSpotId"
-			};
-			List<Contact> contactList = new();
-			contactList.Add(contact);
-			clientContact.Contact = contact;
-			clientContactList.Add(clientContact);
-			clientMock.Object.ClientContacts = clientContactList;
-
-			_unitOfWorkMock
-				.Setup(unitOfWork => unitOfWork
-					.ClientRepository
-					.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
-				.Returns(Enumerable.Empty<Client>().AsQueryable());
-
-			_unitOfWorkMock
-				.Setup(unitOfWork => unitOfWork
-					.ClientRepository
-					.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
-				.Returns(Enumerable.Empty<Client>().AsQueryable());
-			_unitOfWorkMock
-				.Setup(unitOfWork => unitOfWork
-					.ContactRepository
-					.FindByCondition(It.IsAny<Expression<Func<Contact, bool>>>()))
-				.Returns(new List<Contact>() { contact }.AsQueryable());
-
-			_unitOfWorkMock
-				.Setup(unitOfWork => unitOfWork
-					.ContactRepository
-					.FindByCondition(It.IsAny<Expression<Func<Contact, bool>>>()))
-				.Returns(new List<Contact>() { contact }.AsQueryable());
-			_hubSpotAuthorizationServiceMock
-				.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					It.IsAny<long>(),
-					It.IsAny<IUnitOfWork>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success("AccessToken"));
-
-			_hubSpotAuthorizationServiceMock
-				.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					It.IsAny<long>(),
-					It.IsAny<IUnitOfWork>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success("AccessToken"));
-			_hubSpotClientServiceMock
-				.Setup(h => h.GetByIdAsync(
-					It.IsAny<string>(),
-					It.IsAny<long>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success(clientMock.Object));
-
-			_hubSpotClientServiceMock
-				.Setup(h => h.GetByIdAsync(
-					It.IsAny<string>(),
-					It.IsAny<long>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success(clientMock.Object));
-			// Act
-			Result result = await _uut.Handle(command, default);
-
-			// Assert
-			clientMock.Verify(
-				c => c.FillOutClientContacts(
-					contactList),
-				Times.Once);
-			// Act
-			Result result = await _uut.Handle(command, default);
-
-			// Assert
-			Assert.True(result.IsSuccess);
-
-			_unitOfWorkMock.Verify(
-				u => u.SaveAsync(
-					default),
-				Times.Once);
-
-			_unitOfWorkMock.Verify(
-				u => u.ClientRepository.CreateAsync(
-					clientMock.Object,
-					default),
-				Times.Once);
-		}
-
-		[Theory]
-		[InlineData(0, 0, 2, "property", "value")]
-		public async void Handle_ClientFoundClientUpdateCalled_ReturnsSucces(
-			long objectId,
-			long portalId,
-			long updateTime,
-			string propertyName,
-			string propertyValue)
+			RefreshToken = "token",
+		};
+		Mock<Client> clientMock = new();
+		ClientContact clientContact = new();
+		List<ClientContact> clientContactList = new();
+		Contact contact = new(Guid.NewGuid())
 		{
-			// Arrange
-			UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+			SourceId = "HubSpotId"
+		};
+		List<Contact> contactList = new();
+		contactList.Add(contact);
+		clientContact.Contact = contact;
+		clientContactList.Add(clientContact);
+		clientMock.Object.ClientContacts = clientContactList;
 
-			Mock<Client> clientMock = new();
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.ClientRepository
+				.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))
+			.Returns(Enumerable.Empty<Client>().AsQueryable());
 
-			clientMock.Object.CreatedAt = 1;
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.ContactRepository
+				.FindByCondition(It.IsAny<Expression<Func<Contact, bool>>>()))
+			.Returns(new List<Contact>() { contact }.AsQueryable());
 
-			_unitOfWorkMock.Setup(
-				unitOfWork => unitOfWork.ClientRepository.FindByCondition(
+		_hubSpotAuthorizationServiceMock
+			.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success("AccessToken"));
+
+		_hubSpotClientServiceMock
+			.Setup(h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(clientMock.Object));
+		// Act
+		Result result = await _uut.Handle(command, default);
+
+		// Assert
+		Assert.True(result.IsSuccess);
+
+		_unitOfWorkMock.Verify(
+			u => u.SaveAsync(
+				default),
+			Times.Once);
+
+		_unitOfWorkMock.Verify(
+			u => u.ClientRepository.CreateAsync(
+				clientMock.Object,
+				default),
+			Times.Once);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 2, "property", "value")]
+	public async void Handle_ClientFoundClientUpdateCalled_ReturnsSucces(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		// Arrange
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Client> clientMock = new();
+
+		clientMock.Object.CreatedAt = 1;
+
+		_unitOfWorkMock.Setup(
+			unitOfWork => unitOfWork.ClientRepository.FindByCondition(
+				It.IsAny<Expression<Func<Client, bool>>>()))
+			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		// Assert
+		Assert.True(result.IsSuccess);
+
+		clientMock.Verify(
+			c => c.UpdateProperty(
+				propertyName,
+				propertyValue),
+			Times.Once);
+
+		_unitOfWorkMock.Verify(
+			u => u.SaveAsync(
+				default),
+			Times.Once);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 1, "num_associated_contacts", "0")]
+	public async void Handle_ClientFoundNumAssociatedHubSpotAuthorizationServiceReturnsFailure_ReturnsFailure(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Client> clientMock = new();
+
+		_unitOfWorkMock.Setup(
+			unitOfWork => unitOfWork.ClientRepository.FindByCondition(
+				It.IsAny<Expression<Func<Client, bool>>>()))
+			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<string>(Error.NullValue));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		_hubSpotAuthorizationServiceMock.Verify(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				portalId,
+				_unitOfWorkMock.Object,
+				default),
+			Times.Once);
+
+		Assert.True(result.IsFailure);
+
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 1, "num_associated_contacts", "0")]
+	public async void Handle_ClientFoundNumAssociatedHubSpotClientServiceReturnsFailure_ReturnsFailure(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Client> clientMock = new();
+
+		_unitOfWorkMock.Setup(
+			unitOfWork => unitOfWork.ClientRepository.FindByCondition(
+				It.IsAny<Expression<Func<Client, bool>>>()))
+			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success("AccessToken"));
+
+		_hubSpotClientServiceMock.Setup(
+			h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<Client>(Error.NullValue));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		_hubSpotAuthorizationServiceMock.Verify(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				portalId,
+				_unitOfWorkMock.Object,
+				default),
+			Times.Once);
+
+		Assert.True(result.IsFailure);
+
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 1, "num_associated_contacts", "0")]
+	public async void Handle_ClientFoundNumAssociatedHubSpotClientServiceReturnsClient_ReturnsSuccess(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Client> clientMock = new();
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.ClientRepository
+				.FindByCondition(
 					It.IsAny<Expression<Func<Client, bool>>>()))
-				.Returns(new List<Client> { clientMock.Object }.AsQueryable());
+			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
 
-			// Act
-			var result = await _uut.Handle(command, default);
+		_hubSpotAuthorizationServiceMock
+			.Setup(h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success("AccessToken"));
 
-			// Assert
-			Assert.True(result.IsSuccess);
+		_hubSpotClientServiceMock
+			.Setup(h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(new Client(Guid.NewGuid()));
 
-			clientMock.Verify(
-				c => c.UpdateProperty(
-					propertyName,
-					propertyValue),
-				Times.Once);
+		_unitOfWorkMock
+			.Setup(u => u
+				.ClientContactRepository
+				.AttachAsAdded(It.IsAny<IEnumerable<ClientContact>>()));
 
-			_unitOfWorkMock.Verify(
-				u => u.SaveAsync(
-					default),
-				Times.Once);
-		}
+		// Act
+		var result = await _uut.Handle(command, default);
 
-		[Theory]
-		[InlineData(0, 0, 1, "num_associated_contacts", "0")]
-		public async void Handle_ClientFoundNumAssociatedHubSpotAuthorizationServiceReturnsFailure_ReturnsFailure(
-			long objectId,
-			long portalId,
-			long updateTime,
-			string propertyName,
-			string propertyValue)
-		{
-			//Arrange
-			UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+		//Assert
+		clientMock.Verify(
+			c => c.UpdateClientContacts(
+				clientMock.Object.ClientContacts),
+			Times.Once);
 
-			Mock<Client> clientMock = new();
+		_unitOfWorkMock.Verify(
+			u => u.SaveAsync(default),
+			Times.Once);
 
-			_unitOfWorkMock.Setup(
-				unitOfWork => unitOfWork.ClientRepository.FindByCondition(
+		Assert.True(result.IsSuccess);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 1, "testProperty", "testValue")]
+	public async void Handle_ClientFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtAuthServiceReturnsFailure_ReturnsFailure(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Client> clientMock = new();
+
+		clientMock.Object.LastUpdatedAt = 10;
+		clientMock.Object.CreatedAt = 5;
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.ClientRepository
+				.FindByCondition(
 					It.IsAny<Expression<Func<Client, bool>>>()))
-				.Returns(new List<Client> { clientMock.Object }.AsQueryable());
+			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
 
-			_hubSpotAuthorizationServiceMock.Setup(
-				h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					It.IsAny<long>(),
-					It.IsAny<IUnitOfWork>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Failure<string>(Error.NullValue));
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<string>(Error.NullValue));
 
-			// Act
-			var result = await _uut.Handle(command, default);
+		// Act
+		var result = await _uut.Handle(command, default);
 
-			//Assert
-			_hubSpotAuthorizationServiceMock.Verify(
-				h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					portalId,
-					_unitOfWorkMock.Object,
-					default),
-				Times.Once);
+		//Assert
+		_hubSpotAuthorizationServiceMock.Verify(
+			c => c.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				portalId,
+				_unitOfWorkMock.Object,
+				default),
+			Times.Once);
 
-			Assert.True(result.IsFailure);
+		Assert.Equal(Error.NullValue, result.Error);
+	}
 
-			Assert.Equal(Error.NullValue, result.Error);
-		}
+	[Theory]
+	[InlineData(0, 0, 1, "testProperty", "testValue")]
+	public async void Handle_ClientFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtClientServiceReturnsFailure_ReturnsFailure(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
-		[Theory]
-		[InlineData(0, 0, 1, "num_associated_contacts", "0")]
-		public async void Handle_ClientFoundNumAssociatedHubSpotClientServiceReturnsFailure_ReturnsFailure(
-			long objectId,
-			long portalId,
-			long updateTime,
-			string propertyName,
-			string propertyValue)
-		{
-			//Arrange
-			UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+		Mock<Client> clientMock = new();
 
-			Mock<Client> clientMock = new();
+		clientMock.Object.LastUpdatedAt = 10;
+		clientMock.Object.CreatedAt = 5;
 
-			_unitOfWorkMock.Setup(
-				unitOfWork => unitOfWork.ClientRepository.FindByCondition(
+
+		string accessToken = "accessTokent";
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.ClientRepository
+				.FindByCondition(
 					It.IsAny<Expression<Func<Client, bool>>>()))
-				.Returns(new List<Client> { clientMock.Object }.AsQueryable());
+			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
 
-			_hubSpotAuthorizationServiceMock.Setup(
-				h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					It.IsAny<long>(),
-					It.IsAny<IUnitOfWork>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success("AccessToken"));
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success(accessToken));
 
-			_hubSpotClientServiceMock.Setup(
-				h => h.GetByIdAsync(
-					It.IsAny<string>(),
-					It.IsAny<long>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Failure<Client>(Error.NullValue));
+		_hubSpotClientServiceMock
+			.Setup(h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<Client>(Error.NullValue));
 
-			// Act
-			var result = await _uut.Handle(command, default);
+		// Act
+		var result = await _uut.Handle(command, default);
 
-			//Assert
-			_hubSpotAuthorizationServiceMock.Verify(
-				h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					portalId,
-					_unitOfWorkMock.Object,
-					default),
-				Times.Once);
+		//Assert
+		_hubSpotClientServiceMock.Verify(
+			c => c.GetByIdAsync(
+				accessToken,
+				command.ObjectId,
+				default),
+			Times.Once);
 
-			Assert.True(result.IsFailure);
+		Assert.Equal(Error.NullValue, result.Error);
+	}
 
-			Assert.Equal(Error.NullValue, result.Error);
-		}
+	[Theory]
+	[InlineData(0, 0, 1, "testProperty", "testValue", "testName", "testOfficeLocation", "testWebsite")]
+	public async void Handle_ClientFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtClientServiceReturnsSuccessClientUpdated_ReturnsFailure(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue,
+		string testName,
+		string testOfficeLocation,
+		string testWebsite)
+	{
+		//Arrange
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
-		[Theory]
-		[InlineData(0, 0, 1, "num_associated_contacts", "0")]
-		public async void Handle_ClientFoundNumAssociatedHubSpotClientServiceReturnsClient_ReturnsSuccess(
-			long objectId,
-			long portalId,
-			long updateTime,
-			string propertyName,
-			string propertyValue)
+		Mock<Client> clientMock = new();
+
+		clientMock.Object.LastUpdatedAt = 10;
+		clientMock.Object.CreatedAt = 5;
+
+		string accessToken = "accessToken";
+
+		Client clientResult = new()
 		{
-			//Arrange
-			UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
-
-			Mock<Client> clientMock = new();
-
-			_unitOfWorkMock
-				.Setup(unitOfWork => unitOfWork
-					.ClientRepository
-					.FindByCondition(
-						It.IsAny<Expression<Func<Client, bool>>>()))
-				.Returns(new List<Client> { clientMock.Object }.AsQueryable());
-
-			_hubSpotAuthorizationServiceMock
-				.Setup(h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					It.IsAny<long>(),
-					It.IsAny<IUnitOfWork>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success("AccessToken"));
-
-			_hubSpotClientServiceMock
-				.Setup(h => h.GetByIdAsync(
-					It.IsAny<string>(),
-					It.IsAny<long>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(new Client(Guid.NewGuid()));
-
-			_unitOfWorkMock
-				.Setup(u => u
-					.ClientContactRepository
-					.AttachAsAdded(It.IsAny<IEnumerable<ClientContact>>()));
-
-			// Act
-			var result = await _uut.Handle(command, default);
-
-			//Assert
-			clientMock.Verify(
-				c => c.UpdateClientContacts(
-					clientMock.Object.ClientContacts),
-				Times.Once);
-
-			_unitOfWorkMock.Verify(
-				u => u.SaveAsync(default),
-				Times.Once);
-
-			Assert.True(result.IsSuccess);
-		}
-
-		[Theory]
-		[InlineData(0, 0, 1, "testProperty", "testValue")]
-		public async void Handle_ClientFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtAuthServiceReturnsFailure_ReturnsFailure(
-			long objectId,
-			long portalId,
-			long updateTime,
-			string propertyName,
-			string propertyValue)
-		{
-			//Arrange
-			UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
-
-			Mock<Client> clientMock = new();
-
-			clientMock.Object.LastUpdatedAt = 10;
-			clientMock.Object.CreatedAt = 5;
-
-			_unitOfWorkMock
-				.Setup(unitOfWork => unitOfWork
-					.ClientRepository
-					.FindByCondition(
-						It.IsAny<Expression<Func<Client, bool>>>()))
-				.Returns(new List<Client> { clientMock.Object }.AsQueryable());
-
-			_hubSpotAuthorizationServiceMock.Setup(
-				h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					It.IsAny<long>(),
-					It.IsAny<IUnitOfWork>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Failure<string>(Error.NullValue));
-
-			// Act
-			var result = await _uut.Handle(command, default);
-
-			//Assert
-			_hubSpotAuthorizationServiceMock.Verify(
-				c => c.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					portalId,
-					_unitOfWorkMock.Object,
-					default),
-				Times.Once);
-
-			Assert.Equal(Error.NullValue, result.Error);
-		}
-
-		[Theory]
-		[InlineData(0, 0, 1, "testProperty", "testValue")]
-		public async void Handle_ClientFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtClientServiceReturnsFailure_ReturnsFailure(
-			long objectId,
-			long portalId,
-			long updateTime,
-			string propertyName,
-			string propertyValue)
-		{
-			//Arrange
-			UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
-
-			Mock<Client> clientMock = new();
-
-			clientMock.Object.LastUpdatedAt = 10;
-			clientMock.Object.CreatedAt = 5;
-
-
-			string accessToken = "accessTokent";
-
-			_unitOfWorkMock
-				.Setup(unitOfWork => unitOfWork
-					.ClientRepository
-					.FindByCondition(
-						It.IsAny<Expression<Func<Client, bool>>>()))
-				.Returns(new List<Client> { clientMock.Object }.AsQueryable());
-
-			_hubSpotAuthorizationServiceMock.Setup(
-				h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					It.IsAny<long>(),
-					It.IsAny<IUnitOfWork>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success(accessToken));
-
-			_hubSpotClientServiceMock
-				.Setup(h => h.GetByIdAsync(
-					It.IsAny<string>(),
-					It.IsAny<long>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Failure<Client>(Error.NullValue));
-
-			// Act
-			var result = await _uut.Handle(command, default);
-
-			//Assert
-			_hubSpotClientServiceMock.Verify(
-				c => c.GetByIdAsync(
-					accessToken,
-					command.ObjectId,
-					default),
-				Times.Once);
-
-			Assert.Equal(Error.NullValue, result.Error);
-		}
-
-		[Theory]
-		[InlineData(0, 0, 1, "testProperty", "testValue", "testName", "testOfficeLocation", "testWebsite")]
-		public async void Handle_ClientFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtClientServiceReturnsSuccessClientUpdated_ReturnsFailure(
-			long objectId,
-			long portalId,
-			long updateTime,
-			string propertyName,
-			string propertyValue,
-			string testName,
-			string testOfficeLocation,
-			string testWebsite)
-		{
-			//Arrange
-			UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
-
-			Mock<Client> clientMock = new();
-
-			clientMock.Object.LastUpdatedAt = 10;
-			clientMock.Object.CreatedAt = 5;
-
-			string accessToken = "accessToken";
-
-			Client clientResult = new()
-			{
-				Name = testName,
-				OfficeLocation = testOfficeLocation,
-				Website = testWebsite,
-				ClientContacts = new List<ClientContact>()
+			Name = testName,
+			OfficeLocation = testOfficeLocation,
+			Website = testWebsite,
+			ClientContacts = new List<ClientContact>()
 			{
 				new ClientContact(Guid.NewGuid())
 			},
-			};
+		};
 
-			_unitOfWorkMock
-				.Setup(unitOfWork => unitOfWork
-					.ClientRepository
-					.FindByCondition(
-						It.IsAny<Expression<Func<Client, bool>>>()))
-				.Returns(new List<Client> { clientMock.Object }.AsQueryable());
-
-			_hubSpotAuthorizationServiceMock
-				.Setup(h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					It.IsAny<long>(),
-					It.IsAny<IUnitOfWork>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success("AccessToken"));
-
-			_hubSpotClientServiceMock
-				.Setup(h => h.GetByIdAsync(
-					It.IsAny<string>(),
-					It.IsAny<long>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(new Client(Guid.NewGuid()));
-
-			_unitOfWorkMock
-				.Setup(u => u
-					.ClientContactRepository
-					.AttachAsAdded(It.IsAny<IEnumerable<ClientContact>>()));
-
-			// Act
-			var result = await _uut.Handle(command, default);
-
-			//Assert
-			clientMock.Verify(
-				c => c.UpdateClientContact(
-					clientMock.Object.ClientContacts),
-				Times.Once);
-
-			_unitOfWorkMock.Verify(
-				u => u.SaveAsync(default),
-				Times.Once);
-
-			Assert.True(result.IsSuccess);
-		}
-
-		[Theory]
-		[InlineData(0, 0, "num_associated_deals", "0")]
-		public async void Handle_ClientFoundNumAssociatedDealsHubSpotAuthorizationServiceReturnsFailure_ReturnsFailure(
-			long objectId,
-			long portalId,
-			string propertyName,
-			string propertyValue)
-		{
-			//Arrange
-			UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
-
-			Mock<Client> clientMock = new();
-
-			_unitOfWorkMock.Setup(
-				unitOfWork => unitOfWork.ClientRepository.FindByCondition(
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.ClientRepository
+				.FindByCondition(
 					It.IsAny<Expression<Func<Client, bool>>>()))
-				.Returns(new List<Client> { clientMock.Object }.AsQueryable());
+			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
 
-			_hubSpotAuthorizationServiceMock.Setup(
-				h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					It.IsAny<long>(),
-					It.IsAny<IUnitOfWork>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Failure<string>(Error.NullValue));
+		_hubSpotAuthorizationServiceMock
+			.Setup(h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success("AccessToken"));
 
-			// Act
-			var result = await _uut.Handle(command, default);
+		_hubSpotClientServiceMock
+			.Setup(h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(new Client(Guid.NewGuid()));
 
-			//Assert
-			_hubSpotAuthorizationServiceMock.Verify(
-				h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					portalId,
-					_unitOfWorkMock.Object,
-					default),
-				Times.Once);
+		_unitOfWorkMock
+			.Setup(u => u
+				.ClientContactRepository
+				.AttachAsAdded(It.IsAny<IEnumerable<ClientContact>>()));
 
-			Assert.True(result.IsFailure);
+		// Act
+		var result = await _uut.Handle(command, default);
 
-			Assert.Equal(Error.NullValue, result.Error);
-		}
+		//Assert
+		clientMock.Verify(
+			c => c.UpdateClientContacts(
+				clientMock.Object.ClientContacts),
+			Times.Once);
 
-		[Theory]
-		[InlineData(0, 0, "num_associated_deals", "0")]
-		public async void Handle_ClientFoundNumAssociatedDealsHubSpotClientServiceReturnsFailure_ReturnsFailure(
-			long objectId,
-			long portalId,
-			string propertyName,
-			string propertyValue)
-		{
-			//Arrange
-			UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
+		_unitOfWorkMock.Verify(
+			u => u.SaveAsync(default),
+			Times.Once);
 
-			Mock<Client> clientMock = new();
-
-			_unitOfWorkMock.Setup(
-				unitOfWork => unitOfWork.ClientRepository.FindByCondition(
-					It.IsAny<Expression<Func<Client, bool>>>()))
-				.Returns(new List<Client> { clientMock.Object }.AsQueryable());
-
-			_hubSpotAuthorizationServiceMock.Setup(
-				h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					It.IsAny<long>(),
-					It.IsAny<IUnitOfWork>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success("AccessToken"));
-
-			_hubSpotClientServiceMock.Setup(
-				h => h.GetByIdAsync(
-					It.IsAny<string>(),
-					It.IsAny<long>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Failure<Client>(Error.NullValue));
-
-			// Act
-			var result = await _uut.Handle(command, default);
-
-			//Assert
-			_hubSpotAuthorizationServiceMock.Verify(
-				h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					portalId,
-					_unitOfWorkMock.Object,
-					default),
-				Times.Once);
-
-			Assert.True(result.IsFailure);
-
-			Assert.Equal(Error.NullValue, result.Error);
-		}
-
-		[Theory]
-		[InlineData(0, 0, "num_associated_deals", "0")]
-		public async void Handle_ClientFoundNumAssociatedDealHubSpotClientServiceReturnsClient_ReturnsSuccess(
-			long objectId,
-			long portalId,
-			string propertyName,
-			string propertyValue)
-		{
-			//Arrange
-			UpdateClientHubSpotCommand command = new(objectId, portalId, propertyName, propertyValue);
-
-			Mock<Client> clientMock = new();
-			Mock<Deal> dealMock = new();
-			List<Deal> dealList = new();
-			dealMock.Object.SourceId = "SourceId";
-			dealList.Add(dealMock.Object);
-
-			_unitOfWorkMock
-				.Setup(unitOfWork => unitOfWork
-					.ClientRepository
-					.FindByCondition(
-						It.IsAny<Expression<Func<Client, bool>>>()))
-				.Returns(new List<Client> { clientMock.Object }.AsQueryable());
-
-			_hubSpotAuthorizationServiceMock
-				.Setup(h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
-					It.IsAny<long>(),
-					It.IsAny<IUnitOfWork>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(Result.Success("AccessToken"));
-
-			_hubSpotClientServiceMock
-				.Setup(h => h.GetByIdAsync(
-					It.IsAny<string>(),
-					It.IsAny<long>(),
-					It.IsAny<CancellationToken>()))
-				.ReturnsAsync(new Client(Guid.NewGuid())
-				{
-					Deals = dealList,
-				});
-
-			_unitOfWorkMock
-				.Setup(u => u
-					.DealRepository
-					.FindByCondition(
-						It.IsAny<Expression<Func<Deal, bool>>>()))
-				.Returns(new List<Deal> { dealMock.Object }.AsQueryable());
-
-			_unitOfWorkMock
-				.Setup(u => u
-					.DealRepository
-					.AttachAsAdded(It.IsAny<IEnumerable<Deal>>()));
-
-			// Act
-			var result = await _uut.Handle(command, default);
-
-			//Assert
-			_unitOfWorkMock.Verify(
-				u => u.SaveAsync(default),
-				Times.Once);
-
-			clientMock.Verify(
-				c => c.SetDeals(dealList),
-				Times.Once());
-
-			Assert.True(result.IsSuccess);
-		}
+		Assert.True(result.IsSuccess);
 	}
+
+	[Theory]
+	[InlineData(0, 0, 0, "num_associated_deals", "0")]
+	public async void Handle_ClientFoundNumAssociatedDealsHubSpotAuthorizationServiceReturnsFailure_ReturnsFailure(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Client> clientMock = new();
+
+		_unitOfWorkMock.Setup(
+			unitOfWork => unitOfWork.ClientRepository.FindByCondition(
+				It.IsAny<Expression<Func<Client, bool>>>()))
+			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<string>(Error.NullValue));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		_hubSpotAuthorizationServiceMock.Verify(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				portalId,
+				_unitOfWorkMock.Object,
+				default),
+			Times.Once);
+
+		Assert.True(result.IsFailure);
+
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 0, "num_associated_deals", "0")]
+	public async void Handle_ClientFoundNumAssociatedDealsHubSpotClientServiceReturnsFailure_ReturnsFailure(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Client> clientMock = new();
+
+		_unitOfWorkMock.Setup(
+			unitOfWork => unitOfWork.ClientRepository.FindByCondition(
+				It.IsAny<Expression<Func<Client, bool>>>()))
+			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success("AccessToken"));
+
+		_hubSpotClientServiceMock.Setup(
+			h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<Client>(Error.NullValue));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		_hubSpotAuthorizationServiceMock.Verify(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				portalId,
+				_unitOfWorkMock.Object,
+				default),
+			Times.Once);
+
+		Assert.True(result.IsFailure);
+
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 0, "num_associated_deals", "0")]
+	public async void Handle_ClientFoundNumAssociatedDealHubSpotClientServiceReturnsClient_ReturnsSuccess(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Client> clientMock = new();
+		Mock<Deal> dealMock = new();
+		List<Deal> dealList = new();
+		dealMock.Object.SourceId = "SourceId";
+		dealList.Add(dealMock.Object);
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.ClientRepository
+				.FindByCondition(
+					It.IsAny<Expression<Func<Client, bool>>>()))
+			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success("AccessToken"));
+
+		_hubSpotClientServiceMock
+			.Setup(h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(new Client(Guid.NewGuid())
+			{
+				Deals = dealList,
+			});
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.DealRepository
+				.FindByCondition(
+					It.IsAny<Expression<Func<Deal, bool>>>()))
+			.Returns(new List<Deal> { dealMock.Object }.AsQueryable());
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.DealRepository
+				.AttachAsAdded(It.IsAny<IEnumerable<Deal>>()));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		_unitOfWorkMock.Verify(
+			u => u.SaveAsync(default),
+			Times.Once);
+
+		clientMock.Verify(
+			c => c.SetDeals(dealList),
+			Times.Once());
+
+		Assert.True(result.IsSuccess);
+	}
+}

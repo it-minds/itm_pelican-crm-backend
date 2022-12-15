@@ -114,17 +114,4 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 		}
 	}
 
-	public T Attach(T entity)
-	{
-		if (entity is null)
-		{
-			throw new ArgumentNullException(nameof(entity));
-		}
-
-		_pelicanContext
-			.Set<T>()
-			.Attach(entity);
-
-		return entity;
-	}
 }

@@ -258,7 +258,6 @@ public class CompanyResponseToClientTests
 		};
 		dealMock.Object.SourceId = "1";
 		dealMock.Object.Source = Sources.HubSpot;
-		dealMock.Object.ClientId = Guid.Empty;
 
 		_unitOfWorkMock.Setup(
 			u => u.DealRepository

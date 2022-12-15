@@ -1,4 +1,8 @@
-﻿namespace Pelican.Domain.Test.Entities;
+﻿using Bogus;
+using Pelican.Domain.Entities;
+using Xunit;
+
+namespace Pelican.Domain.Test.Entities;
 public class ClientUnitTest
 {
 	private readonly Client _uut = new Client(Guid.NewGuid())
@@ -167,17 +171,17 @@ public class ClientUnitTest
 			_uut.Website);
 	}
 
-	[Fact]
-	public void UpdateClientContacts_ArgumentNull_ReturnsWithoutException()
-	{
-		// Act 
-		var result = Record.Exception(() => _uut.UpdateClientContacts(null));
+	//[Fact]
+	//public void UpdateClientContacts_ArgumentNull_ReturnsWithoutException()
+	//{
+	//	// Act 
+	//	var result = Record.Exception(() => _uut.UpdateClientContacts(null));
 
-		// Assert
-		Assert.Null(result);
+	//	// Assert
+	//	Assert.Null(result);
 
-		Assert.Empty(_uut.ClientContacts);
-	}
+	//	Assert.Empty(_uut.ClientContacts);
+	//}
 
 	[Fact]
 	public void UpdateClientContacts_EmptyExistingClientContactArgumentNotNull_NewClientContactAdded()
@@ -268,124 +272,5 @@ public class ClientUnitTest
 			.ClientContacts
 			.First(dc => dc.SourceContactId == "hsId" && dc.Contact.Source == Sources.HubSpot)
 			.IsActive);
-	}
-
-	[Fact]
-	public void FillOutClientContacts_ContactsNull_ThrowNoExceptionEmptyClientContacts()
-	{
-		// Act
-		var result = Record.Exception(() => _uut.FillOutClientContacts(null));
-
-		// Assert
-		Assert.Null(result);
-
-		Assert.Empty(_uut.ClientContacts);
-	}
-
-	[Fact]
-	public void FillOutClientContacts_ContactsEmpty_EmptyClientContacts()
-	{
-		// Act
-		_uut.FillOutClientContacts(Enumerable.Empty<Contact>());
-
-		// Assert
-		Assert.Empty(_uut.ClientContacts);
-	}
-
-	[Fact]
-	public void FillOutClientContacts_ExistingClientAlreadyContainsContact_ReturnsUnchangedClientContacts()
-	{
-		// Arrange
-		ClientContact existingClientContact = new(Guid.NewGuid())
-		{
-			Contact = new(Guid.NewGuid()),
-			SourceContactId = "hsID",
-			IsActive = true,
-		};
-		existingClientContact.ContactId = existingClientContact.Contact.Id;
-
-		_uut.ClientContacts.Add(existingClientContact);
-
-		Contact newContact = existingClientContact.Contact;
-
-		// Act
-		_uut.FillOutClientContacts(new List<Contact>() { newContact });
-
-		// Assert
-		Assert.Equal(
-			1,
-			_uut.ClientContacts.Count);
-
-		Assert.Equal(
-			existingClientContact.Contact,
-			_uut.ClientContacts.First().Contact);
-
-		Assert.Equal(
-			existingClientContact.ContactId,
-			_uut.ClientContacts.First().Contact.Id);
-	}
-
-	[Fact]
-	public void FillOutClientContacts_NoMatchingContact_EmptyClientContacts()
-	{
-		// Arrange
-		ClientContact existingClientContact = new(Guid.NewGuid())
-		{
-			SourceContactId = "hsID",
-			IsActive = true,
-		};
-
-		_uut.ClientContacts.Add(existingClientContact);
-
-		Contact newContact = new(Guid.NewGuid())
-		{
-			SourceId = "another_hsId",
-		};
-
-		// Act
-		_uut.FillOutClientContacts(new List<Contact>() { newContact });
-
-		// Assert
-		Assert.Equal(
-			0,
-			_uut.ClientContacts.Count);
-	}
-
-	[Fact]
-	public void FillOutClientContacts_ExistingClientContactMatchingArgument_ClientContactsUpdated()
-	{
-		// Arrange
-		ClientContact existingClientContact = new(Guid.NewGuid())
-		{
-			SourceContactId = "hsID",
-			Client = _uut,
-			ClientId = _uut.Id,
-			SourceClientId = _uut.SourceId,
-			IsActive = true,
-		};
-
-		_uut.ClientContacts.Add(existingClientContact);
-
-		Contact newContact = new(Guid.NewGuid())
-		{
-			SourceId = "hsID",
-			Source = Sources.HubSpot
-		};
-
-		// Act
-		_uut.FillOutClientContacts(new List<Contact>() { newContact });
-
-		// Assert
-		Assert.Equal(
-			1,
-			_uut.ClientContacts.Count);
-
-		Assert.Equal(
-			newContact,
-			_uut.ClientContacts.First().Contact);
-
-		Assert.Equal(
-			newContact.Id,
-			_uut.ClientContacts.First().Contact.Id);
 	}
 }

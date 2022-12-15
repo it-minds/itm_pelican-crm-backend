@@ -1,4 +1,12 @@
-﻿namespace Pelican.Application.Clients.HubSpotCommands.UpdateClient;
+﻿using Microsoft.EntityFrameworkCore;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Domain;
+using Pelican.Domain.Entities;
+using Pelican.Domain.Shared;
+
+namespace Pelican.Application.Clients.HubSpotCommands.UpdateClient;
 internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<UpdateClientHubSpotCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;
@@ -42,7 +50,20 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		{
 			if (command.PropertyName == "num_associated_contacts")
 			{
-				Result<Client> result = await UpdateClientContactsAsync(
+				Result result = await UpdateClientContactsAsync(
+					command.PortalId,
+					command.ObjectId,
+					cancellationToken);
+
+				if (result.IsFailure)
+				{
+					return result;
+				}
+			}
+
+			else if (command.PropertyName == "num_associated_deals")
+			{
+				Result<Client> result = await UpdateDealsAsync(
 					client,
 					command.PortalId,
 					command.ObjectId,
@@ -53,23 +74,12 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 					return result;
 				}
 			}
+
 			else
 			{
 				client.UpdateProperty(
 					command.PropertyName,
 					command.PropertyValue);
-			}
-		}
-		else if (command.PropertyName == "num_associated_deals")
-		{
-			Result result = await UpdateDealsAsync(
-				client,
-				command.PortalId,
-				command.ObjectId,
-				cancellationToken);
-			if (result.IsFailure)
-			{
-				return result;
 			}
 		}
 
@@ -83,6 +93,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			{
 				return result;
 			}
+
 			client.UpdatePropertiesFromClient(result.Value);
 			client.UpdateClientContacts(result.Value.ClientContacts);
 		}
@@ -164,7 +175,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 				.ThenInclude(x => x.Contact)
 				.FirstOrDefault()!;
 
-		client.UpdateClientContact(result.Value.ClientContacts);
+		client.UpdateClientContacts(result.Value.ClientContacts);
 		_unitOfWork.ClientRepository.Attach(client);
 
 		return Result.Success();

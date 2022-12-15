@@ -125,8 +125,8 @@ public class Contact : Entity, ITimeTracked
 
 		foreach (DealContact dealContact in DealContacts.Where(dc => dc.IsActive))
 		{
-			if (!currentDealContacts.Any(currentDealContact => currentDealContact.SourceContactId == dealContact.SourceContactId
-			&& currentDealContact.Contact.Source == dealContact.Contact.Source))
+			if (!currentDealContacts.Any(currentDealContact => currentDealContact.SourceDealId == dealContact.SourceDealId
+			&& currentDealContact.Deal.Source == Source))
 			{
 				dealContact.Deactivate();
 			}
@@ -134,9 +134,9 @@ public class Contact : Entity, ITimeTracked
 
 		foreach (DealContact dealContact in currentDealContacts)
 		{
-			if (!DealContacts.Any(dc => dc.SourceContactId == dealContact.SourceContactId
+			if (!DealContacts.Any(dc => dc.SourceDealId == dealContact.SourceDealId
 			&& dc.IsActive
-			&& dc.Contact.Source == dealContact.Contact.Source))
+			&& Source == dealContact.Deal.Source))
 			{
 				DealContacts.Add(dealContact);
 			}

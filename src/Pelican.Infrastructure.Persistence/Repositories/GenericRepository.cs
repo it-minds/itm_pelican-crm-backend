@@ -113,5 +113,4 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 			_pelicanContext.Entry(entity).State = EntityState.Added;
 		}
 	}
-
 }

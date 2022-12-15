@@ -219,7 +219,12 @@ public class ClientUnitTest
 		_uut.UpdateClientContacts(clientContacts);
 
 		// Assert
-		Assert.False(_uut.ClientContacts.First(d => d.SourceContactId == existingContact.SourceId && existingContact.Source == Sources.HubSpot).IsActive);
+		Assert.False(
+			_uut.ClientContacts
+				.First(
+					d => d.SourceContactId == existingContact.SourceId
+					&& existingContact.Source == Sources.HubSpot)
+				.IsActive);
 
 		Assert.Equal(
 			2,
@@ -257,10 +262,12 @@ public class ClientUnitTest
 			1,
 			_uut.ClientContacts.Count);
 
-		Assert.True(_uut
-			.ClientContacts
-			.First(dc => dc.SourceContactId == "hsId" && dc.Contact.Source == Sources.HubSpot)
-			.IsActive);
+		Assert.True(
+			_uut.ClientContacts
+				.First(
+					dc => dc.SourceContactId == "hsId"
+					&& dc.Contact.Source == Sources.HubSpot)
+				.IsActive);
 	}
 
 	[Theory]
@@ -334,6 +341,8 @@ public class ClientUnitTest
 		_uut.SetClientContacts(contacts);
 
 		//Assert
-		Assert.Equal(contacts.First().FirstName, _uut.ClientContacts.First().Contact.FirstName);
+		Assert.Equal(
+			contacts.First().FirstName,
+			_uut.ClientContacts.First().Contact.FirstName);
 	}
 }

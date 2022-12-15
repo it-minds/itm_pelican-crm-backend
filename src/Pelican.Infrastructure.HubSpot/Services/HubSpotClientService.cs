@@ -36,9 +36,9 @@ internal sealed class HubSpotClientService : ServiceBase<HubSpotSettings>, IHubS
 
 		return await response
 			.GetResultWithUnitOfWork(
-			CompanyResponseToClient.ToClient,
-			_unitOfWork,
-			cancellationToken);
+				CompanyResponseToClient.ToClient,
+				_unitOfWork,
+				cancellationToken);
 	}
 
 	public async Task<Result<List<Client>>> GetAsync(
@@ -54,8 +54,8 @@ internal sealed class HubSpotClientService : ServiceBase<HubSpotSettings>, IHubS
 
 		return await response
 			.GetResultWithUnitOfWork(
-			CompaniesResponseToClients.ToClients,
-			_unitOfWork,
-			cancellationToken);
+				CompaniesResponseToClients.ToClients,
+				_unitOfWork,
+				cancellationToken);
 	}
 }

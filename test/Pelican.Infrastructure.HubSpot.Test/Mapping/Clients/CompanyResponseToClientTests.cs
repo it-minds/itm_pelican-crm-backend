@@ -310,6 +310,4 @@ public class CompanyResponseToClientTests
 		Assert.Equal(result.Id, result.ClientContacts.First().ClientId);
 		Assert.True(result.ClientContacts.First().IsActive);
 	}
-
-
 }

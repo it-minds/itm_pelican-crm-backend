@@ -26,13 +26,13 @@ public class CompaniesResponseToClientsTests
 	readonly CompaniesResponse responses = new();
 
 	[Fact]
-	public void ToClients_ArgResultsNull_ThrowException()
+	public async void ToClients_ArgResultsNull_ThrowException()
 	{
 		/// Arrange
 		responses.Results = null!;
 
 		/// Act
-		var result = Record.ExceptionAsync(() => responses.ToClients(_unitOfWorkMock.Object, cancellationToken));
+		var result = await Record.ExceptionAsync(() => responses.ToClients(_unitOfWorkMock.Object, cancellationToken));
 
 		/// Assert
 		Assert.NotNull(result);
@@ -43,42 +43,42 @@ public class CompaniesResponseToClientsTests
 	}
 
 	[Fact]
-	public void ToClients_ArgResultsNotNull_ThrowNoException()
+	public async void ToClients_ArgResultsNotNull_ThrowNoException()
 	{
 		/// Arrange 
 		responses.Results = new List<CompanyResponse>();
 
 		/// Act
-		var result = Record.ExceptionAsync(() => responses.ToClients(_unitOfWorkMock.Object, cancellationToken));
+		var result = await Record.ExceptionAsync(() => responses.ToClients(_unitOfWorkMock.Object, cancellationToken));
 
 		/// Assert
 		Assert.Null(result);
 	}
 
 	[Fact]
-	public void ToClients_ArgResultsNotNullNotEmpty_ThrowNoException()
+	public async void ToClients_ArgResultsNotNullNotEmpty_ThrowNoException()
 	{
 		/// Arrange 
 		responses.Results = new List<CompanyResponse>() { response };
 
 		/// Act
-		var result = Record.ExceptionAsync(() => responses.ToClients(_unitOfWorkMock.Object, cancellationToken));
+		var result = await Record.ExceptionAsync(() => responses.ToClients(_unitOfWorkMock.Object, cancellationToken));
 
 		/// Assert
 		Assert.Null(result);
 	}
 
 	[Fact]
-	public void ToClients_SingleResponse_ReturnSingle()
+	public async void ToClients_SingleResponse_ReturnSingle()
 	{
 		/// Arrange
 		responses.Results = new List<CompanyResponse>() { response };
 
 		/// Act
-		var result = responses.ToClients(_unitOfWorkMock.Object, cancellationToken);
+		var result = await responses.ToClients(_unitOfWorkMock.Object, cancellationToken);
 
 		/// Assert
-		Assert.Equal(ID, result.SourceId);
+		Assert.Equal(ID, result.First().SourceId);
 		Assert.Equal(NAME, result.First().Name);
 		Assert.Equal(Sources.HubSpot, result.First().Source);
 	}

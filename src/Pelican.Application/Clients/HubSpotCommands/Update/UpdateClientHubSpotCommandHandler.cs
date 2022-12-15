@@ -62,11 +62,15 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		}
 		else if (command.PropertyName == "num_associated_deals")
 		{
-			await UpdateDealsAsync(
+			Result result = await UpdateDealsAsync(
 				client,
 				command.PortalId,
 				command.ObjectId,
 				cancellationToken);
+			if (result.IsFailure)
+			{
+				return result;
+			}
 		}
 
 		else
@@ -160,7 +164,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 				.ThenInclude(x => x.Contact)
 				.FirstOrDefault()!;
 
-		client.updateClientContact(result.Value.ClientContacts);
+		client.UpdateClientContact(result.Value.ClientContacts);
 		_unitOfWork.ClientRepository.Attach(client);
 
 		return Result.Success();

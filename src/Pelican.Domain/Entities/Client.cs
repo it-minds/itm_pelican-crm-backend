@@ -77,7 +77,7 @@ public class Client : Entity, ITimeTracked
 		return this;
 	}
 	[GraphQLIgnore]
-	public virtual void updateClientContact(IEnumerable<ClientContact> clientContacts)
+	public virtual void UpdateClientContact(IEnumerable<ClientContact> clientContacts)
 	{
 		foreach (var item in ClientContacts)
 		{

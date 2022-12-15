@@ -630,27 +630,33 @@ public class UpdateClientCommandHandlerTests
 					It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
 
-		_hubSpotAuthorizationServiceMock.Setup(
-			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+		_hubSpotAuthorizationServiceMock
+			.Setup(h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(accessToken));
+			.ReturnsAsync(Result.Success("AccessToken"));
 
 		_hubSpotClientServiceMock
 			.Setup(h => h.GetByIdAsync(
 				It.IsAny<string>(),
 				It.IsAny<long>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(clientResult));
+			.ReturnsAsync(new Client(Guid.NewGuid()));
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.ClientContactRepository
+				.AttachAsAdded(It.IsAny<IEnumerable<ClientContact>>()));
 
 		// Act
 		var result = await _uut.Handle(command, default);
 
 		//Assert
-		clientMock.Verify(x => x.UpdatePropertiesFromClient(clientResult), Times.Once);
-
-		clientMock.Verify(x => x.UpdateClientContacts(clientResult.ClientContacts), Times.Once);
+		clientMock.Verify(
+			c => c.UpdateClientContact(
+				clientMock.Object.ClientContacts),
+			Times.Once);
 
 		_unitOfWorkMock.Verify(
 			u => u.SaveAsync(default),
@@ -809,7 +815,9 @@ public class UpdateClientCommandHandlerTests
 			u => u.SaveAsync(default),
 			Times.Once);
 
-		Assert.Equal(dealList, clientMock.Object.Deals);
+		clientMock.Verify(
+			c => c.SetDeals(dealList),
+			Times.Once());
 
 		Assert.True(result.IsSuccess);
 	}

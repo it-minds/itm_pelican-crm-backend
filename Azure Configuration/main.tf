@@ -66,7 +66,11 @@ resource "azurerm_linux_web_app" "pelican-linux-web-app" {
     type = "SystemAssigned"
   }
 
-  site_config {}
+  site_config {
+    cors {
+      allowed_origins = ["http://localhost:3000", "https://pelican-linux-frontend-app.azurewebsites.net"]
+    }
+  }
 }
 
 resource "azurerm_linux_web_app" "pelican-linux-frontend-app" {
@@ -80,9 +84,6 @@ resource "azurerm_linux_web_app" "pelican-linux-frontend-app" {
   }
 
   site_config {
-    cors {
-      allowed_origins = ["http://localhost:3000", "https://pelican-linux-frontend-app.azurewebsites.net/"]
-    }
     application_stack {
       node_version = "16-lts"
     }

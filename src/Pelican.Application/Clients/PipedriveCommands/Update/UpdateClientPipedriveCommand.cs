@@ -6,7 +6,6 @@ public sealed record UpdateClientPipedriveCommand(
 	int clientId,
 	int clientPipedriveOwnerId,
 	string clientName,
-	string? pictureUrl,
 	string? officeLocation,
 	string? website) : ICommand;
 

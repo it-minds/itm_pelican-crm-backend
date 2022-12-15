@@ -388,23 +388,4 @@ public class ClientUnitTest
 			newContact.Id,
 			_uut.ClientContacts.First().Contact.Id);
 	}
-
-	[Theory]
-	[InlineData("testName", "testOfficeLocation", "testWebSite")]
-	public void UpdatePropertiesFromClient_PropertiesSet(string testName, string testOfficeLocation, string testWebsite)
-	{
-		//Arrange
-		Mock<Client> clientMock = new();
-		clientMock.Object.Name = testName;
-		clientMock.Object.OfficeLocation = testOfficeLocation;
-		clientMock.Object.Website = testWebsite;
-
-		//Act
-		_uut.UpdatePropertiesFromClient(clientMock.Object);
-
-		//Assert
-		Assert.Equal(testName, _uut.Name);
-		Assert.Equal(testOfficeLocation, _uut.OfficeLocation);
-		Assert.Equal(testWebsite, _uut.Website);
-	}
 }

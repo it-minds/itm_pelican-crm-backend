@@ -54,4 +54,20 @@ public class ClientContactUnitTest
 
 		Assert.True(result.IsActive);
 	}
+
+	[Fact]
+	public void Deactive_IsActiveSetToFalse()
+	{
+		// Arrange 
+		ClientContact clientContact = new()
+		{
+			IsActive = true,
+		};
+
+		// Act
+		clientContact.Deactivate();
+
+		// Assert
+		Assert.False(clientContact.IsActive);
+	}
 }

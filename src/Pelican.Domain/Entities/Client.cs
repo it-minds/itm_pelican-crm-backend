@@ -68,12 +68,15 @@ public class Client : Entity, ITimeTracked
 			case "name":
 				Name = propertyValue;
 				break;
+
 			case "city":
 				OfficeLocation = propertyValue;
 				break;
+
 			case "website":
 				Website = propertyValue;
 				break;
+
 			default:
 				throw new InvalidOperationException($"{propertyName} is not a valid property on Client");
 		}

@@ -96,6 +96,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			}
 
 			client.UpdatePropertiesFromClient(result.Value);
+
 			client.UpdateClientContacts(result.Value.ClientContacts);
 		}
 
@@ -121,9 +122,9 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 
 		await _unitOfWork
 			.ClientRepository
-			.CreateAsync(
-				result.Value,
-				cancellationToken);
+				.CreateAsync(
+					result.Value,
+					cancellationToken);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
@@ -172,6 +173,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 				.FirstOrDefault()!;
 
 		client.UpdateClientContacts(result.Value.ClientContacts);
+
 		_unitOfWork.ClientRepository.Attach(client);
 
 		return Result.Success();
@@ -187,10 +189,12 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 						clientHubSpotId,
 						portalId,
 						cancellationToken);
+
 		if (result.IsFailure)
 		{
 			return result;
 		}
+
 		client.SetDeals(result.Value.Deals);
 
 		return client;

@@ -74,9 +74,17 @@ resource "azurerm_linux_web_app" "pelican-linux-frontend-app" {
   resource_group_name = var.resourceGroupName
   location            = var.azureLocation
   service_plan_id     = azurerm_service_plan.pelican-appserviceplan.id
+
   identity {
     type = "SystemAssigned"
   }
 
-  site_config {}
+  site_config {
+    cors {
+      allowed_origins = ["http://localhost:3000", "https://pelican-linux-frontend-app.azurewebsites.net/"]
+    }
+    application_stack {
+      node_version = "16-lts"
+    }
+  }
 }

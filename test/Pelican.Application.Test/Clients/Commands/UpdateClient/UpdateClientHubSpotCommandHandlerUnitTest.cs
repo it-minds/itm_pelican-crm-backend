@@ -632,7 +632,7 @@ public class UpdateClientCommandHandlerTests
 				It.IsAny<long>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success("AccessToken"));
+			.ReturnsAsync(Result.Success(accessToken));
 
 		_hubSpotClientServiceMock
 			.Setup(h => h.GetByIdAsync(

@@ -36,7 +36,8 @@ internal static class CompanyResponseToClient
 				.FirstOrDefaultAsync(
 					d => d.SourceId == association.Id && d.Source == Sources.HubSpot,
 					cancellationToken))
-			.Select(t => t.Result).ToList());
+			.Select(t => t.Result)
+			.ToList());
 
 		result.SetClientContacts(response
 			.Associations
@@ -48,8 +49,9 @@ internal static class CompanyResponseToClient
 				.FirstOrDefaultAsync(
 					c => c.SourceId == association.Id && c.Source == Sources.HubSpot,
 					cancellationToken))
-			.Select(t => t.Result).ToList());
+			.Select(t => t.Result)
+			.ToList());
 
-		return result;
+		return await Task.FromResult(result);
 	}
 }

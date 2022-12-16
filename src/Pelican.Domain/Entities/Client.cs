@@ -103,6 +103,25 @@ public class Client : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
+	public virtual void UpdateDeals(IEnumerable<Deal> deals)
+	{
+		foreach (var item in Deals)
+		{
+			if (!deals.Any(d => d.SourceId == item.SourceId && d.Source == item.Source))
+			{
+				Deals.Remove(item);
+			}
+		}
+		foreach (var item in deals)
+		{
+			if (!Deals.Any(d => d.SourceId == item.SourceId && d.Source == item.Source))
+			{
+				Deals.Add(item);
+			}
+		}
+	}
+
+	[GraphQLIgnore]
 	public virtual void SetClientContacts(IEnumerable<Contact?>? contacts)
 	{
 		ClientContacts = contacts?
@@ -122,7 +141,10 @@ public class Client : Entity, ITimeTracked
 	[GraphQLIgnore]
 	public virtual void SetDeals(IEnumerable<Deal?>? deals)
 	{
-		Deals = deals?.Where(deal => deal is not null).ToList()! as ICollection<Deal> ?? new List<Deal>();
+		Deals = deals?
+			.Where(deal => deal is not null)
+			.ToList()! as ICollection<Deal> ?? new List<Deal>();
+
 		foreach (Deal deal in Deals)
 		{
 			deal.ClientId = Id;
@@ -136,6 +158,8 @@ public class Client : Entity, ITimeTracked
 		Name = client.Name;
 		OfficeLocation = client.OfficeLocation;
 		Website = client.Website;
+		UpdateClientContacts(client.ClientContacts);
+		UpdateDeals(client.Deals);
 	}
 }
 

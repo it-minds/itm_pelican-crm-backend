@@ -27,6 +27,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			.ClientRepository
 			.FindByCondition(d => d.SourceId == command.ObjectId.ToString() && d.Source == Sources.HubSpot)
 			.Include(x => x.ClientContacts)
+			.Include(x => x.Deals)
 			.FirstOrDefault();
 
 		if (client is null)
@@ -52,6 +53,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			if (command.PropertyName == "num_associated_contacts")
 			{
 				Result result = await UpdateClientContactsAsync(
+					client,
 					command.PortalId,
 					command.ObjectId,
 					cancellationToken);
@@ -90,14 +92,13 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 						command.ObjectId,
 						command.PortalId,
 						cancellationToken);
+
 			if (result.IsFailure)
 			{
 				return result;
 			}
 
 			client.UpdatePropertiesFromClient(result.Value);
-
-			client.UpdateClientContacts(result.Value.ClientContacts);
 		}
 
 		await _unitOfWork.SaveAsync(cancellationToken);
@@ -122,9 +123,9 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 
 		await _unitOfWork
 			.ClientRepository
-				.CreateAsync(
-					result.Value,
-					cancellationToken);
+			.CreateAsync(
+				result.Value,
+				cancellationToken);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
@@ -152,6 +153,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			cancellationToken);
 	}
 	private async Task<Result> UpdateClientContactsAsync(
+		Client client,
 		long portalId,
 		long clientHubSpotId,
 		CancellationToken cancellationToken = default)
@@ -165,12 +167,6 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		{
 			return result;
 		}
-
-		Client client = _unitOfWork
-			.ClientRepository
-				.FindByCondition(d => d.SourceId == clientHubSpotId.ToString() && d.Source == Sources.HubSpot)
-				.Include(x => x.ClientContacts)
-				.FirstOrDefault()!;
 
 		client.UpdateClientContacts(result.Value.ClientContacts);
 
@@ -186,16 +182,18 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		CancellationToken cancellationToken = default)
 	{
 		Result<Client> result = await GetClientFromHubSpot(
-						clientHubSpotId,
-						portalId,
-						cancellationToken);
+			clientHubSpotId,
+			portalId,
+			cancellationToken);
 
 		if (result.IsFailure)
 		{
 			return result;
 		}
 
-		client.SetDeals(result.Value.Deals);
+		client.UpdateDeals(result.Value.Deals);
+
+		_unitOfWork.ClientRepository.Attach(client);
 
 		return client;
 	}

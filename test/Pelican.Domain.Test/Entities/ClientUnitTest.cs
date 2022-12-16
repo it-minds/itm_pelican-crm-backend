@@ -465,12 +465,12 @@ public class ClientUnitTest
 	public void SetClientContacts_ClientContactsListContactNull_ReturnsNull()
 	{
 		//Arrange
-		List<ClientContact> client = new()
+		List<Contact> contacts = new()
 		{
 			null!,
 		};
 		//Act
-		_uut.SetClientContacts(null);
+		_uut.SetClientContacts(contacts);
 
 		//Assert
 		Assert.Equal(new List<ClientContact>(), _uut.ClientContacts);

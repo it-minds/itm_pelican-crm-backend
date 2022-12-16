@@ -1,6 +1,4 @@
-using HotChocolate;
-using Pelican.Domain.Extensions;
-using Pelican.Domain.Primitives;
+using System.Collections.Generic;
 
 namespace Pelican.Domain.Entities;
 public class Contact : Entity, ITimeTracked

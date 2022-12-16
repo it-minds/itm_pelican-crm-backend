@@ -1,16 +1,3 @@
-using System.Runtime.CompilerServices;
-using Pelican.Application.Abstractions.Data.Repositories;
-using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Abstractions.Infrastructure;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Settings.HubSpot;
-using Pelican.Domain.Shared;
-using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
-using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
-using Pelican.Infrastructure.HubSpot.Extensions;
-using Pelican.Infrastructure.HubSpot.Mapping.Contacts;
-using RestSharp;
-
 namespace Pelican.Infrastructure.HubSpot.Services;
 
 internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHubSpotObjectService<Contact>
@@ -21,6 +8,7 @@ internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHub
 		IUnitOfWork unitOfWork)
 		: base(hubSpotClient, unitOfWork)
 	{ }
+
 
 	public async Task<Result<Contact>> GetByIdAsync(
 		string accessToken,

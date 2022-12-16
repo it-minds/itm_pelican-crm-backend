@@ -270,15 +270,117 @@ public class ClientUnitTest
 				.IsActive);
 	}
 
+	[Fact]
+	public void UpdateDeals_OneNewDeal_DealAdded()
+	{
+		//Arrange
+		string testSourceId = "123";
+		List<Deal> existingDeals = new()
+		{
+			new()
+			{
+				SourceId=testSourceId,
+				Source= Sources.HubSpot,
+			}
+		};
+		List<Deal> sourceDeals = new()
+		{
+			new()
+			{
+					SourceId=testSourceId,
+					Source= Sources.Pipedrive,
+			}
+		};
+		sourceDeals.Add(existingDeals.First());
+		_uut.Deals = existingDeals;
+		//Act
+		_uut.UpdateDeals(sourceDeals);
+
+		//Assert
+		Assert.Equal(2, _uut.Deals.Count);
+		Assert.Equal(sourceDeals, _uut.Deals);
+	}
+
+	[Fact]
+	public void UpdateDeals_OneExistingDealMatchInArgument_NoDealsAdded()
+	{
+		//Arrange
+		string testSourceId = "123";
+		List<Deal> existingDeals = new()
+		{
+			new()
+			{
+				SourceId=testSourceId,
+				Source= Sources.HubSpot,
+			}
+		};
+		List<Deal> sourceDeals = new()
+		{
+			new()
+			{
+					SourceId=testSourceId,
+					Source= Sources.HubSpot,
+			}
+		};
+		_uut.Deals = existingDeals;
+		//Act
+		_uut.UpdateDeals(sourceDeals);
+
+		//Assert
+		Assert.Equal(1, _uut.Deals.Count);
+		Assert.Equal(sourceDeals.First().Source, _uut.Deals.First().Source);
+		Assert.Equal(sourceDeals.First().SourceId, _uut.Deals.First().SourceId);
+	}
+
+	[Fact]
+	public void UpdateDeals_ExistingDealNotInSourceDeals_DealRemoved()
+	{
+		//Arrange
+		string testSourceId = "123";
+		List<Deal> existingDeals = new()
+		{
+			new()
+			{
+				SourceId=testSourceId,
+				Source= Sources.HubSpot,
+			}
+		};
+		List<Deal> sourceDeals = new();
+		_uut.Deals = existingDeals;
+		//Act
+		_uut.UpdateDeals(sourceDeals);
+
+		//Assert
+		Assert.Empty(_uut.Deals);
+		Assert.Equal(sourceDeals, _uut.Deals);
+	}
+
+
 	[Theory]
 	[InlineData("testName", "testOfficeLocation", "testWebSite")]
 	public void UpdatePropertiesFromClient_PropertiesSet(string testName, string testOfficeLocation, string testWebsite)
 	{
 		//Arrange
 		Mock<Client> clientMock = new();
+		List<ClientContact> testClientContacts = new()
+		{
+			new()
+			{
+				CreatedAt=1231,
+			}
+		};
+		List<Deal> testDeals = new()
+		{
+			new()
+			{
+				EndDate=22131,
+			}
+		};
 		clientMock.Object.Name = testName;
 		clientMock.Object.OfficeLocation = testOfficeLocation;
 		clientMock.Object.Website = testWebsite;
+		clientMock.Object.ClientContacts = testClientContacts;
+		clientMock.Object.Deals = testDeals;
 
 		//Act
 		_uut.UpdatePropertiesFromClient(clientMock.Object);
@@ -287,6 +389,8 @@ public class ClientUnitTest
 		Assert.Equal(testName, _uut.Name);
 		Assert.Equal(testOfficeLocation, _uut.OfficeLocation);
 		Assert.Equal(testWebsite, _uut.Website);
+		Assert.Equal(testClientContacts, _uut.ClientContacts);
+		Assert.Equal(testDeals, _uut.Deals);
 	}
 
 	[Fact]

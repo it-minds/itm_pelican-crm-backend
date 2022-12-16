@@ -639,7 +639,7 @@ public class UpdateClientCommandHandlerTests
 				It.IsAny<string>(),
 				It.IsAny<long>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new Client(Guid.NewGuid()));
+			.ReturnsAsync(clientResult);
 
 		_unitOfWorkMock
 			.Setup(u => u
@@ -651,8 +651,8 @@ public class UpdateClientCommandHandlerTests
 
 		//Assert
 		clientMock.Verify(
-			c => c.UpdateClientContacts(
-				clientMock.Object.ClientContacts),
+			c => c.UpdatePropertiesFromClient(
+				clientResult),
 			Times.Once);
 
 		_unitOfWorkMock.Verify(
@@ -816,7 +816,7 @@ public class UpdateClientCommandHandlerTests
 			Times.Once);
 
 		clientMock.Verify(
-			c => c.SetDeals(dealList),
+			c => c.UpdateDeals(dealList),
 			Times.Once());
 
 		Assert.True(result.IsSuccess);

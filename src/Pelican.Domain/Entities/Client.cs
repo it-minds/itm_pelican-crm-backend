@@ -105,12 +105,17 @@ public class Client : Entity, ITimeTracked
 	[GraphQLIgnore]
 	public virtual void UpdateDeals(IEnumerable<Deal> deals)
 	{
+		List<Deal> dealsToRemove = new();
 		foreach (var item in Deals)
 		{
 			if (!deals.Any(d => d.SourceId == item.SourceId && d.Source == item.Source))
 			{
-				Deals.Remove(item);
+				dealsToRemove.Add(item);
 			}
+		}
+		foreach (var item in dealsToRemove)
+		{
+			Deals.Remove(item);
 		}
 		foreach (var item in deals)
 		{

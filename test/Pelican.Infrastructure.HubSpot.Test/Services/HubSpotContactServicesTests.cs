@@ -1,9 +1,11 @@
 ﻿using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Services;
 using RestSharp;
 using Xunit;
@@ -12,25 +14,40 @@ namespace Pelican.Infrastructure.HubSpot.Test.Services;
 
 public class HubSpotContactServicesTests
 {
-	private readonly Mock<IClient<HubSpotSettings>> _hubSpotClientMock;
+	private readonly Mock<IClient<HubSpotSettings>> _hubSpotClientMock = new();
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly HubSpotContactService _uut;
 
 	public HubSpotContactServicesTests()
 	{
-		_hubSpotClientMock = new();
-		_uut = new HubSpotContactService(_hubSpotClientMock.Object);
+		_uut = new HubSpotContactService(
+			_hubSpotClientMock.Object,
+			_unitOfWorkMock.Object);
 	}
 
 	[Fact]
 	public void HubSpotContactService_ClientNull_ThrowException()
 	{
 		// Act
-		var result = Record.Exception(() => new HubSpotContactService(null!));
+		var result = Record.Exception(() => new HubSpotContactService(null!, _unitOfWorkMock.Object));
 
 		// Assert
 		Assert.IsType<ArgumentNullException>(result);
 		Assert.Contains(
 			"client",
+			result.Message);
+	}
+
+	[Fact]
+	public void HubSpotContactService_UnitOfWorkNull_ThrowException()
+	{
+		// Act
+		var result = Record.Exception(() => new HubSpotContactService(_hubSpotClientMock.Object, null!));
+
+		// Assert
+		Assert.IsType<ArgumentNullException>(result);
+		Assert.Contains(
+			"unitOfWork",
 			result.Message);
 	}
 
@@ -47,8 +64,11 @@ public class HubSpotContactServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<ContactResponse, Contact>>()))
-			.Returns(Result.Failure<Contact>(Error.NullValue));
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<ContactResponse, IUnitOfWork, CancellationToken, Task<Contact>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<Contact>(Error.NullValue));
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -72,8 +92,11 @@ public class HubSpotContactServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<ContactResponse, Contact>>()))
-			.Returns(Contact);
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<ContactResponse, IUnitOfWork, CancellationToken, Task<Contact>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Contact);
 
 		/// Act
 		var result = await _uut.GetByIdAsync("", 0, default);
@@ -98,8 +121,11 @@ public class HubSpotContactServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<ContactsResponse, List<Contact>>>()))
-			.Returns(Result.Failure<List<Contact>>(Error.NullValue));
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<ContactsResponse, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<List<Contact>>(Error.NullValue));
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -123,8 +149,11 @@ public class HubSpotContactServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<ContactsResponse, List<Contact>>>()))
-			.Returns(Contacts);
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<ContactsResponse, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Contacts);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);

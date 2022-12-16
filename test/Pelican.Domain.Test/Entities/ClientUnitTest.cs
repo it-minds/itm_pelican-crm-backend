@@ -293,6 +293,7 @@ public class ClientUnitTest
 		};
 		sourceDeals.Add(existingDeals.First());
 		_uut.Deals = existingDeals;
+
 		//Act
 		_uut.UpdateDeals(sourceDeals);
 
@@ -324,6 +325,7 @@ public class ClientUnitTest
 		};
 		sourceDeals.Add(existingDeals.First());
 		_uut.Deals = existingDeals;
+
 		//Act
 		_uut.UpdateDeals(sourceDeals);
 
@@ -354,6 +356,7 @@ public class ClientUnitTest
 			}
 		};
 		_uut.Deals = existingDeals;
+
 		//Act
 		_uut.UpdateDeals(sourceDeals);
 
@@ -378,6 +381,7 @@ public class ClientUnitTest
 		};
 		List<Deal> sourceDeals = new();
 		_uut.Deals = existingDeals;
+
 		//Act
 		_uut.UpdateDeals(sourceDeals);
 
@@ -445,6 +449,7 @@ public class ClientUnitTest
 				Name = "testDealName",
 			}
 		};
+
 		//Act
 		_uut.SetDeals(deals);
 
@@ -469,6 +474,7 @@ public class ClientUnitTest
 		{
 			null!,
 		};
+
 		//Act
 		_uut.SetClientContacts(contacts);
 

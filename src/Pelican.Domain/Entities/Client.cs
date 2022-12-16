@@ -106,6 +106,7 @@ public class Client : Entity, ITimeTracked
 	public virtual void UpdateDeals(IEnumerable<Deal> deals)
 	{
 		List<Deal> dealsToRemove = new();
+
 		foreach (var item in Deals)
 		{
 			if (!deals.Any(d => d.SourceId == item.SourceId && d.Source == item.Source))
@@ -113,10 +114,12 @@ public class Client : Entity, ITimeTracked
 				dealsToRemove.Add(item);
 			}
 		}
+
 		foreach (var item in dealsToRemove)
 		{
 			Deals.Remove(item);
 		}
+
 		foreach (var item in deals)
 		{
 			if (!Deals.Any(d => d.SourceId == item.SourceId && d.Source == item.Source))

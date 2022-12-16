@@ -56,6 +56,7 @@ resource "azurerm_service_plan" "pelican-appserviceplan" {
   os_type             = "Linux"
   sku_name            = "B2"
 }
+
 resource "azurerm_linux_web_app" "pelican-linux-web-app" {
   name                = "pelican-linux-web-app"
   resource_group_name = var.resourceGroupName
@@ -65,11 +66,26 @@ resource "azurerm_linux_web_app" "pelican-linux-web-app" {
     type = "SystemAssigned"
   }
 
-  site_config {}
+  site_config {
+    cors {
+      allowed_origins = ["http://localhost:3000", "https://pelican-linux-frontend-app.azurewebsites.net"]
+    }
+  }
 }
 
-resource "azurerm_static_site" "itm-pelican-crm-frontend" {
-  name                = "itm-pelican-crm-frontend"
+resource "azurerm_linux_web_app" "pelican-linux-frontend-app" {
+  name                = "pelican-linux-frontend-app"
   resource_group_name = var.resourceGroupName
-  location            = "West Europe"
+  location            = var.azureLocation
+  service_plan_id     = azurerm_service_plan.pelican-appserviceplan.id
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  site_config {
+    application_stack {
+      node_version = "16-lts"
+    }
+  }
 }

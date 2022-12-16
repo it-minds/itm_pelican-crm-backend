@@ -271,7 +271,7 @@ public class ClientUnitTest
 	}
 
 	[Fact]
-	public void UpdateDeals_OneNewDeal_DealAdded()
+	public void UpdateDeals_NoMatchInSourceArgument_DealAdded()
 	{
 		//Arrange
 		string testSourceId = "123";
@@ -289,6 +289,37 @@ public class ClientUnitTest
 			{
 					SourceId=testSourceId,
 					Source= Sources.Pipedrive,
+			}
+		};
+		sourceDeals.Add(existingDeals.First());
+		_uut.Deals = existingDeals;
+		//Act
+		_uut.UpdateDeals(sourceDeals);
+
+		//Assert
+		Assert.Equal(2, _uut.Deals.Count);
+		Assert.Equal(sourceDeals, _uut.Deals);
+	}
+
+	[Fact]
+	public void UpdateDeals_NoMatchInSourceIdArgument_DealAdded()
+	{
+		//Arrange
+		string testSourceId = "123";
+		List<Deal> existingDeals = new()
+		{
+			new()
+			{
+				SourceId=testSourceId,
+				Source= Sources.HubSpot,
+			}
+		};
+		List<Deal> sourceDeals = new()
+		{
+			new()
+			{
+					SourceId="321",
+					Source= Sources.HubSpot,
 			}
 		};
 		sourceDeals.Add(existingDeals.First());
@@ -423,6 +454,21 @@ public class ClientUnitTest
 	[Fact]
 	public void SetClientContacts_ClientContactsListEmpty_NewListClientContactsCreated()
 	{
+		//Act
+		_uut.SetClientContacts(null);
+
+		//Assert
+		Assert.Equal(new List<ClientContact>(), _uut.ClientContacts);
+	}
+
+	[Fact]
+	public void SetClientContacts_ClientContactsListContactNull_ReturnsNull()
+	{
+		//Arrange
+		List<ClientContact> client = new()
+		{
+			null!,
+		};
 		//Act
 		_uut.SetClientContacts(null);
 

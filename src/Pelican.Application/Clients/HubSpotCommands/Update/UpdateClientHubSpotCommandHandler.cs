@@ -126,7 +126,6 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 	{
 		Result<string> accessTokenResult = await _hubSpotAuthorizationService.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 			portalId,
-			_unitOfWork,
 			cancellationToken);
 
 		if (accessTokenResult.IsFailure)

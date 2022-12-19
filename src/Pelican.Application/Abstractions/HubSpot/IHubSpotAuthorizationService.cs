@@ -1,5 +1,4 @@
-﻿using Pelican.Application.Abstractions.Data.Repositories;
-using Pelican.Application.HubSpot.Dtos;
+﻿using Pelican.Application.HubSpot.Dtos;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
@@ -10,7 +9,7 @@ public interface IHubSpotAuthorizationService
 
 	Task<Result<Supplier>> DecodeAccessTokenAsync(string accessToken, CancellationToken cancellationToken);
 
-	Task<Result<string>> RefreshAccessTokenFromSupplierHubSpotIdAsync(long supplierHubSpotId, IUnitOfWork unitOfWork, CancellationToken cancellationToken);
+	Task<Result<string>> RefreshAccessTokenFromSupplierHubSpotIdAsync(long supplierHubSpotId, CancellationToken cancellationToken);
 
 	Task<Result<string>> RefreshAccessTokenFromRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken);
 }

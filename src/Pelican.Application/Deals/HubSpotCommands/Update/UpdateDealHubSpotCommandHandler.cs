@@ -141,7 +141,6 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 		Result<string> accessTokenResult = await _hubSpotAuthorizationService
 			.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				supplierHubSpotId,
-				_unitOfWork,
 				cancellationToken);
 
 		if (accessTokenResult.IsFailure)

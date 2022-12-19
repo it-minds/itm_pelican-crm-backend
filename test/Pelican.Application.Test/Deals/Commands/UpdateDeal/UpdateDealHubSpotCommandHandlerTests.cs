@@ -3,7 +3,6 @@ using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Deals.HubSpotCommands.Update;
-using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 using Xunit;
@@ -140,7 +139,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
-				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
+				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), default))
 			.ReturnsAsync(Result.Failure<string>(error));
 
 		// Act
@@ -148,7 +147,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		// Assert
 		_hubSpotAuthorizationServiceMock.Verify(
-			service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(SUPPLIERHUBSPOTID, _unitOfWorkMock.Object, default),
+			service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(SUPPLIERHUBSPOTID, default),
 			Times.Once);
 
 		Assert.True(result.IsFailure);
@@ -168,7 +167,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
-				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
+				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), default))
 			.ReturnsAsync(Result.Success(TOKEN));
 
 		_hubSpotDealServiceMock
@@ -203,7 +202,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
-				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
+				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), default))
 			.ReturnsAsync(Result.Success(TOKEN));
 
 		_hubSpotDealServiceMock
@@ -264,7 +263,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
-				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
+				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), default))
 			.ReturnsAsync(Result.Success(TOKEN));
 
 		_hubSpotDealServiceMock
@@ -337,7 +336,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service
-				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), _unitOfWorkMock.Object, default))
+				.RefreshAccessTokenFromSupplierHubSpotIdAsync(It.IsAny<long>(), default))
 			.ReturnsAsync(Result.Success(TOKEN));
 
 		_hubSpotDealServiceMock
@@ -526,7 +525,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Setup(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Failure<string>(Error.NullValue));
 
@@ -537,7 +535,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Verify(
 			c => c.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				portalId,
-				_unitOfWorkMock.Object,
 				default),
 			Times.Once);
 
@@ -574,7 +571,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Setup(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success(accessToken));
 
@@ -644,7 +640,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Setup(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success(accessToken));
 
@@ -729,7 +724,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Setup(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success(accessToken));
 

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Infrastructure;
@@ -20,8 +19,9 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 	private readonly HubSpotSettings _hubSpotSettings;
 	public HubSpotAuthorizationService(
 		IClient<HubSpotSettings> hubSpotClient,
-		IOptions<HubSpotSettings> hubSpotSettings)
-		: base(hubSpotClient)
+		IOptions<HubSpotSettings> hubSpotSettings,
+		IUnitOfWork unitOfWork)
+		: base(hubSpotClient, unitOfWork)
 	{
 		_hubSpotSettings = hubSpotSettings.Value ?? throw new ArgumentNullException(nameof(hubSpotSettings));
 	}
@@ -58,10 +58,9 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 
 	public async Task<Result<string>> RefreshAccessTokenFromSupplierHubSpotIdAsync(
 		long supplierHubSpotId,
-		IUnitOfWork unitOfWork,
 		CancellationToken cancellationToken)
 	{
-		Supplier? supplier = await unitOfWork
+		Supplier? supplier = await _unitOfWork
 			.SupplierRepository
 			.FirstOrDefaultAsync(
 				supplier => supplier.SourceId == supplierHubSpotId && supplier.Source == Sources.HubSpot,

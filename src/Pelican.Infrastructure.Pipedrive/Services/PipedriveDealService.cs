@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Application.Abstractions.Pipedrive;
 using Pelican.Domain.Entities;
@@ -13,8 +13,8 @@ namespace Pelican.Infrastructure.Pipedrive.Services;
 public sealed class PipedriveDealService : ServiceBase<PipedriveSettings>, IPipedriveObjectService<Deal>
 {
 
-	public PipedriveDealService(IClient<PipedriveSettings> client)
-		: base(client)
+	public PipedriveDealService(IClient<PipedriveSettings> client, IUnitOfWork unitOfWork)
+		: base(client, unitOfWork)
 	{ }
 
 	public async Task<Result<Deal>> GetByIdAsync(

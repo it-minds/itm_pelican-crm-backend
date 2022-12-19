@@ -1,12 +1,4 @@
-﻿using MediatR;
-using Moq;
-using Pelican.Application.Suppliers.Queries.GetSupplierById;
-using Pelican.Application.Suppliers.Queries.GetSuppliers;
-using Pelican.Domain.Entities;
-using Pelican.Presentation.GraphQL.Suppliers;
-using Xunit;
-
-namespace Pelican.Presentation.GraphQL.Test;
+﻿namespace Pelican.Presentation.GraphQL.Test;
 public class GetSuppliersQueryUnitTest
 {
 	private readonly SuppliersQuery uut = new();

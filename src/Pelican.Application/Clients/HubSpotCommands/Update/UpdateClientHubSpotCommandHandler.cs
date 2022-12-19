@@ -50,26 +50,13 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 	{
 		if ((client.LastUpdatedAt ?? client.CreatedAt) <= command.UpdateTime)
 		{
-			if (command.PropertyName == "num_associated_contacts")
+			if (command.PropertyName is "num_associated_contacts" or "num_associated_deals")
 			{
-				Result result = await UpdateClientContactsAsync(
+				Result result = await UpdateAssociationAsync(
 					client,
 					command.PortalId,
 					command.ObjectId,
-					cancellationToken);
-
-				if (result.IsFailure)
-				{
-					return result;
-				}
-			}
-
-			else if (command.PropertyName == "num_associated_deals")
-			{
-				Result<Client> result = await UpdateDealsAsync(
-					client,
-					command.PortalId,
-					command.ObjectId,
+					command.PropertyName,
 					cancellationToken);
 
 				if (result.IsFailure)
@@ -152,10 +139,12 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			objectId,
 			cancellationToken);
 	}
-	private async Task<Result> UpdateClientContactsAsync(
+
+	private async Task<Result<Client>> UpdateAssociationAsync(
 		Client client,
 		long portalId,
 		long clientHubSpotId,
+			string propertyName,
 		CancellationToken cancellationToken = default)
 	{
 		Result<Client> result = await GetClientFromHubSpot(
@@ -168,30 +157,14 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			return result;
 		}
 
-		client.UpdateClientContacts(result.Value.ClientContacts);
-
-		_unitOfWork.ClientRepository.Attach(client);
-
-		return Result.Success();
-	}
-
-	private async Task<Result<Client>> UpdateDealsAsync(
-		Client client,
-		long portalId,
-		long clientHubSpotId,
-		CancellationToken cancellationToken = default)
-	{
-		Result<Client> result = await GetClientFromHubSpot(
-			clientHubSpotId,
-			portalId,
-			cancellationToken);
-
-		if (result.IsFailure)
+		if (propertyName == "num_associated_contacts")
 		{
-			return result;
+			client.UpdateClientContacts(result.Value.ClientContacts);
 		}
-
-		client.UpdateDeals(result.Value.Deals);
+		else
+		{
+			client.UpdateDeals(result.Value.Deals);
+		}
 
 		_unitOfWork.ClientRepository.Attach(client);
 

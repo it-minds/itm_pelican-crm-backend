@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Infrastructure;
@@ -15,6 +15,7 @@ namespace Pelican.Infrastructure.HubSpot.Services;
 
 internal sealed class HubSpotClientService : ServiceBase<HubSpotSettings>, IHubSpotObjectService<Client>
 {
+	private readonly IUnitOfWork _unitOfWork;
 	public HubSpotClientService(
 		IClient<HubSpotSettings> hubSpotClient,
 		IUnitOfWork unitOfWork)

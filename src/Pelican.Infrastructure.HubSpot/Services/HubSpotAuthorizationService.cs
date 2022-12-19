@@ -58,10 +58,9 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 
 	public async Task<Result<string>> RefreshAccessTokenFromSupplierHubSpotIdAsync(
 		long supplierHubSpotId,
-		IUnitOfWork unitOfWork,
 		CancellationToken cancellationToken)
 	{
-		Supplier? supplier = await unitOfWork
+		Supplier? supplier = await _unitOfWork
 			.SupplierRepository
 			.FirstOrDefaultAsync(
 				supplier => supplier.SourceId == supplierHubSpotId && supplier.Source == Sources.HubSpot,

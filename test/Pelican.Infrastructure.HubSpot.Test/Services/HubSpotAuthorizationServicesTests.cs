@@ -199,7 +199,7 @@ public class HubSpotAuthorizationServicesTests
 			.Returns(Enumerable.Empty<Supplier>().AsQueryable());
 
 		// Act
-		var result = await _uut.RefreshAccessTokenFromSupplierHubSpotIdAsync(1, _unitOfWorkMock.Object, default);
+		var result = await _uut.RefreshAccessTokenFromSupplierHubSpotIdAsync(1, default);
 
 		// Assert
 		Assert.True(result.IsFailure);
@@ -219,7 +219,7 @@ public class HubSpotAuthorizationServicesTests
 			.Returns(new List<Supplier> { supplier }.AsQueryable());
 
 		// Act
-		var result = await _uut.RefreshAccessTokenFromSupplierHubSpotIdAsync(1, _unitOfWorkMock.Object, default);
+		var result = await _uut.RefreshAccessTokenFromSupplierHubSpotIdAsync(1, default);
 
 		// Assert
 		Assert.True(result.IsFailure);
@@ -251,7 +251,7 @@ public class HubSpotAuthorizationServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		// Act
-		var result = await _uut.RefreshAccessTokenFromSupplierHubSpotIdAsync(0, _unitOfWorkMock.Object, default);
+		var result = await _uut.RefreshAccessTokenFromSupplierHubSpotIdAsync(0, default);
 
 		// Assert
 		Assert.True(result.IsFailure);
@@ -283,7 +283,7 @@ public class HubSpotAuthorizationServicesTests
 			.ReturnsAsync(responseMock.Object);
 
 		// Act
-		var result = await _uut.RefreshAccessTokenFromSupplierHubSpotIdAsync(0, _unitOfWorkMock.Object, default);
+		var result = await _uut.RefreshAccessTokenFromSupplierHubSpotIdAsync(0, default);
 
 		// Assert
 		Assert.True(result.IsSuccess);

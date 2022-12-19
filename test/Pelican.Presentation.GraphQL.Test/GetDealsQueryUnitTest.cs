@@ -35,7 +35,7 @@ public class GetDealsQueryUnitTest
 
 		_mediatorMock
 			.Setup(x => x.Send(input, default))
-			.ReturnsAsync(new Deal(id));
+			.ReturnsAsync(new Deal() { Id = id });
 
 		//Act
 		var result = await uut.GetDealAsync(

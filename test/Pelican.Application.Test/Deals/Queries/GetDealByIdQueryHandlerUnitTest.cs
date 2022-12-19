@@ -17,7 +17,7 @@ public class GetDealByIdQueryHandlerUnitTest
 		var guid = Guid.NewGuid();
 		GetDealByIdQuery getDealByIdQuery = new GetDealByIdQuery(guid);
 		List<Deal> resultList = new List<Deal>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Deal(guid));
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Deal() { Id = guid });
 		//Act
 		resultList.Add(await uut.Handle(getDealByIdQuery, cancellationToken));
 		//Assert

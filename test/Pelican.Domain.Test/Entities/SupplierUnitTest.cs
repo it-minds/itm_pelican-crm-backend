@@ -8,7 +8,7 @@ public class SupplierUnitTest
 	private readonly Supplier _uut;
 	public SupplierUnitTest()
 	{
-		_uut = new Supplier(Guid.NewGuid());
+		_uut = new Supplier();
 	}
 	[Fact]
 	public void SetName_NameStringNotToLong_NameEqualToValueSet()

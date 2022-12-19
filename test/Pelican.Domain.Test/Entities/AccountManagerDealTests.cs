@@ -12,13 +12,13 @@ public class AccountManagerDealTests
 		const string DEAL_HUBSPOTID = "dealhubspotid";
 		const string ACCOUNTMANAGER_HUBSPOTID = "accountmanagerhubspotid";
 
-		Deal deal = new(Guid.NewGuid())
+		Deal deal = new()
 		{
 			SourceId = DEAL_HUBSPOTID,
 			Source = Sources.HubSpot,
 		};
 
-		AccountManager accountManager = new(Guid.NewGuid())
+		AccountManager accountManager = new()
 		{
 			SourceId = ACCOUNTMANAGER_HUBSPOTID,
 			Source = Sources.HubSpot
@@ -59,7 +59,7 @@ public class AccountManagerDealTests
 	public void Deactivate_IsActiveIsTrue_SetIsActiveToFalse()
 	{
 		// Arrange
-		AccountManagerDeal accountManagerDeal = new(Guid.NewGuid())
+		AccountManagerDeal accountManagerDeal = new()
 		{
 			IsActive = true,
 		};
@@ -75,7 +75,7 @@ public class AccountManagerDealTests
 	public void Deactivate_IsActiveIsFalse_IsActiveStillFalse()
 	{
 		// Arrange
-		AccountManagerDeal accountManagerDeal = new(Guid.NewGuid())
+		AccountManagerDeal accountManagerDeal = new()
 		{
 			IsActive = false,
 		};

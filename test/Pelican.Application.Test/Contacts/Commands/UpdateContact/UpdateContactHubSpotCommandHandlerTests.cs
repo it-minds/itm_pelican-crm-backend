@@ -663,7 +663,7 @@ public class UpdateContactHubSpotCommandHandlerTests
 			SourceOwnerId = testSourceOwnerId,
 			DealContacts = new List<DealContact>()
 			{
-				new DealContact(Guid.NewGuid())
+				new DealContact()
 			},
 		};
 

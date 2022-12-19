@@ -235,12 +235,12 @@ public class UpdateDealHubSpotCommandHandlerTests
 		// Arrange
 		UpdateDealHubSpotCommand command = new(OBJECTID, SUPPLIERHUBSPOTID, UPDATETIME, EMPTY_PROPERTYNAME, EMPTY_PROPERTYVALUE);
 
-		Contact existingContact = new(Guid.NewGuid())
+		Contact existingContact = new()
 		{
 			SourceId = "contactHubSpotId",
 		};
 
-		Client existingClient = new(Guid.NewGuid())
+		Client existingClient = new()
 		{
 			SourceId = "clientHubSpotId",
 		};
@@ -253,7 +253,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 		newDealMock.Object.Client = existingClient;
 		newDealMock.Object.DealContacts = new List<DealContact>()
 		{
-			new DealContact(Guid.NewGuid())
+			new DealContact()
 			{
 				Deal = newDealMock.Object,
 				DealId = newDealMock.Object.Id,
@@ -308,12 +308,12 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 		Deal? existingDeal = null;
 
-		Contact existingContact = new(Guid.NewGuid())
+		Contact existingContact = new()
 		{
 			SourceId = "contactHubSpotId",
 		};
 
-		Client existingClient = new(Guid.NewGuid())
+		Client existingClient = new()
 		{
 			SourceId = "clientHubSpotId",
 		};
@@ -326,7 +326,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 		newDealMock.Object.Client = existingClient;
 		newDealMock.Object.DealContacts = new List<DealContact>()
 		{
-			new DealContact(Guid.NewGuid())
+			new DealContact()
 			{
 				Deal = newDealMock.Object,
 				DealId = newDealMock.Object.Id,
@@ -377,7 +377,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 	public async void Handle_DealFoundAccountManagerAssociationUpdatedIdEqualToActive_ReturnsSuccess()
 	{
 		// Arrange
-		Mock<Deal> dealMock = new(Guid.NewGuid());
+		Mock<Deal> dealMock = new();
 		dealMock.Object.AccountManagerDeals = new List<AccountManagerDeal>()
 		{
 			new AccountManagerDeal()
@@ -408,7 +408,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 	public async void Handle_DealFoundAccountManagerAssociationUpdated_ReturnsSuccess()
 	{
 		// Arrange
-		Mock<Deal> dealMock = new(Guid.NewGuid());
+		Mock<Deal> dealMock = new();
 
 		SetupDealRepositoryMock(dealMock.Object);
 
@@ -419,7 +419,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 				.FirstOrDefaultAsync(
 					It.IsAny<Expression<Func<AccountManager, bool>>>(),
 					default))
-			.ReturnsAsync(new AccountManager(Guid.NewGuid()));
+			.ReturnsAsync(new AccountManager());
 
 		_accountManagerDealRepositoryMock
 			.Setup(a => a.Attach(It.IsAny<AccountManagerDeal>()));
@@ -441,7 +441,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 	public async void Handle_DealFoundAccountManagerAssociationUpdatedAccountManagerNotFound_ReturnsSuccessWithoutChanges()
 	{
 		// Arrange
-		Mock<Deal> dealMock = new(Guid.NewGuid());
+		Mock<Deal> dealMock = new();
 
 		SetupDealRepositoryMock(dealMock.Object);
 
@@ -706,7 +706,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 
 			AccountManagerDeals = new List<AccountManagerDeal>()
 			{
-				new AccountManagerDeal(Guid.NewGuid())
+				new AccountManagerDeal()
 			},
 		};
 		Mock<AccountManager> accountManagerMock = new();

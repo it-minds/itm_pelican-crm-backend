@@ -16,7 +16,7 @@ public class GetSupplierByIdQueryHandlerUnitTest
 		var guid = Guid.NewGuid();
 		GetSupplierByIdQuery getSupplierByIdQuery = new GetSupplierByIdQuery(guid);
 		List<Supplier> resultList = new List<Supplier>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Supplier(guid));
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Supplier() { Id = guid });
 		//Act
 		resultList.Add(await uut.Handle(getSupplierByIdQuery, cancellationToken));
 		//Assert

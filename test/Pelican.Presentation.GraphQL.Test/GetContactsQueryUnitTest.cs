@@ -33,7 +33,7 @@ public class GetContactsQueryUnitTest
 
 		_mediatorMock
 			.Setup(x => x.Send(input, default))
-			.ReturnsAsync(new Contact(id));
+			.ReturnsAsync(new Contact() { Id = id });
 
 		//Act
 		var result = await _uut.GetContactAsync(

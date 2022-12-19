@@ -6,7 +6,6 @@ public class ClientContact : Entity, ITimeTracked
 {
 	public ClientContact() { }
 
-
 	public bool IsActive { get; set; }
 
 

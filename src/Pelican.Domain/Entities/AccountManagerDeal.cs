@@ -5,7 +5,9 @@ using Pelican.Domain.Primitives;
 
 public class AccountManagerDeal : Entity, ITimeTracked
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 	public AccountManagerDeal() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 	public bool IsActive { get; set; }
 

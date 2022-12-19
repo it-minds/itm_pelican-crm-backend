@@ -1,9 +1,4 @@
-﻿using Pelican.Application.Abstractions.Data.Repositories;
-using Pelican.Domain.Entities;
-using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
-using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
-
-namespace Pelican.Infrastructure.HubSpot.Mapping.Clients;
+﻿namespace Pelican.Infrastructure.HubSpot.Mapping.Clients;
 
 internal static class CompaniesResponseToClients
 {

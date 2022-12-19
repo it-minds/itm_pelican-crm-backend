@@ -9,33 +9,45 @@ using Xunit;
 namespace Pelican.Presentation.GraphQL.Test;
 public class AccountManagersQueryUnitTest
 {
-	private AccountManagersQuery uut;
+	private readonly AccountManagersQuery _uut = new();
+	private readonly Mock<IMediator> _mediatorMock = new();
+
 	[Fact]
 	public void If_GetAccountManagers_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken()
 	{
-		//Arrange
-		uut = new AccountManagersQuery();
-		var mediatorMock = new Mock<IMediator>();
-		CancellationToken cancellationToken = new CancellationToken();
 		//Act
-		_ = uut.GetAccountManagers(mediatorMock.Object, cancellationToken);
+		_ = _uut.GetAccountManagers(_mediatorMock.Object, default);
+
 		//Assert
-		mediatorMock.Verify(x => x.Send(It.IsAny<GetAccountManagersQuery>(), cancellationToken), Times.Once());
+		_mediatorMock.Verify(
+			x => x.Send(It.IsAny<GetAccountManagersQuery>(), default),
+			Times.Once);
 	}
+
 	[Fact]
 	public async void If_GetAccountManagerAsync_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken_And_Input()
 	{
 		//Arrange
-		uut = new AccountManagersQuery();
-		var mediatorMock = new Mock<IMediator>();
-		CancellationToken cancellationToken = new CancellationToken();
 		Guid id = Guid.NewGuid();
-		GetAccountManagerByIdQuery input = new GetAccountManagerByIdQuery(id);
-		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new AccountManager(id));
+		GetAccountManagerByIdQuery input = new(Guid.NewGuid());
+
+		_mediatorMock
+			.Setup(x => x.Send(input, default))
+			.ReturnsAsync(new AccountManager(id));
+
 		//Act
-		var result = await uut.GetAccountManagerAsync(input.Id, mediatorMock.Object, cancellationToken);
+		var result = await _uut.GetAccountManagerAsync(
+			input.Id,
+			_mediatorMock.Object,
+			default);
+
 		//Assert
-		Assert.Equal(id, result.Id);
-		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Once);
+		Assert.Equal(
+			id,
+			result.Id);
+
+		_mediatorMock.Verify(
+			x => x.Send(input, default),
+			Times.Once);
 	}
 }

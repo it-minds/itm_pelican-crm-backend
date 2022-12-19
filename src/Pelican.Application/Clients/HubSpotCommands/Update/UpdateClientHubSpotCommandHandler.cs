@@ -33,8 +33,8 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		if (client is null)
 		{
 			return await GetAndCreateClientAsync(
-				command.PortalId,
 				command.ObjectId,
+				command.PortalId,
 				cancellationToken);
 		}
 

@@ -68,77 +68,84 @@ public class Client : Entity, ITimeTracked
 			case "name":
 				Name = propertyValue;
 				break;
+
 			case "city":
 				OfficeLocation = propertyValue;
 				break;
+
 			case "website":
 				Website = propertyValue;
 				break;
+
 			default:
 				throw new InvalidOperationException($"{propertyName} is not a valid property on Client");
 		}
 		return this;
 	}
-
 	[GraphQLIgnore]
-	public virtual void FillOutClientContacts(IEnumerable<Contact>? contacts)
+	public virtual void UpdateClientContacts(IEnumerable<ClientContact> clientContacts)
 	{
-		if (contacts is null)
+		foreach (var item in ClientContacts.Where(x => x.IsActive))
 		{
-			ClientContacts.Clear();
-			return;
+			if (!clientContacts.Any(cc => cc.SourceContactId == item.SourceContactId && cc.Client.Source == Source))
+			{
+				item.Deactivate();
+			}
 		}
 
-		foreach (ClientContact item in ClientContacts)
+		foreach (var item in clientContacts)
 		{
-			if (item.Contact is not null)
+			if (!ClientContacts.Any(cc => cc.SourceContactId == item.SourceContactId && cc.Client.Source == Source && cc.IsActive))
 			{
-				continue;
+				ClientContacts.Add(item);
 			}
-
-			Contact? matchingContact = contacts
-				.FirstOrDefault(contacts => contacts.SourceId == item.SourceContactId && contacts.Source == item.Client.Source);
-
-			if (matchingContact is null)
-			{
-				continue;
-			}
-
-			item.Contact = matchingContact;
-			item.ContactId = matchingContact.Id;
 		}
-
-		ClientContacts = ClientContacts
-			.Where(cc => cc.Contact is not null)
-			.ToList();
 	}
 
+	[GraphQLIgnore]
+	public virtual void UpdateDeals(IEnumerable<Deal> deals)
+	{
+		Deals = Deals
+			.Where(deal => deals.Any(d => deal.SourceId == d.SourceId && deal.Source == d.Source))
+			.ToList();
+
+		foreach (var item in deals)
+		{
+			if (!Deals.Any(d => d.SourceId == item.SourceId && d.Source == item.Source))
+			{
+				Deals.Add(item);
+			}
+		}
+	}
 
 	[GraphQLIgnore]
-	public virtual void UpdateClientContacts(ICollection<ClientContact>? currentClientContacts)
+	public virtual void SetClientContacts(IEnumerable<Contact?>? contacts)
 	{
-		if (currentClientContacts is null)
-		{
-			return;
-		}
-
-		foreach (ClientContact clientContact in ClientContacts.Where(dc => dc.IsActive))
-		{
-			if (!currentClientContacts.Any(currentClientContact => currentClientContact.SourceContactId == clientContact.SourceContactId
-			&& currentClientContact.Client.Source == clientContact.Client.Source))
+		ClientContacts = contacts?
+			.Select(contact =>
 			{
-				clientContact.Deactivate();
-			}
-		}
+				if (contact is not null)
+				{
+					ClientContact clientContact = ClientContact.Create(this, contact);
+					return clientContact;
+				}
+				return null;
+			})
+			.Where(cc => cc is not null)
+			.ToList() as ICollection<ClientContact> ?? new List<ClientContact>();
+	}
 
-		foreach (ClientContact clientContact in currentClientContacts)
+	[GraphQLIgnore]
+	public virtual void SetDeals(IEnumerable<Deal?>? deals)
+	{
+		Deals = deals?
+			.Where(deal => deal is not null)
+			.ToList()! as ICollection<Deal> ?? new List<Deal>();
+
+		foreach (Deal deal in Deals)
 		{
-			if (!ClientContacts.Any(dc => dc.SourceContactId == clientContact.SourceContactId
-			&& dc.IsActive
-			&& dc.Client.Source == clientContact.Client.Source))
-			{
-				ClientContacts.Add(clientContact);
-			}
+			deal.ClientId = Id;
+			deal.Client = this;
 		}
 	}
 
@@ -148,5 +155,8 @@ public class Client : Entity, ITimeTracked
 		Name = client.Name;
 		OfficeLocation = client.OfficeLocation;
 		Website = client.Website;
+		UpdateClientContacts(client.ClientContacts);
+		UpdateDeals(client.Deals);
 	}
 }
+

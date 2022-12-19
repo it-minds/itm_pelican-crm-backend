@@ -663,7 +663,6 @@ public class UpdateClientCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Setup(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(clientResult);
 

@@ -2,7 +2,6 @@ namespace Pelican.Infrastructure.HubSpot.Services;
 
 internal sealed class HubSpotClientService : ServiceBase<HubSpotSettings>, IHubSpotObjectService<Client>
 {
-	private readonly IUnitOfWork _unitOfWork;
 	public HubSpotClientService(
 		IClient<HubSpotSettings> hubSpotClient,
 		IUnitOfWork unitOfWork)

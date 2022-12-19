@@ -12,5 +12,6 @@ internal static class AccessTokenResponseToSupplier
 			WebsiteUrl = response.HubDomain,
 			SourceId = response.HubId,
 			Source = Sources.HubSpot,
+			Name = response.HubDomain.Split('.').First(),
 		};
 }

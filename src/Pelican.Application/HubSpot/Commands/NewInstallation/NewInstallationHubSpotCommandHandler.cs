@@ -50,146 +50,94 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 		Result<Supplier> supplierResult = await _hubSpotAuthorizationService
 			.DecodeAccessTokenAsync(accessToken, cancellationToken);
 
-		if (supplierResult.IsFailure)
-		{
-			return supplierResult;
-		}
+		if (supplierResult.IsFailure) return supplierResult;
 
-		if (_unitOfWork.SupplierRepository.FindAll().Any(supplier => supplier.SourceId == supplierResult.Value.SourceId && supplier.Source == Sources.HubSpot))
+		if (_unitOfWork
+			.SupplierRepository
+			.FindAll()
+			.Any(supplier => supplier.SourceId == supplierResult.Value.SourceId && supplier.Source == Sources.HubSpot))
 		{
 			return Result.Failure(Error.AlreadyExists);
 		}
 
+		supplierResult.Value.RefreshToken = tokensResult.Value.RefreshToken;
+
+		await _unitOfWork
+			.SupplierRepository
+			.CreateAsync(supplierResult.Value, cancellationToken);
+
 		Result<List<AccountManager>> accountManagersResult = await _hubSpotAccountManagerService
 			.GetAsync(accessToken, cancellationToken);
 
-		Result<List<Contact>> contactsResult = await _hubSpotContactService
-			.GetAsync(accessToken, cancellationToken);
+		if (accountManagersResult.IsFailure) return accountManagersResult;
 
-		Result<List<Client>> clientsResult = await _hubSpotClientService
-			.GetAsync(accessToken, cancellationToken);
+		supplierResult.Value.AccountManagers = accountManagersResult.Value;
+
+		accountManagersResult
+			.Value
+			.ForEach(a => a.Supplier = supplierResult.Value);
+
+		await _unitOfWork
+			.AccountManagerRepository
+			.CreateRangeAsync(accountManagersResult.Value, cancellationToken);
+
+		await _unitOfWork.SaveAsync(cancellationToken);
 
 		Result<List<Deal>> dealsResult = await _hubSpotDealService
 			.GetAsync(accessToken, cancellationToken);
 
-		if (Result.FirstFailureOrSuccess(new Result[]
-				{
-					accountManagersResult,
-					contactsResult,
-					clientsResult,
-					dealsResult,
-				}) is Result result
-			&& result.IsFailure)
-		{
-			return result;
-		}
+		if (dealsResult.IsFailure) return dealsResult;
 
-		Supplier supplier = supplierResult.Value;
-		List<AccountManager> accountManagers = accountManagersResult.Value;
-		List<Contact> contacts = contactsResult.Value;
-		List<Client> clients = clientsResult.Value;
-		List<Deal> deals = dealsResult.Value;
+		dealsResult
+			.Value
+			.SelectMany(d => d.AccountManagerDeals)
+			.ToList()
+			.ForEach(ad => ad.AccountManager = null!);
 
-		supplier.RefreshToken = tokensResult.Value.RefreshToken;
+		_unitOfWork
+			.DealRepository
+			.AttachRange(dealsResult.Value);
 
-		accountManagers
-			.ForEach(accountManager =>
-			{
-				accountManager.Supplier = supplier;
-				accountManager.SupplierId = supplier.Id;
+		await _unitOfWork.SaveAsync(cancellationToken);
 
-				accountManager.AccountManagerDeals = deals
-					.Where(deal => deal.SourceOwnerId == accountManager.SourceId && deal.Source == Sources.HubSpot)?
-					.Select(deal => new AccountManagerDeal()
-					{
-						AccountManager = accountManager,
-						AccountManagerId = accountManager.Id,
-						SourceAccountManagerId = accountManager.SourceId,
-						Deal = deal,
-						DealId = deal.Id,
-						SourceDealId = deal.SourceId,
-						IsActive = true,
-					})
-					.ToList() ?? new List<AccountManagerDeal>();
-			});
+		Result<List<Contact>> contactsResult = await _hubSpotContactService
+			.GetAsync(accessToken, cancellationToken);
 
-		supplier.AccountManagers = accountManagers;
+		if (contactsResult.IsFailure) return contactsResult;
 
-		List<AccountManagerDeal> accountManagerDeals = accountManagers
-			.SelectMany(accountManager => accountManager.AccountManagerDeals)
-			.ToList();
+		contactsResult
+			.Value
+			.SelectMany(c => c.DealContacts)
+			.ToList()
+			.ForEach(dc => dc.Deal = null!);
 
-		deals
-			.ForEach(deal =>
-			{
-				deal.AccountManagerDeals = accountManagerDeals
-					.Where(accountManagerDeal => accountManagerDeal.SourceDealId == deal.SourceId && accountManagerDeal.Deal.Source == Sources.HubSpot)?
-					.ToList() ?? new List<AccountManagerDeal>();
+		_unitOfWork
+			.ContactRepository
+			.AttachRange(contactsResult.Value);
 
-				if (deal.Client is not null)
-				{
-					deal.Client = clients
-						.FirstOrDefault(client => client.SourceId == deal.Client.SourceId && deal.Source == Sources.HubSpot);
-				}
+		await _unitOfWork.SaveAsync(cancellationToken);
 
-				deal
-					.DealContacts?
-					.ToList()
-					.ForEach(dealContact =>
-					{
-						Contact contact = contacts
-							.First(contact => contact.SourceId == dealContact.SourceContactId && contact.Source == Sources.HubSpot);
+		Result<List<Client>> clientsResult = await _hubSpotClientService
+			.GetAsync(accessToken, cancellationToken);
 
-						dealContact.Contact = contact;
-						dealContact.ContactId = contact.Id;
-					});
-			});
+		if (clientsResult.IsFailure) return clientsResult;
 
-		clients
-			.ForEach(client =>
-			{
-				client.Deals = deals
-					.Where(deal => deal.Client?.SourceId == client.SourceId && client.Source == Sources.HubSpot)?
-					.ToList() ?? new List<Deal>();
+		clientsResult
+			.Value
+			.ForEach(c => c.Deals = dealsResult
+				.Value
+				.Where(d => c.Deals.Any(dd => dd.SourceId == d.SourceId))
+				.ToList());
 
-				client
-					.ClientContacts?
-					.ToList()
-					.ForEach(clientContact =>
-					{
-						Contact contact = contacts
-							.First(contact => contact.SourceId == clientContact.SourceContactId && contact.Source == Sources.HubSpot);
+		clientsResult
+			.Value
+			.SelectMany(c => c.ClientContacts)
+			.ToList()
+			.ForEach(cc => cc.Contact = null!);
 
-						clientContact.Contact = contact;
-						clientContact.ContactId = contact.Id;
-					});
-			});
-
-		List<DealContact> dealContacts = deals
-			.SelectMany(deal => deal.DealContacts)
-			.ToList();
-
-		List<ClientContact> clientContacts = clients
-			.SelectMany(client => client.ClientContacts)
-			.ToList();
-
-		contacts
-			.ForEach(contact =>
-			{
-				contact.DealContacts = dealContacts
-					.Where(dealContact => dealContact.SourceContactId == contact.SourceId && dealContact.Contact.Source == Sources.HubSpot)
-					.ToList();
-
-				contact.ClientContacts = clientContacts
-					.Where(clientContact => clientContact.SourceContactId == contact.SourceId && clientContact.Contact.Source == Sources.HubSpot)
-					.ToList();
-			});
-
-		await _unitOfWork.SupplierRepository.CreateAsync(supplier, cancellationToken);
-		await _unitOfWork.AccountManagerRepository.CreateRangeAsync(accountManagers, cancellationToken);
-		await _unitOfWork.DealRepository.CreateRangeAsync(deals, cancellationToken);
-		await _unitOfWork.ClientRepository.CreateRangeAsync(clients, cancellationToken);
-		await _unitOfWork.ContactRepository.CreateRangeAsync(contacts, cancellationToken);
+		_unitOfWork
+			.ClientRepository
+			.AttachRange(clientsResult.Value);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 

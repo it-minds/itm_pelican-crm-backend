@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Abstractions.HubSpot;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
@@ -12,8 +13,9 @@ namespace Pelican.Infrastructure.HubSpot.Services;
 internal sealed class HubSpotAccountManagerService : ServiceBase<HubSpotSettings>, IHubSpotOwnersService
 {
 	public HubSpotAccountManagerService(
-		IClient<HubSpotSettings> hubSpotClient)
-		: base(hubSpotClient)
+		IClient<HubSpotSettings> hubSpotClient,
+		IUnitOfWork unitOfWork)
+		: base(hubSpotClient, unitOfWork)
 	{ }
 
 	public async Task<Result<AccountManager>> GetByUserIdAsync(

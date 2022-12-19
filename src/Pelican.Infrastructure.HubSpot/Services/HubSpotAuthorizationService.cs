@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Infrastructure;
@@ -20,8 +19,9 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 	private readonly HubSpotSettings _hubSpotSettings;
 	public HubSpotAuthorizationService(
 		IClient<HubSpotSettings> hubSpotClient,
-		IOptions<HubSpotSettings> hubSpotSettings)
-		: base(hubSpotClient)
+		IOptions<HubSpotSettings> hubSpotSettings,
+		IUnitOfWork unitOfWork)
+		: base(hubSpotClient, unitOfWork)
 	{
 		_hubSpotSettings = hubSpotSettings.Value ?? throw new ArgumentNullException(nameof(hubSpotSettings));
 	}

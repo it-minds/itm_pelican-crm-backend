@@ -47,19 +47,32 @@ public class HubSpotAuthorizationServicesTests
 
 		_uut = new(
 			_hubSpotClientMock.Object,
-			_optionsMock.Object);
+			_optionsMock.Object, _unitOfWorkMock.Object);
 	}
 
 	[Fact]
 	public void HubSpotAuthorizationService_ClientNull_ThrowException()
 	{
 		// Act
-		var result = Record.Exception(() => new HubSpotAuthorizationService(null!, null!));
+		var result = Record.Exception(() => new HubSpotAuthorizationService(null!, null!, _unitOfWorkMock.Object));
 
 		// Assert
 		Assert.IsType<ArgumentNullException>(result);
 		Assert.Contains(
 			"client",
+			result.Message);
+	}
+
+	[Fact]
+	public void HubSpotAuthorizationService_UnitOfWorkNull_ThrowException()
+	{
+		// Act
+		var result = Record.Exception(() => new HubSpotAuthorizationService(_hubSpotClientMock.Object, null!, null!));
+
+		// Assert
+		Assert.IsType<ArgumentNullException>(result);
+		Assert.Contains(
+			"unitOfWork",
 			result.Message);
 	}
 
@@ -72,7 +85,7 @@ public class HubSpotAuthorizationServicesTests
 			.Returns((HubSpotSettings)null!);
 
 		// Act
-		var result = Record.Exception(() => new HubSpotAuthorizationService(_hubSpotClientMock.Object, _optionsMock.Object));
+		var result = Record.Exception(() => new HubSpotAuthorizationService(_hubSpotClientMock.Object, _optionsMock.Object, _unitOfWorkMock.Object));
 
 		// Assert
 		Assert.IsType<ArgumentNullException>(result);

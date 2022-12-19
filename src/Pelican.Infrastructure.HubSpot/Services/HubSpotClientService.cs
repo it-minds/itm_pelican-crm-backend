@@ -13,14 +13,11 @@ namespace Pelican.Infrastructure.HubSpot.Services;
 
 internal sealed class HubSpotClientService : ServiceBase<HubSpotSettings>, IHubSpotObjectService<Client>
 {
-	private readonly IUnitOfWork _unitOfWork;
 	public HubSpotClientService(
 		IClient<HubSpotSettings> hubSpotClient,
 		IUnitOfWork unitOfWork)
-		: base(hubSpotClient)
-	{
-		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-	}
+		: base(hubSpotClient, unitOfWork)
+	{ }
 
 	public async Task<Result<Client>> GetByIdAsync(
 		string accessToken,

@@ -1,4 +1,5 @@
 ﻿using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
@@ -13,23 +14,37 @@ namespace Pelican.Infrastructure.HubSpot.Test.Services;
 public class HubSpotAccountManagerServicesTests
 {
 	private readonly Mock<IClient<HubSpotSettings>> _hubSpotClientMock = new();
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly HubSpotAccountManagerService _uut;
 
 	public HubSpotAccountManagerServicesTests()
 	{
-		_uut = new HubSpotAccountManagerService(_hubSpotClientMock.Object);
+		_uut = new HubSpotAccountManagerService(_hubSpotClientMock.Object, _unitOfWorkMock.Object);
 	}
 
 	[Fact]
 	public void HubSpotAccountManagerService_ClientNull_ThrowException()
 	{
 		// Act
-		var result = Record.Exception(() => new HubSpotAccountManagerService(null!));
+		var result = Record.Exception(() => new HubSpotAccountManagerService(null!, _unitOfWorkMock.Object));
 
 		// Assert
 		Assert.IsType<ArgumentNullException>(result);
 		Assert.Contains(
 			"client",
+			result.Message);
+	}
+
+	[Fact]
+	public void HubSpotAccountManagerService_UnitOfWorkNull_ThrowException()
+	{
+		// Act
+		var result = Record.Exception(() => new HubSpotAccountManagerService(_hubSpotClientMock.Object, null!));
+
+		// Assert
+		Assert.IsType<ArgumentNullException>(result);
+		Assert.Contains(
+			"unitOfWork",
 			result.Message);
 	}
 

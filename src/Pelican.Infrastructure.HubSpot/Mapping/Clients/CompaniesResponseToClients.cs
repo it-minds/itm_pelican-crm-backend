@@ -1,13 +1,14 @@
 ﻿using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.Clients;
 
 internal static class CompaniesResponseToClients
 {
 	internal static async Task<List<Client>> ToClients(
-		this CompaniesResponse responses,
+		this PaginatedResponse<CompanyResponse> responses,
 		IUnitOfWork unitOfWork,
 		CancellationToken cancellationToken)
 	{

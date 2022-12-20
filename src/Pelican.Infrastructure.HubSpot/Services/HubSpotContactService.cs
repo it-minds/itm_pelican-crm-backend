@@ -4,6 +4,7 @@ using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 using Pelican.Infrastructure.HubSpot.Extensions;
 using Pelican.Infrastructure.HubSpot.Mapping.Contacts;
@@ -48,8 +49,8 @@ internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHub
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddContactQueryParams();
 
-		IResponse<ContactsResponse> response = await _client
-			.GetAsync<ContactsResponse>(request, cancellationToken);
+		IResponse<PaginatedResponse<ContactResponse>> response = await _client
+			.GetAsync<PaginatedResponse<ContactResponse>>(request, cancellationToken);
 
 		return await response
 			.GetResultWithUnitOfWork(

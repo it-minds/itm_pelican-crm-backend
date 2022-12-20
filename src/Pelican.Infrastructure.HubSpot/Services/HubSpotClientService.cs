@@ -4,7 +4,9 @@ using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Extensions;
 using Pelican.Infrastructure.HubSpot.Mapping.Clients;
 using RestSharp;
@@ -46,8 +48,8 @@ internal sealed class HubSpotClientService : ServiceBase<HubSpotSettings>, IHubS
 			.AddHeader("Authorization", $"Bearer {accessToken}")
 			.AddCompanyQueryParams();
 
-		IResponse<CompaniesResponse> response = await _client
-			.GetAsync<CompaniesResponse>(request, cancellationToken);
+		IResponse<PaginatedResponse<CompanyResponse>> response = await _client
+			.GetAsync<PaginatedResponse<CompanyResponse>>(request, cancellationToken);
 
 		return await response
 			.GetResultWithUnitOfWork(

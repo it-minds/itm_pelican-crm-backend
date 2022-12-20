@@ -5,6 +5,7 @@ using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Mapping.AccountManagers;
 using RestSharp;
 
@@ -41,8 +42,8 @@ internal sealed class HubSpotAccountManagerService : ServiceBase<HubSpotSettings
 		RestRequest request = new RestRequest("crm/v3/owners")
 			.AddHeader("Authorization", $"Bearer {accessToken}");
 
-		IResponse<OwnersResponse> response = await _client
-			.GetAsync<OwnersResponse>(request, cancellationToken);
+		IResponse<PaginatedResponse<OwnerResponse>> response = await _client
+			.GetAsync<PaginatedResponse<OwnerResponse>>(request, cancellationToken);
 
 		return response
 			.GetResult(OwnersResponseToAccountManagers.ToAccountManagers);

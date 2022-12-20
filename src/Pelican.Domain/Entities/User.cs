@@ -1,7 +1,4 @@
-﻿using Pelican.Domain.Enums;
-using Pelican.Domain.Primitives;
-
-namespace Pelican.Domain.Entities;
+﻿namespace Pelican.Domain.Entities;
 public abstract class User : Entity, ITimeTracked
 {
 	private string _name = string.Empty;

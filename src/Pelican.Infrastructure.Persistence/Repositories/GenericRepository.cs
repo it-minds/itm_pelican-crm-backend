@@ -45,7 +45,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 		CancellationToken cancellationToken = default)
 		=> await _pelicanContext
 			.Set<T>()
-			//.AsNoTracking()
+			.AsNoTracking()
 			.FirstOrDefaultAsync(expression);
 
 	public async Task<T> CreateAsync(
@@ -76,15 +76,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 			.Attach(entity);
 
 		return entity;
-	}
-
-	public IEnumerable<T> AttachRange(IEnumerable<T> entities)
-	{
-		_pelicanContext
-			.Set<T>()
-			.AttachRange(entities);
-
-		return entities;
 	}
 
 	public async Task<IEnumerable<T>> CreateRangeAsync(

@@ -78,8 +78,8 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			.ForEach(a => a.Supplier = supplierResult.Value);
 
 		await _unitOfWork
-			.AccountManagerRepository
-			.CreateRangeAsync(accountManagersResult.Value, cancellationToken);
+		   .AccountManagerRepository
+		   .CreateRangeAsync(accountManagersResult.Value, cancellationToken);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
@@ -94,9 +94,9 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			.ToList()
 			.ForEach(ad => ad.AccountManager = null!);
 
-		_unitOfWork
+		await _unitOfWork
 			.DealRepository
-			.AttachRange(dealsResult.Value);
+			.CreateRangeAsync(dealsResult.Value, cancellationToken);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
@@ -111,9 +111,9 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			.ToList()
 			.ForEach(dc => dc.Deal = null!);
 
-		_unitOfWork
+		await _unitOfWork
 			.ContactRepository
-			.AttachRange(contactsResult.Value);
+			.CreateRangeAsync(contactsResult.Value, cancellationToken);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
@@ -135,9 +135,9 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			.ToList()
 			.ForEach(cc => cc.Contact = null!);
 
-		_unitOfWork
+		await _unitOfWork
 			.ClientRepository
-			.AttachRange(clientsResult.Value);
+			.CreateRangeAsync(clientsResult.Value, cancellationToken);
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 

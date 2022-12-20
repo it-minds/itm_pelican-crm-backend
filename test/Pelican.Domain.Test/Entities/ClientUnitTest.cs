@@ -13,6 +13,26 @@ public class ClientUnitTest
 	};
 
 	[Fact]
+	public void SetOfficeLocation_InputNull_ValueNull()
+	{
+		// Act
+		_uut.OfficeLocation = null!;
+
+		//Assert
+		Assert.Null(_uut.OfficeLocation);
+	}
+
+	[Fact]
+	public void SetWebsite_InputNull_ValueNull()
+	{
+		// Act
+		_uut.Website = null!;
+
+		//Assert
+		Assert.Null(_uut.Website);
+	}
+
+	[Fact]
 	public void SetName_NameStringNotToLong_NameEqualToValueSet()
 	{
 		// Arrange

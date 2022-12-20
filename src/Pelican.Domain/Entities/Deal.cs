@@ -34,7 +34,7 @@ public class Deal : Entity, ITimeTracked
 	public string? Status
 	{
 		get => _status;
-		set => _status = value!.CheckAndShortenExceedingString(StringLengths.DealStatus);
+		set => _status = value?.CheckAndShortenExceedingString(StringLengths.DealStatus);
 	}
 
 	public string? Name

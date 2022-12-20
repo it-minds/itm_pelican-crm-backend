@@ -14,6 +14,56 @@ public class ContactTests
 	};
 
 	[Fact]
+	public void SetFirstName_InputNull_ValueNull()
+	{
+		// Act
+		_uut.FirstName = null!;
+
+		//Assert
+		Assert.Null(_uut.FirstName);
+	}
+
+	[Fact]
+	public void SetLastName_InputNull_ValueNull()
+	{
+		// Act
+		_uut.LastName = null!;
+
+		//Assert
+		Assert.Null(_uut.LastName);
+	}
+
+	[Fact]
+	public void SetPhoneNumber_InputNull_ValueNull()
+	{
+		// Act
+		_uut.PhoneNumber = null!;
+
+		//Assert
+		Assert.Null(_uut.PhoneNumber);
+	}
+
+	[Fact]
+	public void SetEmail_InputNull_ValueNull()
+	{
+		// Act
+		_uut.Email = null!;
+
+		//Assert
+		Assert.Null(_uut.Email);
+	}
+
+	[Fact]
+	public void SetJobTitle_InputNull_ValueNull()
+	{
+		// Act
+		_uut.JobTitle = null!;
+
+		//Assert
+		Assert.Null(_uut.JobTitle);
+	}
+
+	[Fact]
 	public void SetFirstName_FirstNameStringNotToLong_FirstnameEqualToValueSet()
 	{
 		// Arrange

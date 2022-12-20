@@ -1,11 +1,11 @@
 ﻿using Bogus;
-using Pelican.Domain.Entities;
+using Pelican.Domain.Entities.Users;
 using Xunit;
 
 namespace Pelican.Domain.Test.Entities;
-public class UserUnitTest
+public class StandardUserUnitTest
 {
-	private readonly User _uut = new();
+	private readonly StandardUser _uut = new();
 
 	[Fact]
 	public void SetName_NameStringNotToLong_NameEqualToValueSet()

@@ -1,12 +1,4 @@
-﻿using Pelican.Application.Abstractions.Data.Repositories;
-using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.HubSpot.Dtos;
-using Pelican.Domain;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Shared;
-
-namespace Pelican.Application.HubSpot.Commands.NewInstallation;
+﻿namespace Pelican.Application.HubSpot.Commands.NewInstallation;
 
 internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<NewInstallationHubSpotCommand>
 {

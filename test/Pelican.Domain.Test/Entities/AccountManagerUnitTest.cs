@@ -1,8 +1,4 @@
-﻿using Bogus;
-using Pelican.Domain.Entities;
-using Xunit;
-
-namespace Pelican.Domain.Test.Entities;
+﻿namespace Pelican.Domain.Test.Entities;
 public class AccountManagerUnitTest
 {
 	private readonly AccountManager _uut;

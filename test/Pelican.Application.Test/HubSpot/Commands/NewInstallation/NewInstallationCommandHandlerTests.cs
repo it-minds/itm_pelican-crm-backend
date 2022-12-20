@@ -1,14 +1,4 @@
-﻿using Moq;
-using Pelican.Application.Abstractions.Data.Repositories;
-using Pelican.Application.Abstractions.HubSpot;
-using Pelican.Application.HubSpot.Commands.NewInstallation;
-using Pelican.Application.HubSpot.Dtos;
-using Pelican.Domain;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Shared;
-using Xunit;
-
-namespace Pelican.Application.Test.HubSpot.Commands.NewInstallation;
+﻿namespace Pelican.Application.Test.HubSpot.Commands.NewInstallation;
 
 public class NewInstallationCommandHandlerTests
 {

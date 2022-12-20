@@ -25,12 +25,18 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 		IHubSpotObjectService<Deal> hubSpotDealService,
 		IUnitOfWork unitOfWork)
 	{
-		_hubSpotAccountManagerService = hubSpotAccountManagerService;
-		_hubSpotAuthorizationService = hubSpotAuthorizationService;
-		_hubSpotContactService = hubSpotContactService;
-		_hubSpotClientService = hubSpotClientService;
-		_hubSpotDealService = hubSpotDealService;
-		_unitOfWork = unitOfWork;
+		_hubSpotAccountManagerService = hubSpotAccountManagerService
+			?? throw new ArgumentNullException(nameof(hubSpotAccountManagerService));
+		_hubSpotAuthorizationService = hubSpotAuthorizationService
+			?? throw new ArgumentNullException(nameof(hubSpotAuthorizationService));
+		_hubSpotContactService = hubSpotContactService
+			?? throw new ArgumentNullException(nameof(hubSpotContactService));
+		_hubSpotClientService = hubSpotClientService
+			?? throw new ArgumentNullException(nameof(hubSpotClientService));
+		_hubSpotDealService = hubSpotDealService
+			 ?? throw new ArgumentNullException(nameof(hubSpotDealService));
+		_unitOfWork = unitOfWork
+			 ?? throw new ArgumentNullException(nameof(unitOfWork));
 	}
 
 	public async Task<Result> Handle(

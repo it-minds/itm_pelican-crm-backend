@@ -1,6 +1,4 @@
-﻿using Pelican.Domain.Enums;
-
-namespace Pelican.Domain.Entities.Users;
+﻿namespace Pelican.Domain.Entities.Users;
 public class AdminUser : User
 {
 	public AdminUser() { }

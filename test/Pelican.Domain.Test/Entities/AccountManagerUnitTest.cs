@@ -8,7 +8,7 @@ public class AccountManagerUnitTest
 	private readonly AccountManager _uut;
 	public AccountManagerUnitTest()
 	{
-		_uut = new AccountManager(Guid.NewGuid());
+		_uut = new AccountManager();
 	}
 
 	[Fact]

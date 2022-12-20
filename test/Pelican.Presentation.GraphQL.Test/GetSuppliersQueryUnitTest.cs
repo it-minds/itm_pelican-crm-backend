@@ -35,7 +35,7 @@ public class GetSuppliersQueryUnitTest
 
 		_mediatorMock
 			.Setup(x => x.Send(input, default))
-			.ReturnsAsync(new Supplier(id));
+			.ReturnsAsync(new Supplier() { Id = id });
 
 		//Act
 		var result = await uut.GetSupplierAsync(

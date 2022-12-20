@@ -16,7 +16,7 @@ internal static class OwnerResponseToAccountManager
 		{
 			throw new ArgumentNullException(nameof(response));
 		}
-		AccountManager result = new(Guid.NewGuid())
+		AccountManager result = new()
 		{
 			SourceId = response.Id,
 			SourceUserId = response.UserId,

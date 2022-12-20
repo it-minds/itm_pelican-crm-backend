@@ -100,7 +100,7 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 
 				accountManager.AccountManagerDeals = deals
 					.Where(deal => deal.SourceOwnerId == accountManager.SourceId && deal.Source == Sources.HubSpot)?
-					.Select(deal => new AccountManagerDeal(Guid.NewGuid())
+					.Select(deal => new AccountManagerDeal()
 					{
 						AccountManager = accountManager,
 						AccountManagerId = accountManager.Id,

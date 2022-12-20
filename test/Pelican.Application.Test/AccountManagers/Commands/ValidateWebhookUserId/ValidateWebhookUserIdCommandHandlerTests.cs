@@ -85,7 +85,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 			.Setup(u => u.AccountManagerRepository.FirstOrDefaultAsync(
 				It.IsAny<Expression<Func<AccountManager, bool>>>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new AccountManager(Guid.NewGuid()));
+			.ReturnsAsync(new AccountManager());
 
 		// Act 
 		var result = await _uut.Handle(command, default);
@@ -147,7 +147,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 			.Setup(u => u.SupplierRepository.FirstOrDefaultAsync(
 				It.IsAny<Expression<Func<Supplier, bool>>>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new Supplier(Guid.NewGuid())
+			.ReturnsAsync(new Supplier()
 			{
 				RefreshToken = REFRESH_TOKEN,
 			});
@@ -187,7 +187,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 			.Setup(u => u.SupplierRepository.FirstOrDefaultAsync(
 				It.IsAny<Expression<Func<Supplier, bool>>>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new Supplier(Guid.NewGuid())
+			.ReturnsAsync(new Supplier()
 			{
 				RefreshToken = REFRESH_TOKEN,
 			});
@@ -225,7 +225,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 		// Arrange
 		ValidateWebhookUserIdCommand command = new(1, 1);
 
-		AccountManager accountManager = new(Guid.NewGuid());
+		AccountManager accountManager = new();
 
 		_unitOfWorkMock
 			.Setup(u => u.AccountManagerRepository.FirstOrDefaultAsync(
@@ -237,7 +237,7 @@ public class ValidateWebhookUserIdCommandHandlerTests
 			.Setup(u => u.SupplierRepository.FirstOrDefaultAsync(
 				It.IsAny<Expression<Func<Supplier, bool>>>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new Supplier(Guid.NewGuid())
+			.ReturnsAsync(new Supplier()
 			{
 				RefreshToken = REFRESH_TOKEN,
 			});

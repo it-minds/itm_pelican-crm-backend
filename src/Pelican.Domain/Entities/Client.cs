@@ -6,9 +6,6 @@ public class Client : Entity, ITimeTracked
 {
 	private string _name = string.Empty;
 	private string? _website { get; set; }
-
-	public Client(Guid id) : base(id) { }
-
 	public Client() { }
 
 	public string Source { get; set; } = string.Empty;

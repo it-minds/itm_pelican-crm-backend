@@ -17,7 +17,7 @@ public class GetAccountManagerByIdQueryHandlerUnitTest
 		var guid = Guid.NewGuid();
 		GetAccountManagerByIdQuery getAccountManagerByIdQuery = new GetAccountManagerByIdQuery(guid);
 		List<AccountManager> resultList = new List<AccountManager>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new AccountManager(guid));
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new AccountManager() { Id = guid });
 		//Act
 		resultList.Add(await uut.Handle(getAccountManagerByIdQuery, cancellationToken));
 		//Assert

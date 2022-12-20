@@ -33,7 +33,7 @@ public class AccountManagersQueryUnitTest
 
 		_mediatorMock
 			.Setup(x => x.Send(input, default))
-			.ReturnsAsync(new AccountManager(id));
+			.ReturnsAsync(new AccountManager() { Id = id });
 
 		//Act
 		var result = await _uut.GetAccountManagerAsync(

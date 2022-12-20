@@ -415,7 +415,7 @@ public class ContactTests
 	public void UpdateDealContacts_EmptyExistingDealContactArgumentNotNull_NewDealContactAdded()
 	{
 		// Arrange
-		Deal newDeal = new(Guid.NewGuid())
+		Deal newDeal = new()
 		{
 			SourceId = "newHubSpotId",
 		};
@@ -438,7 +438,7 @@ public class ContactTests
 	public void UpdateDealContacts_OneExistingDealContactNotInArgument_DealContactsUpdated()
 	{
 		// Arrange
-		Deal existingDeal = new(Guid.NewGuid())
+		Deal existingDeal = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,
@@ -448,9 +448,9 @@ public class ContactTests
 
 		ICollection<DealContact> dealContacts = new List<DealContact>()
 		{
-			new(Guid.NewGuid())
+			new()
 			{
-				Deal=new(Guid.NewGuid()),
+				Deal=new(),
 			}
 		};
 
@@ -469,7 +469,7 @@ public class ContactTests
 	public void UpdateDealContacts_OneExistingDealContactMatchInArgument_NoDealContactAdded()
 	{
 		// Arrange
-		Deal existingDeal = new(Guid.NewGuid())
+		Deal existingDeal = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,
@@ -477,7 +477,7 @@ public class ContactTests
 
 		_uut.DealContacts.Add(DealContact.Create(existingDeal, _uut));
 
-		Deal newDeal = new(Guid.NewGuid())
+		Deal newDeal = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,
@@ -501,7 +501,7 @@ public class ContactTests
 	public void UpdateDealContacts_OneExistingDealContactMatchInArgument_DealContactStillActive()
 	{
 		// Arrange
-		Deal existingDeal = new(Guid.NewGuid())
+		Deal existingDeal = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,
@@ -509,7 +509,7 @@ public class ContactTests
 
 		_uut.DealContacts.Add(DealContact.Create(existingDeal, _uut));
 
-		Deal newDeal = new(Guid.NewGuid())
+		Deal newDeal = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,

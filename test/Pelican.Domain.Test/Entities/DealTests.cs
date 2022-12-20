@@ -112,7 +112,7 @@ public class DealTests
 
 		string value = "";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
@@ -135,7 +135,7 @@ public class DealTests
 
 		string value = "Hello";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
@@ -158,7 +158,7 @@ public class DealTests
 
 		string value = ticks.ToString();
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
@@ -176,7 +176,7 @@ public class DealTests
 
 		string value = "Hello";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
@@ -199,7 +199,7 @@ public class DealTests
 
 		string value = ticks.ToString();
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
@@ -217,7 +217,7 @@ public class DealTests
 
 		string value = "Hello";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
@@ -240,7 +240,7 @@ public class DealTests
 
 		string value = ticks.ToString();
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
@@ -258,7 +258,7 @@ public class DealTests
 		string name = "dealstage";
 		string value = "newStatus";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
@@ -276,7 +276,7 @@ public class DealTests
 		string name = "description";
 		string value = "newDescription";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
@@ -294,7 +294,7 @@ public class DealTests
 		string name = "dealname";
 		string value = "newName";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
@@ -360,7 +360,7 @@ public class DealTests
 	public void UpdateAccountManager_AccountManagerDealsEmptyArgNull_EmptyAccountManagerDeals()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		// Act
 		inputDeal.UpdateAccountManager(null);
@@ -375,7 +375,7 @@ public class DealTests
 	public void UpdateAccountManager_ActiveAccountManagerDealEmptyArgNull_NullActiveAccountManagerDeal()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 		inputDeal.AccountManagerDeals.Add(new() { IsActive = true });
 
 		// Act
@@ -393,7 +393,7 @@ public class DealTests
 	public void UpdateAccountManager_AccountManagerDealsEmptyArgNewAccountManagerDeal_AccountManagerDealAddedAsActive()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		AccountManager accountManager = new();
 
@@ -414,11 +414,11 @@ public class DealTests
 	public void UpdateAccountManager_AccountManagerDealsNotEmptyArgNewAccountManagerDeal_AccountManagerDealAddedAsActive()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid())
+		Deal inputDeal = new()
 		{
 			AccountManagerDeals = new List<AccountManagerDeal>()
 			{
-				new(Guid.NewGuid())
+				new()
 				{
 					IsActive = true,
 					SourceAccountManagerId = "first",
@@ -445,7 +445,7 @@ public class DealTests
 	public void SetAccountManager_AccountManagerDealsEmptyArgNull_EmptyAccountManagerDeals()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		// Act
 		inputDeal.SetAccountManager(null);
@@ -460,7 +460,7 @@ public class DealTests
 	public void SetAccountManager_AccountManagerDealsEmptyArgNewAccountManagerDeal_AccountManagerDealAddedAsActive()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		AccountManager accountManager = new();
 
@@ -481,7 +481,7 @@ public class DealTests
 	public void SetContacts_DealContactsEmptyArgsNull_DealContactsEmpty()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		// Act
 		inputDeal.SetContacts(null);
@@ -496,7 +496,7 @@ public class DealTests
 	public void SetContacts_DealContactsEmptyArgsEmptyList_DealContactsEmpty()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		// Act
 		inputDeal.SetContacts(new List<Contact>());
@@ -511,7 +511,7 @@ public class DealTests
 	public void SetContacts_DealContactsEmptyArgsNonEmptyList_DealContactsSet()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		// Act
 		inputDeal.SetContacts(new List<Contact>() { new() });
@@ -526,7 +526,7 @@ public class DealTests
 	public void SetContacts_DealContactsEmptyArgsListContainingNull_DealContactsSet()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		// Act
 		inputDeal.SetContacts(new List<Contact?>() { new(), null });
@@ -541,7 +541,7 @@ public class DealTests
 	public void SetClient_ArgNull_ClientAndClientIdNull()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		// Act
 		inputDeal.SetClient(null);
@@ -555,9 +555,9 @@ public class DealTests
 	public void SetClient_ArgNewClient_ClientAndClientIdSet()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
-		Client client = new(Guid.NewGuid());
+		Client client = new();
 		// Act
 		inputDeal.SetClient(client);
 

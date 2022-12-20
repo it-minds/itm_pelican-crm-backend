@@ -6,7 +6,7 @@ using Xunit;
 namespace Pelican.Domain.Test.Entities;
 public class ClientUnitTest
 {
-	private readonly Client _uut = new Client(Guid.NewGuid())
+	private readonly Client _uut = new Client()
 	{
 		SourceId = "uutHubSpotId",
 		Source = Sources.HubSpot
@@ -176,7 +176,7 @@ public class ClientUnitTest
 	public void UpdateClientContacts_EmptyExistingClientContactArgumentNotNull_NewClientContactAdded()
 	{
 		// Arrange
-		Contact newContact = new(Guid.NewGuid())
+		Contact newContact = new()
 		{
 			SourceId = "newHubSpotId",
 		};
@@ -199,7 +199,7 @@ public class ClientUnitTest
 	public void UpdateClientContacts_OneExistingClientContactNotInArgument_ClientContactsUpdated()
 	{
 		// Arrange
-		Contact existingContact = new(Guid.NewGuid())
+		Contact existingContact = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot
@@ -209,9 +209,9 @@ public class ClientUnitTest
 
 		ICollection<ClientContact> clientContacts = new List<ClientContact>()
 		{
-			new(Guid.NewGuid())
+			new()
 			{
-				Contact=new(Guid.NewGuid()),
+				Contact=new(),
 			}
 		};
 
@@ -235,7 +235,7 @@ public class ClientUnitTest
 	public void UpdateClientContacts_OneExistingClientContactMatchInArgument_NoClientContactAddedExistingClientContactStillActive()
 	{
 		// Arrange
-		Contact existingContact = new(Guid.NewGuid())
+		Contact existingContact = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,
@@ -243,7 +243,7 @@ public class ClientUnitTest
 
 		_uut.ClientContacts.Add(ClientContact.Create(_uut, existingContact));
 
-		Contact newContact = new(Guid.NewGuid())
+		Contact newContact = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,

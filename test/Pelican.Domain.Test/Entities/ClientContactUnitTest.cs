@@ -12,13 +12,13 @@ public class ClientContactUnitTest
 		const string CLIENT_HUBSPOTID = "clienthubspotid";
 		const string CONTACT_HUBSPOTID = "contacthubspotid";
 
-		Client client = new(Guid.NewGuid())
+		Client client = new()
 		{
 			SourceId = CLIENT_HUBSPOTID,
 			Source = Sources.HubSpot
 		};
 
-		Contact contact = new(Guid.NewGuid())
+		Contact contact = new()
 		{
 			SourceId = CONTACT_HUBSPOTID,
 			Source = Sources.HubSpot

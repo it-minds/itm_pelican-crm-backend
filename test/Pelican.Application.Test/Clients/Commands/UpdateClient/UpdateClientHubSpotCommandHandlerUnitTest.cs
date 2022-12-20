@@ -128,7 +128,7 @@ public class UpdateClientCommandHandlerTests
 		// Arrange
 		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
-		Supplier supplier = new(Guid.NewGuid())
+		Supplier supplier = new()
 		{
 			RefreshToken = "token",
 		};
@@ -179,7 +179,7 @@ public class UpdateClientCommandHandlerTests
 		// Arrange
 		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
-		Supplier supplier = new(Guid.NewGuid())
+		Supplier supplier = new()
 		{
 			RefreshToken = "token",
 		};
@@ -238,14 +238,14 @@ public class UpdateClientCommandHandlerTests
 		// Arrange
 		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
-		Supplier supplier = new(Guid.NewGuid())
+		Supplier supplier = new()
 		{
 			RefreshToken = "token",
 		};
 		Mock<Client> clientMock = new();
 		ClientContact clientContact = new();
 		List<ClientContact> clientContactList = new();
-		Contact contact = new(Guid.NewGuid())
+		Contact contact = new()
 		{
 			SourceId = "HubSpotId"
 		};
@@ -455,7 +455,7 @@ public class UpdateClientCommandHandlerTests
 				It.IsAny<string>(),
 				It.IsAny<long>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new Client(Guid.NewGuid()));
+			.ReturnsAsync(new Client());
 
 		_unitOfWorkMock
 			.Setup(u => u
@@ -604,7 +604,7 @@ public class UpdateClientCommandHandlerTests
 			Website = testWebsite,
 			ClientContacts = new List<ClientContact>()
 			{
-				new ClientContact(Guid.NewGuid())
+				new ClientContact()
 			},
 		};
 
@@ -772,7 +772,7 @@ public class UpdateClientCommandHandlerTests
 				It.IsAny<string>(),
 				It.IsAny<long>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new Client(Guid.NewGuid())
+			.ReturnsAsync(new Client()
 			{
 				Deals = dealList,
 			});

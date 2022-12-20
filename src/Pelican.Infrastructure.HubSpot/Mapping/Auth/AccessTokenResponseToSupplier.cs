@@ -7,7 +7,7 @@ namespace Pelican.Infrastructure.HubSpot.Mapping.Auth;
 internal static class AccessTokenResponseToSupplier
 {
 	internal static Supplier ToSupplier(this AccessTokenResponse response)
-		=> new(Guid.NewGuid())
+		=> new()
 		{
 			WebsiteUrl = response.HubDomain,
 			SourceId = response.HubId,

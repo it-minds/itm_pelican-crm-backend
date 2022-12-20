@@ -34,7 +34,7 @@ public class ClientsQueryUnitTest
 
 		_mediatorMock
 			.Setup(x => x.Send(input, default))
-			.ReturnsAsync(new Client(id));
+			.ReturnsAsync(new Client() { Id = id });
 
 		//Act
 		var result = await _uut.GetClientAsync(

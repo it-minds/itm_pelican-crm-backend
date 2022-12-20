@@ -71,7 +71,7 @@ public class DeleteClientHubSpotCommandHandlerUnitTest
 	{
 		//Arrange
 		DeleteClientHubSpotCommand deleteClientCommand = new(1);
-		Client client = new(Guid.NewGuid());
+		Client client = new();
 		_fakeUnitOfWork.Setup(x => x
 			.ClientRepository
 			.FindByCondition(It.IsAny<Expression<Func<Client, bool>>>()))

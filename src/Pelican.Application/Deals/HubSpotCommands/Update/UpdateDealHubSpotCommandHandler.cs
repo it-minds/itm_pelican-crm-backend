@@ -51,18 +51,16 @@ internal sealed class UpdateDealHubSpotCommandHandler : ICommandHandler<UpdateDe
 
 		if ((deal.LastUpdatedAt ?? deal.CreatedAt) <= command.UpdateTime)
 		{
+			deal.UpdateProperty(
+					command.PropertyName,
+					command.PropertyValue);
+
 			if (command.PropertyName == "hs_all_owner_ids")
 			{
 				await UpdateAccountManagerDealAsync(
 					deal,
 					command.PropertyValue,
 					cancellationToken);
-			}
-			else
-			{
-				deal.UpdateProperty(
-					command.PropertyName,
-					command.PropertyValue);
 			}
 		}
 		else

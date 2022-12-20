@@ -572,14 +572,15 @@ public class DealTests
 	}
 
 	[Theory]
-	[InlineData(12, 12, "testDealStatus", 12, "testName", "testDescription")]
+	[InlineData(12, 12, "testDealStatus", 12, "testName", "testDescription", "testSourceOwnerId")]
 	public void UpdatePropertiesFromDeal_PropertiesSet(
 		long testEndDate,
 		long testStartDate,
 		string testDealStatus,
 		long testLastContactDate,
 		string testName,
-		string testDescription)
+		string testDescription,
+		string testSourceOwnerId)
 	{
 		//Arrange
 		Mock<Deal> dealMock = new();
@@ -589,6 +590,7 @@ public class DealTests
 		dealMock.Object.LastContactDate = testLastContactDate;
 		dealMock.Object.Name = testName;
 		dealMock.Object.Description = testDescription;
+		dealMock.Object.SourceOwnerId = testSourceOwnerId;
 
 		//Act
 		_uut.UpdatePropertiesFromDeal(dealMock.Object);
@@ -600,5 +602,6 @@ public class DealTests
 		Assert.Equal(testLastContactDate, _uut.LastContactDate);
 		Assert.Equal(testName, _uut.Name);
 		Assert.Equal(testDescription, _uut.Description);
+		Assert.Equal(testSourceOwnerId, _uut.SourceOwnerId);
 	}
 }

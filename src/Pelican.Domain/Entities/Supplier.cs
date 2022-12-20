@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Primitives;
+﻿using Pelican.Domain.Extensions;
+using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
 
@@ -22,12 +23,7 @@ public class Supplier : Entity, ITimeTracked
 	public string? Name
 	{
 		get => _name;
-		set
-		{
-			_name = value?.Length > StringLengths.Name
-				? value.Substring(0, StringLengths.Name - 3) + ("...")
-				: value;
-		}
+		set => _name = value?.CheckAndShortenExceedingString(StringLengths.Name);
 	}
 	public string? PictureUrl { get; set; }
 
@@ -35,55 +31,31 @@ public class Supplier : Entity, ITimeTracked
 	public string? PhoneNumber
 	{
 		get => _phoneNumber;
-		set
-		{
-			_phoneNumber = value?.Length > StringLengths.PhoneNumber
-				? value.Substring(0, StringLengths.PhoneNumber - 3) + ("...")
-				: value;
-		}
+		set => _phoneNumber = value?.CheckAndShortenExceedingString(StringLengths.PhoneNumber);
 	}
 	public string? Email
 	{
 		get => _email;
-		set
-		{
-			_email = value?.Length > StringLengths.Email
-				? value.Substring(0, StringLengths.Email - 3) + ("...")
-				: value;
-		}
+		set => _email = value?.CheckAndShortenExceedingString(StringLengths.Email);
 	}
 
 	public string? LinkedInUrl
 	{
 		get => _linkedInUrl;
-		set
-		{
-			_linkedInUrl = value?.Length > StringLengths.Url
-				? value.Substring(0, StringLengths.Url - 3) + ("...")
-				: value;
-		}
+		set => _linkedInUrl = value?.CheckAndShortenExceedingString(StringLengths.Url);
 	}
 	public string? WebsiteUrl
 	{
 		get => _websiteUrl;
-		set
-		{
-			_websiteUrl = value?.Length > StringLengths.Url
-				? value.Substring(0, StringLengths.Url - 3) + ("...")
-				: value;
-		}
+		set => _websiteUrl = value?.CheckAndShortenExceedingString(StringLengths.Url);
 	}
 
 	public string? OfficeLocation
 	{
 		get => _officeLocation;
-		set
-		{
-			_officeLocation = value?.Length > StringLengths.OfficeLocation
-				? value.Substring(0, StringLengths.OfficeLocation - 3) + ("...")
-				: value;
-		}
+		set => _officeLocation = value?.CheckAndShortenExceedingString(StringLengths.OfficeLocation);
 	}
+
 	public string? PipedriveDomain { get; set; }
 
 	public ICollection<AccountManager> AccountManagers { get; set; } = new List<AccountManager>();

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using HotChocolate;
+﻿using HotChocolate;
+using Pelican.Domain.Extensions;
 using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
@@ -31,41 +31,31 @@ public class Contact : Entity, ITimeTracked
 	public string? FirstName
 	{
 		get => _firstName;
-		set => _firstName = value?.Length > StringLengths.Name
-			? value[..(StringLengths.Name - 3)] + "..."
-			: value;
+		set => _firstName = value?.CheckAndShortenExceedingString(StringLengths.Name);
 	}
 
 	public string? LastName
 	{
 		get => _lastName;
-		set => _lastName = value?.Length > StringLengths.Name
-			? value[..(StringLengths.Name - 3)] + "..."
-			: value;
+		set => _lastName = value?.CheckAndShortenExceedingString(StringLengths.Name);
 	}
 
 	public string? PhoneNumber
 	{
 		get => _phoneNumber;
-		set => _phoneNumber = value?.Length > StringLengths.PhoneNumber
-			? value[..(StringLengths.PhoneNumber - 3)] + "..."
-			: value;
+		set => _phoneNumber = value?.CheckAndShortenExceedingString(StringLengths.PhoneNumber);
 	}
 
 	public string? Email
 	{
 		get => _email;
-		set => _email = value?.Length > StringLengths.Email
-			? value[..(StringLengths.Email - 3)] + "..."
-			: value;
+		set => _email = value?.CheckAndShortenExceedingString(StringLengths.Email);
 	}
 
 	public string? JobTitle
 	{
 		get => _jobTitle;
-		set => _jobTitle = value?.Length > StringLengths.JobTitle
-			? value[..(StringLengths.JobTitle - 3)] + "..."
-			: value;
+		set => _jobTitle = value?.CheckAndShortenExceedingString(StringLengths.JobTitle);
 	}
 
 	[GraphQLIgnore]

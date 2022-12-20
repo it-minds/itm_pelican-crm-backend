@@ -1,7 +1,4 @@
-﻿using HotChocolate;
-using Pelican.Domain.Primitives;
-
-namespace Pelican.Domain.Entities;
+﻿namespace Pelican.Domain.Entities;
 public class Deal : Entity, ITimeTracked
 {
 	private string? _name;
@@ -37,25 +34,19 @@ public class Deal : Entity, ITimeTracked
 	public string? Status
 	{
 		get => _status;
-		set => _status = value!.Length > StringLengths.DealStatus
-			? value[..(StringLengths.DealStatus - 3)] + "..."
-			: value;
+		set => _status = value!.CheckAndShortenExceedingString(StringLengths.DealStatus);
 	}
 
 	public string? Name
 	{
 		get => _name;
-		set => _name = value?.Length > StringLengths.DealName
-			? value[..(StringLengths.DealName - 3)] + "..."
-			: value;
+		set => _name = value?.CheckAndShortenExceedingString(StringLengths.DealName);
 	}
 
 	public string? Description
 	{
 		get => _description;
-		set => _description = value?.Length > StringLengths.DealDescription
-			? value[..(StringLengths.DealDescription - 3)] + "..."
-			: value;
+		set => _description = value?.CheckAndShortenExceedingString(StringLengths.DealDescription);
 	}
 
 	public AccountManagerDeal? ActiveAccountManagerDeal

@@ -21,4 +21,20 @@ public class UserUnitTest
 		Assert.Equal(StringLengths.Name, _uut.Name!.Length);
 		Assert.Equal(propertyValue, _uut.Name);
 	}
+
+	[Fact]
+	public void SetName_NameStringToLong_NameShortenedAndAppendedWithThreeDots()
+	{
+		// Arrange
+		Faker faker = new();
+		string propertyValue = faker.Lorem.Letter(StringLengths.Name * 2);
+
+		// Act
+		_uut.Name = propertyValue;
+
+		// Assert
+
+		Assert.Equal(StringLengths.Name, _uut.Name!.Length);
+		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3) + "...", _uut.Name);
+	}
 }

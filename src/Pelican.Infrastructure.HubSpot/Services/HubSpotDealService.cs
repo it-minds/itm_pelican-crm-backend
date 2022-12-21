@@ -57,12 +57,9 @@ internal sealed class HubSpotDealService : ServiceBase<HubSpotSettings>, IHubSpo
 			.Select(t => t.Result)
 			.ToArray();
 
-		if ((Result.FirstFailureOrSuccess(results) is Result result) && result.IsFailure)
-		{
-			return (Result<List<Deal>>)result;
-		}
-
-		return results.SelectMany(r => r.Value).ToList();
+		return Result.FirstFailureOrSuccess(results) is Result result && result.IsFailure
+			? (Result<List<Deal>>)result
+			: results.SelectMany(r => r.Value).ToList();
 	}
 
 	private async IAsyncEnumerable<IResponse<PaginatedResponse<DealResponse>>> GetAllPages(

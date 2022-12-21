@@ -47,7 +47,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 		string accessToken,
 		CancellationToken cancellationToken)
 	{
-		RestRequest request = new RestRequest($"oauth/v1/access-tokens/{accessToken}");
+		RestRequest request = new($"oauth/v1/access-tokens/{accessToken}");
 
 		IResponse<AccessTokenResponse> response = await _client
 			.GetAsync<AccessTokenResponse>(request, cancellationToken);

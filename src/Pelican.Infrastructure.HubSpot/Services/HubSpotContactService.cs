@@ -56,12 +56,9 @@ internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHub
 			.Select(t => t.Result)
 			.ToArray();
 
-		if ((Result.FirstFailureOrSuccess(results) is Result result) && result.IsFailure)
-		{
-			return (Result<List<Contact>>)result;
-		}
-
-		return results.SelectMany(r => r.Value).ToList();
+		return Result.FirstFailureOrSuccess(results) is Result result && result.IsFailure
+			? (Result<List<Contact>>)result
+			: results.SelectMany(r => r.Value).ToList();
 	}
 
 

@@ -4,6 +4,7 @@ using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Services;
@@ -112,17 +113,17 @@ public class HubSpotContactServicesTests
 	public async Task GetAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		/// Arrange
-		Mock<IResponse<ContactsResponse>> responseMock = new();
+		Mock<IResponse<PaginatedResponse<ContactResponse>>> responseMock = new();
 
 		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactsResponse>(
+			.Setup(client => client.GetAsync<PaginatedResponse<ContactResponse>>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
 			.Setup(r => r.GetResultWithUnitOfWork(
-				It.IsAny<Func<ContactsResponse, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
+				It.IsAny<Func<PaginatedResponse<ContactResponse>, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Failure<List<Contact>>(Error.NullValue));
@@ -138,19 +139,19 @@ public class HubSpotContactServicesTests
 	public async Task GetAsync_ClientReturnsSuccess_ReturnSuccess()
 	{
 		/// Arrange
-		Mock<IResponse<ContactsResponse>> responseMock = new();
+		Mock<IResponse<PaginatedResponse<ContactResponse>>> responseMock = new();
 
 		List<Contact> Contacts = new();
 
 		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactsResponse>(
+			.Setup(client => client.GetAsync<PaginatedResponse<ContactResponse>>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
 			.Setup(r => r.GetResultWithUnitOfWork(
-				It.IsAny<Func<ContactsResponse, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
+				It.IsAny<Func<PaginatedResponse<ContactResponse>, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Contacts);

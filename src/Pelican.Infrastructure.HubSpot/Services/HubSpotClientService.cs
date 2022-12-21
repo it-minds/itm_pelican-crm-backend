@@ -55,12 +55,9 @@ internal sealed class HubSpotClientService : ServiceBase<HubSpotSettings>, IHubS
 			.Select(t => t.Result)
 			.ToArray();
 
-		if ((Result.FirstFailureOrSuccess(results) is Result result) && result.IsFailure)
-		{
-			return (Result<List<Client>>)result;
-		}
-
-		return results.SelectMany(r => r.Value).ToList();
+		return Result.FirstFailureOrSuccess(results) is Result result && result.IsFailure
+			? (Result<List<Client>>)result
+			: results.SelectMany(r => r.Value).ToList();
 	}
 
 	private async IAsyncEnumerable<IResponse<PaginatedResponse<CompanyResponse>>> GetAllPages(

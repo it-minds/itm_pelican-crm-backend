@@ -1,5 +1,6 @@
 ﻿using Pelican.Domain;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Mapping.AccountManagers;
 using Xunit;
 
@@ -22,7 +23,7 @@ public class OwnersResponseToAccountManagersTests
 		UserId = USERID,
 	};
 
-	readonly OwnersResponse responses = new();
+	readonly PaginatedResponse<OwnerResponse> responses = new();
 
 	[Fact]
 	public void ToAccountManagers_ArgResultsNull_ThrowException()

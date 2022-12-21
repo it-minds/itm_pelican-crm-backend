@@ -5,6 +5,7 @@ using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Services;
 using RestSharp;
 using Xunit;
@@ -108,17 +109,17 @@ public class HubSpotClientServicesTests
 	public async Task GetAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		/// Arrange
-		Mock<IResponse<CompaniesResponse>> responseMock = new();
+		Mock<IResponse<PaginatedResponse<CompanyResponse>>> responseMock = new();
 
 		_hubSpotClientMock
-			.Setup(client => client.GetAsync<CompaniesResponse>(
+			.Setup(client => client.GetAsync<PaginatedResponse<CompanyResponse>>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
 			.Setup(r => r.GetResultWithUnitOfWork(
-				It.IsAny<Func<CompaniesResponse, IUnitOfWork, CancellationToken, Task<List<Client>>>>(),
+				It.IsAny<Func<PaginatedResponse<CompanyResponse>, IUnitOfWork, CancellationToken, Task<List<Client>>>>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Failure<List<Client>>(Error.NullValue));
@@ -134,12 +135,12 @@ public class HubSpotClientServicesTests
 	public async Task GetAsync_ClientReturnsSuccess_ReturnSuccess()
 	{
 		/// Arrange
-		Mock<IResponse<CompaniesResponse>> responseMock = new();
+		Mock<IResponse<PaginatedResponse<CompanyResponse>>> responseMock = new();
 
 		List<Client> Clients = new();
 
 		_hubSpotClientMock
-			.Setup(client => client.GetAsync<CompaniesResponse>(
+			.Setup(client => client.GetAsync<PaginatedResponse<CompanyResponse>>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(responseMock.Object);
@@ -147,7 +148,7 @@ public class HubSpotClientServicesTests
 
 		responseMock
 			.Setup(r => r.GetResultWithUnitOfWork(
-				It.IsAny<Func<CompaniesResponse, IUnitOfWork, CancellationToken, Task<List<Client>>>>(),
+				It.IsAny<Func<PaginatedResponse<CompanyResponse>, IUnitOfWork, CancellationToken, Task<List<Client>>>>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success(Clients));

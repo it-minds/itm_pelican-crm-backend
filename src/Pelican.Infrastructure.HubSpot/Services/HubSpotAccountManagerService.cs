@@ -9,7 +9,6 @@ using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Extensions;
 using Pelican.Infrastructure.HubSpot.Mapping.AccountManagers;
-using Pelican.Infrastructure.HubSpot.Mapping.Deals;
 using RestSharp;
 
 namespace Pelican.Infrastructure.HubSpot.Services;
@@ -50,12 +49,9 @@ internal sealed class HubSpotAccountManagerService : ServiceBase<HubSpotSettings
 					OwnersResponseToAccountManagers.ToAccountManagers))
 			.ToArray();
 
-		if ((Result.FirstFailureOrSuccess(results) is Result result) && result.IsFailure)
-		{
-			return (Result<List<AccountManager>>)result;
-		}
-
-		return results.SelectMany(r => r.Value).ToList();
+		return Result.FirstFailureOrSuccess(results) is Result result && result.IsFailure
+			? (Result<List<AccountManager>>)result
+			: results.SelectMany(r => r.Value).ToList();
 	}
 
 	private async IAsyncEnumerable<IResponse<PaginatedResponse<OwnerResponse>>> GetAllPages(

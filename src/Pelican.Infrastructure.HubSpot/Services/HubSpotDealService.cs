@@ -1,13 +1,7 @@
-﻿using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using Azure.Core;
-using HotChocolate.Configuration;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+﻿using System.Runtime.CompilerServices;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.HubSpot;
 using Pelican.Application.Abstractions.Infrastructure;
-using Pelican.Application.RestSharp;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
@@ -63,9 +57,9 @@ internal sealed class HubSpotDealService : ServiceBase<HubSpotSettings>, IHubSpo
 			.Select(t => t.Result)
 			.ToArray();
 
-		if (Result.FirstFailureOrSuccess(results) is Result<List<Deal>> result)
+		if ((Result.FirstFailureOrSuccess(results) is Result result) && result.IsFailure)
 		{
-			return result;
+			return (Result<List<Deal>>)result;
 		}
 
 		return results.SelectMany(r => r.Value).ToList();
@@ -88,7 +82,7 @@ internal sealed class HubSpotDealService : ServiceBase<HubSpotSettings>, IHubSpo
 					request,
 					cancellationToken);
 
-			after = responses.After<DealResponse>();
+			after = responses.After();
 
 			yield return responses;
 		}

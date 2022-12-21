@@ -1,13 +1,10 @@
-﻿using HotChocolate.AspNetCore.Authorization;
-using MediatR;
+﻿using MediatR;
 using Pelican.Application.Clients.Queries.GetClientById;
 using Pelican.Application.Clients.Queries.GetClients;
-using Pelican.Domain;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Presentation.GraphQL.Clients;
 
-[Authorize(Roles = new[] { Roles.Admin, Roles.Standard })]
 [ExtendObjectType("Query")]
 public class ClientsQuery
 {

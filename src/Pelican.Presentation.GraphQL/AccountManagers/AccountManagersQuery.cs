@@ -1,13 +1,10 @@
-﻿using HotChocolate.AspNetCore.Authorization;
-using MediatR;
+﻿using MediatR;
 using Pelican.Application.AccountManagers.Queries.GetAccountManagerById;
 using Pelican.Application.AccountManagers.Queries.GetAccountManagers;
-using Pelican.Domain;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Presentation.GraphQL.AccountManagers;
 
-[Authorize(Roles = new[] { Roles.Admin, Roles.Standard })]
 [ExtendObjectType("Query")]
 public class AccountManagersQuery
 {

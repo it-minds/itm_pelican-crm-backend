@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Primitives;
+﻿using Pelican.Domain.Enums;
+using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
 public abstract class User : Entity, ITimeTracked
@@ -16,8 +17,7 @@ public abstract class User : Entity, ITimeTracked
 				: value;
 		}
 	}
-	//TODO re add this line when RoleEnum has been added
-	//public RoleEnum Role { get; set; }
+	public RoleEnum Role { get; set; }
 	public string SSOTokenId { get; set; } = string.Empty;
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }

@@ -51,8 +51,44 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			return tokensResult;
 		}
 
-		string accessToken = tokensResult.Value.AccessToken;
+		Result<Supplier> supplierResult = await GetAndCreateSupplierAsync(tokensResult.Value.AccessToken, tokensResult.Value.RefreshToken, cancellationToken);
 
+		if (supplierResult.IsFailure)
+		{
+			return supplierResult;
+		}
+
+		Result result = await GetAndCreateAccountManagersAsync(tokensResult.Value.AccessToken, supplierResult.Value, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result;
+		}
+
+		Result<List<Deal>> dealsResult = await GetAndCreateDealsAsync(tokensResult.Value.AccessToken, cancellationToken);
+
+		if (dealsResult.IsFailure)
+		{
+			return dealsResult;
+		}
+
+		result = await GetAndCreateContactsAsync(tokensResult.Value.AccessToken, cancellationToken);
+
+		if (result.IsFailure)
+		{
+			return result;
+		}
+
+		result = await GetAndCreateClientsAsync(tokensResult.Value.AccessToken, dealsResult.Value, cancellationToken);
+
+		return result;
+	}
+
+	private async Task<Result<Supplier>> GetAndCreateSupplierAsync(
+		string accessToken,
+		string refreshToken,
+		CancellationToken cancellationToken)
+	{
 		Result<Supplier> supplierResult = await _hubSpotAuthorizationService
 			.DecodeAccessTokenAsync(accessToken, cancellationToken);
 
@@ -66,14 +102,23 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			.FindAll()
 			.Any(supplier => supplier.SourceId == supplierResult.Value.SourceId && supplier.Source == Sources.HubSpot))
 		{
-			return Result.Failure(Error.AlreadyExists);
+			return Result.Failure<Supplier>(Error.AlreadyExists);
 		}
 
-		supplierResult.Value.RefreshToken = tokensResult.Value.RefreshToken;
+		supplierResult.Value.RefreshToken = refreshToken;
 
 		await _unitOfWork
 			.SupplierRepository
 			.CreateAsync(supplierResult.Value, cancellationToken);
+
+		return supplierResult;
+	}
+
+	private async Task<Result> GetAndCreateAccountManagersAsync(
+		string accessToken,
+		Supplier supplier,
+		CancellationToken cancellationToken)
+	{
 
 		Result<List<AccountManager>> accountManagersResult = await _hubSpotAccountManagerService
 			.GetAsync(accessToken, cancellationToken);
@@ -83,11 +128,9 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 			return accountManagersResult;
 		}
 
-		supplierResult.Value.AccountManagers = accountManagersResult.Value;
-
 		accountManagersResult
 			.Value
-			.ForEach(a => a.Supplier = supplierResult.Value);
+			.ForEach(a => a.Supplier = supplier);
 
 		await _unitOfWork
 		   .AccountManagerRepository
@@ -95,6 +138,13 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
+		return Result.Success();
+	}
+
+	private async Task<Result<List<Deal>>> GetAndCreateDealsAsync(
+		string accessToken,
+		CancellationToken cancellationToken)
+	{
 		Result<List<Deal>> dealsResult = await _hubSpotDealService
 			.GetAsync(accessToken, cancellationToken);
 
@@ -115,6 +165,13 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
+		return dealsResult;
+	}
+
+	private async Task<Result> GetAndCreateContactsAsync(
+		string accessToken,
+		CancellationToken cancellationToken)
+	{
 		Result<List<Contact>> contactsResult = await _hubSpotContactService
 			.GetAsync(accessToken, cancellationToken);
 
@@ -135,6 +192,14 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
+		return Result.Success();
+	}
+
+	private async Task<Result> GetAndCreateClientsAsync(
+		string accessToken,
+		List<Deal> deals,
+		CancellationToken cancellationToken)
+	{
 		Result<List<Client>> clientsResult = await _hubSpotClientService
 			.GetAsync(accessToken, cancellationToken);
 
@@ -145,8 +210,7 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 
 		clientsResult
 			.Value
-			.ForEach(c => c.Deals = dealsResult
-				.Value
+			.ForEach(c => c.Deals = deals
 				.Where(d => c.Deals.Any(dd => dd.SourceId == d.SourceId))
 				.ToList());
 

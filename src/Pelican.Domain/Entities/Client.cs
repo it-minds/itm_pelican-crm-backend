@@ -1,4 +1,5 @@
 ﻿using HotChocolate;
+using Pelican.Domain.Extensions;
 using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
@@ -13,12 +14,7 @@ public class Client : Entity, ITimeTracked
 	public string Name
 	{
 		get => _name;
-		set
-		{
-			_name = value.Length > StringLengths.Name
-				? value.Substring(0, StringLengths.Name - 3) + ("...")
-				: value;
-		}
+		set => _name = value.CheckAndShortenExceedingString(StringLengths.Name);
 	}
 
 	public string SourceId { get; set; } = string.Empty;
@@ -28,12 +24,7 @@ public class Client : Entity, ITimeTracked
 	public string? OfficeLocation
 	{
 		get => _officeLocation;
-		set
-		{
-			_officeLocation = value?.Length > StringLengths.OfficeLocation
-				? value.Substring(0, StringLengths.OfficeLocation - 3) + ("...")
-				: value;
-		}
+		set => _officeLocation = value?.CheckAndShortenExceedingString(StringLengths.OfficeLocation);
 	}
 
 	public ICollection<Deal> Deals { get; set; } = new List<Deal>();
@@ -47,12 +38,7 @@ public class Client : Entity, ITimeTracked
 	public string? Website
 	{
 		get => _website;
-		set
-		{
-			_website = value?.Length > StringLengths.Url
-				? value.Substring(0, StringLengths.Url - 3) + ("...")
-				: value;
-		}
+		set => _website = value?.CheckAndShortenExceedingString(StringLengths.Url);
 	}
 
 	[GraphQLIgnore]

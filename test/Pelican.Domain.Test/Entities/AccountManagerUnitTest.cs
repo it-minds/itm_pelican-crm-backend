@@ -12,6 +12,26 @@ public class AccountManagerUnitTest
 	}
 
 	[Fact]
+	public void SetPhoneNumber_InputNull_ValueNull()
+	{
+		// Act
+		_uut.PhoneNumber = null!;
+
+		//Assert
+		Assert.Null(_uut.PhoneNumber);
+	}
+
+	[Fact]
+	public void SetLinkedinUrl_InputNull_ValueNull()
+	{
+		// Act
+		_uut.LinkedInUrl = null!;
+
+		//Assert
+		Assert.Null(_uut.PhoneNumber);
+	}
+
+	[Fact]
 	public void SetFirstName_FirstNameStringNotToLong_FirstnameEqualToValueSet()
 	{
 		// Arrange

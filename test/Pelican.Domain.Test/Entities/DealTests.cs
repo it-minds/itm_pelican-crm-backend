@@ -12,6 +12,36 @@ public class DealTests
 	};
 
 	[Fact]
+	public void SetName_InputNull_ValueNull()
+	{
+		// Act
+		_uut.Name = null!;
+
+		//Assert
+		Assert.Null(_uut.Name);
+	}
+
+	[Fact]
+	public void SetDescription_InputNull_ValueNull()
+	{
+		// Act
+		_uut.Description = null!;
+
+		//Assert
+		Assert.Null(_uut.Description);
+	}
+
+	[Fact]
+	public void SetStatus_InputNull_ValueNull()
+	{
+		// Act
+		_uut.Status = null!;
+
+		//Assert
+		Assert.Null(_uut.Status);
+	}
+
+	[Fact]
 	public void SetName_NameStringNotToLong_nameEqualToValueSet()
 	{
 		// Arrange

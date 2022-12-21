@@ -3,15 +3,15 @@
 namespace Pelican.Domain.Entities;
 public class Email : Entity, ITimeTracked
 {
-	private string _name;
-	private string _subject;
-	private string _heading1;
-	private string _heading2;
-	private string _heading3;
-	private string _paragraph1;
-	private string _paragraph2;
-	private string _paragraph3;
-	private string _ctaButtonText;
+	private string _name = string.Empty;
+	private string _subject = string.Empty;
+	private string _heading1 = string.Empty;
+	private string _heading2 = string.Empty;
+	private string _heading3 = string.Empty;
+	private string _paragraph1 = string.Empty;
+	private string _paragraph2 = string.Empty;
+	private string _paragraph3 = string.Empty;
+	private string _ctaButtonText = string.Empty;
 	public Email() { }
 	public string Name
 	{

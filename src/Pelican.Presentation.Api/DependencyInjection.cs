@@ -42,6 +42,7 @@ public static class DependencyInjection
 		app.UseRouting();
 
 		app.UseAuthorization();
+		app.UseAuthentication();
 
 		app.MapControllers();
 

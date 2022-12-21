@@ -24,11 +24,27 @@ public class LoginCommandValidatorTests
 	}
 
 	[Fact]
-	public void LoginommandValidator_NoEmptyStrings_ReturnsNoError()
+	public void LoginommandValidator_NoEmptyStringsButEmailIsNotInCorrectFormat_ReturnsError()
 	{
 		// Arrange
 		LoginCommand command = new(
 			"notEmpty",
+			"notEmpty");
+
+		// Act
+		TestValidationResult<LoginCommand> result = _uut.TestValidate(command);
+
+		// Assert
+		result.ShouldHaveValidationErrorFor(command => command.Email);
+		result.ShouldNotHaveValidationErrorFor(command => command.Password);
+	}
+
+	[Fact]
+	public void LoginommandValidator_NoEmptyStringsAndEmailInCorrectFormat_ReturnsNoError()
+	{
+		// Arrange
+		LoginCommand command = new(
+			"a@a.com",
 			"notEmpty");
 
 		// Act

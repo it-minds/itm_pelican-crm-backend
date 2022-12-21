@@ -1,11 +1,16 @@
-﻿using Pelican.Domain.Entities;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Domain.Entities;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.Contacts;
 
 internal static class ContactsResponseToContacts
 {
-	internal static List<Contact> ToContacts(this ContactsResponse responses)
+	internal static async Task<List<Contact>> ToContacts(
+		this PaginatedResponse<ContactResponse> responses,
+		IUnitOfWork unitOfWork,
+		CancellationToken cancellationToken)
 	{
 		if (responses.Results is null)
 		{
@@ -16,7 +21,7 @@ internal static class ContactsResponseToContacts
 
 		foreach (ContactResponse response in responses.Results)
 		{
-			Contact result = response.ToContact();
+			Contact result = await response.ToContact(unitOfWork, cancellationToken);
 			results.Add(result);
 		}
 

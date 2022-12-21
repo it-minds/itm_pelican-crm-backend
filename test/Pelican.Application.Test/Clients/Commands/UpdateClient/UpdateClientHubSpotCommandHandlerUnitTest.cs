@@ -99,7 +99,6 @@ public class UpdateClientCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Setup(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Failure<string>(Error.NullValue));
 
@@ -129,7 +128,7 @@ public class UpdateClientCommandHandlerTests
 		// Arrange
 		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
-		Supplier supplier = new(Guid.NewGuid())
+		Supplier supplier = new()
 		{
 			RefreshToken = "token",
 		};
@@ -142,7 +141,6 @@ public class UpdateClientCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Setup(
 			service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success("AccessToken"));
 
@@ -181,7 +179,7 @@ public class UpdateClientCommandHandlerTests
 		// Arrange
 		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
-		Supplier supplier = new(Guid.NewGuid())
+		Supplier supplier = new()
 		{
 			RefreshToken = "token",
 		};
@@ -200,7 +198,6 @@ public class UpdateClientCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Setup(
 			service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success("AccessToken"));
 
@@ -215,11 +212,6 @@ public class UpdateClientCommandHandlerTests
 		Result result = await _uut.Handle(command, default);
 
 		// Assert
-		clientMock.Verify(
-			c => c.FillOutClientContacts(
-				It.IsAny<List<Contact>>()),
-			Times.Once);
-
 		Assert.True(result.IsSuccess);
 
 		_unitOfWorkMock.Verify(
@@ -246,14 +238,14 @@ public class UpdateClientCommandHandlerTests
 		// Arrange
 		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
 
-		Supplier supplier = new(Guid.NewGuid())
+		Supplier supplier = new()
 		{
 			RefreshToken = "token",
 		};
 		Mock<Client> clientMock = new();
 		ClientContact clientContact = new();
 		List<ClientContact> clientContactList = new();
-		Contact contact = new(Guid.NewGuid())
+		Contact contact = new()
 		{
 			SourceId = "HubSpotId"
 		};
@@ -278,7 +270,6 @@ public class UpdateClientCommandHandlerTests
 		_hubSpotAuthorizationServiceMock
 			.Setup(service => service.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success("AccessToken"));
 
@@ -288,16 +279,10 @@ public class UpdateClientCommandHandlerTests
 				It.IsAny<long>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success(clientMock.Object));
-
 		// Act
 		Result result = await _uut.Handle(command, default);
 
 		// Assert
-		clientMock.Verify(
-			c => c.FillOutClientContacts(
-				contactList),
-			Times.Once);
-
 		Assert.True(result.IsSuccess);
 
 		_unitOfWorkMock.Verify(
@@ -373,7 +358,6 @@ public class UpdateClientCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Setup(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Failure<string>(Error.NullValue));
 
@@ -384,7 +368,6 @@ public class UpdateClientCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Verify(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				portalId,
-				_unitOfWorkMock.Object,
 				default),
 			Times.Once);
 
@@ -415,7 +398,6 @@ public class UpdateClientCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Setup(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success("AccessToken"));
 
@@ -433,7 +415,6 @@ public class UpdateClientCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Verify(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				portalId,
-				_unitOfWorkMock.Object,
 				default),
 			Times.Once);
 
@@ -466,7 +447,6 @@ public class UpdateClientCommandHandlerTests
 		_hubSpotAuthorizationServiceMock
 			.Setup(h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success("AccessToken"));
 
@@ -475,7 +455,7 @@ public class UpdateClientCommandHandlerTests
 				It.IsAny<string>(),
 				It.IsAny<long>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new Client(Guid.NewGuid()));
+			.ReturnsAsync(new Client());
 
 		_unitOfWorkMock
 			.Setup(u => u
@@ -525,7 +505,6 @@ public class UpdateClientCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Setup(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Failure<string>(Error.NullValue));
 
@@ -536,7 +515,6 @@ public class UpdateClientCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Verify(
 			c => c.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				portalId,
-				_unitOfWorkMock.Object,
 				default),
 			Times.Once);
 
@@ -573,7 +551,6 @@ public class UpdateClientCommandHandlerTests
 		_hubSpotAuthorizationServiceMock.Setup(
 			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success(accessToken));
 
@@ -627,7 +604,7 @@ public class UpdateClientCommandHandlerTests
 			Website = testWebsite,
 			ClientContacts = new List<ClientContact>()
 			{
-				new ClientContact(Guid.NewGuid())
+				new ClientContact()
 			},
 		};
 
@@ -638,10 +615,9 @@ public class UpdateClientCommandHandlerTests
 					It.IsAny<Expression<Func<Client, bool>>>()))
 			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
 
-		_hubSpotAuthorizationServiceMock.Setup(
-			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+		_hubSpotAuthorizationServiceMock
+			.Setup(h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 				It.IsAny<long>(),
-				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Success(accessToken));
 
@@ -650,19 +626,180 @@ public class UpdateClientCommandHandlerTests
 				It.IsAny<string>(),
 				It.IsAny<long>(),
 				It.IsAny<CancellationToken>()))
-			.ReturnsAsync(Result.Success(clientResult));
+			.ReturnsAsync(clientResult);
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.ClientContactRepository
+				.AttachAsAdded(It.IsAny<IEnumerable<ClientContact>>()));
 
 		// Act
 		var result = await _uut.Handle(command, default);
 
 		//Assert
-		clientMock.Verify(x => x.UpdatePropertiesFromClient(clientResult), Times.Once);
-
-		clientMock.Verify(x => x.UpdateClientContacts(clientResult.ClientContacts), Times.Once);
+		clientMock.Verify(
+			c => c.UpdatePropertiesFromClient(
+				clientResult),
+			Times.Once);
 
 		_unitOfWorkMock.Verify(
 			u => u.SaveAsync(default),
 			Times.Once);
+
+		Assert.True(result.IsSuccess);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 0, "num_associated_deals", "0")]
+	public async void Handle_ClientFoundNumAssociatedDealsHubSpotAuthorizationServiceReturnsFailure_ReturnsFailure(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Client> clientMock = new();
+
+		_unitOfWorkMock.Setup(
+			unitOfWork => unitOfWork.ClientRepository.FindByCondition(
+				It.IsAny<Expression<Func<Client, bool>>>()))
+			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<string>(Error.NullValue));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		_hubSpotAuthorizationServiceMock.Verify(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				portalId,
+				default),
+			Times.Once);
+
+		Assert.True(result.IsFailure);
+
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 0, "num_associated_deals", "0")]
+	public async void Handle_ClientFoundNumAssociatedDealsHubSpotClientServiceReturnsFailure_ReturnsFailure(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Client> clientMock = new();
+
+		_unitOfWorkMock.Setup(
+			unitOfWork => unitOfWork.ClientRepository.FindByCondition(
+				It.IsAny<Expression<Func<Client, bool>>>()))
+			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock.Setup(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success("AccessToken"));
+
+		_hubSpotClientServiceMock.Setup(
+			h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Failure<Client>(Error.NullValue));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		_hubSpotAuthorizationServiceMock.Verify(
+			h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				portalId,
+				default),
+			Times.Once);
+
+		Assert.True(result.IsFailure);
+
+		Assert.Equal(Error.NullValue, result.Error);
+	}
+
+	[Theory]
+	[InlineData(0, 0, 0, "num_associated_deals", "0")]
+	public async void Handle_ClientFoundNumAssociatedDealHubSpotClientServiceReturnsClient_ReturnsSuccess(
+		long objectId,
+		long portalId,
+		long updateTime,
+		string propertyName,
+		string propertyValue)
+	{
+		//Arrange
+		UpdateClientHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
+
+		Mock<Client> clientMock = new();
+		Mock<Deal> dealMock = new();
+		List<Deal> dealList = new();
+		dealMock.Object.SourceId = "SourceId";
+		dealList.Add(dealMock.Object);
+
+		_unitOfWorkMock
+			.Setup(unitOfWork => unitOfWork
+				.ClientRepository
+				.FindByCondition(
+					It.IsAny<Expression<Func<Client, bool>>>()))
+			.Returns(new List<Client> { clientMock.Object }.AsQueryable());
+
+		_hubSpotAuthorizationServiceMock
+			.Setup(h => h.RefreshAccessTokenFromSupplierHubSpotIdAsync(
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(Result.Success("AccessToken"));
+
+		_hubSpotClientServiceMock
+			.Setup(h => h.GetByIdAsync(
+				It.IsAny<string>(),
+				It.IsAny<long>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(new Client()
+			{
+				Deals = dealList,
+			});
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.DealRepository
+				.FindByCondition(
+					It.IsAny<Expression<Func<Deal, bool>>>()))
+			.Returns(new List<Deal> { dealMock.Object }.AsQueryable());
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.DealRepository
+				.AttachAsAdded(It.IsAny<IEnumerable<Deal>>()));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		//Assert
+		_unitOfWorkMock.Verify(
+			u => u.SaveAsync(default),
+			Times.Once);
+
+		clientMock.Verify(
+			c => c.UpdateDeals(dealList),
+			Times.Once());
 
 		Assert.True(result.IsSuccess);
 	}

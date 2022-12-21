@@ -145,10 +145,6 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("PictureUrl")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
                     b.Property<string>("Source")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -273,10 +269,6 @@ namespace Pelican.Infrastructure.Persistence.Migrations
                     b.Property<long>("CreatedAt")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("DealStatus")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
@@ -310,6 +302,10 @@ namespace Pelican.Infrastructure.Persistence.Migrations
 
                     b.Property<long?>("StartDate")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 

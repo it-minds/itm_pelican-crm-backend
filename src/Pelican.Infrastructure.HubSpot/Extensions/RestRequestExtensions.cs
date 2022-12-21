@@ -14,7 +14,9 @@ internal static class RestRequestExtensions
 			.AddQueryParameter("properties", "notes_last_contacted", false)
 			.AddQueryParameter("properties", "dealstage", false)
 			.AddQueryParameter("properties", "dealname", false)
-			.AddQueryParameter("properties", "description", false);
+			.AddQueryParameter("properties", "description", false)
+			.AddQueryParameter("limit", "100", false);
+
 	public static RestRequest AddContactQueryParams(this RestRequest request) => request
 			.AddQueryParameter("associations", "companies", false)
 			.AddQueryParameter("associations", "deals", false)
@@ -23,14 +25,16 @@ internal static class RestRequestExtensions
 			.AddQueryParameter("properties", "lastname", false)
 			.AddQueryParameter("properties", "jobtitle", false)
 			.AddQueryParameter("properties", "phone", false)
-			.AddQueryParameter("properties", "email", false);
+			.AddQueryParameter("properties", "email", false)
+			.AddQueryParameter("limit", "100", false);
 
 	public static RestRequest AddCompanyQueryParams(this RestRequest request) => request
 			.AddQueryParameter("associations", "contacts", false)
 			.AddQueryParameter("associations", "deals", false)
 			.AddQueryParameter("properties", "domain", false)
 			.AddQueryParameter("properties", "name", false)
-			.AddQueryParameter("properties", "city", false);
+			.AddQueryParameter("properties", "city", false)
+			.AddQueryParameter("limit", "100", false);
 
 	public static RestRequest AddCommonAuthorizationQueryParams(this RestRequest request, HubSpotSettings hubSpotSettings) => request
 			.AddQueryParameter("client_secret", hubSpotSettings.App.ClientSecret, false)

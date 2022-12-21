@@ -1,4 +1,5 @@
 ﻿using HotChocolate;
+using Pelican.Domain.Extensions;
 using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
@@ -10,7 +11,6 @@ public class Contact : Entity, ITimeTracked
 	private string? _jobTitle;
 	private string? _email;
 
-	public Contact(Guid id) : base(id) { }
 	public Contact() { }
 
 	public string Source { get; set; } = string.Empty;
@@ -19,61 +19,6 @@ public class Contact : Entity, ITimeTracked
 
 	public string? SourceOwnerId { get; set; }
 
-
-	public string? FirstName
-	{
-		get => _firstName;
-		set
-		{
-			_firstName = value?.Length > StringLengths.Name
-				? value.Substring(0, StringLengths.Name - 3) + ("...")
-				: value;
-		}
-	}
-	public string? LastName
-	{
-		get => _lastName;
-		set
-		{
-			_lastName = value?.Length > StringLengths.Name
-				? value.Substring(0, StringLengths.Name - 3) + ("...")
-				: value;
-		}
-	}
-
-	public string? PhoneNumber
-	{
-		get => _phoneNumber;
-		set
-		{
-			_phoneNumber = value?.Length > StringLengths.PhoneNumber
-				? value.Substring(0, StringLengths.PhoneNumber - 3) + ("...")
-				: value;
-		}
-	}
-
-	public string? Email
-	{
-		get => _email;
-		set
-		{
-			_email = value?.Length > StringLengths.Email
-				? value.Substring(0, StringLengths.Email - 3) + ("...")
-				: value;
-		}
-	}
-
-	public string? JobTitle
-	{
-		get => _jobTitle;
-		set
-		{
-			_jobTitle = value?.Length > StringLengths.JobTitle
-				? value.Substring(0, StringLengths.JobTitle - 3) + ("...")
-				: value;
-		}
-	}
-
 	public ICollection<ClientContact> ClientContacts { get; set; } = new List<ClientContact>();
 
 	public ICollection<DealContact> DealContacts { get; set; } = new List<DealContact>();
@@ -81,6 +26,37 @@ public class Contact : Entity, ITimeTracked
 	public long CreatedAt { get; set; }
 
 	public long? LastUpdatedAt { get; set; }
+
+
+	public string? FirstName
+	{
+		get => _firstName;
+		set => _firstName = value?.CheckAndShortenExceedingString(StringLengths.Name);
+	}
+
+	public string? LastName
+	{
+		get => _lastName;
+		set => _lastName = value?.CheckAndShortenExceedingString(StringLengths.Name);
+	}
+
+	public string? PhoneNumber
+	{
+		get => _phoneNumber;
+		set => _phoneNumber = value?.CheckAndShortenExceedingString(StringLengths.PhoneNumber);
+	}
+
+	public string? Email
+	{
+		get => _email;
+		set => _email = value?.CheckAndShortenExceedingString(StringLengths.Email);
+	}
+
+	public string? JobTitle
+	{
+		get => _jobTitle;
+		set => _jobTitle = value?.CheckAndShortenExceedingString(StringLengths.JobTitle);
+	}
 
 	[GraphQLIgnore]
 	public virtual Contact UpdateProperty(string propertyName, string propertyValue)
@@ -121,6 +97,7 @@ public class Contact : Entity, ITimeTracked
 		PhoneNumber = contact.PhoneNumber;
 		JobTitle = contact.JobTitle;
 		SourceOwnerId = contact.SourceOwnerId;
+		UpdateDealContacts(contact.DealContacts);
 	}
 
 	[GraphQLIgnore]
@@ -128,13 +105,17 @@ public class Contact : Entity, ITimeTracked
 	{
 		if (currentDealContacts is null)
 		{
+			DealContacts
+				.ToList()
+				.ForEach(dc => dc.Deactivate());
+
 			return;
 		}
 
 		foreach (DealContact dealContact in DealContacts.Where(dc => dc.IsActive))
 		{
 			if (!currentDealContacts.Any(currentDealContact => currentDealContact.SourceDealId == dealContact.SourceDealId
-			&& currentDealContact.Deal.Source == dealContact.Deal.Source))
+			&& currentDealContact.Deal.Source == Source))
 			{
 				dealContact.Deactivate();
 			}
@@ -144,7 +125,7 @@ public class Contact : Entity, ITimeTracked
 		{
 			if (!DealContacts.Any(dc => dc.SourceDealId == dealContact.SourceDealId
 			&& dc.IsActive
-			&& dc.Deal.Source == dealContact.Deal.Source))
+			&& Source == dealContact.Deal.Source))
 			{
 				DealContacts.Add(dealContact);
 			}
@@ -152,62 +133,34 @@ public class Contact : Entity, ITimeTracked
 	}
 
 	[GraphQLIgnore]
-	public virtual Contact FillOutAssociations(IEnumerable<Client>? clients, IEnumerable<Deal>? deals)
-	{
-		FillOutClient(clients);
-		FillOutDealContacts(deals);
-		return this;
-	}
-
-	private void FillOutClient(IEnumerable<Client>? clients)
-	{
-		if (clients is null)
-		{
-			ClientContacts.Clear();
-			return;
-		}
-
-		ClientContacts = ClientContacts
-			.Select(cc =>
+	public void SetDealContacts(IEnumerable<Deal?>? deals)
+		=> DealContacts = deals?
+			.Select(deal =>
 			{
-				Client? matchingClient = clients
-				.FirstOrDefault(client => client.SourceId == cc.SourceClientId && client.Source == cc.Contact.Source);
-
-				if (matchingClient is not null)
+				if (deal is not null)
 				{
-					cc.Client = matchingClient;
-					cc.ClientId = matchingClient.Id;
+					DealContact dealContact = DealContact.Create(deal, this);
+					deal.DealContacts.Add(dealContact);
+					return dealContact;
 				}
-
-				return cc;
+				return null;
 			})
-			.Where(cc => cc.Client is not null)
-			.ToList();
-	}
+			.Where(dc => dc is not null)
+			.ToList() as ICollection<DealContact> ?? new List<DealContact>();
 
-	private void FillOutDealContacts(IEnumerable<Deal>? deals)
-	{
-		if (deals is null)
-		{
-			DealContacts.Clear();
-			return;
-		}
-
-		DealContacts = DealContacts
-			.Select(dc =>
+	[GraphQLIgnore]
+	public void SetClientContacts(IEnumerable<Client?>? clients)
+		=> ClientContacts = clients?
+			.Select(client =>
 			{
-				Deal? matchingDeal = deals
-				.FirstOrDefault(deal => deal.SourceId == dc.SourceDealId && deal.Source == dc.Contact.Source);
-
-				if (matchingDeal is not null)
+				if (client is not null)
 				{
-					dc.Deal = matchingDeal;
-					dc.DealId = matchingDeal.Id;
+					ClientContact clientContact = ClientContact.Create(client, this);
+					client.ClientContacts.Add(clientContact);
+					return clientContact;
 				}
-
-				return dc;
+				return null;
 			})
-			.Where(dc => dc.Deal is not null)
-			.ToList();
-	}
+			.Where(dc => dc is not null)
+			.ToList() as ICollection<ClientContact> ?? new List<ClientContact>();
 }

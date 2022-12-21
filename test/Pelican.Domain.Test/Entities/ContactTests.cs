@@ -7,11 +7,61 @@ namespace Pelican.Domain.Test.Entities;
 
 public class ContactTests
 {
-	private readonly Contact _uut = new Contact(Guid.NewGuid())
+	private readonly Contact _uut = new()
 	{
 		SourceId = "uutHubSpotId",
 		Source = Sources.HubSpot,
 	};
+
+	[Fact]
+	public void SetFirstName_InputNull_ValueNull()
+	{
+		// Act
+		_uut.FirstName = null!;
+
+		//Assert
+		Assert.Null(_uut.FirstName);
+	}
+
+	[Fact]
+	public void SetLastName_InputNull_ValueNull()
+	{
+		// Act
+		_uut.LastName = null!;
+
+		//Assert
+		Assert.Null(_uut.LastName);
+	}
+
+	[Fact]
+	public void SetPhoneNumber_InputNull_ValueNull()
+	{
+		// Act
+		_uut.PhoneNumber = null!;
+
+		//Assert
+		Assert.Null(_uut.PhoneNumber);
+	}
+
+	[Fact]
+	public void SetEmail_InputNull_ValueNull()
+	{
+		// Act
+		_uut.Email = null!;
+
+		//Assert
+		Assert.Null(_uut.Email);
+	}
+
+	[Fact]
+	public void SetJobTitle_InputNull_ValueNull()
+	{
+		// Act
+		_uut.JobTitle = null!;
+
+		//Assert
+		Assert.Null(_uut.JobTitle);
+	}
 
 	[Fact]
 	public void SetFirstName_FirstNameStringNotToLong_FirstnameEqualToValueSet()
@@ -101,7 +151,7 @@ public class ContactTests
 		// Assert
 
 		Assert.Equal(StringLengths.Name, _uut.FirstName!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3) + "...", _uut.FirstName);
+		Assert.Equal(propertyValue[..(StringLengths.Name - 3)] + "...", _uut.FirstName);
 	}
 
 	[Fact]
@@ -116,7 +166,7 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.Name, _uut.LastName!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3) + "...", _uut.LastName);
+		Assert.Equal(propertyValue[..(StringLengths.Name - 3)] + "...", _uut.LastName);
 	}
 
 	[Fact]
@@ -131,7 +181,7 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.Email, _uut.Email!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Email - 3) + "...", _uut.Email);
+		Assert.Equal(propertyValue[..(StringLengths.Email - 3)] + "...", _uut.Email);
 	}
 
 	[Fact]
@@ -146,7 +196,7 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3) + "...", _uut.PhoneNumber);
+		Assert.Equal(propertyValue[..(StringLengths.PhoneNumber - 3)] + "...", _uut.PhoneNumber);
 	}
 
 	[Fact]
@@ -161,7 +211,7 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.JobTitle, _uut.JobTitle!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.JobTitle - 3) + "...", _uut.JobTitle);
+		Assert.Equal(propertyValue[..(StringLengths.JobTitle - 3)] + "...", _uut.JobTitle);
 	}
 
 	[Fact]
@@ -294,8 +344,8 @@ public class ContactTests
 		// Assert
 
 		Assert.Equal(StringLengths.Name, _uut.FirstName!.Length);
-		Assert.Equal("...", _uut.FirstName.Substring(StringLengths.Name - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.FirstName.Substring(0, StringLengths.Name - 3));
+		Assert.Equal("...", _uut.FirstName[(StringLengths.Name - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.Name - 3)], _uut.FirstName[..(StringLengths.Name - 3)]);
 	}
 
 	[Fact]
@@ -311,8 +361,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.Name, _uut.LastName!.Length);
-		Assert.Equal("...", _uut.LastName.Substring(StringLengths.Name - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Name - 3), _uut.LastName.Substring(0, StringLengths.Name - 3));
+		Assert.Equal("...", _uut.LastName[(StringLengths.Name - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.Name - 3)], _uut.LastName[..(StringLengths.Name - 3)]);
 	}
 
 	[Fact]
@@ -328,8 +378,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.Email, _uut.Email!.Length);
-		Assert.Equal("...", _uut.Email.Substring(StringLengths.Email - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.Email - 3), _uut.Email.Substring(0, StringLengths.Email - 3));
+		Assert.Equal("...", _uut.Email[(StringLengths.Email - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.Email - 3)], _uut.Email[..(StringLengths.Email - 3)]);
 	}
 
 	[Fact]
@@ -345,8 +395,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
-		Assert.Equal("...", _uut.PhoneNumber.Substring(StringLengths.PhoneNumber - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3), _uut.PhoneNumber.Substring(0, StringLengths.PhoneNumber - 3));
+		Assert.Equal("...", _uut.PhoneNumber[(StringLengths.PhoneNumber - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.PhoneNumber - 3)], _uut.PhoneNumber[..(StringLengths.PhoneNumber - 3)]);
 	}
 
 	[Fact]
@@ -362,8 +412,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.PhoneNumber, _uut.PhoneNumber!.Length);
-		Assert.Equal("...", _uut.PhoneNumber.Substring(StringLengths.PhoneNumber - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.PhoneNumber - 3), _uut.PhoneNumber.Substring(0, StringLengths.PhoneNumber - 3));
+		Assert.Equal("...", _uut.PhoneNumber[(StringLengths.PhoneNumber - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.PhoneNumber - 3)], _uut.PhoneNumber[..(StringLengths.PhoneNumber - 3)]);
 	}
 
 	[Fact]
@@ -379,8 +429,8 @@ public class ContactTests
 
 		// Assert
 		Assert.Equal(StringLengths.JobTitle, _uut.JobTitle!.Length);
-		Assert.Equal("...", _uut.JobTitle.Substring(StringLengths.JobTitle - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.JobTitle - 3), _uut.JobTitle.Substring(0, StringLengths.JobTitle - 3));
+		Assert.Equal("...", _uut.JobTitle[(StringLengths.JobTitle - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.JobTitle - 3)], _uut.JobTitle[..(StringLengths.JobTitle - 3)]);
 	}
 
 	[Fact]
@@ -415,7 +465,7 @@ public class ContactTests
 	public void UpdateDealContacts_EmptyExistingDealContactArgumentNotNull_NewDealContactAdded()
 	{
 		// Arrange
-		Deal newDeal = new(Guid.NewGuid())
+		Deal newDeal = new()
 		{
 			SourceId = "newHubSpotId",
 		};
@@ -438,7 +488,7 @@ public class ContactTests
 	public void UpdateDealContacts_OneExistingDealContactNotInArgument_DealContactsUpdated()
 	{
 		// Arrange
-		Deal existingDeal = new(Guid.NewGuid())
+		Deal existingDeal = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,
@@ -448,9 +498,9 @@ public class ContactTests
 
 		ICollection<DealContact> dealContacts = new List<DealContact>()
 		{
-			new(Guid.NewGuid())
+			new()
 			{
-				Deal=new(Guid.NewGuid()),
+				Deal=new(),
 			}
 		};
 
@@ -469,7 +519,7 @@ public class ContactTests
 	public void UpdateDealContacts_OneExistingDealContactMatchInArgument_NoDealContactAdded()
 	{
 		// Arrange
-		Deal existingDeal = new(Guid.NewGuid())
+		Deal existingDeal = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,
@@ -477,7 +527,7 @@ public class ContactTests
 
 		_uut.DealContacts.Add(DealContact.Create(existingDeal, _uut));
 
-		Deal newDeal = new(Guid.NewGuid())
+		Deal newDeal = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,
@@ -501,7 +551,7 @@ public class ContactTests
 	public void UpdateDealContacts_OneExistingDealContactMatchInArgument_DealContactStillActive()
 	{
 		// Arrange
-		Deal existingDeal = new(Guid.NewGuid())
+		Deal existingDeal = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,
@@ -509,7 +559,7 @@ public class ContactTests
 
 		_uut.DealContacts.Add(DealContact.Create(existingDeal, _uut));
 
-		Deal newDeal = new(Guid.NewGuid())
+		Deal newDeal = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,
@@ -528,178 +578,6 @@ public class ContactTests
 			.DealContacts
 			.First(dc => dc.SourceDealId == "hsId" && dc.Contact.Source == Sources.HubSpot)
 			.IsActive);
-	}
-
-	[Fact]
-	public void FillOutAssociations_ClientsAndDealsNull_ThrowNoExceptionEmptyClientContacts()
-	{
-		// Act
-		var result = Record.Exception(() => _uut.FillOutAssociations(null, null));
-
-		// Assert
-		Assert.Null(result);
-
-		Assert.Empty(_uut.ClientContacts);
-	}
-
-	[Fact]
-	public void FillOutAssociations_ClientsEmpty_EmptyClientContacts()
-	{
-		// Act
-		_uut.FillOutAssociations(Enumerable.Empty<Client>(), null);
-
-		// Assert
-		Assert.Empty(_uut.ClientContacts);
-	}
-
-	[Fact]
-	public void FillOutAssociations_ExistingClientNotMatchingArgument_EmptyClientContacts()
-	{
-		// Arrange
-		ClientContact existingClientContact = new(Guid.NewGuid())
-		{
-			SourceClientId = "hsID",
-			Contact = _uut,
-			ContactId = _uut.Id,
-			SourceContactId = _uut.SourceId,
-			IsActive = true,
-		};
-
-		_uut.ClientContacts.Add(existingClientContact);
-
-		Client newClient = new(Guid.NewGuid())
-		{
-			SourceId = "another_hsId",
-		};
-
-		// Act
-		_uut.FillOutAssociations(new List<Client>() { newClient }, null);
-
-		// Assert
-		Assert.Empty(_uut.ClientContacts);
-	}
-
-	[Fact]
-	public void FillOutAssociations_ExistingClientMatchingArgument_ClientContactsUpdated()
-	{
-		// Arrange
-		ClientContact existingClientContact = new(Guid.NewGuid())
-		{
-			SourceClientId = "hsID",
-			Contact = _uut,
-			ContactId = _uut.Id,
-			SourceContactId = _uut.SourceId,
-			IsActive = true,
-		};
-
-		_uut.ClientContacts.Add(existingClientContact);
-
-		Client newClient = new(Guid.NewGuid())
-		{
-			SourceId = "hsID",
-			Source = Sources.HubSpot,
-		};
-
-		// Act
-		_uut.FillOutAssociations(new List<Client>() { newClient }, null);
-
-		// Assert
-		Assert.Equal(
-			1,
-			_uut.ClientContacts.Count);
-
-		Assert.Equal(
-			newClient,
-			_uut.ClientContacts.First().Client);
-
-		Assert.Equal(
-			newClient.Id,
-			_uut.ClientContacts.First().ClientId);
-	}
-
-	[Fact]
-	public void FillOutAssociations_DealsNull_EmptyDealContacts()
-	{
-		// Act
-		_uut.FillOutAssociations(null, null);
-
-		// Assert
-		Assert.Empty(_uut.DealContacts);
-	}
-
-	[Fact]
-	public void FillOutAssociations_DealsEmpty_EmptyDealContacts()
-	{
-		// Act
-		_uut.FillOutAssociations(null, Enumerable.Empty<Deal>());
-
-		// Assert
-		Assert.Empty(_uut.DealContacts);
-	}
-
-	[Fact]
-	public void FillOutAssociations_ExistingDealNotMatchingArgument_EmptyDealContacts()
-	{
-		// Arrange
-		DealContact existingDealContact = new(Guid.NewGuid())
-		{
-			SourceDealId = "hsID",
-			Contact = _uut,
-			ContactId = _uut.Id,
-			SourceContactId = _uut.SourceId,
-			IsActive = true,
-		};
-
-		_uut.DealContacts.Add(existingDealContact);
-
-		Deal newDeal = new(Guid.NewGuid())
-		{
-			SourceId = "another_hsId",
-		};
-
-		// Act
-		_uut.FillOutAssociations(null, new List<Deal>() { newDeal });
-
-		// Assert
-		Assert.Empty(_uut.DealContacts);
-	}
-
-	[Fact]
-	public void FillOutAssociations_ExistingDealMatchingArgument_DealContactsUpdated()
-	{
-		// Arrange
-		DealContact existingDealContact = new(Guid.NewGuid())
-		{
-			SourceDealId = "hsID",
-			Contact = _uut,
-			ContactId = _uut.Id,
-			SourceContactId = _uut.SourceId,
-			IsActive = true,
-		};
-
-		_uut.DealContacts.Add(existingDealContact);
-
-		Deal newDeal = new(Guid.NewGuid())
-		{
-			SourceId = "hsID",
-			Source = Sources.HubSpot,
-		};
-
-		// Act
-		_uut.FillOutAssociations(null, new List<Deal>() { newDeal });
-
-		// Assert
-		Assert.Equal(
-			1,
-			_uut.DealContacts.Count);
-
-		Assert.Equal(
-			newDeal,
-			_uut.DealContacts.First().Deal);
-
-		Assert.Equal(
-			newDeal.Id,
-			_uut.DealContacts.First().DealId);
 	}
 
 	[Theory]
@@ -723,5 +601,117 @@ public class ContactTests
 		Assert.Equal(testEmail, _uut.Email);
 		Assert.Equal(testPhoneNumber, _uut.PhoneNumber);
 		Assert.Equal(testJobtTitle, _uut.JobTitle);
+	}
+
+	[Fact]
+	public void SetDealContacts_ArgsNull_DealContactsEmpty()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetDealContacts(null);
+
+		// Assert
+		Assert.Empty(input.DealContacts);
+	}
+
+	[Fact]
+	public void SetDealContacts_ArgsEmptyList_DealContactsEmpty()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetDealContacts(new List<Deal>());
+
+		// Assert
+		Assert.Empty(input.DealContacts);
+	}
+
+	[Fact]
+	public void SetDealContacts_ArgsNonEmptyList_DealContactsSet()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetDealContacts(new List<Deal>() { new() });
+
+		// Assert
+		Assert.Equal(
+			1,
+			input.DealContacts.Count);
+	}
+
+	[Fact]
+	public void SetDealContacts_ArgsListContainingNull_DealContactsSet()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetDealContacts(new List<Deal?>() { new(), null });
+
+		// Assert
+		Assert.Equal(
+			1,
+			input.DealContacts.Count);
+	}
+
+	[Fact]
+	public void SetClientContacts_ArgsNull_ClientContactsEmpty()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetClientContacts(null);
+
+		// Assert
+		Assert.Empty(input.ClientContacts);
+	}
+
+	[Fact]
+	public void SetClientContacts_ArgsEmptyList_ClientContactsEmpty()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetClientContacts(new List<Client>());
+
+		// Assert
+		Assert.Empty(input.ClientContacts);
+	}
+
+	[Fact]
+	public void SetClientContacts_ArgsNonEmptyList_ClientContactsSet()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetClientContacts(new List<Client>() { new() });
+
+		// Assert
+		Assert.Equal(
+			1,
+			input.ClientContacts.Count);
+	}
+
+	[Fact]
+	public void SetClientContacts_ArgsListContainingNull_ClientContactsSet()
+	{
+		// Arrange
+		Contact input = new();
+
+		// Act
+		input.SetClientContacts(new List<Client?>() { new(), null });
+
+		// Assert
+		Assert.Equal(
+			1,
+			input.ClientContacts.Count);
 	}
 }

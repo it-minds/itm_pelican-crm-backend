@@ -8,7 +8,27 @@ public class AccountManagerUnitTest
 	private readonly AccountManager _uut;
 	public AccountManagerUnitTest()
 	{
-		_uut = new AccountManager(Guid.NewGuid());
+		_uut = new AccountManager();
+	}
+
+	[Fact]
+	public void SetPhoneNumber_InputNull_ValueNull()
+	{
+		// Act
+		_uut.PhoneNumber = null!;
+
+		//Assert
+		Assert.Null(_uut.PhoneNumber);
+	}
+
+	[Fact]
+	public void SetLinkedinUrl_InputNull_ValueNull()
+	{
+		// Act
+		_uut.LinkedInUrl = null!;
+
+		//Assert
+		Assert.Null(_uut.PhoneNumber);
 	}
 
 	[Fact]

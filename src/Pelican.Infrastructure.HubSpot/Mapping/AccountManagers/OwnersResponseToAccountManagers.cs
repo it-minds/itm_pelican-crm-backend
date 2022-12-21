@@ -1,11 +1,12 @@
 ﻿using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 
 namespace Pelican.Infrastructure.HubSpot.Mapping.AccountManagers;
 
 internal static class OwnersResponseToAccountManagers
 {
-	internal static List<AccountManager> ToAccountManagers(this OwnersResponse responses)
+	internal static List<AccountManager> ToAccountManagers(this PaginatedResponse<OwnerResponse> responses)
 	{
 		if (responses.Results is null)
 		{

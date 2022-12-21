@@ -1,7 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-using Moq;
+﻿using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Infrastructure;
-using Pelican.Application.RestSharp;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.Pipedrive;
 using Pelican.Domain.Shared;
@@ -15,18 +14,19 @@ namespace Pelican.Infrastructure.Pipedrive.Test.Services;
 public class PipedriveDealServiceTests
 {
 	private readonly Mock<IClient<PipedriveSettings>> _clientMock = new();
+	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly PipedriveDealService _uut;
 
 	public PipedriveDealServiceTests()
 	{
-		_uut = new(_clientMock.Object);
+		_uut = new(_clientMock.Object, _unitOfWorkMock.Object);
 	}
 
 	[Fact]
-	public void PipedriveDealService_ArgumentNull_ThrowException()
+	public void PipedriveDealService_ClientArgumentNull_ThrowException()
 	{
 		// Act
-		var result = Record.Exception(() => new PipedriveDealService(null!));
+		var result = Record.Exception(() => new PipedriveDealService(null!, _unitOfWorkMock.Object));
 
 		// Assert
 		Assert.IsType<ArgumentNullException>(result);
@@ -36,6 +36,19 @@ public class PipedriveDealServiceTests
 			result.Message);
 	}
 
+	[Fact]
+	public void PipedriveDealService_UnitOfWorkArgumentNull_ThrowException()
+	{
+		// Act
+		var result = Record.Exception(() => new PipedriveDealService(_clientMock.Object, null!));
+
+		// Assert
+		Assert.IsType<ArgumentNullException>(result);
+
+		Assert.Contains(
+			"unitOfWork",
+			result.Message);
+	}
 
 	[Fact]
 	public async Task GetByIdAsync_ClientReturnsFailureResult_ReturnFailure()

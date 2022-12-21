@@ -17,7 +17,7 @@ public class GetContactByIdQueryHandlerUnitTest
 		var guid = Guid.NewGuid();
 		GetContactByIdQuery getContactByIdQuery = new GetContactByIdQuery(guid);
 		List<Contact> resultList = new List<Contact>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Contact(guid));
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Contact() { Id = guid });
 		//Act
 		resultList.Add(await uut.Handle(getContactByIdQuery, cancellationToken));
 		//Assert

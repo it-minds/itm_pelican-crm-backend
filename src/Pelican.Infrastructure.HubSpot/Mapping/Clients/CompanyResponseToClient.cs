@@ -1,4 +1,5 @@
-﻿using Pelican.Domain;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
 
@@ -6,7 +7,10 @@ namespace Pelican.Infrastructure.HubSpot.Mapping.Clients;
 
 internal static class CompanyResponseToClient
 {
-	internal static Client ToClient(this CompanyResponse response)
+	public static async Task<Client> ToClient(
+		this CompanyResponse response,
+		IUnitOfWork unitOfWork,
+		CancellationToken cancellationToken)
 	{
 		if (string.IsNullOrWhiteSpace(response.Properties.HubSpotObjectId)
 			|| string.IsNullOrWhiteSpace(response.Properties.Name))
@@ -14,7 +18,7 @@ internal static class CompanyResponseToClient
 			throw new ArgumentNullException(nameof(response));
 		}
 
-		Client result = new(Guid.NewGuid())
+		Client result = new()
 		{
 			SourceId = response.Properties.HubSpotObjectId,
 			Name = response.Properties.Name,
@@ -23,35 +27,31 @@ internal static class CompanyResponseToClient
 			Source = Sources.HubSpot,
 		};
 
-		result.Deals = response
-			.Associations
+		result.SetDeals(response.Associations
 			.Deals
 			.AssociationList
-			.Where(association => association.Type == "company_to_deal")
-			.Select(association => new Deal(Guid.NewGuid())
-			{
-				SourceId = association.Id,
-				Client = result,
-				ClientId = result.Id,
-				Source = Sources.HubSpot,
-			})
-			.ToList();
+			.Where(association => association.Type == "company_to_deal_unlabeled")
+			.Select(async association => await unitOfWork
+				.DealRepository
+				.FirstOrDefaultAsync(
+					d => d.SourceId == association.Id && d.Source == Sources.HubSpot,
+					cancellationToken))
+			.Select(t => t.Result)
+			.ToList());
 
-		result.ClientContacts = response
+		result.SetClientContacts(response
 			.Associations
 			.Contacts
 			.AssociationList
-			.Where(association => association.Type == "company_to_contact")
-			.Select(association => new ClientContact(Guid.NewGuid())
-			{
-				SourceContactId = association.Id,
-				SourceClientId = result.SourceId,
-				Client = result,
-				ClientId = result.Id,
-				IsActive = true,
-			})
-			.ToList();
+			.Where(association => association.Type == "company_to_contact_unlabeled")
+			.Select(async association => await unitOfWork
+				.ContactRepository
+				.FirstOrDefaultAsync(
+					c => c.SourceId == association.Id && c.Source == Sources.HubSpot,
+					cancellationToken))
+			.Select(t => t.Result)
+			.ToList());
 
-		return result;
+		return await Task.FromResult(result);
 	}
 }

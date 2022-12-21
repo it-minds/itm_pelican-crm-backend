@@ -24,7 +24,7 @@ public class ValidationBehaviourTests
 		Mock<RequestHandlerDelegate<Deal>> delegateMock = new();
 
 
-		Deal deal = new Deal(Guid.NewGuid());
+		Deal deal = new Deal();
 
 		delegateMock
 			.Setup(d => d())
@@ -69,7 +69,7 @@ public class ValidationBehaviourTests
 
 		Mock<RequestHandlerDelegate<Result<Deal>>> delegateMock = new();
 
-		Result<Deal> dealResult = new Deal(Guid.NewGuid());
+		Result<Deal> dealResult = new Deal();
 
 		delegateMock
 			.Setup(d => d())
@@ -110,7 +110,7 @@ public class ValidationBehaviourTests
 
 		Mock<RequestHandlerDelegate<Result<Deal>>> delegateMock = new();
 
-		Result<Deal> dealResult = new Deal(Guid.NewGuid());
+		Result<Deal> dealResult = new Deal();
 
 		delegateMock
 			.Setup(d => d())

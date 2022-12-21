@@ -87,7 +87,6 @@ public sealed class PipedriveController : ApiController
 			request.MetaProperties.ObjectId,
 			request.MetaProperties.UserId,
 			request.CurrentProperties.ClientName,
-			null,
 			request.CurrentProperties.OfficeLocation,
 			null
 			);

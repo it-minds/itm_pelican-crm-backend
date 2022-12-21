@@ -9,33 +9,45 @@ using Xunit;
 namespace Pelican.Presentation.GraphQL.Test;
 public class GetContactsQueryUnitTest
 {
-	private ContactsQuery uut;
+	private readonly ContactsQuery _uut = new();
+	private readonly Mock<IMediator> _mediatorMock = new();
+
 	[Fact]
 	public void If_GetContacts_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken()
 	{
-		//Arrange
-		uut = new ContactsQuery();
-		var mediatorMock = new Mock<IMediator>();
-		CancellationToken cancellationToken = new CancellationToken();
 		//Act
-		_ = uut.GetContacts(mediatorMock.Object, cancellationToken);
+		_ = _uut.GetContacts(_mediatorMock.Object, default);
+
 		//Assert
-		mediatorMock.Verify(x => x.Send(It.IsAny<GetContactsQuery>(), cancellationToken), Times.Once());
+		_mediatorMock.Verify(
+			x => x.Send(It.IsAny<GetContactsQuery>(), default),
+			Times.Once);
 	}
+
 	[Fact]
 	public async void If_GetContactAsync_Is_Called_Mediator_Calls_Send_With_Correct_CancellationToken_And_Input()
 	{
 		//Arrange
-		uut = new ContactsQuery();
-		var mediatorMock = new Mock<IMediator>();
-		CancellationToken cancellationToken = new CancellationToken();
 		Guid id = Guid.NewGuid();
-		GetContactByIdQuery input = new GetContactByIdQuery(id);
-		mediatorMock.Setup(x => x.Send(input, cancellationToken)).ReturnsAsync(new Contact(id));
+		GetContactByIdQuery input = new(id);
+
+		_mediatorMock
+			.Setup(x => x.Send(input, default))
+			.ReturnsAsync(new Contact() { Id = id });
+
 		//Act
-		var result = await uut.GetContactAsync(input.Id, mediatorMock.Object, cancellationToken);
+		var result = await _uut.GetContactAsync(
+			input.Id,
+			_mediatorMock.Object,
+			default);
+
 		//Assert
-		Assert.Equal(id, result.Id);
-		mediatorMock.Verify(x => x.Send(input, cancellationToken), Times.Once());
+		Assert.Equal(
+			id,
+			result.Id);
+
+		_mediatorMock.Verify(
+			x => x.Send(input, default),
+			Times.Once);
 	}
 }

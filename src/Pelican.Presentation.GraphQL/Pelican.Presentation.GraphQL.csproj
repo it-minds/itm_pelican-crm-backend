@@ -7,14 +7,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FairyBread" Version="9.0.0" />
 		<PackageReference Include="HotChocolate.AspNetCore" Version="12.15.1" />
-		<PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="12.15.1" />
 		<PackageReference Include="HotChocolate.Data.EntityFramework" Version="12.15.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.10">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>

@@ -8,8 +8,60 @@ public class SupplierUnitTest
 	private readonly Supplier _uut;
 	public SupplierUnitTest()
 	{
-		_uut = new Supplier(Guid.NewGuid());
+		_uut = new Supplier();
 	}
+
+	[Fact]
+	public void SetName_InputNull_ValueNull()
+	{
+		// Act
+		_uut.Name = null!;
+
+		//Assert
+		Assert.Null(_uut.Name);
+	}
+
+
+	[Fact]
+	public void SetPhoneNumber_InputNull_ValueNull()
+	{
+		// Act
+		_uut.PhoneNumber = null!;
+
+		//Assert
+		Assert.Null(_uut.PhoneNumber);
+	}
+
+	[Fact]
+	public void SetEmail_InputNull_ValueNull()
+	{
+		// Act
+		_uut.Email = null!;
+
+		//Assert
+		Assert.Null(_uut.Email);
+	}
+
+	[Fact]
+	public void SetLinkedInUrl_InputNull_ValueNull()
+	{
+		// Act
+		_uut.LinkedInUrl = null!;
+
+		//Assert
+		Assert.Null(_uut.LinkedInUrl);
+	}
+
+	[Fact]
+	public void SetWebsiteUrl_InputNull_ValueNull()
+	{
+		// Act
+		_uut.WebsiteUrl = null!;
+
+		//Assert
+		Assert.Null(_uut.WebsiteUrl);
+	}
+
 	[Fact]
 	public void SetName_NameStringNotToLong_NameEqualToValueSet()
 	{

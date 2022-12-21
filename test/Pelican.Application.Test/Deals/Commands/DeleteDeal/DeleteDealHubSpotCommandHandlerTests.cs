@@ -86,7 +86,7 @@ public class DeleteDealHubSpotCommandHandlerTests
 	{
 		// Arrange
 		DeleteDealHubSpotCommand command = new(0);
-		Deal deal = new(Guid.NewGuid());
+		Deal deal = new();
 
 		_unitOfWorkMock
 			.Setup(unitOfWork => unitOfWork

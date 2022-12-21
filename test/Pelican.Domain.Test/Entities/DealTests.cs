@@ -6,10 +6,40 @@ using Xunit;
 namespace Pelican.Domain.Test.Entities;
 public class DealTests
 {
-	private readonly Deal _uut = new Deal(Guid.NewGuid())
+	private readonly Deal _uut = new()
 	{
 		SourceId = "uutHubSpotId",
 	};
+
+	[Fact]
+	public void SetName_InputNull_ValueNull()
+	{
+		// Act
+		_uut.Name = null!;
+
+		//Assert
+		Assert.Null(_uut.Name);
+	}
+
+	[Fact]
+	public void SetDescription_InputNull_ValueNull()
+	{
+		// Act
+		_uut.Description = null!;
+
+		//Assert
+		Assert.Null(_uut.Description);
+	}
+
+	[Fact]
+	public void SetStatus_InputNull_ValueNull()
+	{
+		// Act
+		_uut.Status = null!;
+
+		//Assert
+		Assert.Null(_uut.Status);
+	}
 
 	[Fact]
 	public void SetName_NameStringNotToLong_nameEqualToValueSet()
@@ -34,11 +64,11 @@ public class DealTests
 		string propertyValue = faker.Lorem.Letter(StringLengths.DealStatus);
 
 		// Act
-		_uut.DealStatus = propertyValue;
+		_uut.Status = propertyValue;
 
 		// Assert
-		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
-		Assert.Equal(propertyValue, _uut.DealStatus);
+		Assert.Equal(StringLengths.DealStatus, _uut.Status!.Length);
+		Assert.Equal(propertyValue, _uut.Status);
 	}
 
 	[Fact]
@@ -71,7 +101,7 @@ public class DealTests
 		// Assert
 
 		Assert.Equal(StringLengths.DealName, _uut.Name!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealName - 3) + "...", _uut.Name);
+		Assert.Equal(propertyValue[..(StringLengths.DealName - 3)] + "...", _uut.Name);
 	}
 
 	[Fact]
@@ -82,11 +112,11 @@ public class DealTests
 		string propertyValue = faker.Lorem.Letter(StringLengths.DealStatus * 2);
 
 		// Act
-		_uut.DealStatus = propertyValue;
+		_uut.Status = propertyValue;
 
 		// Assert
-		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3) + "...", _uut.DealStatus);
+		Assert.Equal(StringLengths.DealStatus, _uut.Status!.Length);
+		Assert.Equal(propertyValue[..(StringLengths.DealStatus - 3)] + "...", _uut.Status);
 	}
 
 	[Fact]
@@ -101,7 +131,7 @@ public class DealTests
 
 		// Assert
 		Assert.Equal(StringLengths.DealDescription, _uut.Description!.Length);
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealDescription - 3) + "...", _uut.Description);
+		Assert.Equal(propertyValue[..(StringLengths.DealDescription - 3)] + "...", _uut.Description);
 	}
 
 	[Fact]
@@ -112,7 +142,7 @@ public class DealTests
 
 		string value = "";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
@@ -135,7 +165,7 @@ public class DealTests
 
 		string value = "Hello";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
@@ -156,9 +186,9 @@ public class DealTests
 
 		string name = "enddate";
 
-		string value = date.ToString();
+		string value = ticks.ToString();
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
@@ -176,7 +206,7 @@ public class DealTests
 
 		string value = "Hello";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
@@ -197,9 +227,9 @@ public class DealTests
 
 		string name = "startdate";
 
-		string value = date.ToString();
+		string value = ticks.ToString();
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
@@ -217,7 +247,7 @@ public class DealTests
 
 		string value = "Hello";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Exception exceptionResult = Record.Exception(() => inputDeal.UpdateProperty(name, value));
@@ -238,9 +268,9 @@ public class DealTests
 
 		string name = "notes_last_contacted";
 
-		string value = date.ToString();
+		string value = ticks.ToString();
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
@@ -258,7 +288,7 @@ public class DealTests
 		string name = "dealstage";
 		string value = "newStatus";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
@@ -266,7 +296,7 @@ public class DealTests
 		/// Assert
 		Assert.Equal(
 			value,
-			returnDeal.DealStatus);
+			returnDeal.Status);
 	}
 
 	[Fact]
@@ -276,7 +306,7 @@ public class DealTests
 		string name = "description";
 		string value = "newDescription";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
@@ -294,7 +324,7 @@ public class DealTests
 		string name = "dealname";
 		string value = "newName";
 
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		/// Act
 		Deal returnDeal = inputDeal.UpdateProperty(name, value);
@@ -317,9 +347,9 @@ public class DealTests
 		_uut.UpdateProperty(propertyName, propertyValue);
 
 		// Assert
-		Assert.Equal(StringLengths.DealStatus, _uut.DealStatus!.Length);
-		Assert.Equal("...", _uut.DealStatus.Substring(StringLengths.DealStatus - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealStatus - 3), _uut.DealStatus.Substring(0, StringLengths.DealStatus - 3));
+		Assert.Equal(StringLengths.DealStatus, _uut.Status!.Length);
+		Assert.Equal("...", _uut.Status[(StringLengths.DealStatus - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.DealStatus - 3)], _uut.Status[..(StringLengths.DealStatus - 3)]);
 	}
 
 	[Fact]
@@ -335,8 +365,8 @@ public class DealTests
 
 		// Assert
 		Assert.Equal(StringLengths.DealDescription, _uut.Description!.Length);
-		Assert.Equal("...", _uut.Description.Substring(StringLengths.DealDescription - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealDescription - 3), _uut.Description.Substring(0, StringLengths.DealDescription - 3));
+		Assert.Equal("...", _uut.Description[(StringLengths.DealDescription - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.DealDescription - 3)], _uut.Description[..(StringLengths.DealDescription - 3)]);
 	}
 
 	[Fact]
@@ -352,18 +382,18 @@ public class DealTests
 
 		// Assert
 		Assert.Equal(StringLengths.DealName, _uut.Name!.Length);
-		Assert.Equal("...", _uut.Name.Substring(StringLengths.DealName - 3));
-		Assert.Equal(propertyValue.Substring(0, StringLengths.DealName - 3), _uut.Name.Substring(0, StringLengths.DealName - 3));
+		Assert.Equal("...", _uut.Name[(StringLengths.DealName - 3)..]);
+		Assert.Equal(propertyValue[..(StringLengths.DealName - 3)], _uut.Name[..(StringLengths.DealName - 3)]);
 	}
 
 	[Fact]
-	public void FillOutAssociations_NullAccountManager_EmptyAccountManagerDeals()
+	public void UpdateAccountManager_AccountManagerDealsEmptyArgNull_EmptyAccountManagerDeals()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		// Act
-		inputDeal.FillOutAssociations(null, null, null);
+		inputDeal.UpdateAccountManager(null);
 
 		// Assert
 		Assert.Equal(
@@ -372,26 +402,119 @@ public class DealTests
 	}
 
 	[Fact]
-	public void FillOutAssociations_NullClient_NullClient()
+	public void UpdateAccountManager_ActiveAccountManagerDealEmptyArgNull_NullActiveAccountManagerDeal()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
+		inputDeal.AccountManagerDeals.Add(new() { IsActive = true });
 
 		// Act
-		inputDeal.FillOutAssociations(null, null, null);
+		inputDeal.UpdateAccountManager(null);
 
 		// Assert
-		Assert.Null(inputDeal.Client);
+		Assert.Null(inputDeal.ActiveAccountManagerDeal);
+
+		Assert.Equal(
+			1,
+			inputDeal.AccountManagerDeals.Count);
 	}
 
 	[Fact]
-	public void FillOutAssociations_NullContacts_EmptyDealContacts()
+	public void UpdateAccountManager_AccountManagerDealsEmptyArgNewAccountManagerDeal_AccountManagerDealAddedAsActive()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
+		Deal inputDeal = new();
+
+		AccountManager accountManager = new();
 
 		// Act
-		inputDeal.FillOutAssociations(null, null, null);
+		inputDeal.UpdateAccountManager(accountManager);
+
+		// Assert
+		Assert.Equal(
+			accountManager,
+			inputDeal.ActiveAccountManagerDeal!.AccountManager);
+
+		Assert.Equal(
+			1,
+			inputDeal.AccountManagerDeals.Count);
+	}
+
+	[Fact]
+	public void UpdateAccountManager_AccountManagerDealsNotEmptyArgNewAccountManagerDeal_AccountManagerDealAddedAsActive()
+	{
+		// Arrange
+		Deal inputDeal = new()
+		{
+			AccountManagerDeals = new List<AccountManagerDeal>()
+			{
+				new()
+				{
+					IsActive = true,
+					SourceAccountManagerId = "first",
+				},
+			}
+		};
+
+		AccountManager accountManager = new() { SourceId = "new" };
+
+		// Act
+		inputDeal.UpdateAccountManager(accountManager);
+
+		// Assert
+		Assert.Equal(
+			accountManager,
+			inputDeal.ActiveAccountManagerDeal!.AccountManager);
+
+		Assert.Equal(
+			2,
+			inputDeal.AccountManagerDeals.Count);
+	}
+
+	[Fact]
+	public void SetAccountManager_AccountManagerDealsEmptyArgNull_EmptyAccountManagerDeals()
+	{
+		// Arrange
+		Deal inputDeal = new();
+
+		// Act
+		inputDeal.SetAccountManager(null);
+
+		// Assert
+		Assert.Equal(
+			0,
+			inputDeal.AccountManagerDeals.Count);
+	}
+
+	[Fact]
+	public void SetAccountManager_AccountManagerDealsEmptyArgNewAccountManagerDeal_AccountManagerDealAddedAsActive()
+	{
+		// Arrange
+		Deal inputDeal = new();
+
+		AccountManager accountManager = new();
+
+		// Act
+		inputDeal.SetAccountManager(accountManager);
+
+		// Assert
+		Assert.Equal(
+			accountManager,
+			inputDeal.ActiveAccountManagerDeal!.AccountManager);
+
+		Assert.Equal(
+			1,
+			inputDeal.AccountManagerDeals.Count);
+	}
+
+	[Fact]
+	public void SetContacts_DealContactsEmptyArgsNull_DealContactsEmpty()
+	{
+		// Arrange
+		Deal inputDeal = new();
+
+		// Act
+		inputDeal.SetContacts(null);
 
 		// Assert
 		Assert.Equal(
@@ -400,287 +523,104 @@ public class DealTests
 	}
 
 	[Fact]
-	public void FillOutAssociations_WithAccountManager_AccountManagerDealsContainsAccountManager()
+	public void SetContacts_DealContactsEmptyArgsEmptyList_DealContactsEmpty()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		AccountManager accountManager = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		// Act
-		inputDeal.FillOutAssociations(accountManager, null, null);
+		inputDeal.SetContacts(new List<Contact>());
 
 		// Assert
 		Assert.Equal(
-			accountManager,
-			inputDeal.AccountManagerDeals.First().AccountManager);
+			0,
+			inputDeal.DealContacts.Count);
 	}
 
 	[Fact]
-	public void FillOutAssociations_WithClient_ClientAssignet()
+	public void SetContacts_DealContactsEmptyArgsNonEmptyList_DealContactsSet()
 	{
 		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		Client client = new(Guid.NewGuid());
+		Deal inputDeal = new();
 
 		// Act
-		inputDeal.FillOutAssociations(null, client, null);
+		inputDeal.SetContacts(new List<Contact>() { new() });
+
+		// Assert
+		Assert.Equal(
+			1,
+			inputDeal.DealContacts.Count);
+	}
+
+	[Fact]
+	public void SetContacts_DealContactsEmptyArgsListContainingNull_DealContactsSet()
+	{
+		// Arrange
+		Deal inputDeal = new();
+
+		// Act
+		inputDeal.SetContacts(new List<Contact?>() { new(), null });
+
+		// Assert
+		Assert.Equal(
+			1,
+			inputDeal.DealContacts.Count);
+	}
+
+	[Fact]
+	public void SetClient_ArgNull_ClientAndClientIdNull()
+	{
+		// Arrange
+		Deal inputDeal = new();
+
+		// Act
+		inputDeal.SetClient(null);
+
+		// Assert
+		Assert.Null(inputDeal.Client);
+		Assert.Null(inputDeal.ClientId);
+	}
+
+	[Fact]
+	public void SetClient_ArgNewClient_ClientAndClientIdSet()
+	{
+		// Arrange
+		Deal inputDeal = new();
+
+		Client client = new();
+		// Act
+		inputDeal.SetClient(client);
 
 		// Assert
 		Assert.Equal(
 			client,
 			inputDeal.Client);
-	}
-
-	[Fact]
-	public void FillOutAssociations_WithEmptyContacts_ContactsAssignet()
-	{
-		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		List<Contact> contacts = new();
-
-		// Act
-		inputDeal.FillOutAssociations(null, null, contacts);
-
-		// Assert
-		Assert.Equal(
-			0,
-			inputDeal.DealContacts.Count);
-	}
-
-	[Fact]
-	public void FillOutAssociations_WithContactsEmptyDealContacts_EmptyDealContacts()
-	{
-		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		List<Contact> contacts = new()
-		{
-			new Contact(Guid.NewGuid()),
-		};
-
-		// Act
-		inputDeal.FillOutAssociations(null, null, contacts);
-
-		// Assert
-		Assert.Equal(
-			0,
-			inputDeal.DealContacts.Count);
-	}
-
-	[Fact]
-	public void FillOutAssociations_WithContactsExistingInDealContacts_AssignedToDealContacts()
-	{
-		// Arrange
-		Contact contact = new(Guid.NewGuid())
-		{
-			SourceId = "id",
-			Source = Sources.HubSpot,
-		};
-
-		Deal inputDeal = new(Guid.NewGuid());
-
-		DealContact dealContact = new(Guid.NewGuid())
-		{
-			SourceContactId = contact.SourceId,
-			Contact = new(Guid.NewGuid())
-			{
-				Source = Sources.HubSpot
-			},
-		};
-
-		inputDeal.DealContacts.Add(dealContact);
-
-		// Act
-		inputDeal.FillOutAssociations(null, null, new List<Contact>() { contact });
-
-		// Assert
-		Assert.Equal(
-			1,
-			inputDeal.DealContacts.Count);
 
 		Assert.Equal(
-			contact,
-			inputDeal.DealContacts.First().Contact);
-	}
-
-	[Fact]
-	public void FillOutAssociations_WithContactsNotExistingInDealContacts_EmptyDealContacts()
-	{
-		// Arrange
-		Contact contact = new(Guid.NewGuid())
-		{
-			SourceId = "id",
-		};
-
-		Deal inputDeal = new(Guid.NewGuid());
-
-		DealContact dealContact = new(Guid.NewGuid())
-		{
-			SourceContactId = "another id",
-		};
-
-		inputDeal.DealContacts.Add(dealContact);
-
-		// Act
-		inputDeal.FillOutAssociations(null, null, new List<Contact>() { contact });
-
-		// Assert
-		Assert.Equal(
-			0,
-			inputDeal.DealContacts.Count);
-	}
-
-	[Fact]
-	public void FillOutAccountManager_AccountManangerNull_ThrowsNoException()
-	{
-		/// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		/// Act
-		var result = Record.Exception(() => inputDeal.FillOutAccountManager(null));
-
-		/// Assert
-		Assert.Null(result);
-	}
-
-	[Fact]
-	public void FillOutAccountManager_EmptyAccountManangerDeals_NewAccountManagerAdded()
-	{
-		/// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		AccountManager? accountManager = new(Guid.NewGuid());
-
-		/// Act
-		inputDeal.FillOutAccountManager(accountManager);
-
-		/// Assert
-		Assert.Equal(
-			1,
-			inputDeal.AccountManagerDeals.Count);
-
-		Assert.Equal(
-			accountManager,
-			inputDeal.AccountManagerDeals.First().AccountManager);
-	}
-
-	[Fact]
-	public void FillOutAccountManager_AccountManagerDealExists_OldAccountManagerDeactivated()
-	{
-		// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		AccountManager? oldAccountManager = new(Guid.NewGuid())
-		{
-			SourceId = "old",
-		};
-
-		inputDeal.AccountManagerDeals = new List<AccountManagerDeal>()
-		{
-			AccountManagerDeal.Create(inputDeal,oldAccountManager),
-		};
-
-		AccountManager? newAccountManager = new(Guid.NewGuid())
-		{
-			SourceId = "new",
-		};
-
-		/// Act
-		inputDeal.FillOutAccountManager(newAccountManager);
-
-		/// Assert
-		Assert.False(inputDeal.AccountManagerDeals.First(a => a.AccountManager == oldAccountManager).IsActive);
-	}
-
-	[Fact]
-	public void FillOutAccountManager_AccountManagerDealExists_NewAccountManagerAdded()
-	{
-		/// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		AccountManager? oldAccountManager = new(Guid.NewGuid())
-		{
-			SourceId = "old",
-		};
-
-		inputDeal.AccountManagerDeals = new List<AccountManagerDeal>()
-		{
-			AccountManagerDeal.Create(inputDeal,oldAccountManager),
-		};
-
-		AccountManager? newAccountManager = new(Guid.NewGuid())
-		{
-			SourceId = "new",
-		};
-
-		/// Act
-		inputDeal.FillOutAccountManager(newAccountManager);
-
-		/// Assert
-		Assert.Equal(
-			2,
-			inputDeal.AccountManagerDeals.Count);
-
-		Assert.Equal(
-			newAccountManager,
-			inputDeal.AccountManagerDeals.First(a => a.AccountManager == newAccountManager).AccountManager);
-	}
-
-	[Fact]
-	public void FillOutAccountManager_SameAccountMaangerDealAlreadyExists_NewAccountManagerAdded()
-	{
-		/// Arrange
-		Deal inputDeal = new(Guid.NewGuid());
-
-		AccountManager? oldAccountManager = new(Guid.NewGuid())
-		{
-			SourceId = "old",
-		};
-
-		inputDeal.AccountManagerDeals = new List<AccountManagerDeal>()
-		{
-			AccountManagerDeal.Create(inputDeal,oldAccountManager),
-		};
-
-		AccountManager? newAccountManager = new(Guid.NewGuid())
-		{
-			SourceId = "old",
-		};
-
-		/// Act
-		inputDeal.FillOutAccountManager(newAccountManager);
-
-		/// Assert
-		Assert.Equal(
-			1,
-			inputDeal.AccountManagerDeals.Count);
-
-		Assert.Equal(
-			newAccountManager,
-			inputDeal.AccountManagerDeals.First(a => a.AccountManager == newAccountManager).AccountManager);
+			client.Id,
+			inputDeal.ClientId);
 	}
 
 	[Theory]
-	[InlineData(12, 12, "testDealStatus", 12, "testName", "testDescription")]
+	[InlineData(12, 12, "testDealStatus", 12, "testName", "testDescription", "testSourceOwnerId")]
 	public void UpdatePropertiesFromDeal_PropertiesSet(
 		long testEndDate,
 		long testStartDate,
 		string testDealStatus,
 		long testLastContactDate,
 		string testName,
-		string testDescription)
+		string testDescription,
+		string testSourceOwnerId)
 	{
 		//Arrange
 		Mock<Deal> dealMock = new();
 		dealMock.Object.EndDate = testEndDate;
 		dealMock.Object.StartDate = testStartDate;
-		dealMock.Object.DealStatus = testDealStatus;
+		dealMock.Object.Status = testDealStatus;
 		dealMock.Object.LastContactDate = testLastContactDate;
 		dealMock.Object.Name = testName;
 		dealMock.Object.Description = testDescription;
+		dealMock.Object.SourceOwnerId = testSourceOwnerId;
 
 		//Act
 		_uut.UpdatePropertiesFromDeal(dealMock.Object);
@@ -688,9 +628,10 @@ public class DealTests
 		//Assert
 		Assert.Equal(testEndDate, _uut.EndDate);
 		Assert.Equal(testStartDate, _uut.StartDate);
-		Assert.Equal(testDealStatus, _uut.DealStatus);
+		Assert.Equal(testDealStatus, _uut.Status);
 		Assert.Equal(testLastContactDate, _uut.LastContactDate);
 		Assert.Equal(testName, _uut.Name);
 		Assert.Equal(testDescription, _uut.Description);
+		Assert.Equal(testSourceOwnerId, _uut.SourceOwnerId);
 	}
 }

@@ -19,8 +19,9 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 	private readonly HubSpotSettings _hubSpotSettings;
 	public HubSpotAuthorizationService(
 		IClient<HubSpotSettings> hubSpotClient,
-		IOptions<HubSpotSettings> hubSpotSettings)
-		: base(hubSpotClient)
+		IOptions<HubSpotSettings> hubSpotSettings,
+		IUnitOfWork unitOfWork)
+		: base(hubSpotClient, unitOfWork)
 	{
 		_hubSpotSettings = hubSpotSettings.Value ?? throw new ArgumentNullException(nameof(hubSpotSettings));
 	}
@@ -46,7 +47,7 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 		string accessToken,
 		CancellationToken cancellationToken)
 	{
-		RestRequest request = new RestRequest($"oauth/v1/access-tokens/{accessToken}");
+		RestRequest request = new($"oauth/v1/access-tokens/{accessToken}");
 
 		IResponse<AccessTokenResponse> response = await _client
 			.GetAsync<AccessTokenResponse>(request, cancellationToken);
@@ -57,12 +58,13 @@ internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>
 
 	public async Task<Result<string>> RefreshAccessTokenFromSupplierHubSpotIdAsync(
 		long supplierHubSpotId,
-		IUnitOfWork unitOfWork,
 		CancellationToken cancellationToken)
 	{
-		Supplier? supplier = await unitOfWork
-		.SupplierRepository
-				.FirstOrDefaultAsync(supplier => supplier.SourceId == supplierHubSpotId && supplier.Source == Sources.HubSpot, default);
+		Supplier? supplier = await _unitOfWork
+			.SupplierRepository
+			.FirstOrDefaultAsync(
+				supplier => supplier.SourceId == supplierHubSpotId && supplier.Source == Sources.HubSpot,
+				cancellationToken);
 
 		if (supplier is null || string.IsNullOrWhiteSpace(supplier.RefreshToken))
 		{

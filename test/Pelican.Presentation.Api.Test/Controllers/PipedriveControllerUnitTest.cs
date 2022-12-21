@@ -432,7 +432,6 @@ public class PipedriveControllerUnitTest
 			objectId,
 			userId,
 			clientName,
-			null,
 			officeLocation,
 			null);
 

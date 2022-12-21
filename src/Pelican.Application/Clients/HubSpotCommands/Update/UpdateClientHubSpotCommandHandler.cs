@@ -26,16 +26,15 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		Client? client = _unitOfWork
 			.ClientRepository
 			.FindByCondition(d => d.SourceId == command.ObjectId.ToString() && d.Source == Sources.HubSpot)
-			.Include(d => d.ClientContacts)
-				.ThenInclude(cc => cc.Contact)
-			.Include(d => d.Deals)
+			.Include(x => x.ClientContacts)
+			.Include(x => x.Deals)
 			.FirstOrDefault();
 
 		if (client is null)
 		{
 			return await GetAndCreateClientAsync(
-				command.PortalId,
 				command.ObjectId,
+				command.PortalId,
 				cancellationToken);
 		}
 
@@ -51,12 +50,13 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 	{
 		if ((client.LastUpdatedAt ?? client.CreatedAt) <= command.UpdateTime)
 		{
-			if (command.PropertyName == "num_associated_contacts")
+			if (command.PropertyName is "num_associated_contacts" or "num_associated_deals")
 			{
-				Result<Client> result = await UpdateClientContactsAsync(
+				Result result = await UpdateAssociationAsync(
 					client,
 					command.PortalId,
 					command.ObjectId,
+					command.PropertyName,
 					cancellationToken);
 
 				if (result.IsFailure)
@@ -64,6 +64,7 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 					return result;
 				}
 			}
+
 			else
 			{
 				client.UpdateProperty(
@@ -71,51 +72,27 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 					command.PropertyValue);
 			}
 		}
+
 		else
 		{
 			Result<Client> result = await GetClientFromHubSpot(
 						command.ObjectId,
 						command.PortalId,
 						cancellationToken);
+
 			if (result.IsFailure)
 			{
 				return result;
 			}
-			client.UpdatePropertiesFromClient(result.Value);
-			client.UpdateClientContacts(result.Value.ClientContacts);
-		}
 
-		_unitOfWork
-				.ClientRepository
-				.Update(client);
+			client.UpdatePropertiesFromClient(result.Value);
+		}
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
 		return Result.Success();
 	}
-	private Client FillOutClientAssociations(
-		Client client)
-	{
-		List<Contact> contacts = new();
 
-		foreach (ClientContact item in client.ClientContacts)
-		{
-			Contact? matchingContact = _unitOfWork
-				.ContactRepository
-				.FindByCondition(
-					d => d.SourceId == item.SourceContactId && d.Source == Sources.HubSpot)
-				.FirstOrDefault();
-
-			if (matchingContact is not null)
-			{
-				contacts.Add(matchingContact);
-			}
-		}
-
-		client.FillOutClientContacts(contacts);
-
-		return client;
-	}
 	private async Task<Result> GetAndCreateClientAsync(
 		long objectId,
 		long portalId,
@@ -130,8 +107,6 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		{
 			return result;
 		}
-
-		FillOutClientAssociations(result.Value);
 
 		await _unitOfWork
 			.ClientRepository
@@ -151,7 +126,6 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 	{
 		Result<string> accessTokenResult = await _hubSpotAuthorizationService.RefreshAccessTokenFromSupplierHubSpotIdAsync(
 			portalId,
-			_unitOfWork,
 			cancellationToken);
 
 		if (accessTokenResult.IsFailure)
@@ -164,10 +138,12 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 			objectId,
 			cancellationToken);
 	}
-	private async Task<Result<Client>> UpdateClientContactsAsync(
+
+	private async Task<Result<Client>> UpdateAssociationAsync(
 		Client client,
 		long portalId,
 		long clientHubSpotId,
+			string propertyName,
 		CancellationToken cancellationToken = default)
 	{
 		Result<Client> result = await GetClientFromHubSpot(
@@ -179,13 +155,17 @@ internal sealed class UpdateClientHubSpotCommandHandler : ICommandHandler<Update
 		{
 			return result;
 		}
-		client.UpdateClientContacts(result.Value.ClientContacts);
 
-		var newClientContacts = client.ClientContacts.Where(cc => cc.Contact is null).ToList();
+		if (propertyName == "num_associated_contacts")
+		{
+			client.UpdateClientContacts(result.Value.ClientContacts);
+		}
+		else
+		{
+			client.UpdateDeals(result.Value.Deals);
+		}
 
-		FillOutClientAssociations(client);
-
-		_unitOfWork.ClientContactRepository.AttachAsAdded(newClientContacts);
+		_unitOfWork.ClientRepository.Attach(client);
 
 		return client;
 	}

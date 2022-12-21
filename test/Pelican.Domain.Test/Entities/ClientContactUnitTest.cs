@@ -12,13 +12,13 @@ public class ClientContactUnitTest
 		const string CLIENT_HUBSPOTID = "clienthubspotid";
 		const string CONTACT_HUBSPOTID = "contacthubspotid";
 
-		Client client = new(Guid.NewGuid())
+		Client client = new()
 		{
 			SourceId = CLIENT_HUBSPOTID,
 			Source = Sources.HubSpot
 		};
 
-		Contact contact = new(Guid.NewGuid())
+		Contact contact = new()
 		{
 			SourceId = CONTACT_HUBSPOTID,
 			Source = Sources.HubSpot
@@ -53,5 +53,21 @@ public class ClientContactUnitTest
 			result.SourceContactId);
 
 		Assert.True(result.IsActive);
+	}
+
+	[Fact]
+	public void Deactive_IsActiveSetToFalse()
+	{
+		// Arrange 
+		ClientContact clientContact = new()
+		{
+			IsActive = true,
+		};
+
+		// Act
+		clientContact.Deactivate();
+
+		// Assert
+		Assert.False(clientContact.IsActive);
 	}
 }

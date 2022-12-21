@@ -5,9 +5,9 @@ using Pelican.Domain.Primitives;
 
 public class AccountManagerDeal : Entity, ITimeTracked
 {
-	public AccountManagerDeal(Guid id) : base(id) { }
-
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 	public AccountManagerDeal() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 	public bool IsActive { get; set; }
 
@@ -30,7 +30,7 @@ public class AccountManagerDeal : Entity, ITimeTracked
 	[GraphQLIgnore]
 	public static AccountManagerDeal Create(Deal deal, AccountManager accountManager)
 	{
-		return new AccountManagerDeal(Guid.NewGuid())
+		return new AccountManagerDeal()
 		{
 			Deal = deal,
 			DealId = deal.Id,

@@ -22,7 +22,6 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.Supplier, f => f.PickRandom<Supplier>(suppliers))
 			.RuleFor(e => e.SourceId, f => f.Random.Guid().ToString())
 			.RuleFor(e => e.SourceUserId, f => f.Random.Long(1))
-			.RuleFor(e => e.Id, f => f.Random.Guid())
 			.RuleFor(e => e.Source, () => new Random().Next(2) <= 1 ? Sources.HubSpot : Sources.Pipedrive);
 		return faker.Generate(count);
 	}
@@ -39,7 +38,6 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.WebsiteUrl, f => f.Internet.Url().OrNull(f, 0.0f))
 			.RuleFor(e => e.SourceId, f => f.Random.Long(1))
 			.RuleFor(e => e.RefreshToken, f => f.Random.Guid().ToString())
-			.RuleFor(e => e.Id, f => f.Random.Guid())
 			.RuleFor(e => e.PipedriveDomain, f => f.Internet.Url().OrNull(f, 0.0f))
 			.RuleFor(e => e.OfficeLocation, f => f.Address.City().OrNull(f, 0.0f))
 			.RuleFor(e => e.Source, () => new Random().Next(2) == 1 ? Sources.HubSpot : Sources.Pipedrive);
@@ -52,10 +50,9 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 		faker
 			.RuleFor(e => e.SourceId, f => f.Random.Guid().ToString())
 			.RuleFor(e => e.SourceOwnerId, f => f.PickRandom<AccountManager>(accountManagers).SourceId.OrNull(f, 0.0f))
-			.RuleFor(e => e.DealStatus, f => f.PickRandom<DealStatus>().ToString().OrNull(f, 0.0f))
+			.RuleFor(e => e.Status, f => f.PickRandom<DealStatus>().ToString().OrNull(f, 0.0f))
 			.RuleFor(e => e.EndDate, f => f.Date.Future().Ticks.OrNull(f, 0.0f))
 			.RuleFor(e => e.StartDate, f => f.Date.Future().Ticks.OrNull(f, 0.0f))
-			.RuleFor(e => e.Id, f => f.Random.Guid())
 			.RuleFor(e => e.LastContactDate, f => f.Date.Future().Ticks.OrNull(f, 0.0f))
 			.RuleFor(e => e.ClientId, f => f.PickRandom<Client>(clients).Id)
 			.RuleFor(e => e.Client, f => f.PickRandom<Client>(clients))
@@ -71,12 +68,10 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 		var faker = new Faker<Client>().UseSeed(1341);
 		faker
 			.RuleFor(e => e.Name, f => f.Company.CompanyName())
-			.RuleFor(e => e.PictureUrl, f => f.Image.PicsumUrl().OrNull(f, 0.0f))
 			.RuleFor(e => e.OfficeLocation, f => f.Address.City().OrNull(f, 0.0f))
 			.RuleFor(e => e.SourceId, f => f.Random.Guid().ToString())
 			.RuleFor(e => e.Website, f => f.Internet.Url().OrNull(f, 0.0f))
-			.RuleFor(e => e.Source, () => new Random().Next(2) == 1 ? Sources.HubSpot : Sources.Pipedrive)
-			.RuleFor(e => e.Id, f => f.Random.Guid());
+			.RuleFor(e => e.Source, () => new Random().Next(2) == 1 ? Sources.HubSpot : Sources.Pipedrive);
 		return faker.Generate(count);
 	}
 
@@ -91,7 +86,6 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.JobTitle, f => f.Name.JobTitle().OrNull(f, 0.0f))
 			.RuleFor(e => e.SourceId, f => f.Random.Guid().ToString())
 			.RuleFor(e => e.SourceOwnerId, f => f.PickRandom<AccountManager>(accountManagers).SourceId.OrNull(f, 0.0f))
-			.RuleFor(e => e.Id, f => f.Random.Guid())
 			.RuleFor(e => e.Source, () => new Random().Next(2) == 1 ? Sources.HubSpot : Sources.Pipedrive);
 		return faker.Generate(count);
 	}
@@ -102,7 +96,6 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.DealId, f => f.PickRandom<Deal>(deals).Id)
 			.RuleFor(e => e.AccountManagerId, f => f.PickRandom<AccountManager>(accountManagers).Id)
 			.RuleFor(e => e.IsActive, () => new Random().Next(100) <= 50)
-			.RuleFor(e => e.Id, f => f.Random.Guid())
 			.RuleFor(e => e.SourceAccountManagerId, f => f.PickRandom<AccountManager>(accountManagers).SourceId)
 			.RuleFor(e => e.SourceDealId, f => f.PickRandom<Deal>(deals).SourceId)
 			.Generate(accountManagers.Count());
@@ -113,7 +106,6 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.DealId, f => f.PickRandom<Deal>(deals).Id)
 			.RuleFor(e => e.ContactId, f => f.PickRandom<Contact>(contacts).Id)
 			.RuleFor(e => e.IsActive, () => new Random().Next(100) <= 50)
-			.RuleFor(e => e.Id, f => f.Random.Guid())
 			.RuleFor(e => e.SourceContactId, f => f.PickRandom<Contact>(contacts).SourceId)
 			.RuleFor(e => e.SourceDealId, f => f.PickRandom<Deal>(deals).SourceId)
 			.Generate(deals.Count());
@@ -124,7 +116,6 @@ public class PelicanBogusFaker : IPelicanBogusFaker
 			.RuleFor(e => e.ClientId, f => f.PickRandom<Client>(clients).Id)
 			.RuleFor(e => e.ContactId, f => f.PickRandom<Contact>(contacts).Id)
 			.RuleFor(e => e.IsActive, () => new Random().Next(100) <= 50)
-			.RuleFor(e => e.Id, f => f.Random.Guid())
 			.RuleFor(e => e.SourceClientId, f => f.PickRandom<Client>(clients).SourceId)
 			.RuleFor(e => e.SourceContactId, f => f.PickRandom<Contact>(contacts).SourceId)
 			.Generate(clients.Count());

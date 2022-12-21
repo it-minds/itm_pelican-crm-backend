@@ -14,9 +14,6 @@ internal class ClientConfiguration : IEntityTypeConfiguration<Client>
 			.HasMaxLength(StringLengths.Name)
 			.IsRequired();
 
-		builder.Property(p => p.PictureUrl)
-			.HasMaxLength(StringLengths.Url);
-
 		builder.Property(p => p.OfficeLocation)
 			.HasMaxLength(StringLengths.OfficeLocation);
 

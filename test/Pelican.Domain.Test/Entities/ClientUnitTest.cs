@@ -6,11 +6,31 @@ using Xunit;
 namespace Pelican.Domain.Test.Entities;
 public class ClientUnitTest
 {
-	private readonly Client _uut = new Client(Guid.NewGuid())
+	private readonly Client _uut = new Client()
 	{
 		SourceId = "uutHubSpotId",
 		Source = Sources.HubSpot
 	};
+
+	[Fact]
+	public void SetOfficeLocation_InputNull_ValueNull()
+	{
+		// Act
+		_uut.OfficeLocation = null!;
+
+		//Assert
+		Assert.Null(_uut.OfficeLocation);
+	}
+
+	[Fact]
+	public void SetWebsite_InputNull_ValueNull()
+	{
+		// Act
+		_uut.Website = null!;
+
+		//Assert
+		Assert.Null(_uut.Website);
+	}
 
 	[Fact]
 	public void SetName_NameStringNotToLong_NameEqualToValueSet()
@@ -173,22 +193,10 @@ public class ClientUnitTest
 	}
 
 	[Fact]
-	public void UpdateClientContacts_ArgumentNull_ReturnsWithoutException()
-	{
-		// Act 
-		var result = Record.Exception(() => _uut.UpdateClientContacts(null));
-
-		// Assert
-		Assert.Null(result);
-
-		Assert.Empty(_uut.ClientContacts);
-	}
-
-	[Fact]
 	public void UpdateClientContacts_EmptyExistingClientContactArgumentNotNull_NewClientContactAdded()
 	{
 		// Arrange
-		Contact newContact = new(Guid.NewGuid())
+		Contact newContact = new()
 		{
 			SourceId = "newHubSpotId",
 		};
@@ -211,7 +219,7 @@ public class ClientUnitTest
 	public void UpdateClientContacts_OneExistingClientContactNotInArgument_ClientContactsUpdated()
 	{
 		// Arrange
-		Contact existingContact = new(Guid.NewGuid())
+		Contact existingContact = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot
@@ -221,9 +229,9 @@ public class ClientUnitTest
 
 		ICollection<ClientContact> clientContacts = new List<ClientContact>()
 		{
-			new(Guid.NewGuid())
+			new()
 			{
-				Contact=new(Guid.NewGuid()),
+				Contact=new(),
 			}
 		};
 
@@ -231,7 +239,12 @@ public class ClientUnitTest
 		_uut.UpdateClientContacts(clientContacts);
 
 		// Assert
-		Assert.False(_uut.ClientContacts.First(d => d.SourceContactId == existingContact.SourceId && existingContact.Source == Sources.HubSpot).IsActive);
+		Assert.False(
+			_uut.ClientContacts
+				.First(
+					d => d.SourceContactId == existingContact.SourceId
+					&& existingContact.Source == Sources.HubSpot)
+				.IsActive);
 
 		Assert.Equal(
 			2,
@@ -242,7 +255,7 @@ public class ClientUnitTest
 	public void UpdateClientContacts_OneExistingClientContactMatchInArgument_NoClientContactAddedExistingClientContactStillActive()
 	{
 		// Arrange
-		Contact existingContact = new(Guid.NewGuid())
+		Contact existingContact = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,
@@ -250,7 +263,7 @@ public class ClientUnitTest
 
 		_uut.ClientContacts.Add(ClientContact.Create(_uut, existingContact));
 
-		Contact newContact = new(Guid.NewGuid())
+		Contact newContact = new()
 		{
 			SourceId = "hsId",
 			Source = Sources.HubSpot,
@@ -269,130 +282,134 @@ public class ClientUnitTest
 			1,
 			_uut.ClientContacts.Count);
 
-		Assert.True(_uut
-			.ClientContacts
-			.First(dc => dc.SourceContactId == "hsId" && dc.Contact.Source == Sources.HubSpot)
-			.IsActive);
+		Assert.True(
+			_uut.ClientContacts
+				.First(
+					dc => dc.SourceContactId == "hsId"
+					&& dc.Contact.Source == Sources.HubSpot)
+				.IsActive);
 	}
 
 	[Fact]
-	public void FillOutClientContacts_ContactsNull_ThrowNoExceptionEmptyClientContacts()
+	public void UpdateDeals_NoMatchInSourceArgument_DealAdded()
 	{
-		// Act
-		var result = Record.Exception(() => _uut.FillOutClientContacts(null));
+		//Arrange
+		string testSourceId = "123";
+		List<Deal> existingDeals = new()
+		{
+			new()
+			{
+				SourceId=testSourceId,
+				Source= Sources.HubSpot,
+			}
+		};
+		List<Deal> sourceDeals = new()
+		{
+			new()
+			{
+					SourceId=testSourceId,
+					Source= Sources.Pipedrive,
+			}
+		};
+		sourceDeals.Add(existingDeals.First());
+		_uut.Deals = existingDeals;
 
-		// Assert
-		Assert.Null(result);
+		//Act
+		_uut.UpdateDeals(sourceDeals);
 
-		Assert.Empty(_uut.ClientContacts);
+		//Assert
+		Assert.Equal(2, _uut.Deals.Count);
+		Assert.Equal(sourceDeals, _uut.Deals);
 	}
 
 	[Fact]
-	public void FillOutClientContacts_ContactsEmpty_EmptyClientContacts()
+	public void UpdateDeals_NoMatchInSourceIdArgument_DealAdded()
 	{
-		// Act
-		_uut.FillOutClientContacts(Enumerable.Empty<Contact>());
+		//Arrange
+		string testSourceId = "123";
+		List<Deal> existingDeals = new()
+		{
+			new()
+			{
+				SourceId=testSourceId,
+				Source= Sources.HubSpot,
+			}
+		};
+		List<Deal> sourceDeals = new()
+		{
+			new()
+			{
+					SourceId="321",
+					Source= Sources.HubSpot,
+			}
+		};
+		sourceDeals.Add(existingDeals.First());
+		_uut.Deals = existingDeals;
 
-		// Assert
-		Assert.Empty(_uut.ClientContacts);
+		//Act
+		_uut.UpdateDeals(sourceDeals);
+
+		//Assert
+		Assert.Equal(2, _uut.Deals.Count);
+		Assert.Equal(sourceDeals, _uut.Deals);
 	}
 
 	[Fact]
-	public void FillOutClientContacts_ExistingClientAlreadyContainsContact_ReturnsUnchangedClientContacts()
+	public void UpdateDeals_OneExistingDealMatchInArgument_NoDealsAdded()
 	{
-		// Arrange
-		ClientContact existingClientContact = new(Guid.NewGuid())
+		//Arrange
+		string testSourceId = "123";
+		List<Deal> existingDeals = new()
 		{
-			Contact = new(Guid.NewGuid()),
-			SourceContactId = "hsID",
-			IsActive = true,
+			new()
+			{
+				SourceId=testSourceId,
+				Source= Sources.HubSpot,
+			}
 		};
-		existingClientContact.ContactId = existingClientContact.Contact.Id;
+		List<Deal> sourceDeals = new()
+		{
+			new()
+			{
+					SourceId=testSourceId,
+					Source= Sources.HubSpot,
+			}
+		};
+		_uut.Deals = existingDeals;
 
-		_uut.ClientContacts.Add(existingClientContact);
+		//Act
+		_uut.UpdateDeals(sourceDeals);
 
-		Contact newContact = existingClientContact.Contact;
-
-		// Act
-		_uut.FillOutClientContacts(new List<Contact>() { newContact });
-
-		// Assert
-		Assert.Equal(
-			1,
-			_uut.ClientContacts.Count);
-
-		Assert.Equal(
-			existingClientContact.Contact,
-			_uut.ClientContacts.First().Contact);
-
-		Assert.Equal(
-			existingClientContact.ContactId,
-			_uut.ClientContacts.First().Contact.Id);
+		//Assert
+		Assert.Equal(1, _uut.Deals.Count);
+		Assert.Equal(sourceDeals.First().Source, _uut.Deals.First().Source);
+		Assert.Equal(sourceDeals.First().SourceId, _uut.Deals.First().SourceId);
 	}
 
 	[Fact]
-	public void FillOutClientContacts_NoMatchingContact_EmptyClientContacts()
+	public void UpdateDeals_ExistingDealNotInSourceDeals_DealRemoved()
 	{
-		// Arrange
-		ClientContact existingClientContact = new(Guid.NewGuid())
+		//Arrange
+		string testSourceId = "123";
+		List<Deal> existingDeals = new()
 		{
-			SourceContactId = "hsID",
-			IsActive = true,
+			new()
+			{
+				SourceId=testSourceId,
+				Source= Sources.HubSpot,
+			}
 		};
+		List<Deal> sourceDeals = new();
+		_uut.Deals = existingDeals;
 
-		_uut.ClientContacts.Add(existingClientContact);
+		//Act
+		_uut.UpdateDeals(sourceDeals);
 
-		Contact newContact = new(Guid.NewGuid())
-		{
-			SourceId = "another_hsId",
-		};
-
-		// Act
-		_uut.FillOutClientContacts(new List<Contact>() { newContact });
-
-		// Assert
-		Assert.Equal(
-			0,
-			_uut.ClientContacts.Count);
+		//Assert
+		Assert.Empty(_uut.Deals);
+		Assert.Equal(sourceDeals, _uut.Deals);
 	}
 
-	[Fact]
-	public void FillOutClientContacts_ExistingClientContactMatchingArgument_ClientContactsUpdated()
-	{
-		// Arrange
-		ClientContact existingClientContact = new(Guid.NewGuid())
-		{
-			SourceContactId = "hsID",
-			Client = _uut,
-			ClientId = _uut.Id,
-			SourceClientId = _uut.SourceId,
-			IsActive = true,
-		};
-
-		_uut.ClientContacts.Add(existingClientContact);
-
-		Contact newContact = new(Guid.NewGuid())
-		{
-			SourceId = "hsID",
-			Source = Sources.HubSpot
-		};
-
-		// Act
-		_uut.FillOutClientContacts(new List<Contact>() { newContact });
-
-		// Assert
-		Assert.Equal(
-			1,
-			_uut.ClientContacts.Count);
-
-		Assert.Equal(
-			newContact,
-			_uut.ClientContacts.First().Contact);
-
-		Assert.Equal(
-			newContact.Id,
-			_uut.ClientContacts.First().Contact.Id);
-	}
 
 	[Theory]
 	[InlineData("testName", "testOfficeLocation", "testWebSite")]
@@ -400,9 +417,25 @@ public class ClientUnitTest
 	{
 		//Arrange
 		Mock<Client> clientMock = new();
+		List<ClientContact> testClientContacts = new()
+		{
+			new()
+			{
+				CreatedAt=1231,
+			}
+		};
+		List<Deal> testDeals = new()
+		{
+			new()
+			{
+				EndDate=22131,
+			}
+		};
 		clientMock.Object.Name = testName;
 		clientMock.Object.OfficeLocation = testOfficeLocation;
 		clientMock.Object.Website = testWebsite;
+		clientMock.Object.ClientContacts = testClientContacts;
+		clientMock.Object.Deals = testDeals;
 
 		//Act
 		_uut.UpdatePropertiesFromClient(clientMock.Object);
@@ -411,5 +444,81 @@ public class ClientUnitTest
 		Assert.Equal(testName, _uut.Name);
 		Assert.Equal(testOfficeLocation, _uut.OfficeLocation);
 		Assert.Equal(testWebsite, _uut.Website);
+		Assert.Equal(testClientContacts, _uut.ClientContacts);
+		Assert.Equal(testDeals, _uut.Deals);
+	}
+
+	[Fact]
+	public void SetDeal_DealListEmpty_NewListDealCreated()
+	{
+		//Act
+		_uut.SetDeals(null);
+
+		//Assert
+		Assert.Equal(new List<Deal>(), _uut.Deals);
+	}
+
+	[Fact]
+	public void SetDeal_DealListNotEmpty_DealsEqualToDealList()
+	{
+		//Arrange
+		List<Deal> deals = new List<Deal>()
+		{
+			new Deal()
+			{
+				Name = "testDealName",
+			}
+		};
+
+		//Act
+		_uut.SetDeals(deals);
+
+		//Assert
+		Assert.Equal(deals, _uut.Deals);
+	}
+	[Fact]
+	public void SetClientContacts_ClientContactsListEmpty_NewListClientContactsCreated()
+	{
+		//Act
+		_uut.SetClientContacts(null);
+
+		//Assert
+		Assert.Equal(new List<ClientContact>(), _uut.ClientContacts);
+	}
+
+	[Fact]
+	public void SetClientContacts_ClientContactsListContactNull_ReturnsNull()
+	{
+		//Arrange
+		List<Contact> contacts = new()
+		{
+			null!,
+		};
+
+		//Act
+		_uut.SetClientContacts(contacts);
+
+		//Assert
+		Assert.Equal(new List<ClientContact>(), _uut.ClientContacts);
+	}
+
+	[Fact]
+	public void SetClientContacts_ClientContactsListNotEmpty_ClientContactsDealsEqualToDealList()
+	{
+		//Arrange
+		List<Contact> contacts = new()
+		{
+			new Contact()
+			{
+				FirstName = "testFirstName",
+			}
+		};
+		//Act
+		_uut.SetClientContacts(contacts);
+
+		//Assert
+		Assert.Equal(
+			contacts.First().FirstName,
+			_uut.ClientContacts.First().Contact.FirstName);
 	}
 }

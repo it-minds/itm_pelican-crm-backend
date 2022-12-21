@@ -16,7 +16,7 @@ public class GetClientByIdQueryHandlerUnitTest
 		var guid = Guid.NewGuid();
 		GetClientByIdQuery getClientByIdQuery = new GetClientByIdQuery(guid);
 		List<Client> resultList = new List<Client>();
-		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Client(guid));
+		dataLoaderMock.Setup(x => x.LoadAsync(guid, cancellationToken)).ReturnsAsync(new Client() { Id = guid });
 		//Act
 		resultList.Add(await uut.Handle(getClientByIdQuery, cancellationToken));
 		//Assert

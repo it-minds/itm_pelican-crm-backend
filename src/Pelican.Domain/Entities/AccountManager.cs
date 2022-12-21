@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Primitives;
+﻿using Pelican.Domain.Extensions;
+using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
 public class AccountManager : Entity, ITimeTracked
@@ -8,8 +9,6 @@ public class AccountManager : Entity, ITimeTracked
 	private string _email = string.Empty;
 	private string? _phoneNumber;
 	private string? _linkedInUrl;
-
-	public AccountManager(Guid id) : base(id) { }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 	public AccountManager() { }
@@ -24,44 +23,24 @@ public class AccountManager : Entity, ITimeTracked
 	public string FirstName
 	{
 		get => _firstName;
-		set
-		{
-			_firstName = value.Length > StringLengths.Name
-				? value.Substring(0, StringLengths.Name - 3) + ("...")
-				: value;
-		}
+		set => _firstName = value.CheckAndShortenExceedingString(StringLengths.Name);
 	}
 	public string LastName
 	{
 		get => _lastName;
-		set
-		{
-			_lastName = value.Length > StringLengths.Name
-				? value.Substring(0, StringLengths.Name - 3) + ("...")
-				: value;
-		}
+		set => _lastName = value.CheckAndShortenExceedingString(StringLengths.Name);
 	}
 
 	public string Email
 	{
 		get => _email;
-		set
-		{
-			_email = value.Length > StringLengths.Email
-				? value.Substring(0, StringLengths.Email - 3) + ("...")
-				: value;
-		}
+		set => _email = value.CheckAndShortenExceedingString(StringLengths.Email);
 	}
 
 	public string? PhoneNumber
 	{
 		get => _phoneNumber;
-		set
-		{
-			_phoneNumber = value?.Length > StringLengths.PhoneNumber
-				? value.Substring(0, StringLengths.PhoneNumber - 3) + ("...")
-				: value;
-		}
+		set => _phoneNumber = value?.CheckAndShortenExceedingString(StringLengths.PhoneNumber);
 	}
 
 	public string? PictureUrl { get; set; }
@@ -69,12 +48,7 @@ public class AccountManager : Entity, ITimeTracked
 	public string? LinkedInUrl
 	{
 		get => _linkedInUrl;
-		set
-		{
-			_linkedInUrl = value?.Length > StringLengths.Url
-				? value.Substring(0, StringLengths.Url - 3) + ("...")
-				: value;
-		}
+		set => _linkedInUrl = value?.CheckAndShortenExceedingString(StringLengths.Url);
 	}
 
 	public Guid SupplierId { get; set; }

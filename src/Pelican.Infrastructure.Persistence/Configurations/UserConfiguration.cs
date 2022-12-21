@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Entities.Users;
 using Pelican.Domain.Enums;
@@ -12,14 +13,23 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 		builder.ToTable("Users");
 
 		builder.HasDiscriminator<RoleEnum>("Role")
-		  .HasValue<Admin>(RoleEnum.Admin)
-		  .HasValue<StandardUser>(RoleEnum.Standard);
+			.HasValue<AdminUser>(RoleEnum.Admin)
+			.HasValue<StandardUser>(RoleEnum.Standard);
 
 		builder.Property(e => e.Name)
-		  .HasMaxLength(200)
-		  .IsRequired();
+			.HasMaxLength(StringLengths.Name)
+			.IsRequired();
 
 		builder.Property(e => e.Email)
+			.HasMaxLength(StringLengths.Email)
+			.IsRequired();
+
+		builder.Property(e => e.Password)
+			.HasMaxLength(StringLengths.Password)
+			.IsRequired();
+
+		builder.Property(e => e.SSOTokenId)
+			.HasMaxLength(StringLengths.SSOTokenId)
 			.IsRequired();
 
 		builder.HasIndex(e => e.Email)
@@ -27,6 +37,5 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
 		builder.Property(e => e.Role)
 			.IsRequired();
-
 	}
 }

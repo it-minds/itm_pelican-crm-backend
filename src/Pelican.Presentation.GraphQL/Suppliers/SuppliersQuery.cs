@@ -1,15 +1,10 @@
 ﻿using MediatR;
-using Pelican.Application.Security;
 using Pelican.Application.Suppliers.Queries.GetSupplierById;
 using Pelican.Application.Suppliers.Queries.GetSuppliers;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Enums;
 
 namespace Pelican.Presentation.GraphQL.Suppliers;
 
-[Authenticated]
-[Authorized(Role = RoleEnum.Standard)]
-[Authorized(Role = RoleEnum.Admin)]
 [ExtendObjectType("Query")]
 public class SuppliersQuery
 {

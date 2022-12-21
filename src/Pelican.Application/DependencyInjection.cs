@@ -2,9 +2,11 @@
 using System.Runtime.CompilerServices;
 using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Application.Behaviours;
+using Pelican.Application.Options;
 using Pelican.Application.RestSharp;
 using Pelican.Domain.Settings.HubSpot;
 
@@ -14,7 +16,7 @@ namespace Pelican.Application;
 public static class DependencyInjection
 {
 	//Add application as a service that can be used in program
-	public static IServiceCollection AddApplication(this IServiceCollection services)
+	public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
 	{
 		services.AddSingleton<IClient<HubSpotSettings>, RestSharpClient<HubSpotSettings>>();
 
@@ -23,6 +25,8 @@ public static class DependencyInjection
 		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 		services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+
+		services.Configure<TokenOptions>(configuration.GetSection(TokenOptions.Tokens));
 
 		return services;
 	}

@@ -7,6 +7,7 @@ using Pelican.Domain.Enums;
 
 namespace Pelican.Presentation.GraphQL.Contacts;
 
+[Authenticated]
 [Authorized(Role = RoleEnum.Standard)]
 [Authorized(Role = RoleEnum.Admin)]
 [ExtendObjectType(OperationTypeNames.Query)]

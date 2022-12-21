@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿/// <summary>
+/// Specifies the class this attribute is applied to requires authentication.
+/// </summary>
 namespace Pelican.Application.Security;
-internal class AuthenticatedAttribute
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
+public class AuthenticatedAttribute : Attribute
 {
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AuthenticatedAttribute"/> class.
+	/// </summary>
+	public AuthenticatedAttribute() { }
 }

@@ -7,6 +7,7 @@ using Pelican.Domain.Enums;
 
 namespace Pelican.Presentation.GraphQL.Suppliers;
 
+[Authenticated]
 [Authorized(Role = RoleEnum.Standard)]
 [Authorized(Role = RoleEnum.Admin)]
 [ExtendObjectType("Query")]

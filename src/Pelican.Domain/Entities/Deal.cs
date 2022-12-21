@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using HotChocolate;
+﻿using HotChocolate;
 using Pelican.Domain.Primitives;
-using Pelican.Domain.Shared;
 
 namespace Pelican.Domain.Entities;
 public class Deal : Entity, ITimeTracked
@@ -88,6 +86,9 @@ public class Deal : Entity, ITimeTracked
 			case "description":
 				Description = propertyValue;
 				break;
+			case "hs_all_owner_ids":
+				SourceOwnerId = propertyValue;
+				break;
 			default:
 				throw new InvalidOperationException("Invalid field");
 		}
@@ -103,6 +104,7 @@ public class Deal : Entity, ITimeTracked
 		LastContactDate = deal.LastContactDate;
 		Name = deal.Name;
 		Description = deal.Description;
+		SourceOwnerId = deal.SourceOwnerId;
 	}
 
 	[GraphQLIgnore]

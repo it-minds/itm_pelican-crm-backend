@@ -394,6 +394,11 @@ public class UpdateDealHubSpotCommandHandlerTests
 		Result result = await _uut.Handle(command, default);
 
 		// Assert
+		dealMock.Verify(
+		x => x.UpdateProperty(
+			command.PropertyName,
+			command.PropertyValue));
+
 		_unitOfWorkMock.Verify(
 			x => x.SaveAsync(default),
 			Times.Once);
@@ -427,6 +432,11 @@ public class UpdateDealHubSpotCommandHandlerTests
 		Result result = await _uut.Handle(command, default);
 
 		// Assert
+		dealMock.Verify(
+		x => x.UpdateProperty(
+			command.PropertyName,
+			command.PropertyValue));
+
 		_unitOfWorkMock.Verify(
 			x => x.SaveAsync(default),
 			Times.Once);
@@ -462,6 +472,11 @@ public class UpdateDealHubSpotCommandHandlerTests
 		Result result = await _uut.Handle(command, default);
 
 		// Assert
+		dealMock.Verify(
+			x => x.UpdateProperty(
+				command.PropertyName,
+				command.PropertyValue));
+
 		_unitOfWorkMock.Verify(
 			x => x.SaveAsync(default),
 			Times.Once);
@@ -489,6 +504,11 @@ public class UpdateDealHubSpotCommandHandlerTests
 		Result result = await _uut.Handle(command, default);
 
 		// Assert
+		dealMock.Verify(
+		x => x.UpdateProperty(
+			command.PropertyName,
+			command.PropertyValue));
+
 		_unitOfWorkMock.Verify(
 			x => x.SaveAsync(default),
 			Times.Once);
@@ -596,7 +616,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 	}
 
 	[Theory]
-	[InlineData(0, 0, 1, "testProperty", "testValue", 123, 42123, 23123, "testDealStage", "testDealName", "testDealDescription")]
+	[InlineData(0, 0, 1, "testProperty", "testValue", 123, 42123, 23123, "testDealStage", "testDealName", "testDealDescription", "testSourceOwnerId")]
 	public async void Handle_DealFoundLastCommandUpdateTimeOlderThanLastUpdateAndOlderThanCreateAtDealServiceReturnsSuccessClientUpdated_ReturnsSuccess(
 		long objectId,
 		long portalId,
@@ -608,7 +628,8 @@ public class UpdateDealHubSpotCommandHandlerTests
 		long testLastContactDate,
 		string testDealStatus,
 		string testDealName,
-		string testDealDescription)
+		string testDealDescription,
+		string testSourceOwnerId)
 	{
 		//Arrange
 		UpdateDealHubSpotCommand command = new(objectId, portalId, updateTime, propertyName, propertyValue);
@@ -628,6 +649,7 @@ public class UpdateDealHubSpotCommandHandlerTests
 			Status = testDealStatus,
 			Name = testDealName,
 			Description = testDealDescription,
+			SourceOwnerId = testSourceOwnerId,
 		};
 
 		_unitOfWorkMock

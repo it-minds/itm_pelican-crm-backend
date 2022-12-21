@@ -1,14 +1,13 @@
-﻿using MediatR;
+﻿using HotChocolate.AspNetCore.Authorization;
+using MediatR;
 using Pelican.Application.Contacts.Queries.GetContactById;
 using Pelican.Application.Contacts.Queries.GetContacts;
-using Pelican.Application.Security;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Enums;
 
 namespace Pelican.Presentation.GraphQL.Contacts;
 
-[Authorized(Role = RoleEnum.Standard)]
-[Authorized(Role = RoleEnum.Admin)]
+[Authorize(Roles = new[] { Roles.Admin, Roles.Standard })]
 [ExtendObjectType(OperationTypeNames.Query)]
 public class ContactsQuery
 {

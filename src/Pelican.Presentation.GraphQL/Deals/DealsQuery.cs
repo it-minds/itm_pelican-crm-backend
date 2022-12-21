@@ -1,14 +1,13 @@
-﻿using MediatR;
+﻿using HotChocolate.AspNetCore.Authorization;
+using MediatR;
 using Pelican.Application.Deals.Queries.GetDealById;
 using Pelican.Application.Deals.Queries.GetDeals;
-using Pelican.Application.Security;
+using Pelican.Domain;
 using Pelican.Domain.Entities;
-using Pelican.Domain.Enums;
 
 namespace Pelican.Presentation.GraphQL.Deals;
 
-[Authorized(Role = RoleEnum.Standard)]
-[Authorized(Role = RoleEnum.Admin)]
+[Authorize(Roles = new[] { Roles.Admin, Roles.Standard })]
 [ExtendObjectType("Query")]
 public class DealsQuery
 {

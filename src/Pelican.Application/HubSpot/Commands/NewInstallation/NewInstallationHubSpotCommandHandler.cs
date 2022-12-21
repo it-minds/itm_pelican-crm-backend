@@ -56,7 +56,10 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 		Result<Supplier> supplierResult = await _hubSpotAuthorizationService
 			.DecodeAccessTokenAsync(accessToken, cancellationToken);
 
-		if (supplierResult.IsFailure) return supplierResult;
+		if (supplierResult.IsFailure)
+		{
+			return supplierResult;
+		}
 
 		if (_unitOfWork
 			.SupplierRepository
@@ -75,7 +78,10 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 		Result<List<AccountManager>> accountManagersResult = await _hubSpotAccountManagerService
 			.GetAsync(accessToken, cancellationToken);
 
-		if (accountManagersResult.IsFailure) return accountManagersResult;
+		if (accountManagersResult.IsFailure)
+		{
+			return accountManagersResult;
+		}
 
 		supplierResult.Value.AccountManagers = accountManagersResult.Value;
 
@@ -92,7 +98,10 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 		Result<List<Deal>> dealsResult = await _hubSpotDealService
 			.GetAsync(accessToken, cancellationToken);
 
-		if (dealsResult.IsFailure) return dealsResult;
+		if (dealsResult.IsFailure)
+		{
+			return dealsResult;
+		}
 
 		dealsResult
 			.Value
@@ -109,7 +118,10 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 		Result<List<Contact>> contactsResult = await _hubSpotContactService
 			.GetAsync(accessToken, cancellationToken);
 
-		if (contactsResult.IsFailure) return contactsResult;
+		if (contactsResult.IsFailure)
+		{
+			return contactsResult;
+		}
 
 		contactsResult
 			.Value
@@ -126,7 +138,10 @@ internal sealed class NewInstallationHubSpotCommandHandler : ICommandHandler<New
 		Result<List<Client>> clientsResult = await _hubSpotClientService
 			.GetAsync(accessToken, cancellationToken);
 
-		if (clientsResult.IsFailure) return clientsResult;
+		if (clientsResult.IsFailure)
+		{
+			return clientsResult;
+		}
 
 		clientsResult
 			.Value

@@ -1,6 +1,4 @@
-﻿using Pelican.Domain.Enums;
-
-namespace Pelican.Application.Security;
+﻿namespace Pelican.Application.Security;
 /// <summary>
 /// Specifies the class this attribute is applied to requires authorization.
 /// </summary>
@@ -8,7 +6,7 @@ namespace Pelican.Application.Security;
 public class AuthorizeAttribute : Attribute
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="AuthorizedAttribute"/> class. 
+	/// Initializes a new instance of the <see cref="AuthorizeAttribute"/> class. 
 	/// </summary>
 	public AuthorizeAttribute() { }
 

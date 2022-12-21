@@ -1,9 +1,4 @@
-﻿using MediatR;
-using Pelican.Application.Deals.Queries.GetDealById;
-using Pelican.Application.Deals.Queries.GetDeals;
-using Pelican.Domain.Entities;
-
-namespace Pelican.Presentation.GraphQL.Deals;
+﻿namespace Pelican.Presentation.GraphQL.Deals;
 
 [ExtendObjectType("Query")]
 public class DealsQuery

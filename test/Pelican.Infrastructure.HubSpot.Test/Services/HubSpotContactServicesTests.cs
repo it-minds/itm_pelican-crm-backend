@@ -4,8 +4,8 @@ using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
-using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Services;
 using RestSharp;
 using Xunit;
@@ -112,17 +112,17 @@ public class HubSpotContactServicesTests
 	public async Task GetAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		/// Arrange
-		Mock<IResponse<ContactsResponse>> responseMock = new();
+		Mock<IResponse<PaginatedResponse<ContactResponse>>> responseMock = new();
 
 		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactsResponse>(
+			.Setup(client => client.GetAsync<PaginatedResponse<ContactResponse>>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
 			.Setup(r => r.GetResultWithUnitOfWork(
-				It.IsAny<Func<ContactsResponse, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
+				It.IsAny<Func<PaginatedResponse<ContactResponse>, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Result.Failure<List<Contact>>(Error.NullValue));
@@ -138,19 +138,19 @@ public class HubSpotContactServicesTests
 	public async Task GetAsync_ClientReturnsSuccess_ReturnSuccess()
 	{
 		/// Arrange
-		Mock<IResponse<ContactsResponse>> responseMock = new();
+		Mock<IResponse<PaginatedResponse<ContactResponse>>> responseMock = new();
 
 		List<Contact> Contacts = new();
 
 		_hubSpotClientMock
-			.Setup(client => client.GetAsync<ContactsResponse>(
+			.Setup(client => client.GetAsync<PaginatedResponse<ContactResponse>>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
 			.Setup(r => r.GetResultWithUnitOfWork(
-				It.IsAny<Func<ContactsResponse, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
+				It.IsAny<Func<PaginatedResponse<ContactResponse>, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
 				It.IsAny<IUnitOfWork>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(Contacts);
@@ -162,6 +162,61 @@ public class HubSpotContactServicesTests
 		Assert.True(result.IsSuccess);
 		Assert.Equal(
 			Contacts,
+			result.Value);
+	}
+
+	[Fact]
+	public async Task GetAsync_ClientReturnsSuccessTwice_ReturnSuccess()
+	{
+		/// Arrange
+		Mock<IResponse<PaginatedResponse<ContactResponse>>> responseMock0 = new();
+		Mock<IResponse<PaginatedResponse<ContactResponse>>> responseMock1 = new();
+
+		List<Contact> contacts = new();
+
+		Paging p = new()
+		{
+			Next = new()
+			{
+				After = "1",
+			}
+		};
+
+		responseMock0
+			.Setup(r => r.Data)
+			.Returns(new PaginatedResponse<ContactResponse>()
+			{
+				Paging = p,
+			});
+
+		_hubSpotClientMock
+			.SetupSequence(client => client.GetAsync<PaginatedResponse<ContactResponse>>(
+				It.IsAny<RestRequest>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(responseMock0.Object)
+			.ReturnsAsync(responseMock1.Object);
+
+		responseMock0
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<PaginatedResponse<ContactResponse>, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contacts);
+
+		responseMock1
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<PaginatedResponse<ContactResponse>, IUnitOfWork, CancellationToken, Task<List<Contact>>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(contacts);
+
+		/// Act
+		var result = await _uut.GetAsync("", default);
+
+		/// Assert
+		Assert.True(result.IsSuccess);
+		Assert.Equal(
+			contacts,
 			result.Value);
 	}
 }

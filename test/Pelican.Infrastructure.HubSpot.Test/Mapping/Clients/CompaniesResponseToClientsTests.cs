@@ -2,6 +2,7 @@
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Mapping.Clients;
 using Xunit;
 
@@ -23,7 +24,7 @@ public class CompaniesResponseToClientsTests
 		}
 	};
 
-	readonly CompaniesResponse responses = new();
+	readonly PaginatedResponse<CompanyResponse> responses = new();
 
 	[Fact]
 	public async void ToClients_ArgResultsNull_ThrowException()

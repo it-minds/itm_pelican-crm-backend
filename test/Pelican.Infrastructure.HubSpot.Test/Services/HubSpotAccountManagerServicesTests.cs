@@ -5,6 +5,7 @@ using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Services;
 using RestSharp;
 using Xunit;
@@ -103,16 +104,16 @@ public class HubSpotAccountManagerServicesTests
 	public async Task GetAsync_ClientReturnsFailure_ReturnFailure()
 	{
 		/// Arrange
-		Mock<IResponse<OwnersResponse>> responseMock = new();
+		Mock<IResponse<PaginatedResponse<OwnerResponse>>> responseMock = new();
 
 		_hubSpotClientMock
-			.Setup(client => client.GetAsync<OwnersResponse>(
+			.Setup(client => client.GetAsync<PaginatedResponse<OwnerResponse>>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<OwnersResponse, List<AccountManager>>>()))
+			.Setup(r => r.GetResult(It.IsAny<Func<PaginatedResponse<OwnerResponse>, List<AccountManager>>>()))
 			.Returns(Result.Failure<List<AccountManager>>(Error.NullValue));
 
 		/// Act
@@ -126,19 +127,19 @@ public class HubSpotAccountManagerServicesTests
 	public async Task GetAsync_ClientReturnsSuccess_ReturnSuccess()
 	{
 		/// Arrange
-		Mock<IResponse<OwnersResponse>> responseMock = new();
+		Mock<IResponse<PaginatedResponse<OwnerResponse>>> responseMock = new();
 
-		List<AccountManager> deals = new();
+		List<AccountManager> accountManagers = new();
 
 		_hubSpotClientMock
-			.Setup(client => client.GetAsync<OwnersResponse>(
+			.Setup(client => client.GetAsync<PaginatedResponse<OwnerResponse>>(
 				It.IsAny<RestRequest>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(responseMock.Object);
 
 		responseMock
-			.Setup(r => r.GetResult(It.IsAny<Func<OwnersResponse, List<AccountManager>>>()))
-			.Returns(deals);
+			.Setup(r => r.GetResult(It.IsAny<Func<PaginatedResponse<OwnerResponse>, List<AccountManager>>>()))
+			.Returns(accountManagers);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -146,7 +147,56 @@ public class HubSpotAccountManagerServicesTests
 		/// Assert
 		Assert.True(result.IsSuccess);
 		Assert.Equal(
-			deals,
+			accountManagers,
+			result.Value);
+	}
+
+	[Fact]
+	public async Task GetAsync_ClientReturnsSuccessTwice_ReturnSuccess()
+	{
+		/// Arrange
+		Mock<IResponse<PaginatedResponse<OwnerResponse>>> responseMock0 = new();
+		Mock<IResponse<PaginatedResponse<OwnerResponse>>> responseMock1 = new();
+
+		List<AccountManager> accountManagers = new();
+
+		Paging p = new()
+		{
+			Next = new()
+			{
+				After = "1",
+			}
+		};
+
+		responseMock0
+			.Setup(r => r.Data)
+			.Returns(new PaginatedResponse<OwnerResponse>()
+			{
+				Paging = p,
+			});
+
+		_hubSpotClientMock
+			.SetupSequence(client => client.GetAsync<PaginatedResponse<OwnerResponse>>(
+				It.IsAny<RestRequest>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(responseMock0.Object)
+			.ReturnsAsync(responseMock1.Object);
+
+		responseMock0
+			.Setup(r => r.GetResult(It.IsAny<Func<PaginatedResponse<OwnerResponse>, List<AccountManager>>>()))
+			.Returns(accountManagers);
+
+		responseMock1
+			.Setup(r => r.GetResult(It.IsAny<Func<PaginatedResponse<OwnerResponse>, List<AccountManager>>>()))
+			.Returns(accountManagers);
+
+		/// Act
+		var result = await _uut.GetAsync("", default);
+
+		/// Assert
+		Assert.True(result.IsSuccess);
+		Assert.Equal(
+			accountManagers,
 			result.Value);
 	}
 }

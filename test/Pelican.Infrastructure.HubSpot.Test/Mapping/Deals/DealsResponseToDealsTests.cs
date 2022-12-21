@@ -3,6 +3,7 @@ using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain;
 using Pelican.Domain.Entities;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
 using Pelican.Infrastructure.HubSpot.Mapping.Deals;
 using Xunit;
@@ -25,7 +26,7 @@ public class DealsResponseToDealsTests
 
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 
-	readonly DealsResponse responses = new();
+	readonly PaginatedResponse<DealResponse> responses = new();
 
 	[Fact]
 	public async Task ToDeals_ArgResultsNull_ThrowException()

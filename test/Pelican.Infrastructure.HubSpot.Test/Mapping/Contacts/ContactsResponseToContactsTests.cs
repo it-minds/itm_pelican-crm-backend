@@ -1,6 +1,7 @@
 ﻿using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Domain;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
 using Pelican.Infrastructure.HubSpot.Mapping.Contacts;
 using Xunit;
@@ -23,7 +24,7 @@ public class ContactsResponseToContactsTests
 		}
 	};
 
-	readonly ContactsResponse responses = new();
+	readonly PaginatedResponse<ContactResponse> responses = new();
 
 	[Fact]
 	public async Task ToContacts_ArgResultsNull_ThrowExceptionAsync()

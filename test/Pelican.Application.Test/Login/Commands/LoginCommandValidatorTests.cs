@@ -1,8 +1,4 @@
-﻿using FluentValidation.TestHelper;
-using Pelican.Application.Authentication.Login;
-using Xunit;
-
-namespace Pelican.Application.Test.Login.Commands;
+﻿namespace Pelican.Application.Test.Login.Commands;
 public class LoginCommandValidatorTests
 {
 	private readonly LoginCommandValidator _uut = new();

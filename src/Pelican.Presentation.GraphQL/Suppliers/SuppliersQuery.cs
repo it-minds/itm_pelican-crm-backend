@@ -4,7 +4,6 @@ using Pelican.Application.Suppliers.Queries.GetSuppliers;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Presentation.GraphQL.Suppliers;
-
 [ExtendObjectType("Query")]
 public class SuppliersQuery
 {

@@ -162,4 +162,59 @@ public class HubSpotClientServicesTests
 			Clients,
 			result.Value);
 	}
+
+	[Fact]
+	public async Task GetAsync_ClientReturnsSuccessTwice_ReturnSuccess()
+	{
+		/// Arrange
+		Mock<IResponse<PaginatedResponse<CompanyResponse>>> responseMock0 = new();
+		Mock<IResponse<PaginatedResponse<CompanyResponse>>> responseMock1 = new();
+
+		List<Client> clients = new();
+
+		Paging p = new()
+		{
+			Next = new()
+			{
+				After = "1",
+			}
+		};
+
+		responseMock0
+			.Setup(r => r.Data)
+			.Returns(new PaginatedResponse<CompanyResponse>()
+			{
+				Paging = p,
+			});
+
+		_hubSpotClientMock
+			.SetupSequence(client => client.GetAsync<PaginatedResponse<CompanyResponse>>(
+				It.IsAny<RestRequest>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(responseMock0.Object)
+			.ReturnsAsync(responseMock1.Object);
+
+		responseMock0
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<PaginatedResponse<CompanyResponse>, IUnitOfWork, CancellationToken, Task<List<Client>>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(clients);
+
+		responseMock1
+			.Setup(r => r.GetResultWithUnitOfWork(
+				It.IsAny<Func<PaginatedResponse<CompanyResponse>, IUnitOfWork, CancellationToken, Task<List<Client>>>>(),
+				It.IsAny<IUnitOfWork>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(clients);
+
+		/// Act
+		var result = await _uut.GetAsync("", default);
+
+		/// Assert
+		Assert.True(result.IsSuccess);
+		Assert.Equal(
+			clients,
+			result.Value);
+	}
 }

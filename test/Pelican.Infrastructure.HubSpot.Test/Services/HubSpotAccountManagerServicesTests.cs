@@ -5,9 +5,7 @@ using Pelican.Domain.Entities;
 using Pelican.Domain.Settings.HubSpot;
 using Pelican.Domain.Shared;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.AccountManagers;
-using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
-using Pelican.Infrastructure.HubSpot.Extensions;
 using Pelican.Infrastructure.HubSpot.Services;
 using RestSharp;
 using Xunit;
@@ -131,7 +129,7 @@ public class HubSpotAccountManagerServicesTests
 		/// Arrange
 		Mock<IResponse<PaginatedResponse<OwnerResponse>>> responseMock = new();
 
-		List<AccountManager> deals = new();
+		List<AccountManager> accountManagers = new();
 
 		_hubSpotClientMock
 			.Setup(client => client.GetAsync<PaginatedResponse<OwnerResponse>>(
@@ -141,7 +139,7 @@ public class HubSpotAccountManagerServicesTests
 
 		responseMock
 			.Setup(r => r.GetResult(It.IsAny<Func<PaginatedResponse<OwnerResponse>, List<AccountManager>>>()))
-			.Returns(deals);
+			.Returns(accountManagers);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -149,7 +147,7 @@ public class HubSpotAccountManagerServicesTests
 		/// Assert
 		Assert.True(result.IsSuccess);
 		Assert.Equal(
-			deals,
+			accountManagers,
 			result.Value);
 	}
 
@@ -160,7 +158,7 @@ public class HubSpotAccountManagerServicesTests
 		Mock<IResponse<PaginatedResponse<OwnerResponse>>> responseMock0 = new();
 		Mock<IResponse<PaginatedResponse<OwnerResponse>>> responseMock1 = new();
 
-		List<AccountManager> deals = new();
+		List<AccountManager> accountManagers = new();
 
 		Paging p = new()
 		{
@@ -186,11 +184,11 @@ public class HubSpotAccountManagerServicesTests
 
 		responseMock0
 			.Setup(r => r.GetResult(It.IsAny<Func<PaginatedResponse<OwnerResponse>, List<AccountManager>>>()))
-			.Returns(deals);
+			.Returns(accountManagers);
 
 		responseMock1
 			.Setup(r => r.GetResult(It.IsAny<Func<PaginatedResponse<OwnerResponse>, List<AccountManager>>>()))
-			.Returns(deals);
+			.Returns(accountManagers);
 
 		/// Act
 		var result = await _uut.GetAsync("", default);
@@ -198,7 +196,7 @@ public class HubSpotAccountManagerServicesTests
 		/// Assert
 		Assert.True(result.IsSuccess);
 		Assert.Equal(
-			deals,
+			accountManagers,
 			result.Value);
 	}
 }

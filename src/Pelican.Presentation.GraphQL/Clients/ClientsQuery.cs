@@ -7,8 +7,8 @@ using Pelican.Domain.Enums;
 
 namespace Pelican.Presentation.GraphQL.Clients;
 
-[Authorize(Role = RoleEnum.Standard)]
-[Authorize(Role = RoleEnum.Admin)]
+[Authorized(Role = RoleEnum.Standard)]
+[Authorized(Role = RoleEnum.Admin)]
 [ExtendObjectType("Query")]
 public class ClientsQuery
 {

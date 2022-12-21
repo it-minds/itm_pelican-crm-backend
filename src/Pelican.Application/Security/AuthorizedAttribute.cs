@@ -5,12 +5,12 @@ namespace Pelican.Application.Security;
 /// Specifies the class this attribute is applied to requires authorization.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
-public class AuthorizeAttribute : Attribute
+public class AuthorizedAttribute : Attribute
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="AuthorizeAttribute"/> class. 
+	/// Initializes a new instance of the <see cref="AuthorizedAttribute"/> class. 
 	/// </summary>
-	public AuthorizeAttribute() { }
+	public AuthorizedAttribute() { }
 
 	/// <summary>
 	/// Gets or sets a role that are allowed to access the resource.

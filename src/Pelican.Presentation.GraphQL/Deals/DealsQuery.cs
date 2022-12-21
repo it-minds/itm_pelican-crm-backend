@@ -1,9 +1,14 @@
 ﻿using MediatR;
 using Pelican.Application.Deals.Queries.GetDealById;
 using Pelican.Application.Deals.Queries.GetDeals;
+using Pelican.Application.Security;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Enums;
 
 namespace Pelican.Presentation.GraphQL.Deals;
+
+[Authorize(Role = RoleEnum.Standard)]
+[Authorize(Role = RoleEnum.Admin)]
 [ExtendObjectType("Query")]
 public class DealsQuery
 {

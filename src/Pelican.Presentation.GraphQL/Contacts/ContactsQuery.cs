@@ -1,10 +1,14 @@
 ﻿using MediatR;
 using Pelican.Application.Contacts.Queries.GetContactById;
 using Pelican.Application.Contacts.Queries.GetContacts;
+using Pelican.Application.Security;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Enums;
 
 namespace Pelican.Presentation.GraphQL.Contacts;
 
+[Authorize(Role = RoleEnum.Standard)]
+[Authorize(Role = RoleEnum.Admin)]
 [ExtendObjectType(OperationTypeNames.Query)]
 public class ContactsQuery
 {

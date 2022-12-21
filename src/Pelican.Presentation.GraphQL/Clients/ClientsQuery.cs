@@ -1,9 +1,14 @@
 ﻿using MediatR;
 using Pelican.Application.Clients.Queries.GetClientById;
 using Pelican.Application.Clients.Queries.GetClients;
+using Pelican.Application.Security;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Enums;
 
 namespace Pelican.Presentation.GraphQL.Clients;
+
+[Authorize(Role = RoleEnum.Standard)]
+[Authorize(Role = RoleEnum.Admin)]
 [ExtendObjectType("Query")]
 public class ClientsQuery
 {

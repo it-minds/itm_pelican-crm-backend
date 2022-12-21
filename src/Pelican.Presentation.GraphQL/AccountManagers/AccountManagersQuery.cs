@@ -1,9 +1,14 @@
 ﻿using MediatR;
 using Pelican.Application.AccountManagers.Queries.GetAccountManagerById;
 using Pelican.Application.AccountManagers.Queries.GetAccountManagers;
+using Pelican.Application.Security;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Enums;
 
 namespace Pelican.Presentation.GraphQL.AccountManagers;
+
+[Authorize(Role = RoleEnum.Standard)]
+[Authorize(Role = RoleEnum.Admin)]
 [ExtendObjectType("Query")]
 public class AccountManagersQuery
 {

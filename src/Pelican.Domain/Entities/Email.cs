@@ -1,4 +1,6 @@
-﻿namespace Pelican.Domain.Entities;
+﻿using Pelican.Domain.Primitives;
+
+namespace Pelican.Domain.Entities;
 public class Email : Entity, ITimeTracked
 {
 	private string _name = string.Empty;

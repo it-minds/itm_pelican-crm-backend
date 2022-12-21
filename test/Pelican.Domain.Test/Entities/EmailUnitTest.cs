@@ -1,4 +1,8 @@
-﻿namespace Pelican.Domain.Test.Entities;
+﻿using Bogus;
+using Pelican.Domain.Entities;
+using Xunit;
+
+namespace Pelican.Domain.Test.Entities;
 public class EmailUnitTest
 {
 	private readonly Email _uut = new();

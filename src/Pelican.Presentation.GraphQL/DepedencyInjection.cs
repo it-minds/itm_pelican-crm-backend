@@ -14,7 +14,6 @@ public static class DependencyInjection
 	{
 		return services
 			.AddGraphQLServer()
-			.AddAuthorization()
 			.AddQueryType(q => q.Name("Query"))
 			.AddTypeExtension<AccountManagersQuery>()
 			.AddTypeExtension<ClientsQuery>()

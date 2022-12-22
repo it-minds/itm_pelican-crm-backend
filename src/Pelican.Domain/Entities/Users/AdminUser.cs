@@ -1,7 +1,8 @@
-﻿namespace Pelican.Domain.Entities.Users;
+﻿using Pelican.Domain.Enums;
+
+namespace Pelican.Domain.Entities.Users;
 public class AdminUser : User
 {
 	public AdminUser() { }
-	//TODO re add this line when RoleEnum has been added
-	//public new RoleEnum{get;set;}=RoleEnum.Admin
+	public new RoleEnum Role { get; set; } = RoleEnum.Admin;
 }

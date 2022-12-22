@@ -4,6 +4,7 @@ using Pelican.Application.Contacts.Queries.GetContacts;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Presentation.GraphQL.Contacts;
+
 [ExtendObjectType(OperationTypeNames.Query)]
 public class ContactsQuery
 {

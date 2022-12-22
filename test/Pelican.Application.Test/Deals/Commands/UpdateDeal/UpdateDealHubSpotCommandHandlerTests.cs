@@ -428,9 +428,6 @@ public class UpdateDealHubSpotCommandHandlerTests
 		_accountManagerDealRepositoryMock
 			.Setup(a => a.Attach(It.IsAny<AccountManagerDeal>()));
 
-		_accountManagerDealRepositoryMock
-			.Setup(a => a.Attach(It.IsAny<AccountManagerDeal>()));
-
 		// Act
 		Result result = await _uut.Handle(command, default);
 

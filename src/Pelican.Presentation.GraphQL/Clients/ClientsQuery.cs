@@ -1,4 +1,9 @@
-﻿namespace Pelican.Presentation.GraphQL.Clients;
+﻿using MediatR;
+using Pelican.Application.Clients.Queries.GetClientById;
+using Pelican.Application.Clients.Queries.GetClients;
+using Pelican.Domain.Entities;
+
+namespace Pelican.Presentation.GraphQL.Clients;
 
 [ExtendObjectType("Query")]
 public class ClientsQuery

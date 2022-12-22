@@ -1,4 +1,9 @@
-﻿namespace Pelican.Presentation.GraphQL.AccountManagers;
+﻿using MediatR;
+using Pelican.Application.AccountManagers.Queries.GetAccountManagerById;
+using Pelican.Application.AccountManagers.Queries.GetAccountManagers;
+using Pelican.Domain.Entities;
+
+namespace Pelican.Presentation.GraphQL.AccountManagers;
 
 [ExtendObjectType("Query")]
 public class AccountManagersQuery

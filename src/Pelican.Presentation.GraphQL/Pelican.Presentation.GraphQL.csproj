@@ -8,7 +8,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="HotChocolate.AspNetCore" Version="12.15.2" />
-		<PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="12.15.2" />
 		<PackageReference Include="HotChocolate.Data.EntityFramework" Version="12.15.2" />
 	</ItemGroup>
 

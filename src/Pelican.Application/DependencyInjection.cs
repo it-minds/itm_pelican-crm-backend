@@ -37,6 +37,8 @@ public static class DependencyInjection
 
 		services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
+		services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
+
 		services.Configure<TokenOptions>(configuration.GetSection(TokenOptions.Tokens));
 
 		services.AddScoped<SecurityTokenHandler, JwtSecurityTokenHandler>();

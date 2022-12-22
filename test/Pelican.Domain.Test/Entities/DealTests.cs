@@ -336,6 +336,24 @@ public class DealTests
 	}
 
 	[Fact]
+	public void UpdateProperty_SourceOwnerIdUpdated_ReturnsUpdatedDeal()
+	{
+		/// Arrange
+		string name = "hs_all_owner_ids";
+		string value = "newId";
+
+		Deal inputDeal = new();
+
+		/// Act
+		Deal returnDeal = inputDeal.UpdateProperty(name, value);
+
+		/// Assert
+		Assert.Equal(
+			value,
+			returnDeal.SourceOwnerId);
+	}
+
+	[Fact]
 	public void UpdateProperty_DealStatusStringToLongDealStatusShortenedAndAppendedWithThreeDots()
 	{
 		// Arrange

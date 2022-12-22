@@ -63,6 +63,16 @@ public class SupplierUnitTest
 	}
 
 	[Fact]
+	public void SetOfficeLocation_InputNull_ValueNull()
+	{
+		// Act
+		_uut.OfficeLocation = null!;
+
+		//Assert
+		Assert.Null(_uut.OfficeLocation);
+	}
+
+	[Fact]
 	public void SetName_NameStringNotToLong_NameEqualToValueSet()
 	{
 		// Arrange

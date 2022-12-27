@@ -11,12 +11,15 @@ namespace Pelican.Application.Security;
 
 public class TokenService : ITokenService
 {
-	private const double EXPIRE_HOURS = 24.0;
-	private const double SSO_EXPIRE_DAYS = 28.0;
 	private readonly TokenOptions _options;
-	public TokenService(IOptions<TokenOptions> options)
+	private readonly SecurityTokenHandler _tokenHandler;
+
+	public TokenService(
+		IOptions<TokenOptions> options,
+		SecurityTokenHandler tokenHandler)
 	{
 		_options = options.Value;
+		_tokenHandler = tokenHandler;
 	}
 
 	public string CreateToken(User user)
@@ -28,15 +31,19 @@ public class TokenService : ITokenService
 		};
 
 		var key = Encoding.ASCII.GetBytes(_options.Secret);
-		var tokenHandler = new JwtSecurityTokenHandler();
+
 		var descriptor = new SecurityTokenDescriptor
 		{
 			Subject = new ClaimsIdentity(claims),
-			Expires = DateTime.UtcNow.AddHours(EXPIRE_HOURS),
-			SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+			Expires = DateTime.UtcNow.AddHours(_options.ExpireHours),
+			SigningCredentials = new SigningCredentials(
+				new SymmetricSecurityKey(key),
+				SecurityAlgorithms.HmacSha256Signature)
 		};
-		var token = tokenHandler.CreateToken(descriptor);
-		return tokenHandler.WriteToken(token);
+
+		var token = _tokenHandler.CreateToken(descriptor);
+
+		return _tokenHandler.WriteToken(token);
 	}
 
 	public (string, string) CreateSSOToken(User user)
@@ -48,35 +55,38 @@ public class TokenService : ITokenService
 			new Claim("jti", Guid.NewGuid().ToString())
 		};
 
-		var tokenHandler = new JwtSecurityTokenHandler();
 		var key = Encoding.ASCII.GetBytes(_options.Secret);
 		var descriptor = new SecurityTokenDescriptor
 		{
 			Subject = new ClaimsIdentity(claims),
-			Expires = DateTime.UtcNow.AddDays(SSO_EXPIRE_DAYS),
-			SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+			Expires = DateTime.UtcNow.AddDays(_options.SsoExpireDays),
+			SigningCredentials = new SigningCredentials(
+				new SymmetricSecurityKey(key),
+				SecurityAlgorithms.HmacSha256Signature)
 		};
-		var token = tokenHandler.CreateToken(descriptor);
-		var writtenToken = tokenHandler.WriteToken(token);
+		var token = _tokenHandler.CreateToken(descriptor);
+		var writtenToken = _tokenHandler.WriteToken(token);
 
 		return (token.Id, writtenToken);
 	}
 
 	public (string, string) ValidateSSOToken(string token)
 	{
-		var tokenHandler = new JwtSecurityTokenHandler();
 		var key = Encoding.ASCII.GetBytes(_options.Secret);
 
-		var claims = tokenHandler.ValidateToken(token, new TokenValidationParameters
-		{
-			ValidateIssuerSigningKey = true,
-			IssuerSigningKey = new SymmetricSecurityKey(key),
-			ValidateIssuer = false,
-			ValidateAudience = false
-		}, out SecurityToken validatedToken);
+		var claims = _tokenHandler.ValidateToken(
+			token,
+			new TokenValidationParameters
+			{
+				ValidateIssuerSigningKey = true,
+				IssuerSigningKey = new SymmetricSecurityKey(key),
+				ValidateIssuer = false,
+				ValidateAudience = false
+			},
+			out SecurityToken validatedToken);
 
 		var userEmail = claims.FindFirst(ClaimTypes.NameIdentifier);
 
-		return (userEmail?.ToString() ?? string.Empty, validatedToken.Id);
+		return (userEmail?.Value ?? string.Empty, validatedToken.Id);
 	}
 }

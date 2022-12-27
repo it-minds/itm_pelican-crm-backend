@@ -17,4 +17,6 @@ public static class StringLengths
 	public const int Heading = 200;
 	public const int SubjectLine = 256; //https://www.theorchardagency.com.au/insights/subject-line-length-and-open-rates/
 	public const int CtaButtonText = 200;
+	public const int Password = 10000;
+	public const int SSOTokenId = 1000;
 }

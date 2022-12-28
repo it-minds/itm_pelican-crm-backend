@@ -1,24 +1,18 @@
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Domain.Enums;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
 namespace Pelican.Application.Security;
 
-
 public class AuthorizationService : IAuthorizationService
 {
-	private readonly IHttpContextAccessor _httpContextAccessor;
+	private readonly ICurrentUserService _currentUserService;
 
-	public AuthorizationService(IHttpContextAccessor httpContextAccessor)
+	public AuthorizationService(ICurrentUserService currentUserService)
 	{
-		_httpContextAccessor = httpContextAccessor;
+		_currentUserService = currentUserService;
 	}
 
 	public bool IsInRole(RoleEnum role) => role
 		.ToString()
-		.Equals(_httpContextAccessor
-			.HttpContext?
-			.User?
-			.FindFirst(ClaimTypes.Role));
+		.Equals(_currentUserService.Role);
 }

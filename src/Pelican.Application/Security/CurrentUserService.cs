@@ -21,4 +21,10 @@ public class CurrentUserService : ICurrentUserService
 		.User?
 		.FindFirst(ClaimTypes.NameIdentifier)?
 		.Value;
+
+	public string? Role => _httpContextAccessor
+		.HttpContext?
+		.User?
+		.FindFirst(ClaimTypes.Role)?
+		.Value;
 }

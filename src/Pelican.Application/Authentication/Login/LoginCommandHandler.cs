@@ -6,13 +6,13 @@ using Pelican.Domain.Shared;
 
 namespace Pelican.Application.Authentication.Login;
 
-public class LoginCommandHanler : ICommandHandler<LoginCommand>
+public class LoginCommandHandler : ICommandHandler<LoginCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IPasswordHasher _passwordHasher;
 	private readonly ITokenService _tokenService;
 
-	public LoginCommandHanler(
+	public LoginCommandHandler(
 		IUnitOfWork unitOfWork,
 		IPasswordHasher passwordHasher,
 		ITokenService tokenService)
@@ -22,7 +22,7 @@ public class LoginCommandHanler : ICommandHandler<LoginCommand>
 		_tokenService = tokenService;
 	}
 
-	public async Task<Result<UserTokenDto>> Handle(
+	public async Task<Result> Handle(
 		LoginCommand command,
 		CancellationToken cancellationToken)
 	{
@@ -52,10 +52,12 @@ public class LoginCommandHanler : ICommandHandler<LoginCommand>
 		}
 
 		var token = _tokenService.CreateToken(user);
-		return new UserTokenDto
-		{
-			User = _mapper.Map<UserDto>(user),
-			Token = token
-		};
+
+		return Result.Success();
+		// return new UserTokenDto
+		// {
+		// 	User = _mapper.Map<UserDto>(user),
+		// 	Token = token
+		// };
 	}
 }

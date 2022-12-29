@@ -1,5 +1,6 @@
 ﻿namespace Pelican.Application.Abstractions.Authentication;
 public interface ICurrentUserService
 {
-	string UserId { get; }
+	string? UserId { get; }
+	string? Role { get; }
 }

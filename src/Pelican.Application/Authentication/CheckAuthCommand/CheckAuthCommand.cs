@@ -3,4 +3,4 @@
 namespace Pelican.Application.Authentication.CheckAuthCommand;
 //TODO Add authenticated attribute when this is added.
 //[Authenticated]
-public sealed record CheckAuthCommand() : ICommand;
+public sealed record CheckAuthCommand() : ICommand<UserDto>;

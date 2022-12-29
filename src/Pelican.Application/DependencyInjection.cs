@@ -24,6 +24,8 @@ public static class DependencyInjection
 	{
 		services.AddScoped<ICurrentUserService, CurrentUserService>();
 
+		services.AddScoped<IAuthorizationService, AuthorizationService>();
+
 		services.AddSingleton<IClient<HubSpotSettings>, RestSharpClient<HubSpotSettings>>();
 
 		services.AddMediatR(Assembly.GetExecutingAssembly());

@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using Pelican.Application.Authentication.CreateAdmin;
+using Pelican.Application.Users.Commands.CreateAdmin;
 using Xunit;
 
 namespace Pelican.Application.Test.CreateAdmin.Commands;

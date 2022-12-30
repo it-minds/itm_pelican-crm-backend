@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 
-namespace Pelican.Application.Authentication.CreateAdmin;
-public class CreateAdminCommandValidator : AbstractValidator<CreateAdminCommand>
+namespace Pelican.Application.Users.Commands.CreateStandardUser;
+public class CreateStandardUserCommandValidator : AbstractValidator<CreateStandardUserCommand>
 {
-	public CreateAdminCommandValidator()
+	public CreateStandardUserCommandValidator()
 	{
 		RuleFor(c => c.Email)
 			.NotEmpty()

@@ -113,4 +113,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : Entity
 			_pelicanContext.Entry(entity).State = EntityState.Added;
 		}
 	}
+
+	public async Task<bool> AnyAsync(
+		Expression<Func<T, bool>> expression,
+		CancellationToken cancellationToken)
+		=> await _pelicanContext
+			.Set<T>()
+			.AnyAsync(expression, cancellationToken);
 }

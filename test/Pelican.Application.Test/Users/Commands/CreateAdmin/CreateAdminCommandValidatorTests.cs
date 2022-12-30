@@ -1,23 +1,23 @@
 ﻿using FluentValidation.TestHelper;
-using Pelican.Application.Users.Commands.CreateStandardUser;
+using Pelican.Application.Users.Commands.CreateAdmin;
 using Xunit;
 
-namespace Pelican.Application.Test.CreateStandardUser.Commands;
-public class CreateStandardUserCommandValidatorTests
+namespace Pelican.Application.Test.Users.Commands.CreateAdmin;
+public class CreateAdminCommandValidatorTests
 {
-	private readonly CreateStandardUserCommandValidator _uut = new();
+	private readonly CreateAdminCommandValidator _uut = new();
 
 	[Fact]
-	public void CreateStandardUserCommandValidator_EmptyString_ReturnsError()
+	public void CreateAdminCommandValidator_EmptyString_ReturnsError()
 	{
 		// Arrange
-		CreateStandardUserCommand command = new(
+		CreateAdminCommand command = new(
 			string.Empty,
 			string.Empty,
 			string.Empty);
 
 		// Act
-		TestValidationResult<CreateStandardUserCommand> result = _uut.TestValidate(command);
+		TestValidationResult<CreateAdminCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.Name);
@@ -27,16 +27,16 @@ public class CreateStandardUserCommandValidatorTests
 	}
 
 	[Fact]
-	public void CreateStandardUserCommandValidator_NoEmptyStringsButEmailIsNotInCorrectFormatAndPasswordIsTooShort_ReturnsError()
+	public void CreateAdminCommandValidator_NoEmptyStringsButEmailIsNotInCorrectFormatAndPasswordIsTooShort_ReturnsError()
 	{
 		// Arrange
-		CreateStandardUserCommand command = new(
+		CreateAdminCommand command = new(
 			"notEmpty",
 			"notEmpty",
 			"text");
 
 		// Act
-		TestValidationResult<CreateStandardUserCommand> result = _uut.TestValidate(command);
+		TestValidationResult<CreateAdminCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.Name);
@@ -45,16 +45,16 @@ public class CreateStandardUserCommandValidatorTests
 	}
 
 	[Fact]
-	public void CreateStandardUserCommandValidator_NoEmptyStringsAndEmailInCorrectFormatAndPasswordContainsNoNumber_ReturnsNoError()
+	public void CreateAdminCommandValidator_NoEmptyStringsAndEmailInCorrectFormatAndPasswordContainsNoNumber_ReturnsNoError()
 	{
 		// Arrange
-		CreateStandardUserCommand command = new(
+		CreateAdminCommand command = new(
 			"notEmpty",
 			"a@a.com",
 			"notEmpty");
 
 		// Act
-		TestValidationResult<CreateStandardUserCommand> result = _uut.TestValidate(command);
+		TestValidationResult<CreateAdminCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.Name);
@@ -63,16 +63,16 @@ public class CreateStandardUserCommandValidatorTests
 	}
 
 	[Fact]
-	public void CreateStandardUserCommandValidator_NoEmptyStringsAndEmailInCorrectFormatAndPasswordContainsNoUpperCaseChar_ReturnsError()
+	public void CreateAdminCommandValidator_NoEmptyStringsAndEmailInCorrectFormatAndPasswordContainsNoUpperCaseChar_ReturnsError()
 	{
 		// Arrange
-		CreateStandardUserCommand command = new(
+		CreateAdminCommand command = new(
 			"notEmpty",
 			"a@a.com",
 			"1newpassword");
 
 		// Act
-		TestValidationResult<CreateStandardUserCommand> result = _uut.TestValidate(command);
+		TestValidationResult<CreateAdminCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.Name);
@@ -80,16 +80,16 @@ public class CreateStandardUserCommandValidatorTests
 		result.ShouldHaveValidationErrorFor(command => command.Password).WithErrorMessage("Your password must contain at least one uppercase letter.");
 	}
 	[Fact]
-	public void CreateStandardUserCommandValidator_NoEmptyStringsAndEmailInCorrectFormatAndPasswordContainsNoLowerCaseChar_ReturnsError()
+	public void CreateAdminCommandValidator_NoEmptyStringsAndEmailInCorrectFormatAndPasswordContainsNoLowerCaseChar_ReturnsError()
 	{
 		// Arrange
-		CreateStandardUserCommand command = new(
+		CreateAdminCommand command = new(
 			"notEmpty",
 			"a@a.com",
 			"1NEWPASSWORD");
 
 		// Act
-		TestValidationResult<CreateStandardUserCommand> result = _uut.TestValidate(command);
+		TestValidationResult<CreateAdminCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.Name);
@@ -97,16 +97,16 @@ public class CreateStandardUserCommandValidatorTests
 		result.ShouldHaveValidationErrorFor(command => command.Password).WithErrorMessage("Your password must contain at least one lowercase letter.");
 	}
 	[Fact]
-	public void CreateStandardUserCommandValidator_NoEmptyStringsAndEmailAndPasswordInCorrectFormat_ReturnsNoError()
+	public void CreateAdminCommandValidator_NoEmptyStringsAndEmailAndPasswordInCorrectFormat_ReturnsNoError()
 	{
 		// Arrange
-		CreateStandardUserCommand command = new(
+		CreateAdminCommand command = new(
 			"notEmpty",
 			"a@a.com",
 			"1NewPassword");
 
 		// Act
-		TestValidationResult<CreateStandardUserCommand> result = _uut.TestValidate(command);
+		TestValidationResult<CreateAdminCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.Name);

@@ -1,3 +1,4 @@
+using System;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Messaging;
@@ -6,7 +7,7 @@ using Pelican.Domain.Shared;
 
 namespace Pelican.Application.Authentication.Login;
 
-public class LoginCommandHandler : ICommandHandler<LoginCommand>
+public class LoginCommandHandler : ICommandHandler<LoginCommand, UserTokenDto>
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IPasswordHasher _passwordHasher;
@@ -22,7 +23,7 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand>
 		_tokenService = tokenService;
 	}
 
-	public async Task<Result> Handle(
+	public async Task<Result<UserTokenDto>> Handle(
 		LoginCommand command,
 		CancellationToken cancellationToken)
 	{
@@ -30,34 +31,30 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand>
 			.UserRepository
 		  	.FirstOrDefaultAsync(x => x.Email.Equals(command.Email.ToLower()), cancellationToken);
 
-		// var inactiveClient = await _context.Clients
-		//   .Include(c => c.Producers)
-		//   .AnyAsync(c => c.Email == user.Email && c.Producers.All(p => p.DeactivationTime != null), cancellationToken);
-
 		if (user is null)
 		{
-			return Result.Failure(new Error("User.NotFound", "The user with the specified email was not found."));
+			return Result.Failure<UserTokenDto>(new Error("User.NotFound", "The user with the specified email was not found."));
 		}
-
-		// if (inactiveClient)
-		// {
-		// 	throw new ArgumentException("This user is deactivated.");
-		// }
 
 		var (verified, needsUpgrade) = _passwordHasher.Check(user.Password, command.Password);
 
 		if (!verified)
 		{
-			return Result.Failure(new Error("Authentication.InvalidEmailOrPassword", "The specified email or password are incorrect."));
+			return Result.Failure<UserTokenDto>(new Error("Authentication.InvalidEmailOrPassword", "The specified email or password are incorrect."));
 		}
 
 		var token = _tokenService.CreateToken(user);
 
-		return Result.Success();
-		// return new UserTokenDto
-		// {
-		// 	User = _mapper.Map<UserDto>(user),
-		// 	Token = token
-		// };
+		return new UserTokenDto
+		{
+			User = new()
+			{
+				Id = user.Id,
+				Name = user.Name,
+				Email = user.Email,
+				Role = user.Role,
+			},
+			Token = token
+		};
 	}
 }

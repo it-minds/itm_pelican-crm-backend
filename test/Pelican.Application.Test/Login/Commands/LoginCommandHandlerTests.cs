@@ -3,6 +3,7 @@ using Moq;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Authentication;
 using Pelican.Application.Authentication.Login;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Entities.Users;
@@ -13,11 +14,10 @@ namespace Pelican.Application.Test.Login.Commands;
 
 public class LoginCommandHandlerTests
 {
-
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly Mock<IPasswordHasher> _passwordHasherMock = new();
 	private readonly Mock<ITokenService> _tokenServiceMock = new();
-	private readonly ICommandHandler<LoginCommand> _uut;
+	private readonly ICommandHandler<LoginCommand, UserTokenDto> _uut;
 
 	public LoginCommandHandlerTests()
 	{
@@ -81,34 +81,42 @@ public class LoginCommandHandlerTests
 			result.Error);
 	}
 
-	// [Fact]
-	// public async void Handle_PasswordNotVerified_ReturnsFailure()
-	// {
-	// 	// Arrange
-	// 	var command = new LoginCommand("email", "password");
+	[Fact]
+	public async void Handle_TokenCreated_ReturnsSuccess()
+	{
+		// Arrange
+		var command = new LoginCommand("email", "password");
 
-	// 	var user = new StandardUser();
+		var user = new StandardUser() { Id = Guid.NewGuid() };
 
-	// 	_unitOfWorkMock
-	// 		.Setup(u => u.UserRepository.FirstOrDefaultAsync(
-	// 			It.IsAny<Expression<Func<User, bool>>>(),
-	// 			It.IsAny<CancellationToken>()))
-	// 		.ReturnsAsync(user);
+		_unitOfWorkMock
+			.Setup(u => u.UserRepository.FirstOrDefaultAsync(
+				It.IsAny<Expression<Func<User, bool>>>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(user);
 
-	// 	_passwordHasherMock
-	// 		.Setup(p => p.Check(
-	// 			It.IsAny<string>(),
-	// 			It.IsAny<string>()))
-	// 		.Returns((true, true));
+		_passwordHasherMock
+			.Setup(p => p.Check(
+				It.IsAny<string>(),
+				It.IsAny<string>()))
+			.Returns((true, true));
 
-	// 	// Act
-	// 	var result = await _uut.Handle(command, default);
+		_tokenServiceMock
+			.Setup(t => t.CreateToken(It.IsAny<User>()))
+			.Returns("newToken");
 
-	// 	// Assert
-	// 	Assert.True(result.IsFailure);
+		// Act
+		var result = await _uut.Handle(command, default);
 
-	// 	Assert.Equal(
-	// 		new Error("Authentication.InvalidEmailOrPassword", "The specified email or password are incorrect."),
-	// 		result.Error);
-	// }
+		// Assert
+		Assert.True(result.IsSuccess);
+
+		Assert.Equal(
+			"newToken",
+			result.Value.Token);
+
+		Assert.Equal(
+			user.Id,
+			result.Value.User.Id);
+	}
 }

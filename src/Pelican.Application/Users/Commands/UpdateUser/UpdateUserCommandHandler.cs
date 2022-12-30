@@ -11,7 +11,7 @@ public sealed class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand
 
 	public UpdateUserCommandHandler(IUnitOfWork unitOfWork)
 	{
-		_unitOfWork = unitOfWork;
+		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(paramName: nameof(unitOfWork));
 	}
 
 	public async Task<Result<User>> Handle(
@@ -21,21 +21,25 @@ public sealed class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand
 		User? user = await _unitOfWork
 			.UserRepository
 			.FirstOrDefaultAsync(
-				u => u.Id == command.User.Id,
-				cancellationToken);
+				expression: u => u.Id == command.User.Id,
+				cancellationToken: cancellationToken);
 
 		if (user is null)
 		{
-			return Result.Failure<User>(new Error("User.NotFound", $"{command.User.Id} was not found"));
+			return new Error(
+				code: "User.NotFound",
+				message: $"{command.User.Id} was not found");
 		}
 
 		if (command.User.Email is not null && await _unitOfWork
 				.UserRepository
 				.AnyAsync(
-					x => x.Email == command.User.Email,
-					cancellationToken))
+					expression: x => x.Email == command.User.Email,
+					cancellationToken: cancellationToken))
 		{
-			return Result.Failure<User>(new Error("Email.InUse", "Email already in use"));
+			return new Error(
+				code: "Email.InUse",
+				message: "Email already in use");
 		}
 
 		user.Name = command.User.Name ?? user.Name;
@@ -43,9 +47,9 @@ public sealed class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand
 
 		_unitOfWork
 			.UserRepository
-			.Update(user);
+			.Update(entity: user);
 
-		await _unitOfWork.SaveAsync(cancellationToken);
+		await _unitOfWork.SaveAsync(cancellationToken: cancellationToken);
 
 		return user;
 	}

@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using Pelican.Application.Authentication.CreateStandardUser;
+using Pelican.Application.Users.Commands.CreateStandardUser;
 using Xunit;
 
 namespace Pelican.Application.Test.CreateStandardUser.Commands;

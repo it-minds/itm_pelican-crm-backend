@@ -17,6 +17,7 @@ public class UnitOfWork : IUnitOfWork
 	private IGenericRepository<Contact>? _contactRepository;
 	private IGenericRepository<Client>? _clientRepository;
 	private IGenericRepository<Deal>? _dealRepository;
+	private IGenericRepository<User>? _userRepository;
 
 	public UnitOfWork(IPelicanContext pelicanContext)
 		=> _pelicanContext = pelicanContext
@@ -41,6 +42,8 @@ public class UnitOfWork : IUnitOfWork
 				=> (IGenericRepository<T>)ClientRepository,
 			Type Deal when Deal == typeof(Deal)
 				=> (IGenericRepository<T>)DealRepository,
+			Type User when User == typeof(User)
+				=> (IGenericRepository<T>)UserRepository,
 			_ => throw new ArgumentException("Generic Repository is not of correct Entity type", nameof(T)),
 		};
 
@@ -66,6 +69,9 @@ public class UnitOfWork : IUnitOfWork
 
 	public IGenericRepository<Deal> DealRepository
 		=> _dealRepository ??= new GenericRepository<Deal>(_pelicanContext);
+
+	public IGenericRepository<User> UserRepository
+		=> _userRepository ??= new GenericRepository<User>(_pelicanContext);
 
 	public async Task SaveAsync(CancellationToken cancellationToken = default)
 		=> await _pelicanContext.SaveChangesAsync(cancellationToken);

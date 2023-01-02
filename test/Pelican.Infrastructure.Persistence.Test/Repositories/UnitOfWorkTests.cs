@@ -113,6 +113,16 @@ public class UnitOfWorkTests
 	}
 
 	[Fact]
+	public void GetRepository_TypeUser_ReturnsUserRepository()
+	{
+		// Act
+		var result = _uut.GetRepository<User>();
+
+		// Assert
+		Assert.IsType<GenericRepository<User>>(result);
+	}
+
+	[Fact]
 	public void GetRepository_TypeInvalid_ThrowsExceptiom()
 	{
 		// Act
@@ -202,6 +212,16 @@ public class UnitOfWorkTests
 
 		// Assert
 		Assert.IsType<GenericRepository<DealContact>>(result);
+	}
+
+	[Fact]
+	public void UserRepository_ReturnsUserRepository()
+	{
+		// Act
+		var result = _uut.UserRepository;
+
+		// Assert
+		Assert.IsType<GenericRepository<User>>(result);
 	}
 
 	[Fact]

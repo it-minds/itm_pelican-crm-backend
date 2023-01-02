@@ -20,79 +20,38 @@ public class ResetPasswordCommandValidatorTests
 
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.SSOToken);
-		result.ShouldHaveValidationErrorFor(command => command.NewPassword).WithErrorMessage("Your password cannot be empty");
+		result.ShouldHaveValidationErrorFor(command => command.NewPassword).WithErrorMessage("New Password cannot be empty");
 
 	}
 
-	[Fact]
-	public void ResetPasswordCommandValidator_NoEmptyStringsAndPasswordIsTooShort_ReturnsError()
+	[Theory]
+	[InlineData("shortPW", "New Password length must be a minimum of 12 characters")]
+	[InlineData("newlongPassword", "New Password must contain at least one number.")]
+	[InlineData("1newlongpassword", "New Password must contain at least one uppercase letter.")]
+	[InlineData("1NEWLONGPASSWORD", "New Password must contain at least one lowercase letter.")]
+	[InlineData("1NewLongPassword", "New Password must contain one or more special characters.")]
+	public void ResetPasswordCommandValidator_NoEmptyStringsAndPasswordIsInvalidFormat_ReturnsError(string invalidPassword, string expectedErrorMessage)
 	{
 		// Arrange
 		ResetPasswordCommand command = new(
 			"notEmpty",
-			"short");
+			invalidPassword);
 
 		// Act
 		TestValidationResult<ResetPasswordCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldNotHaveValidationErrorFor(command => command.SSOToken);
-		result.ShouldHaveValidationErrorFor(command => command.NewPassword).WithErrorMessage("Your password length must be a minimum of 8 characters");
+		result.ShouldHaveValidationErrorFor(command => command.NewPassword).WithErrorMessage(expectedErrorMessage);
 	}
 
-	[Fact]
-	public void ResetPasswordCommandValidator_NoEmptyStringsAndPasswordContainsNoNumber_ReturnsNoError()
-	{
-		// Arrange
-		ResetPasswordCommand command = new(
-			"notEmpty",
-			"newPassword");
-
-		// Act
-		TestValidationResult<ResetPasswordCommand> result = _uut.TestValidate(command);
-
-		// Assert
-		result.ShouldNotHaveValidationErrorFor(command => command.SSOToken);
-		result.ShouldHaveValidationErrorFor(command => command.NewPassword).WithErrorMessage("Your password must contain at least one number.");
-	}
-
-	[Fact]
-	public void ResetPasswordCommandValidator_NoEmptyStringsAndPasswordContainsNoUpperCaseChar_ReturnsError()
-	{
-		// Arrange
-		ResetPasswordCommand command = new(
-			"notEmpty",
-			"1newpassword");
-
-		// Act
-		TestValidationResult<ResetPasswordCommand> result = _uut.TestValidate(command);
-
-		// Assert
-		result.ShouldNotHaveValidationErrorFor(command => command.SSOToken);
-		result.ShouldHaveValidationErrorFor(command => command.NewPassword).WithErrorMessage("Your password must contain at least one uppercase letter.");
-	}
-	[Fact]
-	public void ResetPasswordCommandValidator_NoEmptyStringsAndPasswordContainsNoLowerCaseChar_ReturnsError()
-	{
-		// Arrange
-		ResetPasswordCommand command = new(
-			"notEmpty",
-			"1NEWPASSWORD");
-
-		// Act
-		TestValidationResult<ResetPasswordCommand> result = _uut.TestValidate(command);
-
-		// Assert
-		result.ShouldNotHaveValidationErrorFor(command => command.SSOToken);
-		result.ShouldHaveValidationErrorFor(command => command.NewPassword).WithErrorMessage("Your password must contain at least one lowercase letter.");
-	}
 	[Fact]
 	public void ResetPasswordCommandValidator_NoEmptyStringsPasswordInCorrectFormat_ReturnsNoError()
 	{
 		// Arrange
 		ResetPasswordCommand command = new(
 			"notEmpty",
-			"1NewPassword");
+			"1NewLongPassword!");
 
 		// Act
 		TestValidationResult<ResetPasswordCommand> result = _uut.TestValidate(command);

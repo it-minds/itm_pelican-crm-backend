@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using Pelican.Domain.Extensions;
-
-namespace Pelican.Application.Authentication.ResetPassword;
+﻿namespace Pelican.Application.Authentication.ResetPassword;
 public class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordCommand>
 {
 	public ResetPasswordCommandValidator()

@@ -1,9 +1,4 @@
-﻿using FluentValidation.TestHelper;
-using Pelican.Application.Authentication.ResetPassword;
-using Pelican.Domain;
-using Xunit;
-
-namespace Pelican.Application.Test.ResetPassword.Command;
+﻿namespace Pelican.Application.Test.ResetPassword.Command;
 public class ResetPasswordCommandValidatorTests
 {
 	private readonly ResetPasswordCommandValidator _uut = new();

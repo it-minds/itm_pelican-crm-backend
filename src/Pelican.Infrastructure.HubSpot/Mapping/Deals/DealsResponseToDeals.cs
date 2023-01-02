@@ -1,4 +1,9 @@
-﻿namespace Pelican.Infrastructure.HubSpot.Mapping.Deals;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Domain.Entities;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;
+
+namespace Pelican.Infrastructure.HubSpot.Mapping.Deals;
 
 internal static class DealsResponseToDeals
 {

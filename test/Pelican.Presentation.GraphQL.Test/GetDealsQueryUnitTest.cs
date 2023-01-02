@@ -1,4 +1,12 @@
-﻿namespace Pelican.Presentation.GraphQL.Test;
+﻿using MediatR;
+using Moq;
+using Pelican.Application.Deals.Queries.GetDealById;
+using Pelican.Application.Deals.Queries.GetDeals;
+using Pelican.Domain.Entities;
+using Pelican.Presentation.GraphQL.Deals;
+using Xunit;
+
+namespace Pelican.Presentation.GraphQL.Test;
 public class GetDealsQueryUnitTest
 {
 	private readonly DealsQuery uut = new();

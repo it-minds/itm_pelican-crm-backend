@@ -1,4 +1,9 @@
-﻿namespace Pelican.Domain.Test.Entities;
+﻿using Bogus;
+using Moq;
+using Pelican.Domain.Entities;
+using Xunit;
+
+namespace Pelican.Domain.Test.Entities;
 public class DealTests
 {
 	private readonly Deal _uut = new()

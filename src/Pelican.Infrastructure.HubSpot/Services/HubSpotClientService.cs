@@ -1,3 +1,16 @@
+﻿using System.Runtime.CompilerServices;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Application.Abstractions.Infrastructure;
+using Pelican.Domain.Entities;
+using Pelican.Domain.Settings.HubSpot;
+using Pelican.Domain.Shared;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Clients;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
+using Pelican.Infrastructure.HubSpot.Extensions;
+using Pelican.Infrastructure.HubSpot.Mapping.Clients;
+using RestSharp;
+
 namespace Pelican.Infrastructure.HubSpot.Services;
 
 internal sealed class HubSpotClientService : ServiceBase<HubSpotSettings>, IHubSpotObjectService<Client>

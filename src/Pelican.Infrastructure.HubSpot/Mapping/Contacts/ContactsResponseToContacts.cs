@@ -1,4 +1,9 @@
-﻿namespace Pelican.Infrastructure.HubSpot.Mapping.Contacts;
+﻿using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Domain.Entities;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
+
+namespace Pelican.Infrastructure.HubSpot.Mapping.Contacts;
 
 internal static class ContactsResponseToContacts
 {

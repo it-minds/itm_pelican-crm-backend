@@ -1,4 +1,12 @@
-﻿namespace Pelican.Application.Contacts.HubSpotCommands.Update;
+﻿using Microsoft.EntityFrameworkCore;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Domain;
+using Pelican.Domain.Entities;
+using Pelican.Domain.Shared;
+
+namespace Pelican.Application.Contacts.HubSpotCommands.Update;
 
 internal sealed class UpdateContactHubSpotCommandHandler : ICommandHandler<UpdateContactHubSpotCommand>
 {

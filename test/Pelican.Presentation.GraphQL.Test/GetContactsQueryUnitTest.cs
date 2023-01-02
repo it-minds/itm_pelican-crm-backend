@@ -1,4 +1,12 @@
-﻿namespace Pelican.Presentation.GraphQL.Test;
+﻿using MediatR;
+using Moq;
+using Pelican.Application.Contacts.Queries.GetContactById;
+using Pelican.Application.Contacts.Queries.GetContacts;
+using Pelican.Domain.Entities;
+using Pelican.Presentation.GraphQL.Contacts;
+using Xunit;
+
+namespace Pelican.Presentation.GraphQL.Test;
 public class GetContactsQueryUnitTest
 {
 	private readonly ContactsQuery _uut = new();

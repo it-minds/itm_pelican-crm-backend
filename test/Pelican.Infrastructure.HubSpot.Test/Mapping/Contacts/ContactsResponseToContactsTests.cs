@@ -1,4 +1,12 @@
-﻿namespace Pelican.Infrastructure.HubSpot.Test.Mapping.Contacts;
+﻿using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Domain;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Contacts;
+using Pelican.Infrastructure.HubSpot.Mapping.Contacts;
+using Xunit;
+
+namespace Pelican.Infrastructure.HubSpot.Test.Mapping.Contacts;
 
 public class ContactsResponseToContactsTests
 {

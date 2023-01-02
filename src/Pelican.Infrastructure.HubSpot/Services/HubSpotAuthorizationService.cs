@@ -1,4 +1,18 @@
-﻿namespace Pelican.Infrastructure.HubSpot.Services;
+﻿using Microsoft.Extensions.Options;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.HubSpot;
+using Pelican.Application.Abstractions.Infrastructure;
+using Pelican.Application.HubSpot.Dtos;
+using Pelican.Domain;
+using Pelican.Domain.Entities;
+using Pelican.Domain.Settings.HubSpot;
+using Pelican.Domain.Shared;
+using Pelican.Infrastructure.HubSpot.Contracts.Responses.Auth;
+using Pelican.Infrastructure.HubSpot.Extensions;
+using Pelican.Infrastructure.HubSpot.Mapping.Auth;
+using RestSharp;
+
+namespace Pelican.Infrastructure.HubSpot.Services;
 
 internal sealed class HubSpotAuthorizationService : ServiceBase<HubSpotSettings>, IHubSpotAuthorizationService
 {

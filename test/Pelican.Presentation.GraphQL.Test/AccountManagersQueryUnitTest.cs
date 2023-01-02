@@ -1,4 +1,12 @@
-﻿namespace Pelican.Presentation.GraphQL.Test;
+﻿using MediatR;
+using Moq;
+using Pelican.Application.AccountManagers.Queries.GetAccountManagerById;
+using Pelican.Application.AccountManagers.Queries.GetAccountManagers;
+using Pelican.Domain.Entities;
+using Pelican.Presentation.GraphQL.AccountManagers;
+using Xunit;
+
+namespace Pelican.Presentation.GraphQL.Test;
 public class AccountManagersQueryUnitTest
 {
 	private readonly AccountManagersQuery _uut = new();

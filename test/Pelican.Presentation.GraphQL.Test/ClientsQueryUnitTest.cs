@@ -1,4 +1,12 @@
-﻿namespace Pelican.Presentation.GraphQL.Test;
+﻿using MediatR;
+using Moq;
+using Pelican.Application.Clients.Queries.GetClientById;
+using Pelican.Application.Clients.Queries.GetClients;
+using Pelican.Domain.Entities;
+using Pelican.Presentation.GraphQL.Clients;
+using Xunit;
+
+namespace Pelican.Presentation.GraphQL.Test;
 
 public class ClientsQueryUnitTest
 {

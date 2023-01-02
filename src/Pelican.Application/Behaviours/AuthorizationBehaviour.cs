@@ -2,9 +2,10 @@
 using MediatR;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Authentication;
+using Pelican.Application.Security;
 using Pelican.Domain.Enums;
 
-namespace Pelican.Application.Security;
+namespace Pelican.Application.Behaviours;
 public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
 	private readonly ICurrentUserService _currentUserService;

@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Pelican.Application.Authentication;
 using Pelican.Application.Authentication.CheckAuthCommand;
@@ -7,6 +7,7 @@ using Pelican.Presentation.Api.Abstractions;
 
 namespace Pelican.Presentation.Api.Controllers;
 
+[Route("[controller]")]
 public sealed class AuthController : ApiController
 {
 	public AuthController(ISender sender)

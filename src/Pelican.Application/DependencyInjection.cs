@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +23,8 @@ public static class DependencyInjection
 	//Add application as a service that can be used in program
 	public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
 	{
+		services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 		services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 		services.AddScoped<IAuthorizationService, AuthorizationService>();

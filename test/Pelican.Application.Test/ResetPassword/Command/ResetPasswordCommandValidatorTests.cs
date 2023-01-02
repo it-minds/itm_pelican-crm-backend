@@ -45,13 +45,17 @@ public class ResetPasswordCommandValidatorTests
 		result.ShouldHaveValidationErrorFor(command => command.NewPassword).WithErrorMessage(expectedErrorMessage);
 	}
 
-	[Fact]
-	public void ResetPasswordCommandValidator_NoEmptyStringsPasswordInCorrectFormat_ReturnsNoError()
+	[Theory]
+	[InlineData("1NewLongPassword!")]
+	[InlineData("*,.!1Lonasdbaisgiuhiuahsd")]
+	[InlineData("_jS3NaxDE(C#dQz&J?")]
+	[InlineData("8+++Q8!^n3YA20.@cNHr")]
+	public void ResetPasswordCommandValidator_NoEmptyStringsPasswordInCorrectFormat_ReturnsNoError(string validPassword)
 	{
 		// Arrange
 		ResetPasswordCommand command = new(
 			"notEmpty",
-			"1NewLongPassword!");
+			validPassword);
 
 		// Act
 		TestValidationResult<ResetPasswordCommand> result = _uut.TestValidate(command);

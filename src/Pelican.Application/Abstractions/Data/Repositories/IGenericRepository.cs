@@ -13,4 +13,5 @@ public interface IGenericRepository<T>
 	void Update(T entity);
 	void Delete(T entity);
 	void AttachAsAdded(IEnumerable<T> entities);
+	Task<bool> AnyAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken);
 }

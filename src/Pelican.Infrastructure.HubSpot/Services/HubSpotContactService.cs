@@ -22,7 +22,6 @@ internal sealed class HubSpotContactService : ServiceBase<HubSpotSettings>, IHub
 		: base(hubSpotClient, unitOfWork)
 	{ }
 
-
 	public async Task<Result<Contact>> GetByIdAsync(
 		string accessToken,
 		long id,

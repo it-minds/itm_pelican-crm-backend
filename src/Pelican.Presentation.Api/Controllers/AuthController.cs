@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Pelican.Application.Authentication;
-using Pelican.Application.Authentication.CheckAuthCommand;
+using Pelican.Application.Authentication.CheckAuth;
 using Pelican.Application.Authentication.Login;
 using Pelican.Presentation.Api.Abstractions;
 

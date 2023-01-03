@@ -1,12 +1,12 @@
-using MediatR;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Pelican.Application.Authentication;
+using Pelican.Application.Authentication.CheckAuth;
 using Pelican.Application.Authentication.Login;
+using Pelican.Domain.Shared;
 using Pelican.Presentation.Api.Controllers;
 using Xunit;
-using Pelican.Domain.Shared;
-using Pelican.Application.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using Pelican.Application.Authentication.CheckAuthCommand;
 
 namespace Pelican.Presentation.Api.Test.Controllers;
 

@@ -1,8 +1,8 @@
-﻿using Moq;
+﻿using System.Linq.Expressions;
+using Moq;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Authentication.CreateAdmin;
 using Pelican.Application.Users.Commands.CreateAdmin;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Entities.Users;
@@ -11,7 +11,7 @@ using Xunit;
 namespace Pelican.Application.Test.CreateAdmin.Commands;
 public class CreateAdminCommandHandlerTests
 {
-	private readonly ICommandHandler<CreateAdminCommand> _uut;
+	private readonly ICommandHandler<CreateAdminCommand, User> _uut;
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly Mock<IPasswordHasher> _passwordHasherMock = new();
 
@@ -23,8 +23,6 @@ public class CreateAdminCommandHandlerTests
 	[Fact]
 	public void Constructor_UnitOfWorkNull_ArgumentNullException()
 	{
-		//Arrange
-
 		//Act
 		var result = Record.Exception(() => new CreateAdminCommandHandler(null!, _passwordHasherMock.Object));
 
@@ -39,8 +37,6 @@ public class CreateAdminCommandHandlerTests
 	[Fact]
 	public void Constructor_PassWordHasherNull_ArgumentNullException()
 	{
-		//Arrange
-
 		//Act
 		var result = Record.Exception(() => new CreateAdminCommandHandler(_unitOfWorkMock.Object, null!));
 
@@ -54,14 +50,18 @@ public class CreateAdminCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_SaveIsCalledCreateAsyncIsCalledWithExpectedUserPassWordHasherIsCalledWithExpectedPassword_ReturnsSuccess()
+	public async void Handle_UserRepositoryAnyAsyncReturnsTrue_ReturnsFailure()
 	{
 		//Arrange
 		CreateAdminCommand createAdminCommand = new("test", "test", "test");
 
-		_passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>())).Returns("HashedPW");
-
-		_unitOfWorkMock.Setup(x => x.UserRepository.CreateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()));
+		_unitOfWorkMock
+			.Setup(x => x
+				.UserRepository
+				.AnyAsync(
+					It.IsAny<Expression<Func<User, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync(true);
 
 		AdminUser expectedUser = new()
 		{
@@ -74,12 +74,65 @@ public class CreateAdminCommandHandlerTests
 		var result = await _uut.Handle(createAdminCommand, default);
 
 		//Assert
-		_unitOfWorkMock.Verify(x => x.UserRepository.CreateAsync(expectedUser, default), Times.Once);
+		_unitOfWorkMock
+			.Verify(x => x
+				.UserRepository
+				.AnyAsync(x => x
+					.Email == createAdminCommand.Email,
+					default));
 
-		_unitOfWorkMock.Verify(x => x.SaveAsync(default), Times.Once);
+		Assert.True(result.IsFailure);
+	}
+
+	[Fact]
+	public async void Handle_UserRepositoryAnyAsyncReturnsFalseSaveIsCalledCreateAsyncIsCalledWithExpectedUserPassWordHasherIsCalledWithExpectedPassword_ReturnsSuccess()
+	{
+		//Arrange
+		CreateAdminCommand createAdminCommand = new("test", "test", "test");
+
+		_passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>())).Returns("HashedPW");
+
+		_unitOfWorkMock.Setup(x => x.UserRepository.CreateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()));
+
+		_unitOfWorkMock
+			.Setup(x => x
+				.UserRepository
+				.AnyAsync(
+					It.IsAny<Expression<Func<User, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync(false);
+
+		AdminUser expectedUser = new()
+		{
+			Name = "test",
+			Password = "HashedPW",
+			Email = "test",
+		};
+
+		//Act
+		var result = await _uut.Handle(createAdminCommand, default);
+
+		//Assert
+		_unitOfWorkMock
+			.Verify(x => x
+				.UserRepository
+				.AnyAsync(x => x
+					.Email == createAdminCommand.Email,
+					default));
+
+		_unitOfWorkMock
+			.Verify(x => x
+				.UserRepository
+				.CreateAsync(expectedUser, default), Times.Once);
+
+		_unitOfWorkMock
+			.Verify(x => x
+				.SaveAsync(default), Times.Once);
 
 		_passwordHasherMock.Verify(x => x.Hash("test"));
 
 		Assert.True(result.IsSuccess);
+
+		Assert.Equal(expectedUser, result.Value);
 	}
 }

@@ -54,7 +54,7 @@ public class CreateAdminCommandHandlerTests
 	}
 
 	[Fact]
-	public async void Handler()
+	public async void Handle_SaveIsCalledCreateAsyncIsCalledWithExpectedUserPassWordHasherIsCalledWithExpectedPassword_ReturnsSuccess()
 	{
 		//Arrange
 		CreateAdminCommand createAdminCommand = new("test", "test", "test");

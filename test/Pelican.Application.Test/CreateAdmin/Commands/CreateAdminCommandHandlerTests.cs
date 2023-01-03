@@ -3,6 +3,7 @@ using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Authentication.CreateAdmin;
+using Pelican.Application.Users.Commands.CreateAdmin;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Entities.Users;
 using Xunit;

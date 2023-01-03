@@ -37,7 +37,7 @@ public class AuthorizationBehaviourTests
 		//Arrange
 		_getCustomAttributesServiceMock
 			.Setup(x => x
-				.GetAttributes(
+				.GetAuthorizeAttributes(
 					It.IsAny<IRequest>()))
 			.Returns(new List<AuthorizeAttribute>().AsEnumerable());
 
@@ -54,7 +54,7 @@ public class AuthorizationBehaviourTests
 		//Arrange
 		_getCustomAttributesServiceMock
 			.Setup(x => x
-				.GetAttributes(
+				.GetAuthorizeAttributes(
 					It.IsAny<IRequest<testQuery>>()))
 			.Returns(new List<AuthorizeAttribute>()
 			{
@@ -79,7 +79,7 @@ public class AuthorizationBehaviourTests
 		//Arrange
 		_getCustomAttributesServiceMock
 			.Setup(x => x
-				.GetAttributes(
+				.GetAuthorizeAttributes(
 					It.IsAny<IRequest<testQuery>>()))
 			.Returns(new List<AuthorizeAttribute>()
 			{
@@ -109,7 +109,7 @@ public class AuthorizationBehaviourTests
 		//Arrange
 		_getCustomAttributesServiceMock
 			.Setup(x => x
-				.GetAttributes(
+				.GetAuthorizeAttributes(
 					It.IsAny<IRequest<testQuery>>()))
 			.Returns(new List<AuthorizeAttribute>()
 			{

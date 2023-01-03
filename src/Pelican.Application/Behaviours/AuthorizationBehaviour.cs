@@ -20,7 +20,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
 
 	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
-		var authorizeAttributes = _getCustomAttributesService.GetAttributes(request);
+		var authorizeAttributes = _getCustomAttributesService.GetAuthorizeAttributes(request);
 
 		if (authorizeAttributes.Any())
 		{

@@ -1,8 +1,6 @@
-﻿using System.Reflection;
-using MediatR;
+﻿using MediatR;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Authentication;
-using Pelican.Application.Security;
 using Pelican.Domain.Enums;
 
 namespace Pelican.Application.Behaviours;
@@ -10,22 +8,24 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
 {
 	private readonly ICurrentUserService _currentUserService;
 	private readonly IAuthorizationService _authorizationService;
+	private readonly IGetCustomAttributesService _getCustomAttributesService;
 
 	public AuthorizationBehaviour(
-		ICurrentUserService currentUserService, IAuthorizationService authorizationService)
+		ICurrentUserService currentUserService, IAuthorizationService authorizationService, IGetCustomAttributesService getCustomAttributesService)
 	{
 		_currentUserService = currentUserService;
 		_authorizationService = authorizationService;
+		_getCustomAttributesService = getCustomAttributesService;
 	}
 
 	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
-		var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>();
+		var authorizeAttributes = _getCustomAttributesService.GetAttributes(request);
 
 		if (authorizeAttributes.Any())
 		{
 			//Must be authenticated user
-			if (_currentUserService.UserId is null)
+			if (string.IsNullOrWhiteSpace(_currentUserService.UserId))
 			{
 				throw new UnauthorizedAccessException();
 			}

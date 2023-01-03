@@ -1,4 +1,5 @@
 using FluentValidation;
+using Pelican.Domain;
 
 namespace Pelican.Application.Users.Commands.UpdateUser;
 
@@ -8,11 +9,16 @@ public sealed class UpdateUserCommandValidator : AbstractValidator<UpdateUserCom
 	{
 		RuleFor(u => u.User.Id)
 			.NotEmpty();
+
 		RuleFor(u => u.User.Email)
 			.NotEmpty()
-			.EmailAddress();
+			.EmailAddress()
+			.MaximumLength(StringLengths.Email);
+
 		RuleFor(u => u.User.Name)
-			.NotEmpty();
+			.NotEmpty()
+			.MaximumLength(StringLengths.Name);
+
 		RuleFor(u => u.User.Role)
 			.NotEmpty();
 	}

@@ -36,6 +36,27 @@ public class UpdateUserCommandValidatorTests
 	}
 
 	[Fact]
+	public void UpdateDealCommandValidator_TooLongStringOrDefaultValue_ReturnsError()
+	{
+		// Arrange
+		UpdateUserCommand command = new(new()
+		{
+			Id = Guid.Empty,
+			Email = new string('x', 101),
+			Name = new string('x', 101),
+		});
+
+		// Act
+		var result = _uut.TestValidate(command);
+
+		// Assert
+		result.ShouldHaveValidationErrorFor(command => command.User.Id);
+		result.ShouldHaveValidationErrorFor(command => command.User.Email);
+		result.ShouldHaveValidationErrorFor(command => command.User.Name);
+		result.ShouldHaveValidationErrorFor(command => command.User.Role);
+	}
+
+	[Fact]
 	public void UpdateDealCommandValidator_NoEmptyStringsOrDefaultValues_ReturnsNoError()
 	{
 		// Arrange

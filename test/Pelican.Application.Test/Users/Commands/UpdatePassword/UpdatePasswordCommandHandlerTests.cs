@@ -4,6 +4,7 @@ using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Users.Commands.UpdatePassword;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Entities.Users;
 using Pelican.Domain.Shared;
 using Xunit;
 
@@ -65,7 +66,7 @@ public class UpdatePasswordCommandHandlerTests
 				.FirstOrDefaultAsync(
 					It.IsAny<Expression<Func<User, bool>>>(),
 					It.IsAny<CancellationToken>()))
-			.ReturnsAsync((User)null!);
+			.ReturnsAsync(new StandardUser());
 
 		_currentUserServiceMock
 			.Setup(c => c.UserId)

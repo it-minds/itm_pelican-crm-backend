@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Pelican.Application.Abstractions.Authentication;
-using Pelican.Application.Authentication;
 using Pelican.Domain.Enums;
 
 namespace Pelican.Application.Behaviours;
@@ -41,7 +40,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
 
 					if (!authorized)
 					{
-						throw new ForbiddenAccessException();
+						throw new UnauthorizedAccessException();
 					}
 				}
 			}

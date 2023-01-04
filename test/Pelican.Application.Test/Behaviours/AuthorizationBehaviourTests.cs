@@ -2,7 +2,6 @@
 using Moq;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Authentication;
 using Pelican.Application.Behaviours;
 using Pelican.Application.Security;
 using Pelican.Domain.Entities;
@@ -100,7 +99,7 @@ public class AuthorizationBehaviourTests
 		var result = Record.ExceptionAsync(async () => await _uut.Handle(_queryMock.Object, _delegateMock.Object, default));
 
 		//Assert
-		Assert.IsType<ForbiddenAccessException>(result.Result);
+		Assert.IsType<UnauthorizedAccessException>(result.Result);
 	}
 
 	[Fact]

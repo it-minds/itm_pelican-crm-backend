@@ -6,11 +6,12 @@ public sealed class UpdatePasswordCommandValidator : AbstractValidator<UpdatePas
 {
 	public UpdatePasswordCommandValidator()
 	{
-		RuleFor(c => c.Password)
-			.NotEmpty().WithMessage("Your password cannot be empty")
-			.MinimumLength(8).WithMessage("Your password length must be a minimum of 8 characters")
-			.Matches("[A-Z]+").WithMessage("Your password must contain at least one uppercase letter.")
-			.Matches("[a-z]+").WithMessage("Your password must contain at least one lowercase letter.")
-			.Matches("[0-9]+").WithMessage("Your password must contain at least one number.");
+		RuleFor(r => r.Password)
+			.NotEmpty().WithMessage("{PropertyName} cannot be empty")
+			.MinimumLength(12).WithMessage("{PropertyName} length must be a minimum of {MinLength} characters")
+			.Matches("[A-Z]+").WithMessage("{PropertyName} must contain at least one uppercase letter.")
+			.Matches("[a-z]+").WithMessage("{PropertyName} must contain at least one lowercase letter.")
+			.Matches("[0-9]+").WithMessage("{PropertyName} must contain at least one number.")
+			.Matches(@"[][""!@$%^&*(){}:;<>,.?/+_=|'~\\-]").WithMessage("{PropertyName} must contain one or more special characters.");
 	}
 }

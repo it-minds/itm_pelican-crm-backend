@@ -15,9 +15,9 @@ public class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand,
 		ITokenService tokenService,
 		IPasswordHasher passwordHasher)
 	{
-		_unitOfWork = unitOfWork;
-		_tokenService = tokenService;
-		_passwordHasher = passwordHasher;
+		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		_tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
+		_passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
 	}
 	public async Task<Result<UserTokenDto>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
 	{
@@ -37,7 +37,7 @@ public class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand,
 
 		if (userEntity is null)
 		{
-			return Result.Failure<UserTokenDto>(Error.NullValue);
+			throw new ArgumentNullException(nameof(userEntity));
 		}
 
 		if (userEntity.SSOTokenId != tokenId)

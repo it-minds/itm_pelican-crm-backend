@@ -53,7 +53,7 @@ public class CreateAdminCommandHandlerTests
 	public async void Handle_UserRepositoryAnyAsyncReturnsTrue_ReturnsFailure()
 	{
 		//Arrange
-		CreateAdminCommand createAdminCommand = new("test", "test", "test");
+		CreateAdminCommand createAdminCommand = new("testName", "testEmail", "testPassword");
 
 		_unitOfWorkMock
 			.Setup(x => x
@@ -65,9 +65,9 @@ public class CreateAdminCommandHandlerTests
 
 		AdminUser expectedUser = new()
 		{
-			Name = "test",
+			Name = "testName",
 			Password = "HashedPW",
-			Email = "test",
+			Email = "testEmail",
 		};
 
 		//Act
@@ -79,7 +79,8 @@ public class CreateAdminCommandHandlerTests
 				.UserRepository
 				.AnyAsync(x => x
 					.Email == createAdminCommand.Email,
-					default));
+					default),
+			Times.Once);
 
 		Assert.True(result.IsFailure);
 	}
@@ -88,7 +89,7 @@ public class CreateAdminCommandHandlerTests
 	public async void Handle_UserRepositoryAnyAsyncReturnsFalseSaveIsCalledCreateAsyncIsCalledWithExpectedUserPassWordHasherIsCalledWithExpectedPassword_ReturnsSuccess()
 	{
 		//Arrange
-		CreateAdminCommand createAdminCommand = new("test", "test", "test");
+		CreateAdminCommand createAdminCommand = new("testName", "testEmail", "testPassword");
 
 		_passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>())).Returns("HashedPW");
 
@@ -104,9 +105,9 @@ public class CreateAdminCommandHandlerTests
 
 		AdminUser expectedUser = new()
 		{
-			Name = "test",
+			Name = "testName",
 			Password = "HashedPW",
-			Email = "test",
+			Email = "testEmail",
 		};
 
 		//Act
@@ -118,18 +119,24 @@ public class CreateAdminCommandHandlerTests
 				.UserRepository
 				.AnyAsync(x => x
 					.Email == createAdminCommand.Email,
-					default));
+					default),
+			Times.Once);
 
 		_unitOfWorkMock
 			.Verify(x => x
 				.UserRepository
-				.CreateAsync(expectedUser, default), Times.Once);
+				.CreateAsync(expectedUser, default),
+			Times.Once);
 
 		_unitOfWorkMock
 			.Verify(x => x
-				.SaveAsync(default), Times.Once);
+				.SaveAsync(default),
+			Times.Once);
 
-		_passwordHasherMock.Verify(x => x.Hash("test"));
+		_passwordHasherMock
+			.Verify(x => x
+				.Hash("testPassword"),
+			Times.Once);
 
 		Assert.True(result.IsSuccess);
 

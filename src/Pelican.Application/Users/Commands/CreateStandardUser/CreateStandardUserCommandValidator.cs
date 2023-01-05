@@ -6,8 +6,11 @@ public class CreateStandardUserCommandValidator : AbstractValidator<CreateStanda
 {
 	public CreateStandardUserCommandValidator()
 	{
-		RuleFor(c => c.Email).AddUserEmailValidation();
-		RuleFor(c => c.Password).AddUserPasswordValidation();
-		RuleFor(c => c.Name).AddUserNameValidation();
+		RuleFor(c => c.Email)
+			.AddUserEmailValidation();
+		RuleFor(c => c.Password)
+			.AddUserPasswordValidation();
+		RuleFor(c => c.Name)
+			.AddUserNameValidation();
 	}
 }

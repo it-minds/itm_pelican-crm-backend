@@ -6,8 +6,11 @@ public class CreateAdminCommandValidator : AbstractValidator<CreateAdminCommand>
 {
 	public CreateAdminCommandValidator()
 	{
-		RuleFor(c => c.Email).AddUserEmailValidation();
-		RuleFor(c => c.Password).AddUserPasswordValidation();
-		RuleFor(c => c.Name).AddUserNameValidation();
+		RuleFor(c => c.Email)
+			.AddUserEmailValidation();
+		RuleFor(c => c.Password)
+			.AddUserPasswordValidation();
+		RuleFor(c => c.Name)
+			.AddUserNameValidation();
 	}
 }

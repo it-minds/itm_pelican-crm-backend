@@ -10,7 +10,6 @@ public class GetUsersQueryHandlerUnitTest
 
 	public GetUsersQueryHandlerUnitTest()
 	{
-		//Arrange
 		_unitOfWorkMock
 			.Setup(x => x
 				.UserRepository)

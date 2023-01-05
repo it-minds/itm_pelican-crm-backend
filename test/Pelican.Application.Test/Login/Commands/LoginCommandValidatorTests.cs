@@ -41,19 +41,19 @@ public class LoginCommandValidatorTests
 	}
 
 	[Fact]
-	public void LoginCommandValidator_AllStringsTooLong_ReturnsError()
+	public void LoginCommandValidator_EmailStringTooLong_ReturnsError()
 	{
 		// Arrange
 		LoginCommand command = new(
 			new string('s', StringLengths.Email * 2),
-			new string('s', StringLengths.Password * 2));
+			new string("notEmpty"));
 
 		// Act
 		TestValidationResult<LoginCommand> result = _uut.TestValidate(command);
 
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.Email).WithErrorMessage("Email cannot be longer than " + $"{StringLengths.Email}.");
-		result.ShouldHaveValidationErrorFor(command => command.Password).WithErrorMessage("Password cannot be longer than " + $"{StringLengths.Password}.");
+		result.ShouldNotHaveValidationErrorFor(command => command.Password);
 	}
 
 	[Fact]

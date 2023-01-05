@@ -1,5 +1,4 @@
-﻿using Bogus;
-using FluentValidation.TestHelper;
+﻿using FluentValidation.TestHelper;
 using Pelican.Application.Users.Commands.CreateAdmin;
 using Pelican.Domain;
 using Xunit;
@@ -8,7 +7,6 @@ namespace Pelican.Application.Test.Users.Commands.CreateAdmin;
 public class CreateAdminCommandValidatorTests
 {
 	private readonly CreateAdminCommandValidator _uut = new();
-	private Faker faker = new();
 
 	[Fact]
 	public void CreateAdminCommandValidator_EmptyString_ReturnsError()
@@ -31,20 +29,19 @@ public class CreateAdminCommandValidatorTests
 	[Fact]
 	public void CreateAdminCommandValidator_AllStringsTooLong_ReturnsError()
 	{
-		var faker = new Faker();
 		// Arrange
 		CreateAdminCommand command = new(
-			faker.Lorem.Letter(StringLengths.Name * 2),
-			faker.Lorem.Letter(StringLengths.Email * 2),
-			faker.Lorem.Letter(StringLengths.Password * 2));
+			new string('s', StringLengths.Name * 2),
+			new string('s', StringLengths.Email * 2),
+			new string('s', StringLengths.Password * 2));
 
 		// Act
 		TestValidationResult<CreateAdminCommand> result = _uut.TestValidate(command);
 
 		// Assert
-		result.ShouldHaveValidationErrorFor(command => command.Name).WithErrorMessage("Name cannot be longer than" + $"{StringLengths.Name}.");
-		result.ShouldHaveValidationErrorFor(command => command.Email).WithErrorMessage("Email cannot be longer than" + $"{StringLengths.Email}.");
-		result.ShouldHaveValidationErrorFor(command => command.Password).WithErrorMessage("Password cannot be longer than" + $"{StringLengths.Password}.");
+		result.ShouldHaveValidationErrorFor(command => command.Name).WithErrorMessage("Name cannot be longer than " + $"{StringLengths.Name}.");
+		result.ShouldHaveValidationErrorFor(command => command.Email).WithErrorMessage("Email cannot be longer than " + $"{StringLengths.Email}.");
+		result.ShouldHaveValidationErrorFor(command => command.Password).WithErrorMessage("Password cannot be longer than " + $"{StringLengths.Password}.");
 	}
 
 	[Theory]

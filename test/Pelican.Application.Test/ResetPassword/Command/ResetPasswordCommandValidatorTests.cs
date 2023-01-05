@@ -1,5 +1,4 @@
-﻿using Bogus;
-using FluentValidation.TestHelper;
+﻿using FluentValidation.TestHelper;
 using Pelican.Application.Authentication.ResetPassword;
 using Pelican.Domain;
 using Xunit;
@@ -28,17 +27,16 @@ public class ResetPasswordCommandValidatorTests
 	[Fact]
 	public void ResetPasswordCommandValidtor_PassWordTooLong_ReturnsError()
 	{
-		var faker = new Faker();
 		// Arrange
 		ResetPasswordCommand command = new(
 			"NotEmpty",
-			faker.Lorem.Letter(StringLengths.Password * 2));
+			new string('s', StringLengths.Password * 2));
 
 		// Act
 		TestValidationResult<ResetPasswordCommand> result = _uut.TestValidate(command);
 
 		// Assert
-		result.ShouldHaveValidationErrorFor(command => command.NewPassword).WithErrorMessage("New Password cannot be longer than" + $"{StringLengths.Password}.");
+		result.ShouldHaveValidationErrorFor(command => command.NewPassword).WithErrorMessage("New Password cannot be longer than " + $"{StringLengths.Password}.");
 	}
 
 	[Theory]

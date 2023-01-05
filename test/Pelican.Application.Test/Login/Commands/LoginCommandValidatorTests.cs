@@ -1,5 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using Pelican.Application.Authentication.Login;
+using Pelican.Domain;
 using Xunit;
 
 namespace Pelican.Application.Test.Login.Commands;
@@ -37,6 +38,22 @@ public class LoginCommandValidatorTests
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.Email);
 		result.ShouldHaveValidationErrorFor(command => command.Password);
+	}
+
+	[Fact]
+	public void LoginCommandValidator_AllStringsTooLong_ReturnsError()
+	{
+		// Arrange
+		LoginCommand command = new(
+			new string('s', StringLengths.Email * 2),
+			new string('s', StringLengths.Password * 2));
+
+		// Act
+		TestValidationResult<LoginCommand> result = _uut.TestValidate(command);
+
+		// Assert
+		result.ShouldHaveValidationErrorFor(command => command.Email).WithErrorMessage("Email cannot be longer than " + $"{StringLengths.Email}.");
+		result.ShouldHaveValidationErrorFor(command => command.Password).WithErrorMessage("Password cannot be longer than " + $"{StringLengths.Password}.");
 	}
 
 	[Theory]

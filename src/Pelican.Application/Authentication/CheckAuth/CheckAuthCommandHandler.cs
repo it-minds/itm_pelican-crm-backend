@@ -9,15 +9,14 @@ namespace Pelican.Application.Authentication.CheckAuth;
 public sealed class CheckAuthCommandHandler : ICommandHandler<CheckAuthCommand, UserDto>
 {
 	private readonly IUnitOfWork _unitOfWork;
-
 	private readonly ICurrentUserService _currentUserService;
 
 	public CheckAuthCommandHandler(
 		IUnitOfWork unitOfWork,
 		ICurrentUserService currentUserService)
 	{
-		_unitOfWork = unitOfWork;
-		_currentUserService = currentUserService;
+		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		_currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
 	}
 
 	public async Task<Result<UserDto>> Handle(
@@ -32,22 +31,17 @@ public sealed class CheckAuthCommandHandler : ICommandHandler<CheckAuthCommand, 
 
 		if (user is null)
 		{
-			// throw 401??
-			throw new ArgumentException("Invalid credentials.");
+			return new Error(
+				"Auth.InvalidCredentials",
+				"Invalid credentials");
 		}
-
-		// var inactiveClient = await _context.Clients
-		//   .Include(c => c.Producers)
-		//   .AnyAsync(c => c.Email == user.Email && c.Producers.All(p => p.DeactivationTime != null), cancellationToken);
-
-		// if (inactiveClient)
-		// {
-		// 	throw new ArgumentException("This user is deactivated.");
-		// }
 
 		return new UserDto()
 		{
+			Id = user.Id,
 			Name = user.Name,
+			Email = user.Email,
+			Role = user.Role,
 		};
 	}
 }

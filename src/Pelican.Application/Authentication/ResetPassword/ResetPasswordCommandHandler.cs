@@ -28,21 +28,24 @@ public class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand,
 		{
 			(userEmail, tokenId) = _tokenService.ValidateSSOToken(request.SSOToken);
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
-			throw new ArgumentException(ex + ": The provided token was invalid.");
+			return Result.Failure<UserTokenDto>(new Error("TokenService.Exception", "The provided token was invalid."));
 		}
 
 		User? userEntity = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Email == userEmail, default);
 
 		if (userEntity is null)
 		{
-			throw new ArgumentNullException(nameof(userEntity));
+			return Result.Failure<UserTokenDto>(new Error("User.Null", "User is null"));
 		}
 
 		if (userEntity.SSOTokenId != tokenId)
 		{
-			throw new ArgumentException($"The provided token did not match the expected token. Expected '{userEntity.SSOTokenId}' found '{tokenId}'.");
+			return Result.Failure<UserTokenDto>(
+				new Error(
+					"User.TokenIdArgument",
+					$"The provided token did not match the expected token. Expected '{userEntity.SSOTokenId}' found '{tokenId}'."));
 		}
 
 		userEntity.SSOTokenId = null!;

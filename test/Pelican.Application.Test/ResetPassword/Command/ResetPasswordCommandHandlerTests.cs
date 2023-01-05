@@ -23,7 +23,7 @@ public class ResetPasswordCommandHandlerTests
 	}
 
 	[Fact]
-	public void test1()
+	public void Constructor_unitOfWorkIsNull_ThrowsArgumentNullException()
 	{
 		//Act
 		ResetPasswordCommandHandler _uut;
@@ -36,7 +36,7 @@ public class ResetPasswordCommandHandlerTests
 	}
 
 	[Fact]
-	public void test2()
+	public void Constructor_tokenServiceIsNull_ThrowsArgumentNullException()
 	{
 		//Act
 		ResetPasswordCommandHandler _uut;
@@ -49,7 +49,7 @@ public class ResetPasswordCommandHandlerTests
 	}
 
 	[Fact]
-	public void test3()
+	public void Constructor_passWordHasherIsNull_ThrowsArgumentNullException()
 	{
 		//Act
 		ResetPasswordCommandHandler _uut;
@@ -62,7 +62,7 @@ public class ResetPasswordCommandHandlerTests
 	}
 
 	[Fact]
-	public void test4()
+	public async Task Handle_TokenServiceValidateSSOTokenReturnsError_ResultIsFailure()
 	{
 		//Arrange
 		ResetPasswordCommand testResetPasswordCommand = new("testSSOToken", "testNewPassword");
@@ -73,22 +73,22 @@ public class ResetPasswordCommandHandlerTests
 			.Throws(new ArgumentOutOfRangeException());
 
 		//Act
-		var result = Record.ExceptionAsync(async () => await _uut.Handle(testResetPasswordCommand, default));
+		var result = await _uut.Handle(testResetPasswordCommand, default);
 
 		//Assert
 		_tokenServiceMock
 			.Verify(x => x
 				.ValidateSSOToken("testSSOToken"), Times.Once);
 
-		Assert.IsType<ArgumentException>(result.Result);
+		Assert.True(result.IsFailure);
 
-		Assert.Contains(new ArgumentOutOfRangeException().Message, result.Result.Message);
+		Assert.Contains("TokenService.Exception", result.Error.Code);
 
-		Assert.Contains(": The provided token was invalid.", result.Result.Message);
+		Assert.Contains("The provided token was invalid.", result.Error.Message);
 	}
 
 	[Fact]
-	public void test5()
+	public async Task Handle_UserRepositoryReturnsNullForUser_ResultIsFailure()
 	{
 		//Arrange
 		ResetPasswordCommand testResetPasswordCommand = new("testSSOToken", "testNewPassword");
@@ -107,7 +107,7 @@ public class ResetPasswordCommandHandlerTests
 			.ReturnsAsync((User)null!);
 
 		//Act
-		var result = Record.ExceptionAsync(async () => await _uut.Handle(testResetPasswordCommand, default));
+		var result = await _uut.Handle(testResetPasswordCommand, default);
 
 		//Assert
 		_unitOfWorkMock
@@ -115,13 +115,15 @@ public class ResetPasswordCommandHandlerTests
 				.UserRepository
 				.FirstOrDefaultAsync(x => x.Email == "returnedUserEmail", default), Times.Once);
 
-		Assert.IsType<ArgumentNullException>(result.Result);
+		Assert.True(result.IsFailure);
 
-		Assert.Contains("userEntity", result.Result.Message);
+		Assert.Contains("User is null", result.Error.Message);
+
+		Assert.Contains("User.Null", result.Error.Code);
 	}
 
 	[Fact]
-	public void test6()
+	public async Task Handle_UserFromRepoHasDifferentTokenIdThanTokenValidated_ResultIsFailure()
 	{
 		//Arrange
 		ResetPasswordCommand testResetPasswordCommand = new("testSSOToken", "testNewPassword");
@@ -143,7 +145,7 @@ public class ResetPasswordCommandHandlerTests
 			});
 
 		//Act
-		var result = Record.ExceptionAsync(async () => await _uut.Handle(testResetPasswordCommand, default));
+		var result = await _uut.Handle(testResetPasswordCommand, default);
 
 		//Assert
 		_unitOfWorkMock
@@ -151,13 +153,15 @@ public class ResetPasswordCommandHandlerTests
 				.UserRepository
 				.FirstOrDefaultAsync(x => x.Email == "returnedUserEmail", default), Times.Once);
 
-		Assert.IsType<ArgumentException>(result.Result);
+		Assert.True(result.IsFailure);
 
-		Assert.Contains($"The provided token did not match the expected token. Expected 'expectedTokenId' found 'returnedTokenId'.", result.Result.Message);
+		Assert.Contains($"The provided token did not match the expected token. Expected 'expectedTokenId' found 'returnedTokenId'.", result.Error.Message);
+
+		Assert.Contains("User.TokenIdArgument", result.Error.Code);
 	}
 
 	[Fact]
-	public async Task test7Async()
+	public async Task Handle_PasswordIsSuccefullyReset_ResultIsSuccess()
 	{
 		//Arrange
 		ResetPasswordCommand testResetPasswordCommand = new("testSSOToken", "testNewPassword");
@@ -237,6 +241,8 @@ public class ResetPasswordCommandHandlerTests
 		_unitOfWorkMock
 			.Verify(x => x
 				.SaveAsync(default), Times.Once);
+
+		Assert.True(result.IsSuccess);
 
 		Assert.Equivalent(expectedUserDTO, result.Value);
 	}

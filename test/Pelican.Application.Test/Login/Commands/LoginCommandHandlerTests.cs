@@ -28,6 +28,66 @@ public class LoginCommandHandlerTests
 	}
 
 	[Fact]
+	public void LoginCommandHandler_UnitOfWorkNull_ThrowException()
+	{
+		/// Act
+		Exception exceptionResult = Record.Exception(() =>
+			new LoginCommandHandler(
+				null!,
+				_passwordHasherMock.Object,
+				_tokenServiceMock.Object));
+
+		/// Assert
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			exceptionResult.GetType());
+
+		Assert.Equal(
+			"Value cannot be null. (Parameter 'unitOfWork')",
+			exceptionResult.Message);
+	}
+
+	[Fact]
+	public void LoginCommandHandler_PasswordHasherNull_ThrowException()
+	{
+		/// Act
+		Exception exceptionResult = Record.Exception(() =>
+			new LoginCommandHandler(
+				_unitOfWorkMock.Object,
+				null!,
+				_tokenServiceMock.Object));
+
+		/// Assert
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			exceptionResult.GetType());
+
+		Assert.Equal(
+			"Value cannot be null. (Parameter 'passwordHasher')",
+			exceptionResult.Message);
+	}
+
+	[Fact]
+	public void LoginCommandHandler_TokenServiceNull_ThrowException()
+	{
+		/// Act
+		Exception exceptionResult = Record.Exception(() =>
+			new LoginCommandHandler(
+				_unitOfWorkMock.Object,
+				_passwordHasherMock.Object,
+				null!));
+
+		/// Assert
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			exceptionResult.GetType());
+
+		Assert.Equal(
+			"Value cannot be null. (Parameter 'tokenService')",
+			exceptionResult.Message);
+	}
+
+	[Fact]
 	public async void Handle_UserNotFound_ReturnsFailure()
 	{
 		// Arrange
@@ -46,7 +106,9 @@ public class LoginCommandHandlerTests
 		Assert.True(result.IsFailure);
 
 		Assert.Equal(
-			new Error("User.NotFound", "The user with the specified email was not found."),
+			new Error(
+				"User.NotFound",
+				"The user with the specified email was not found."),
 			result.Error);
 	}
 
@@ -77,7 +139,9 @@ public class LoginCommandHandlerTests
 		Assert.True(result.IsFailure);
 
 		Assert.Equal(
-			new Error("Authentication.InvalidEmailOrPassword", "The specified email or password are incorrect."),
+			new Error(
+				"Authentication.InvalidEmailOrPassword",
+				"The specified email or password are incorrect."),
 			result.Error);
 	}
 

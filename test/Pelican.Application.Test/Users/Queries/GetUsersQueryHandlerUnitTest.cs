@@ -1,15 +1,4 @@
-﻿using AutoMapper;
-using Moq;
-using Pelican.Application.Abstractions.Data.Repositories;
-using Pelican.Application.Abstractions.Messaging;
-using Pelican.Application.Authentication;
-using Pelican.Application.Users.Queries.GetUsers;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Entities.Users;
-using Pelican.Domain.Enums;
-using Xunit;
-
-namespace Pelican.Application.Test.Users.Queries;
+﻿namespace Pelican.Application.Test.Users.Queries;
 public class GetUsersQueryHandlerUnitTest
 {
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
@@ -21,6 +10,7 @@ public class GetUsersQueryHandlerUnitTest
 
 	public GetUsersQueryHandlerUnitTest()
 	{
+		//Arrange
 		_unitOfWorkMock
 			.Setup(x => x
 				.UserRepository)
@@ -74,7 +64,7 @@ public class GetUsersQueryHandlerUnitTest
 			.Verify(x => x
 				.UserRepository
 				.FindAll(),
-				Times.Once());
+			Times.Once());
 
 		Assert.Equal(expectedUserDto, result.First());
 	}

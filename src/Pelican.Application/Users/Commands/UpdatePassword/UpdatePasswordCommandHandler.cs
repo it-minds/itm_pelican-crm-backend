@@ -27,15 +27,17 @@ public sealed class UpdatePasswordCommandHandler : ICommandHandler<UpdatePasswor
 		UpdatePasswordCommand command,
 		CancellationToken cancellationToken)
 	{
+		string? userId = _currentUserService.UserId;
+
 		User? user = await _unitOfWork
 			.UserRepository
 			.FirstOrDefaultAsync(
-				x => x.Email == _currentUserService.UserId,
+			 	x => x.Email == userId,
 				cancellationToken);
 
 		if (user is null)
 		{
-			return Result.Failure<User>(new Error("User.NotFound", $"{_currentUserService.UserId} was not found"));
+			return Result.Failure<User>(new Error("User.NotFound", $"{userId} was not found"));
 		}
 
 		user.Password = _passwordHasher.Hash(command.Password);

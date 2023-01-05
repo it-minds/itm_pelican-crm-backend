@@ -12,6 +12,7 @@ namespace Pelican.Application.Test.Users.Commands.UpdatePassword;
 
 public class UpdatePasswordCommandHandlerTests
 {
+	private const string ID = "id";
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
 	private readonly Mock<IPasswordHasher> _passwordHasherMock = new();
@@ -28,14 +29,14 @@ public class UpdatePasswordCommandHandlerTests
 	[Fact]
 	public void UpdatePasswordCommandHandler_UnitOfWorkNull_ThrowException()
 	{
-		/// Act
+		// Act
 		Exception exceptionResult = Record.Exception(() =>
 			new UpdatePasswordCommandHandler(
 				null!,
 				_currentUserServiceMock.Object,
 				_passwordHasherMock.Object));
 
-		/// Assert
+		// Assert
 		Assert.Equal(
 			typeof(ArgumentNullException),
 			exceptionResult.GetType());
@@ -48,14 +49,14 @@ public class UpdatePasswordCommandHandlerTests
 	[Fact]
 	public void UpdatePasswordCommandHandler_CurrentUserServiceNull_ThrowException()
 	{
-		/// Act
+		// Act
 		Exception exceptionResult = Record.Exception(() =>
 			new UpdatePasswordCommandHandler(
 				_unitOfWorkMock.Object,
 				null!,
 				_passwordHasherMock.Object));
 
-		/// Assert
+		// Assert
 		Assert.Equal(
 			typeof(ArgumentNullException),
 			exceptionResult.GetType());
@@ -68,14 +69,14 @@ public class UpdatePasswordCommandHandlerTests
 	[Fact]
 	public void UpdatePasswordCommandHandler_PasswordHasherNull_ThrowException()
 	{
-		/// Act
+		// Act
 		Exception exceptionResult = Record.Exception(() =>
 			new UpdatePasswordCommandHandler(
 				_unitOfWorkMock.Object,
 				_currentUserServiceMock.Object,
 				null!));
 
-		/// Assert
+		// Assert
 		Assert.Equal(
 			typeof(ArgumentNullException),
 			exceptionResult.GetType());
@@ -101,7 +102,7 @@ public class UpdatePasswordCommandHandlerTests
 
 		_currentUserServiceMock
 			.Setup(c => c.UserId)
-			.Returns("id");
+			.Returns(ID);
 
 		// Act
 		var result = await _uut.Handle(command, default);
@@ -112,6 +113,17 @@ public class UpdatePasswordCommandHandlerTests
 		Assert.Equal(
 			new Error("User.NotFound", "id was not found"),
 			result.Error);
+
+		_unitOfWorkMock.Verify(
+			u => u.UserRepository
+				.FirstOrDefaultAsync(
+					x => x.Email == ID,
+					default),
+			Times.Once);
+
+		_currentUserServiceMock.Verify(
+			c => c.UserId,
+			Times.Once);
 	}
 
 	[Fact]
@@ -120,17 +132,19 @@ public class UpdatePasswordCommandHandlerTests
 		// Arrange
 		UpdatePasswordCommand command = new("password");
 
+		StandardUser user = new();
+
 		_unitOfWorkMock
 			.Setup(u => u
 				.UserRepository
 				.FirstOrDefaultAsync(
 					It.IsAny<Expression<Func<User, bool>>>(),
 					It.IsAny<CancellationToken>()))
-			.ReturnsAsync(new StandardUser());
+			.ReturnsAsync(user);
 
 		_currentUserServiceMock
 			.Setup(c => c.UserId)
-			.Returns("id");
+			.Returns(ID);
 
 		_passwordHasherMock
 			.Setup(p => p.Hash(It.IsAny<string>()))
@@ -141,5 +155,29 @@ public class UpdatePasswordCommandHandlerTests
 
 		// Assert
 		Assert.True(result.IsSuccess);
+
+		_unitOfWorkMock.Verify(
+			u => u.UserRepository
+				.FirstOrDefaultAsync(
+					x => x.Email == ID,
+					default),
+			Times.Once);
+
+		_currentUserServiceMock.Verify(
+			c => c.UserId,
+			Times.Once);
+
+		_passwordHasherMock.Verify(
+			p => p.Hash(command.Password),
+			Times.Once);
+
+		_unitOfWorkMock.Verify(
+			u => u.UserRepository
+				.Update(user),
+			Times.Once);
+
+		_unitOfWorkMock.Verify(
+			u => u.SaveAsync(default),
+			Times.Once);
 	}
 }

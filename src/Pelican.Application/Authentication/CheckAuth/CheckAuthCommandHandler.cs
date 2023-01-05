@@ -1,3 +1,4 @@
+using AutoMapper;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Messaging;
@@ -10,13 +11,16 @@ public sealed class CheckAuthCommandHandler : ICommandHandler<CheckAuthCommand, 
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly ICurrentUserService _currentUserService;
+	private readonly IMapper _mapper;
 
 	public CheckAuthCommandHandler(
 		IUnitOfWork unitOfWork,
-		ICurrentUserService currentUserService)
+		ICurrentUserService currentUserService,
+		IMapper mapper)
 	{
 		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 		_currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
+		_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 	}
 
 	public async Task<Result<UserDto>> Handle(
@@ -36,12 +40,6 @@ public sealed class CheckAuthCommandHandler : ICommandHandler<CheckAuthCommand, 
 				"Invalid credentials");
 		}
 
-		return new UserDto()
-		{
-			Id = user.Id,
-			Name = user.Name,
-			Email = user.Email,
-			Role = user.Role,
-		};
+		return _mapper.Map<UserDto>(user);
 	}
 }

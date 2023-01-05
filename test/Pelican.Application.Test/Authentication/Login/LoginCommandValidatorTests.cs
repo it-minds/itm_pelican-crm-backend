@@ -3,7 +3,7 @@ using Pelican.Application.Authentication.Login;
 using Pelican.Domain;
 using Xunit;
 
-namespace Pelican.Application.Test.Login.Commands;
+namespace Pelican.Application.Test.Authentication.Login;
 public class LoginCommandValidatorTests
 {
 	private readonly LoginCommandValidator _uut = new();

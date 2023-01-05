@@ -29,6 +29,8 @@ public static class DependencyInjection
 
 		services.AddScoped<IAuthorizationService, AuthorizationService>();
 
+		services.AddScoped<IPasswordHasher, PasswordHasher>();
+
 		services.AddSingleton<IClient<HubSpotSettings>, RestSharpClient<HubSpotSettings>>();
 
 		services.AddMediatR(Assembly.GetExecutingAssembly());

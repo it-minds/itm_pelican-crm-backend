@@ -6,6 +6,7 @@ using Pelican.Presentation.GraphQL.Clients;
 using Pelican.Presentation.GraphQL.Contacts;
 using Pelican.Presentation.GraphQL.Deals;
 using Pelican.Presentation.GraphQL.Suppliers;
+using Pelican.Presentation.GraphQL.Users;
 
 namespace Pelican.Presentation.GraphQL;
 public static class DependencyInjection
@@ -19,6 +20,7 @@ public static class DependencyInjection
 			.AddTypeExtension<ContactsQuery>()
 			.AddTypeExtension<DealsQuery>()
 			.AddTypeExtension<SuppliersQuery>()
+			.AddTypeExtension<UsersQuery>()
 			.AddProjections()
 			.AddFiltering()
 			.AddSorting();

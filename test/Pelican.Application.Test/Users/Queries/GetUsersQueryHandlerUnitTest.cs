@@ -33,7 +33,7 @@ public class GetUsersQueryHandlerUnitTest
 	public async void Handle_()
 	{
 		//Arrange
-		Guid id = new Guid();
+		Guid id = new();
 
 		_unitOfWorkMock
 			.Setup(x => x

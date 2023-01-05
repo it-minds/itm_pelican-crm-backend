@@ -15,6 +15,7 @@ using Pelican.Application.RestSharp;
 using Pelican.Application.Security;
 using Pelican.Domain.Settings.HubSpot;
 
+
 [assembly: InternalsVisibleTo("Pelican.Application.Test")]
 namespace Pelican.Application;
 

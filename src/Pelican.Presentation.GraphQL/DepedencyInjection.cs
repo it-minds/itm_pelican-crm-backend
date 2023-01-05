@@ -20,7 +20,7 @@ public static class DependencyInjection
 			.AddTypeExtension<ContactsQuery>()
 			.AddTypeExtension<DealsQuery>()
 			.AddTypeExtension<SuppliersQuery>()
-			.AddTypeExtension<UsersQuery>()
+			.AddTypeExtension<AllUsersQuery>()
 			.AddProjections()
 			.AddFiltering()
 			.AddSorting();

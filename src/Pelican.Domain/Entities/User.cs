@@ -1,4 +1,7 @@
-﻿namespace Pelican.Domain.Entities;
+﻿using Pelican.Domain.Enums;
+using Pelican.Domain.Primitives;
+
+namespace Pelican.Domain.Entities;
 public abstract class User : Entity, ITimeTracked
 {
 	public string Email { get; set; } = string.Empty;

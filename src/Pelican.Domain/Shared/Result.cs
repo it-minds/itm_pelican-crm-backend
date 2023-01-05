@@ -39,4 +39,6 @@ public class Result
 		}
 		return Success();
 	}
+
+	public static implicit operator Result(Error error) => Failure(error);
 }

@@ -1,5 +1,7 @@
-﻿using FluentValidation.TestHelper;
+﻿using Bogus;
+using FluentValidation.TestHelper;
 using Pelican.Application.Authentication.ResetPassword;
+using Pelican.Domain;
 using Xunit;
 
 namespace Pelican.Application.Test.ResetPassword.Command;
@@ -20,12 +22,27 @@ public class ResetPasswordCommandValidatorTests
 
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.SSOToken);
-		result.ShouldHaveValidationErrorFor(command => command.NewPassword).WithErrorMessage("New Password cannot be empty");
+		result.ShouldHaveValidationErrorFor(command => command.NewPassword).WithErrorMessage("New Password cannot be empty.");
+	}
 
+	[Fact]
+	public void ResetPasswordCommandValidtor_PassWordTooLong_ReturnsError()
+	{
+		var faker = new Faker();
+		// Arrange
+		ResetPasswordCommand command = new(
+			"NotEmpty",
+			faker.Lorem.Letter(StringLengths.Password * 2));
+
+		// Act
+		TestValidationResult<ResetPasswordCommand> result = _uut.TestValidate(command);
+
+		// Assert
+		result.ShouldHaveValidationErrorFor(command => command.NewPassword).WithErrorMessage("New Password cannot be longer than" + $"{StringLengths.Password}.");
 	}
 
 	[Theory]
-	[InlineData("shortPW", "New Password length must be a minimum of 12 characters")]
+	[InlineData("shortPW", "New Password length must be a minimum of 12 characters.")]
 	[InlineData("newlongPassword", "New Password must contain at least one number.")]
 	[InlineData("1newlongpassword", "New Password must contain at least one uppercase letter.")]
 	[InlineData("1NEWLONGPASSWORD", "New Password must contain at least one lowercase letter.")]

@@ -24,7 +24,7 @@ public class LoginCommandValidatorTests
 	}
 
 	[Fact]
-	public void LoginommandValidator_NoEmptyStringsButEmailIsNotInCorrectFormat_ReturnsError()
+	public void LoginCommandValidator_NoEmptyStringsButEmailAndPasswordIsNotInCorrectFormat_ReturnsError()
 	{
 		// Arrange
 		LoginCommand command = new(
@@ -36,16 +36,41 @@ public class LoginCommandValidatorTests
 
 		// Assert
 		result.ShouldHaveValidationErrorFor(command => command.Email);
-		result.ShouldNotHaveValidationErrorFor(command => command.Password);
+		result.ShouldHaveValidationErrorFor(command => command.Password);
 	}
 
-	[Fact]
-	public void LoginommandValidator_NoEmptyStringsAndEmailInCorrectFormat_ReturnsNoError()
+	[Theory]
+	[InlineData("shortPW", "Password length must be a minimum of 12 characters.")]
+	[InlineData("newlongPassword", "Password must contain at least one number.")]
+	[InlineData("1newlongpassword", "Password must contain at least one uppercase letter.")]
+	[InlineData("1NEWLONGPASSWORD", "Password must contain at least one lowercase letter.")]
+	[InlineData("1NewLongPassword", "Password must contain one or more special characters.")]
+	public void LoginCommandValidator_EmailInValidFormatAndPasswordIsInvalidFormat_ReturnsError(string invalidPassword, string expectedErrorMessage)
 	{
 		// Arrange
 		LoginCommand command = new(
 			"a@a.com",
-			"notEmpty");
+			invalidPassword);
+
+		// Act
+		TestValidationResult<LoginCommand> result = _uut.TestValidate(command);
+
+		// Assert
+		result.ShouldNotHaveValidationErrorFor(command => command.Email);
+		result.ShouldHaveValidationErrorFor(command => command.Password).WithErrorMessage(expectedErrorMessage);
+	}
+
+	[Theory]
+	[InlineData("1NewLongPassword!")]
+	[InlineData("*,.!1Lonasdbaisgiuhiuahsd")]
+	[InlineData("_jS3NaxDE(C#dQz&J?")]
+	[InlineData("8+++Q8!^n3YA20.@cNHr")]
+	public void LoginCommandValidator_PasswordAndEmailInCorrectFormat_ReturnsNoError(string validPassword)
+	{
+		// Arrange
+		LoginCommand command = new(
+			"a@a.com",
+			validPassword);
 
 		// Act
 		TestValidationResult<LoginCommand> result = _uut.TestValidate(command);

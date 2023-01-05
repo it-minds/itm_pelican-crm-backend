@@ -1,7 +1,6 @@
-using System;
-using FluentValidation.TestHelper;
-using Pelican.Application.Users.Commands.CreateStandardUser;
+﻿using FluentValidation.TestHelper;
 using Pelican.Application.Users.Commands.UpdatePassword;
+using Pelican.Domain;
 using Xunit;
 
 namespace Pelican.Application.Test.Users.Commands.CreateStandardUser;
@@ -10,8 +9,8 @@ public class UpdatePasswordCommandValidatorTests
 	private readonly UpdatePasswordCommandValidator _uut = new();
 
 	[Theory]
-	[InlineData("", "Password cannot be empty")]
-	[InlineData("text", "Password length must be a minimum of 12 characters")]
+	[InlineData("", "Password cannot be empty.")]
+	[InlineData("text", "Password length must be a minimum of 12 characters.")]
 	[InlineData("notEmpty", "Password must contain at least one number.")]
 	[InlineData("1newpassword", "Password must contain at least one uppercase letter.")]
 	[InlineData("1NEWPASSWORD", "Password must contain at least one lowercase letter.")]
@@ -31,15 +30,37 @@ public class UpdatePasswordCommandValidatorTests
 	}
 
 	[Fact]
-	public void UpdatePasswordCommandValidator_PasswordInCorrectFormat_ReturnsNoError()
+	public void UpdatePasswordCommandValidtor_PasswordTooLong_ReturnsError()
 	{
 		// Arrange
-		UpdatePasswordCommand command = new("1NewPassword!");
+		UpdatePasswordCommand command = new(
+			new string('s', StringLengths.Password * 2));
 
 		// Act
 		TestValidationResult<UpdatePasswordCommand> result = _uut.TestValidate(command);
 
 		// Assert
-		result.ShouldNotHaveValidationErrorFor(command => command.Password);
+		result
+			.ShouldHaveValidationErrorFor(command => command.Password)
+			.WithErrorMessage("Password cannot be longer than " + $"{StringLengths.Password}.");
+	}
+
+	[Theory]
+	[InlineData("1NewLongPassword!")]
+	[InlineData("*,.!1Lonasdbaisgiuhiuahsd")]
+	[InlineData("_jS3NaxDE(C#dQz&J?")]
+	[InlineData("8+++Q8!^n3YA20.@cNHr")]
+	public void CreateStandardUserCommandValidator_NoEmptyStringsPasswordInCorrectFormat_ReturnsNoError(string validPassword)
+	{
+		// Arrange
+		UpdatePasswordCommand command = new(
+			validPassword);
+
+		// Act
+		TestValidationResult<UpdatePasswordCommand> result = _uut.TestValidate(command);
+
+		// Assert
+		result
+			.ShouldNotHaveValidationErrorFor(command => command.Password);
 	}
 }

@@ -82,7 +82,10 @@ public class AuthorizationBehaviourTests
 					It.IsAny<IRequest<testQuery>>()))
 			.Returns(new List<AuthorizeAttribute>()
 			{
-				new AuthorizeAttribute(),
+				new AuthorizeAttribute()
+				{
+					Role=RoleEnum.Admin,
+				},
 			});
 
 		_userServiceMock
@@ -112,7 +115,10 @@ public class AuthorizationBehaviourTests
 					It.IsAny<IRequest<testQuery>>()))
 			.Returns(new List<AuthorizeAttribute>()
 			{
-				new AuthorizeAttribute(),
+				new AuthorizeAttribute()
+				{
+					Role = RoleEnum.Admin,
+				},
 			});
 
 		_userServiceMock

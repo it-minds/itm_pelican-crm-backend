@@ -21,9 +21,13 @@ public class CreateAdminCommandValidatorTests
 		TestValidationResult<CreateAdminCommand> result = _uut.TestValidate(command);
 
 		// Assert
-		result.ShouldHaveValidationErrorFor(command => command.Name);
-		result.ShouldHaveValidationErrorFor(command => command.Email);
-		result.ShouldHaveValidationErrorFor(command => command.Password).WithErrorMessage("Password cannot be empty.");
+		result
+			.ShouldHaveValidationErrorFor(command => command.Name);
+		result
+			.ShouldHaveValidationErrorFor(command => command.Email);
+		result
+			.ShouldHaveValidationErrorFor(command => command.Password)
+			.WithErrorMessage("Password cannot be empty.");
 	}
 
 	[Fact]
@@ -39,9 +43,15 @@ public class CreateAdminCommandValidatorTests
 		TestValidationResult<CreateAdminCommand> result = _uut.TestValidate(command);
 
 		// Assert
-		result.ShouldHaveValidationErrorFor(command => command.Name).WithErrorMessage("Name cannot be longer than " + $"{StringLengths.Name}.");
-		result.ShouldHaveValidationErrorFor(command => command.Email).WithErrorMessage("Email cannot be longer than " + $"{StringLengths.Email}.");
-		result.ShouldHaveValidationErrorFor(command => command.Password).WithErrorMessage("Password cannot be longer than " + $"{StringLengths.Password}.");
+		result
+			.ShouldHaveValidationErrorFor(command => command.Name)
+			.WithErrorMessage("Name cannot be longer than " + $"{StringLengths.Name}.");
+		result
+			.ShouldHaveValidationErrorFor(command => command.Email)
+			.WithErrorMessage("Email cannot be longer than " + $"{StringLengths.Email}.");
+		result
+			.ShouldHaveValidationErrorFor(command => command.Password)
+			.WithErrorMessage("Password cannot be longer than " + $"{StringLengths.Password}.");
 	}
 
 	[Theory]
@@ -62,9 +72,13 @@ public class CreateAdminCommandValidatorTests
 		TestValidationResult<CreateAdminCommand> result = _uut.TestValidate(command);
 
 		// Assert
-		result.ShouldNotHaveValidationErrorFor(command => command.Name);
-		result.ShouldNotHaveValidationErrorFor(command => command.Email);
-		result.ShouldHaveValidationErrorFor(command => command.Password).WithErrorMessage(expectedErrorMessage);
+		result
+			.ShouldNotHaveValidationErrorFor(command => command.Name);
+		result
+			.ShouldNotHaveValidationErrorFor(command => command.Email);
+		result
+			.ShouldHaveValidationErrorFor(command => command.Password)
+			.WithErrorMessage(expectedErrorMessage);
 	}
 
 	[Theory]
@@ -84,8 +98,11 @@ public class CreateAdminCommandValidatorTests
 		TestValidationResult<CreateAdminCommand> result = _uut.TestValidate(command);
 
 		// Assert
-		result.ShouldNotHaveValidationErrorFor(command => command.Name);
-		result.ShouldNotHaveValidationErrorFor(command => command.Email);
-		result.ShouldNotHaveValidationErrorFor(command => command.Password);
+		result
+			.ShouldNotHaveValidationErrorFor(command => command.Name);
+		result
+			.ShouldNotHaveValidationErrorFor(command => command.Email);
+		result
+			.ShouldNotHaveValidationErrorFor(command => command.Password);
 	}
 }

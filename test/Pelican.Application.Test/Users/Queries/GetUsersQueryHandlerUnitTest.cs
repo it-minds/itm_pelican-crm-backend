@@ -15,18 +15,24 @@ public class GetUsersQueryHandlerUnitTest
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly Mock<IGenericRepository<User>> _userRepositoryMock = new();
 	private readonly Mock<IMapper> _mapperMock = new();
+
 	private IQueryHandler<GetUsersQuery, IQueryable<UserDto>> _uut;
 	private readonly GetUsersQuery _usersQuery = new();
 
-	[Fact]
-	public async void Handle_()
+	public GetUsersQueryHandlerUnitTest()
 	{
-		//Arrange
 		_unitOfWorkMock
 			.Setup(x => x
 				.UserRepository)
 			.Returns(_userRepositoryMock.Object);
 
+		_uut = new GetUsersQueryHandler(_unitOfWorkMock.Object, _mapperMock.Object);
+	}
+
+	[Fact]
+	public async void Handle_()
+	{
+		//Arrange
 		Guid id = new Guid();
 
 		_unitOfWorkMock
@@ -59,8 +65,6 @@ public class GetUsersQueryHandlerUnitTest
 			.Setup(x => x
 				.Map<UserDto>(It.IsAny<User>()))
 			.Returns(expectedUserDto);
-
-		_uut = new GetUsersQueryHandler(_unitOfWorkMock.Object, _mapperMock.Object);
 
 		//Act
 		var result = await _uut.Handle(_usersQuery, default);

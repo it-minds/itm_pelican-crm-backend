@@ -35,6 +35,10 @@ public static class DependencyInjection
 
 		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
+		services.AddScoped<IGetCustomAttributesService, GetCustomAttributesService>();
+
+		services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
+
 		services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
 		services.Configure<TokenOptions>(configuration.GetSection(TokenOptions.Tokens));

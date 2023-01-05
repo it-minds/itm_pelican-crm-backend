@@ -1,4 +1,4 @@
-using HotChocolate;
+﻿using HotChocolate;
 using Pelican.Domain.Extensions;
 using Pelican.Domain.Primitives;
 

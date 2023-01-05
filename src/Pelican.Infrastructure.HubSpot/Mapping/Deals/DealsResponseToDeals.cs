@@ -1,5 +1,4 @@
 ﻿using Pelican.Application.Abstractions.Data.Repositories;
-using Pelican.Application.RestSharp;
 using Pelican.Domain.Entities;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Common;
 using Pelican.Infrastructure.HubSpot.Contracts.Responses.Deals;

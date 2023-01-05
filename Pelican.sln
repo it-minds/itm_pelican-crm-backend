@@ -30,6 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		coverlet.runsettings = coverlet.runsettings
+		.config\dotnet-tools.json = .config\dotnet-tools.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.HubSpot.Test", "test\Pelican.Infrastructure.HubSpot.Test\Pelican.Infrastructure.HubSpot.Test.csproj", "{5AC14E89-2962-41EC-8383-C2EE51F2E5A1}"
@@ -53,7 +54,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Pers
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Pipedrive", "src\Pelican.Infrastructure.Pipedrive\Pelican.Infrastructure.Pipedrive.csproj", "{619C0F11-44F3-4545-AE85-9E5077887DD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pelican.Infrastructure.Pipedrive.Test", "test\Pelican.Infrastructure.Pipedrive.Test\Pelican.Infrastructure.Pipedrive.Test.csproj", "{C7CD95E6-5B78-49B3-B23F-A8F67017C698}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pelican.Infrastructure.Pipedrive.Test", "test\Pelican.Infrastructure.Pipedrive.Test\Pelican.Infrastructure.Pipedrive.Test.csproj", "{C7CD95E6-5B78-49B3-B23F-A8F67017C698}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

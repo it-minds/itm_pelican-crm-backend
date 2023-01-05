@@ -18,9 +18,9 @@ public sealed class UpdatePasswordCommandHandler : ICommandHandler<UpdatePasswor
 		ICurrentUserService currentUserService,
 		IPasswordHasher passwordHasher)
 	{
-		_unitOfWork = unitOfWork;
-		_currentUserService = currentUserService;
-		_passwordHasher = passwordHasher;
+		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		_currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
+		_passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
 	}
 
 	public async Task<Result<User>> Handle(

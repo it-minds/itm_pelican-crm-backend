@@ -26,6 +26,66 @@ public class UpdatePasswordCommandHandlerTests
 	}
 
 	[Fact]
+	public void UpdatePasswordCommandHandler_UnitOfWorkNull_ThrowException()
+	{
+		/// Act
+		Exception exceptionResult = Record.Exception(() =>
+			new UpdatePasswordCommandHandler(
+				null!,
+				_currentUserServiceMock.Object,
+				_passwordHasherMock.Object));
+
+		/// Assert
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			exceptionResult.GetType());
+
+		Assert.Equal(
+			"Value cannot be null. (Parameter 'unitOfWork')",
+			exceptionResult.Message);
+	}
+
+	[Fact]
+	public void UpdatePasswordCommandHandler_CurrentUserServiceNull_ThrowException()
+	{
+		/// Act
+		Exception exceptionResult = Record.Exception(() =>
+			new UpdatePasswordCommandHandler(
+				_unitOfWorkMock.Object,
+				null!,
+				_passwordHasherMock.Object));
+
+		/// Assert
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			exceptionResult.GetType());
+
+		Assert.Equal(
+			"Value cannot be null. (Parameter 'currentUserService')",
+			exceptionResult.Message);
+	}
+
+	[Fact]
+	public void UpdatePasswordCommandHandler_PasswordHasherNull_ThrowException()
+	{
+		/// Act
+		Exception exceptionResult = Record.Exception(() =>
+			new UpdatePasswordCommandHandler(
+				_unitOfWorkMock.Object,
+				_currentUserServiceMock.Object,
+				null!));
+
+		/// Assert
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			exceptionResult.GetType());
+
+		Assert.Equal(
+			"Value cannot be null. (Parameter 'passwordHasher')",
+			exceptionResult.Message);
+	}
+
+	[Fact]
 	public async void Handle_UserNotFound_ReturnsFailure()
 	{
 		// Arrange

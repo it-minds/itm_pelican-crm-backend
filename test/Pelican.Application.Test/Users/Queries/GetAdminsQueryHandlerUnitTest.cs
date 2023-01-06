@@ -1,25 +1,37 @@
-﻿namespace Pelican.Application.Test.Users.Queries;
-public class GetUsersQueryHandlerUnitTest
+﻿using System.Linq.Expressions;
+using AutoMapper;
+using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Authentication;
+using Pelican.Application.Users.Queries.GetAdmins;
+using Pelican.Domain.Entities;
+using Pelican.Domain.Entities.Users;
+using Pelican.Domain.Enums;
+using Xunit;
+
+namespace Pelican.Application.Test.Users.Queries;
+public class GetAdminsQueryHandlerUnitTest
 {
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly Mock<IGenericRepository<User>> _userRepositoryMock = new();
 	private readonly Mock<IMapper> _mapperMock = new();
 
-	private IQueryHandler<GetUsersQuery, IQueryable<UserDto>> _uut;
-	private readonly GetUsersQuery _usersQuery = new();
+	private IQueryHandler<GetAdminsQuery, IQueryable<UserDto>> _uut;
+	private readonly GetAdminsQuery _adminsQuery = new();
 
-	public GetUsersQueryHandlerUnitTest()
+	public GetAdminsQueryHandlerUnitTest()
 	{
 		_unitOfWorkMock
 			.Setup(x => x
 				.UserRepository)
 			.Returns(_userRepositoryMock.Object);
 
-		_uut = new GetUsersQueryHandler(_unitOfWorkMock.Object, _mapperMock.Object);
+		_uut = new GetAdminsQueryHandler(_unitOfWorkMock.Object, _mapperMock.Object);
 	}
 
 	[Fact]
-	public async void Handle_UnitOfWorkCalled_ExpectedUserDtoIsEqualToResult()
+	public async void Handle_()
 	{
 		//Arrange
 		Guid id = new();
@@ -27,10 +39,10 @@ public class GetUsersQueryHandlerUnitTest
 		_unitOfWorkMock
 			.Setup(x => x
 				.UserRepository
-				.FindAll())
+				.FindByCondition(It.IsAny<Expression<Func<User, bool>>>()))
 			.Returns(new List<User>()
 			{
-				new StandardUser()
+				new AdminUser()
 				{
 					Name="testName",
 					CreatedAt =123,
@@ -56,13 +68,13 @@ public class GetUsersQueryHandlerUnitTest
 			.Returns(expectedUserDto);
 
 		//Act
-		var result = await _uut.Handle(_usersQuery, default);
+		var result = await _uut.Handle(_adminsQuery, default);
 
 		//Assert
 		_unitOfWorkMock
 			.Verify(x => x
 				.UserRepository
-				.FindAll(),
+				.FindByCondition(x => x.Role == RoleEnum.Admin),
 			Times.Once());
 
 		Assert.Equal(expectedUserDto, result.First());

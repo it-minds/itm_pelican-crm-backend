@@ -58,16 +58,18 @@ public class UpdateUserCommandHandlerTests
 		Assert.True(result.IsFailure);
 
 		Assert.Equal(
-			new Error("User.NotFound", $"{command.User.Id} was not found"),
+			new Error(
+				"User.NotFound",
+				$"User with Id: {command.User.Id} was not found"),
 			result.Error);
 
 		_unitOfWork.Verify(
-			expression: x => x
+			x => x
 				.UserRepository
 				.FirstOrDefaultAsync(
 					u => u.Id == command.User.Id,
 					default),
-			times: Times.Once);
+			Times.Once);
 	}
 
 	[Fact]
@@ -106,24 +108,24 @@ public class UpdateUserCommandHandlerTests
 			result.Error);
 
 		_unitOfWork.Verify(
-			expression: x => x
+			x => x
 				.UserRepository
 				.FirstOrDefaultAsync(
 					u => u.Id == command.User.Id,
 					default),
-			times: Times.Once);
+			Times.Once);
 
 		_unitOfWork.Verify(
-			expression: x => x
+			x => x
 				.UserRepository
 				.AnyAsync(
 					u => u.Email == command.User.Email,
 					default),
-			times: Times.Once);
+			Times.Once);
 	}
 
 	[Fact]
-	public async void Handle_UserUpdated_ReturnFailure()
+	public async void Handle_UserUpdated_ReturnSuccess()
 	{
 		// Arrange
 		UserDto user = new()
@@ -154,30 +156,30 @@ public class UpdateUserCommandHandlerTests
 		Assert.True(result.IsSuccess);
 
 		_unitOfWork.Verify(
-			expression: x => x
+			x => x
 				.UserRepository
 				.FirstOrDefaultAsync(
 					u => u.Id == command.User.Id,
 					default),
-			times: Times.Once);
+			Times.Once);
 
 		_unitOfWork.Verify(
-			expression: x => x
+			x => x
 				.UserRepository
 				.AnyAsync(
 					u => u.Email == command.User.Email,
 					default),
-			times: Times.Once);
+			Times.Once);
 
 		_unitOfWork.Verify(
-			expression: x => x
+			x => x
 				.UserRepository
 				.Update(standardUser),
-			times: Times.Once);
+			Times.Once);
 
 		_unitOfWork.Verify(
-			expression: x => x
+			x => x
 				.SaveAsync(default),
-			times: Times.Once);
+			Times.Once);
 	}
 }

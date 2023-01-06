@@ -1,4 +1,4 @@
-﻿Readdedusing MediatR;
+﻿using MediatR;
 using Moq;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Messaging;

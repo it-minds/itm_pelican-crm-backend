@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using AutoMapper;
 
 namespace Pelican.Application.AutoMapper;
 public class MappingProfile : Profile

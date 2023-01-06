@@ -1,4 +1,4 @@
-﻿using Pelican.Application.AuthMapper;
+﻿using Pelican.Application.AutoMapper;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Enums;
 

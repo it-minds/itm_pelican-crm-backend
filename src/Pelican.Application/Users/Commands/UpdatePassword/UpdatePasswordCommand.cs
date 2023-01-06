@@ -1,7 +1,7 @@
 
 using Pelican.Application.Abstractions.Messaging;
-using Pelican.Domain.Entities;
+using Pelican.Application.Authentication;
 
 namespace Pelican.Application.Users.Commands.UpdatePassword;
 
-public sealed record UpdatePasswordCommand(string Password) : ICommand<User>;
+public sealed record UpdatePasswordCommand(string Password) : ICommand<UserDto>;

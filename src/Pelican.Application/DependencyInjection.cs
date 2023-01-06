@@ -28,6 +28,8 @@ public static class DependencyInjection
 
 		services.AddScoped<ICurrentUserService, CurrentUserService>();
 
+		services.AddScoped<IPasswordHasher, PasswordHasher>();
+
 		services.AddScoped<IAuthorizationService, AuthorizationService>();
 
 		services.AddScoped<IPasswordHasher, PasswordHasher>();

@@ -1,7 +1,10 @@
+using System.Globalization;
 using System.Linq.Expressions;
+using AutoMapper;
 using Moq;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Authentication;
 using Pelican.Application.Users.Commands.UpdatePassword;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Entities.Users;
@@ -16,6 +19,7 @@ public class UpdatePasswordCommandHandlerTests
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
 	private readonly Mock<IPasswordHasher> _passwordHasherMock = new();
+	private readonly Mock<IMapper> _mapperMock = new();
 	private readonly UpdatePasswordCommandHandler _uut;
 
 	public UpdatePasswordCommandHandlerTests()
@@ -23,7 +27,8 @@ public class UpdatePasswordCommandHandlerTests
 		_uut = new(
 			_unitOfWorkMock.Object,
 			_currentUserServiceMock.Object,
-			_passwordHasherMock.Object);
+			_passwordHasherMock.Object,
+			_mapperMock.Object);
 	}
 
 	[Fact]
@@ -34,7 +39,8 @@ public class UpdatePasswordCommandHandlerTests
 			new UpdatePasswordCommandHandler(
 				null!,
 				_currentUserServiceMock.Object,
-				_passwordHasherMock.Object));
+				_passwordHasherMock.Object,
+				_mapperMock.Object));
 
 		// Assert
 		Assert.Equal(
@@ -54,7 +60,8 @@ public class UpdatePasswordCommandHandlerTests
 			new UpdatePasswordCommandHandler(
 				_unitOfWorkMock.Object,
 				null!,
-				_passwordHasherMock.Object));
+				_passwordHasherMock.Object,
+				_mapperMock.Object));
 
 		// Assert
 		Assert.Equal(
@@ -74,7 +81,8 @@ public class UpdatePasswordCommandHandlerTests
 			new UpdatePasswordCommandHandler(
 				_unitOfWorkMock.Object,
 				_currentUserServiceMock.Object,
-				null!));
+				null!,
+				_mapperMock.Object));
 
 		// Assert
 		Assert.Equal(
@@ -83,6 +91,27 @@ public class UpdatePasswordCommandHandlerTests
 
 		Assert.Equal(
 			"Value cannot be null. (Parameter 'passwordHasher')",
+			exceptionResult.Message);
+	}
+
+	[Fact]
+	public void UpdatePasswordCommandHandler_MapperNull_ThrowException()
+	{
+		// Act
+		Exception exceptionResult = Record.Exception(() =>
+			new UpdatePasswordCommandHandler(
+				_unitOfWorkMock.Object,
+				_currentUserServiceMock.Object,
+				_passwordHasherMock.Object,
+				null!));
+
+		// Assert
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			exceptionResult.GetType());
+
+		Assert.Equal(
+			"Value cannot be null. (Parameter 'mapper')",
 			exceptionResult.Message);
 	}
 
@@ -132,7 +161,18 @@ public class UpdatePasswordCommandHandlerTests
 		// Arrange
 		UpdatePasswordCommand command = new("password");
 
-		StandardUser user = new();
+		StandardUser user = new()
+		{
+			Name = "name",
+			Email = "email",
+		};
+
+		UserDto userDto = new()
+		{
+			Name = user.Name,
+			Email = user.Email,
+			Role = user.Role,
+		};
 
 		_unitOfWorkMock
 			.Setup(u => u
@@ -149,6 +189,10 @@ public class UpdatePasswordCommandHandlerTests
 		_passwordHasherMock
 			.Setup(p => p.Hash(It.IsAny<string>()))
 			.Returns("hashedPassword");
+
+		_mapperMock
+			.Setup(m => m.Map<UserDto>(It.IsAny<User>()))
+			.Returns(userDto);
 
 		// Act
 		var result = await _uut.Handle(command, default);
@@ -178,6 +222,10 @@ public class UpdatePasswordCommandHandlerTests
 
 		_unitOfWorkMock.Verify(
 			u => u.SaveAsync(default),
+			Times.Once);
+
+		_mapperMock.Verify(
+			m => m.Map<UserDto>(user),
 			Times.Once);
 	}
 }

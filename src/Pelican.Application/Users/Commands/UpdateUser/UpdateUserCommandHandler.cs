@@ -1,20 +1,24 @@
+using AutoMapper;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Authentication;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
 
 namespace Pelican.Application.Users.Commands.UpdateUser;
 
-public sealed class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, User>
+public sealed class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UserDto>
 {
 	private readonly IUnitOfWork _unitOfWork;
+	private readonly IMapper _mapper;
 
-	public UpdateUserCommandHandler(IUnitOfWork unitOfWork)
+	public UpdateUserCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
 	{
 		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 	}
 
-	public async Task<Result<User>> Handle(
+	public async Task<Result<UserDto>> Handle(
 		UpdateUserCommand command,
 		CancellationToken cancellationToken)
 	{
@@ -51,6 +55,6 @@ public sealed class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
-		return user;
+		return _mapper.Map<UserDto>(user);
 	}
 }

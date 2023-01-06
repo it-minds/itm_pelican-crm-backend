@@ -4,10 +4,9 @@ using Pelican.Application.Users.Commands.CreateAdmin;
 using Pelican.Presentation.GraphQL.Users;
 using Xunit;
 using Pelican.Application.Users.Commands.UpdateUser;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Entities.Users;
 using Pelican.Application.Users.Commands.UpdatePassword;
-using Pelican.Application.Authentication.CreateStandardUser;
+using Pelican.Application.Users.Commands.CreateStandardUser;
+using Pelican.Application.Authentication;
 
 namespace Pelican.Presentation.GraphQL.Test;
 
@@ -71,7 +70,7 @@ public class UsersMutationTests
 	public async Task UpdateUser()
 	{
 		// Arrange
-		User user = new AdminUser();
+		UserDto user = new();
 
 		Mock<IMediator> mediatorMock = new();
 
@@ -84,7 +83,7 @@ public class UsersMutationTests
 		// Assert
 		mediatorMock.Verify(
 			m => m.Send(It.Is<UpdateUserCommand>(
-				x => x.user == user),
+				x => x.User == user),
 				default),
 			Times.Once);
 	}
@@ -106,7 +105,7 @@ public class UsersMutationTests
 		// Assert
 		mediatorMock.Verify(
 			m => m.Send(It.Is<UpdatePasswordCommand>(
-				x => x.password == PASSWORD),
+				x => x.Password == PASSWORD),
 				default),
 			Times.Once);
 	}

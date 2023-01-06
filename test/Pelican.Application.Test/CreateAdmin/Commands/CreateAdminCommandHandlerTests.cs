@@ -1,30 +1,40 @@
 ﻿using System.Linq.Expressions;
+using AutoMapper;
 using Moq;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Authentication;
 using Pelican.Application.Users.Commands.CreateAdmin;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Entities.Users;
+using Pelican.Domain.Enums;
 using Xunit;
 
 namespace Pelican.Application.Test.CreateAdmin.Commands;
 public class CreateAdminCommandHandlerTests
 {
-	private readonly ICommandHandler<CreateAdminCommand, User> _uut;
+	private readonly ICommandHandler<CreateAdminCommand, UserDto> _uut;
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly Mock<IPasswordHasher> _passwordHasherMock = new();
+	private readonly Mock<IMapper> _mapperMock = new();
 
 	public CreateAdminCommandHandlerTests()
 	{
-		_uut = new CreateAdminCommandHandler(_unitOfWorkMock.Object, _passwordHasherMock.Object);
+		_uut = new CreateAdminCommandHandler(
+			_unitOfWorkMock.Object,
+			_passwordHasherMock.Object,
+			_mapperMock.Object);
 	}
 
 	[Fact]
 	public void Constructor_UnitOfWorkNull_ArgumentNullException()
 	{
 		//Act
-		var result = Record.Exception(() => new CreateAdminCommandHandler(null!, _passwordHasherMock.Object));
+		var result = Record.Exception(() => new CreateAdminCommandHandler(
+			null!,
+			_passwordHasherMock.Object,
+			_mapperMock.Object));
 
 		//Assert
 		Assert.IsType<ArgumentNullException>(result);
@@ -38,7 +48,10 @@ public class CreateAdminCommandHandlerTests
 	public void Constructor_PassWordHasherNull_ArgumentNullException()
 	{
 		//Act
-		var result = Record.Exception(() => new CreateAdminCommandHandler(_unitOfWorkMock.Object, null!));
+		var result = Record.Exception(() => new CreateAdminCommandHandler(
+			_unitOfWorkMock.Object,
+			null!,
+			_mapperMock.Object));
 
 		//Assert
 		Assert.IsType<ArgumentNullException>(result);
@@ -46,7 +59,23 @@ public class CreateAdminCommandHandlerTests
 		Assert.Contains(
 			"passwordHasher",
 			result.Message);
+	}
 
+	[Fact]
+	public void Constructor_MapperNull_ArgumentNullException()
+	{
+		//Act
+		var result = Record.Exception(() => new CreateAdminCommandHandler(
+			_unitOfWorkMock.Object,
+			_passwordHasherMock.Object,
+			null!));
+
+		//Assert
+		Assert.IsType<ArgumentNullException>(result);
+
+		Assert.Contains(
+			"mapper",
+			result.Message);
 	}
 
 	[Fact]
@@ -103,12 +132,16 @@ public class CreateAdminCommandHandlerTests
 					It.IsAny<CancellationToken>()))
 			.ReturnsAsync(false);
 
-		AdminUser expectedUser = new()
+		UserDto expectedUser = new()
 		{
 			Name = "testName",
-			Password = "HashedPW",
 			Email = "testEmail",
+			Role = RoleEnum.Admin
 		};
+
+		_mapperMock
+			.Setup(m => m.Map<UserDto>(It.IsAny<User>()))
+			.Returns(expectedUser);
 
 		//Act
 		var result = await _uut.Handle(createAdminCommand, default);
@@ -125,7 +158,11 @@ public class CreateAdminCommandHandlerTests
 		_unitOfWorkMock
 			.Verify(x => x
 				.UserRepository
-				.CreateAsync(expectedUser, default),
+				.CreateAsync(
+					It.Is<AdminUser>(u => u.Name == expectedUser.Name
+						&& u.Email == expectedUser.Email
+						&& u.Role == expectedUser.Role),
+					default),
 			Times.Once);
 
 		_unitOfWorkMock
@@ -140,6 +177,8 @@ public class CreateAdminCommandHandlerTests
 
 		Assert.True(result.IsSuccess);
 
-		Assert.Equal(expectedUser, result.Value);
+		Assert.Equal(expectedUser.Name, result.Value.Name);
+		Assert.Equal(expectedUser.Email, result.Value.Email);
+		Assert.Equal(expectedUser.Role, result.Value.Role);
 	}
 }

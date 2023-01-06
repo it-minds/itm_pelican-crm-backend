@@ -1,17 +1,16 @@
 using MediatR;
-using Pelican.Application.Authentication.CreateStandardUser;
+using Pelican.Application.Authentication;
 using Pelican.Application.Users.Commands.CreateAdmin;
+using Pelican.Application.Users.Commands.CreateStandardUser;
 using Pelican.Application.Users.Commands.UpdatePassword;
 using Pelican.Application.Users.Commands.UpdateUser;
-using Pelican.Domain.Entities;
-using Pelican.Domain.Shared;
 
 namespace Pelican.Presentation.GraphQL.Users;
 
 [ExtendObjectType(OperationTypeNames.Mutation)]
 public sealed class UsersMutation
 {
-	public async Task<Result> CreateStandardUser(
+	public async Task<Domain.Shared.Result<UserDto>> CreateStandardUser(
 		string name,
 		string email,
 		string password,
@@ -21,7 +20,7 @@ public sealed class UsersMutation
 			new CreateStandardUserCommand(name, email, password),
 			cancellationToken);
 
-	public async Task<Result> CreateAdmin(
+	public async Task<Domain.Shared.Result<UserDto>> CreateAdmin(
 		string name,
 		string email,
 		string password,
@@ -31,15 +30,15 @@ public sealed class UsersMutation
 			new CreateAdminCommand(name, email, password),
 			cancellationToken);
 
-	public async Task<Domain.Shared.Result<User>> UpdateUser(
-		User user,
+	public async Task<Domain.Shared.Result<UserDto>> UpdateUser(
+		UserDto user,
 		[Service] IMediator mediator,
 		CancellationToken cancellationToken)
 		=> await mediator.Send(
 			new UpdateUserCommand(user),
 			cancellationToken);
 
-	public async Task<Domain.Shared.Result<User>> UpdatePassword(
+	public async Task<Domain.Shared.Result<UserDto>> UpdatePassword(
 		string password,
 		[Service] IMediator mediator,
 		CancellationToken cancellationToken)

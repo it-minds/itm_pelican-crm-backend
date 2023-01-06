@@ -24,7 +24,7 @@ public static class DependencyInjection
 	//Add application as a service that can be used in program
 	public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
 	{
-		services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+		services.AddHttpContextAccessor();
 
 		services.AddScoped<ICurrentUserService, CurrentUserService>();
 

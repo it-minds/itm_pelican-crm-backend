@@ -11,6 +11,7 @@
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
 		<PackageReference Include="Bogus" Version="34.0.2" />
 		<PackageReference Include="GreenDonut" Version="12.15.2" />
+		<PackageReference Include="Hangfire.Core" Version="1.7.32" />
 		<PackageReference Include="HotChocolate.Types" Version="12.15.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />

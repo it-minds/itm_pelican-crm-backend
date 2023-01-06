@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using AutoMapper;
 using Moq;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
@@ -15,11 +16,12 @@ public class ResetPasswordCommandHandlerTests
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 	private readonly Mock<ITokenService> _tokenServiceMock = new();
 	private readonly Mock<IPasswordHasher> _passwordHasherMock = new();
+	private readonly Mock<IMapper> _mapperMock = new();
 	private readonly ResetPasswordCommandHandler _uut;
 
 	public ResetPasswordCommandHandlerTests()
 	{
-		_uut = new(_unitOfWorkMock.Object, _tokenServiceMock.Object, _passwordHasherMock.Object);
+		_uut = new(_unitOfWorkMock.Object, _tokenServiceMock.Object, _passwordHasherMock.Object, _mapperMock.Object);
 	}
 
 	[Fact]
@@ -27,7 +29,7 @@ public class ResetPasswordCommandHandlerTests
 	{
 		//Act
 		ResetPasswordCommandHandler _uut;
-		var result = Record.Exception(() => _uut = new(null!, _tokenServiceMock.Object, _passwordHasherMock.Object));
+		var result = Record.Exception(() => _uut = new(null!, _tokenServiceMock.Object, _passwordHasherMock.Object, _mapperMock.Object));
 
 		//Assert
 		Assert.IsType<ArgumentNullException>(result);
@@ -40,7 +42,7 @@ public class ResetPasswordCommandHandlerTests
 	{
 		//Act
 		ResetPasswordCommandHandler _uut;
-		var result = Record.Exception(() => _uut = new(_unitOfWorkMock.Object, null!, _passwordHasherMock.Object));
+		var result = Record.Exception(() => _uut = new(_unitOfWorkMock.Object, null!, _passwordHasherMock.Object, _mapperMock.Object));
 
 		//Assert
 		Assert.IsType<ArgumentNullException>(result);
@@ -53,12 +55,25 @@ public class ResetPasswordCommandHandlerTests
 	{
 		//Act
 		ResetPasswordCommandHandler _uut;
-		var result = Record.Exception(() => _uut = new(_unitOfWorkMock.Object, _tokenServiceMock.Object, null!));
+		var result = Record.Exception(() => _uut = new(_unitOfWorkMock.Object, _tokenServiceMock.Object, null!, _mapperMock.Object));
 
 		//Assert
 		Assert.IsType<ArgumentNullException>(result);
 
 		Assert.Contains("passwordHasher", result.Message);
+	}
+
+	[Fact]
+	public void Constructor_mapperIsNull_ThrowsArgumentNullException()
+	{
+		//Act
+		ResetPasswordCommandHandler _uut;
+		var result = Record.Exception(() => _uut = new(_unitOfWorkMock.Object, _tokenServiceMock.Object, _passwordHasherMock.Object, null!));
+
+		//Assert
+		Assert.IsType<ArgumentNullException>(result);
+
+		Assert.Contains("mapper", result.Message);
 	}
 
 	[Fact]
@@ -201,7 +216,7 @@ public class ResetPasswordCommandHandlerTests
 				.CreateToken(It.IsAny<User>()))
 			.Returns("returnedToken");
 
-		AdminUser expectedUser = new()
+		User expectedUser = new AdminUser()
 		{
 			Id = userId,
 			Password = "hashedNewPassword",
@@ -223,6 +238,11 @@ public class ResetPasswordCommandHandlerTests
 			},
 			Token = "returnedToken",
 		};
+
+		_mapperMock
+			.Setup(x => x
+				.Map<UserTokenDto>(It.IsAny<User>()))
+			.Returns(expectedUserDTO);
 
 		//Act
 		var result = await _uut.Handle(testResetPasswordCommand, default);

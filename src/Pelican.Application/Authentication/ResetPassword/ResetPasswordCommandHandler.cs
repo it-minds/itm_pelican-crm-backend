@@ -1,4 +1,5 @@
-﻿using Pelican.Application.Abstractions.Authentication;
+﻿using AutoMapper;
+using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Entities;
@@ -10,14 +11,17 @@ public class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand,
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly ITokenService _tokenService;
 	private readonly IPasswordHasher _passwordHasher;
+	private readonly IMapper _mapper;
 	public ResetPasswordCommandHandler(
 		IUnitOfWork unitOfWork,
 		ITokenService tokenService,
-		IPasswordHasher passwordHasher)
+		IPasswordHasher passwordHasher,
+		IMapper mapper)
 	{
 		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 		_tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
 		_passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
+		_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 	}
 	public async Task<Result<UserTokenDto>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
 	{
@@ -56,17 +60,9 @@ public class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand,
 
 		var token = _tokenService.CreateToken(userEntity);
 
-		var resultUserTokenDto = new UserTokenDto()
-		{
-			User = new UserDto()
-			{
-				Email = userEntity.Email,
-				Id = userEntity.Id,
-				Name = userEntity.Name,
-				Role = userEntity.Role,
-			},
-			Token = token,
-		};
+		var resultUserTokenDto = _mapper.Map<UserTokenDto>(userEntity);
+
+		resultUserTokenDto.Token = token;
 
 		return Result.Success(resultUserTokenDto);
 	}

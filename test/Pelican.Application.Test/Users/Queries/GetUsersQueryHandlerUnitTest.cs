@@ -41,7 +41,7 @@ public class GetUsersQueryHandlerUnitTest
 				.FindAll())
 			.Returns(new List<User>()
 			{
-				new AdminUser()
+				new StandardUser()
 				{
 					Name="testName",
 					CreatedAt =123,

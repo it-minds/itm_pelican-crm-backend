@@ -1,4 +1,14 @@
-﻿namespace Pelican.Application.Test.Behaviours;
+﻿Readdedusing MediatR;
+using Moq;
+using Pelican.Application.Abstractions.Authentication;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Behaviours;
+using Pelican.Application.Security;
+using Pelican.Domain.Entities;
+using Pelican.Domain.Enums;
+using Xunit;
+
+namespace Pelican.Application.Test.Behaviours;
 public class AuthorizationBehaviourTests
 {
 	[Authorize(Role = Domain.Enums.RoleEnum.Standard)]

@@ -1,8 +1,10 @@
+﻿using Pelican.Application.AuthMapper;
+using Pelican.Domain.Entities;
 using Pelican.Domain.Enums;
 
 namespace Pelican.Application.Authentication;
 
-public sealed class UserDto
+public sealed class UserDto : IAutoMap<User>
 {
 	public Guid Id { get; set; }
 	public string Email { get; set; } = string.Empty;

@@ -33,6 +33,8 @@ public static class DependencyInjection
 
 		services.AddMediatR(Assembly.GetExecutingAssembly());
 
+		services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
 		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 		services.AddScoped<IGetCustomAttributesService, GetCustomAttributesService>();

@@ -11,7 +11,7 @@ using Pelican.Domain.Entities.Users;
 using Pelican.Domain.Enums;
 using Xunit;
 
-namespace Pelican.Application.Test.CreateAdmin.Commands;
+namespace Pelican.Application.Test.Users.Commands.CreateAdmin;
 public class CreateAdminCommandHandlerTests
 {
 	private readonly ICommandHandler<CreateAdminCommand, UserDto> _uut;

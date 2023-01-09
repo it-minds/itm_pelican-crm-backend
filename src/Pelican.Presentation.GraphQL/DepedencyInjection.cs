@@ -21,6 +21,8 @@ public static class DependencyInjection
 			.AddTypeExtension<DealsQuery>()
 			.AddTypeExtension<SuppliersQuery>()
 			.AddTypeExtension<UsersQuery>()
+			.AddMutationType(d => d.Name("Mutation"))
+			.AddTypeExtension<UsersMutation>()
 			.AddProjections()
 			.AddFiltering()
 			.AddSorting();

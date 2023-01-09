@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using AutoMapper;
 using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Authentication;
@@ -13,11 +14,12 @@ namespace Pelican.Application.Test.Users.Commands.UpdateUser;
 public class UpdateUserCommandHandlerTests
 {
 	private readonly Mock<IUnitOfWork> _unitOfWork = new();
+	private readonly Mock<IMapper> _mapper = new();
 	private readonly UpdateUserCommandHandler _uut;
 
 	public UpdateUserCommandHandlerTests()
 	{
-		_uut = new(_unitOfWork.Object);
+		_uut = new(_unitOfWork.Object, _mapper.Object);
 	}
 
 	[Fact]
@@ -25,7 +27,7 @@ public class UpdateUserCommandHandlerTests
 	{
 		// Act
 		Exception exceptionResult = Record.Exception(() =>
-			new UpdateUserCommandHandler(null!));
+			new UpdateUserCommandHandler(null!, _mapper.Object));
 
 		// Assert
 		Assert.Equal(
@@ -34,6 +36,23 @@ public class UpdateUserCommandHandlerTests
 
 		Assert.Equal(
 			"Value cannot be null. (Parameter 'unitOfWork')",
+			exceptionResult.Message);
+	}
+
+	[Fact]
+	public void UpdateUserCommandHandler_MapperNull_ThrowException()
+	{
+		// Act
+		Exception exceptionResult = Record.Exception(() =>
+			new UpdateUserCommandHandler(_unitOfWork.Object, null!));
+
+		// Assert
+		Assert.Equal(
+			typeof(ArgumentNullException),
+			exceptionResult.GetType());
+
+		Assert.Equal(
+			"Value cannot be null. (Parameter 'mapper')",
 			exceptionResult.Message);
 	}
 
@@ -135,7 +154,18 @@ public class UpdateUserCommandHandlerTests
 
 		UpdateUserCommand command = new(user);
 
-		User standardUser = new StandardUser();
+		StandardUser standardUser = new()
+		{
+			Name = "name",
+			Email = "email",
+		};
+
+		UserDto userDto = new()
+		{
+			Name = user.Name,
+			Email = user.Email,
+			Role = user.Role,
+		};
 
 		_unitOfWork
 			.Setup(u => u.UserRepository.FirstOrDefaultAsync(
@@ -148,6 +178,10 @@ public class UpdateUserCommandHandlerTests
 				It.IsAny<Expression<Func<User, bool>>>(),
 				It.IsAny<CancellationToken>()))
 			.ReturnsAsync(false);
+
+		_mapper
+			.Setup(m => m.Map<UserDto>(It.IsAny<User>()))
+			.Returns(userDto);
 
 		// Act
 		var result = await _uut.Handle(command, default);
@@ -180,6 +214,10 @@ public class UpdateUserCommandHandlerTests
 		_unitOfWork.Verify(
 			x => x
 				.SaveAsync(default),
+			Times.Once);
+
+		_mapper.Verify(
+			m => m.Map<UserDto>(standardUser),
 			Times.Once);
 	}
 }

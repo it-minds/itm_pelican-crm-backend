@@ -1,5 +1,5 @@
 ﻿using Pelican.Application.Abstractions.Messaging;
-using Pelican.Domain.Entities;
+using Pelican.Application.Authentication;
 
 namespace Pelican.Application.Users.Commands.CreateAdmin;
-public sealed record CreateAdminCommand(string Name, string Email, string Password) : ICommand<User>;
+public sealed record CreateAdminCommand(string Name, string Email, string Password) : ICommand<UserDto>;

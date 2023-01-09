@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Pelican.Application.Authentication;
-using Pelican.Application.Users.Queries.GetAllUsers;
+using Pelican.Application.Users.Queries.GetUsers;
 
 namespace Pelican.Presentation.GraphQL.Users;
 [ExtendObjectType("Query")]
-public class AllUsersQuery
+public class UsersQuery
 {
 	[UsePaging(IncludeTotalCount = true)]
 	[UseProjection]
@@ -12,6 +12,6 @@ public class AllUsersQuery
 	[UseSorting]
 	public async Task<IQueryable<UserDto>> GetUsersAsync([Service] IMediator mediator, CancellationToken cancellationToken)
 	{
-		return await mediator.Send(new GetAllUsersQuery(), cancellationToken);
+		return await mediator.Send(new GetUsersQuery(), cancellationToken);
 	}
 }

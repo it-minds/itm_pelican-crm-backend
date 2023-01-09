@@ -3,7 +3,7 @@ using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Application.Authentication;
-using Pelican.Application.Users.Queries.GetAllUsers;
+using Pelican.Application.Users.Queries.GetUsers;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Entities.Users;
 using Pelican.Domain.Enums;
@@ -16,8 +16,8 @@ public class GetUsersQueryHandlerUnitTest
 	private readonly Mock<IGenericRepository<User>> _userRepositoryMock = new();
 	private readonly Mock<IMapper> _mapperMock = new();
 
-	private IQueryHandler<GetAllUsersQuery, IQueryable<UserDto>> _uut;
-	private readonly GetAllUsersQuery _usersQuery = new();
+	private IQueryHandler<GetUsersQuery, IQueryable<UserDto>> _uut;
+	private readonly GetUsersQuery _usersQuery = new();
 
 	public GetUsersQueryHandlerUnitTest()
 	{
@@ -26,11 +26,11 @@ public class GetUsersQueryHandlerUnitTest
 				.UserRepository)
 			.Returns(_userRepositoryMock.Object);
 
-		_uut = new GetAllUsersQueryHandler(_unitOfWorkMock.Object, _mapperMock.Object);
+		_uut = new GetUsersQueryHandler(_unitOfWorkMock.Object, _mapperMock.Object);
 	}
 
 	[Fact]
-	public async void Handle_()
+	public async void Handle_UnitOfWorkCalled_ExpectedUserDtoIsEqualToResult()
 	{
 		//Arrange
 		Guid id = new();
@@ -74,7 +74,7 @@ public class GetUsersQueryHandlerUnitTest
 			.Verify(x => x
 				.UserRepository
 				.FindAll(),
-			Times.Once());
+				Times.Once());
 
 		Assert.Equal(expectedUserDto, result.First());
 	}

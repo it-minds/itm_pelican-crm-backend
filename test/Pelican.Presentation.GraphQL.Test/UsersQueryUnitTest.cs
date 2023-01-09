@@ -1,4 +1,10 @@
-﻿namespace Pelican.Presentation.GraphQL.Test;
+﻿using MediatR;
+using Moq;
+using Pelican.Application.Users.Queries.GetUsers;
+using Pelican.Presentation.GraphQL.Users;
+using Xunit;
+
+namespace Pelican.Presentation.GraphQL.Test;
 public class UsersQueryUnitTest
 {
 	private readonly UsersQuery _uut = new();

@@ -1,4 +1,10 @@
-﻿namespace Pelican.Application.Users.Queries.GetUsers;
+﻿using AutoMapper;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Authentication;
+using Pelican.Domain.Entities;
+
+namespace Pelican.Application.Users.Queries.GetUsers;
 public class GetUsersQueryHandler : IQueryHandler<GetUsersQuery, IQueryable<UserDto>>
 {
 	private readonly IGenericRepository<User> _repository;

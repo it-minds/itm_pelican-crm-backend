@@ -31,7 +31,7 @@ public class GetAdminsQueryHandlerUnitTest
 	}
 
 	[Fact]
-	public async void Handle_()
+	public async void Handle_UserRepositoryFindByConditionReturnsAdminUser_ExpectedUserIsEqualToResultFirst()
 	{
 		//Arrange
 		Guid id = new();

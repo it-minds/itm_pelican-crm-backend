@@ -10,7 +10,7 @@ public class AdminsQueryUnitTest
 	private readonly AdminsQuery _uut = new();
 	private readonly Mock<IMediator> _mediatorMock = new();
 	[Fact]
-	public void GetUsers()
+	public void GetAdminsAsync_MediatorReceivedSendCallOnce()
 	{
 		//Act
 		_ = _uut.GetAdminsAsync(_mediatorMock.Object, default);

@@ -1,4 +1,8 @@
-﻿namespace Pelican.Presentation.GraphQL.Users;
+﻿using MediatR;
+using Pelican.Application.Authentication;
+using Pelican.Application.Users.Queries.GetUsers;
+
+namespace Pelican.Presentation.GraphQL.Users;
 [ExtendObjectType("Query")]
 public class UsersQuery
 {

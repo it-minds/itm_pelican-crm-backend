@@ -1,4 +1,15 @@
-﻿namespace Pelican.Application.Test.Users.Queries;
+﻿using AutoMapper;
+using Moq;
+using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.Messaging;
+using Pelican.Application.Authentication;
+using Pelican.Application.Users.Queries.GetUsers;
+using Pelican.Domain.Entities;
+using Pelican.Domain.Entities.Users;
+using Pelican.Domain.Enums;
+using Xunit;
+
+namespace Pelican.Application.Test.Users.Queries;
 public class GetUsersQueryHandlerUnitTest
 {
 	private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();

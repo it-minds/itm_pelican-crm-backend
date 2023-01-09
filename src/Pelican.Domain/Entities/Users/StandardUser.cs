@@ -3,5 +3,5 @@
 namespace Pelican.Domain.Entities.Users;
 public class StandardUser : User
 {
-	public new RoleEnum Role { get; set; } = RoleEnum.Standard;
+	public override RoleEnum Role { get; set; } = RoleEnum.Standard;
 }

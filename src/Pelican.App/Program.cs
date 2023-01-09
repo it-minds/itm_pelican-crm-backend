@@ -9,10 +9,12 @@ const string CORS_PROD = "CorsProd";
 const string ALLOW_ALL = "AllowAll";
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddRazorPages();
 builder.Services.AddDomain(builder.Configuration, builder.Environment.IsProduction());
 builder.Services.AddPersistince(builder.Configuration, builder.Environment.IsProduction());
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddHubSpot();
+
 
 builder.Services.AddCors(options =>
 {

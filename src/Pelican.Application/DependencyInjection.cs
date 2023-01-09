@@ -13,6 +13,8 @@ using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Application.Behaviours;
 using Pelican.Application.Mail;
 using Pelican.Application.Options;
+using Pelican.Application.RazorEmails.Interfaces;
+using Pelican.Application.RazorEmails.Services;
 using Pelican.Application.RestSharp;
 using Pelican.Application.Security;
 using Pelican.Domain.Settings.HubSpot;
@@ -43,6 +45,10 @@ public static class DependencyInjection
 
 		services.AddScoped<IPasswordHasher, PasswordHasher>();
 
+		services.AddScoped<IMailService, MailService>();
+
+		services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
+
 		services.AddSingleton<IClient<HubSpotSettings>, RestSharpClient<HubSpotSettings>>();
 
 		services.AddMediatR(Assembly.GetExecutingAssembly());
@@ -62,8 +68,6 @@ public static class DependencyInjection
 		services.AddScoped<SecurityTokenHandler, JwtSecurityTokenHandler>();
 
 		services.AddScoped<ITokenService, TokenService>();
-
-		services.AddScoped<IMailService, MailService>();
 
 		return services;
 	}

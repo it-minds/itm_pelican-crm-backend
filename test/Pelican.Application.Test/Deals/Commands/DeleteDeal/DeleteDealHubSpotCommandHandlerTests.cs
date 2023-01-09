@@ -21,7 +21,6 @@ public class DeleteDealHubSpotCommandHandlerTests
 		_cancellationToken = new();
 	}
 
-
 	[Fact]
 	public void DeleteDealCommandHandler_UnitOfWorkNull_ThrowException()
 	{

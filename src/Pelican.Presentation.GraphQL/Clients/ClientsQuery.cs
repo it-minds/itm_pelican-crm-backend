@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Pelican.Application.Clients.Queries.GetClientById;
 using Pelican.Application.Clients.Queries.GetClients;
+using Pelican.Application.Clients.Queries.GetLocations;
 using Pelican.Domain.Entities;
 
 namespace Pelican.Presentation.GraphQL.Clients;
@@ -23,5 +24,8 @@ public class ClientsQuery
 		var input = new GetClientByIdQuery(id);
 		return await mediator.Send(input, cancellationToken);
 	}
+	public async Task<IQueryable<Client>> GetLocationsAsync([Service] IMediator mediator, CancellationToken cancellationToken)
+	{
+		return await mediator.Send(new GetLocationsQuery(), cancellationToken);
+	}
 }
-

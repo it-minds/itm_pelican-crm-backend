@@ -58,7 +58,7 @@ public class GetUsersQueryHandlerUnitTest
 			Id = id,
 			Email = "testEmail",
 			Name = "testName",
-			Role = RoleEnum.Admin,
+			Role = RoleEnum.Standard,
 		};
 
 		_mapperMock
@@ -74,7 +74,7 @@ public class GetUsersQueryHandlerUnitTest
 			.Verify(x => x
 				.UserRepository
 				.FindAll(),
-			Times.Once());
+				Times.Once());
 
 		Assert.Equal(expectedUserDto, result.First());
 	}

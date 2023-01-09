@@ -15,6 +15,7 @@ using Pelican.Application.RestSharp;
 using Pelican.Application.Security;
 using Pelican.Domain.Settings.HubSpot;
 
+
 [assembly: InternalsVisibleTo("Pelican.Application.Test")]
 namespace Pelican.Application;
 
@@ -28,6 +29,8 @@ public static class DependencyInjection
 		services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 		services.AddScoped<IAuthorizationService, AuthorizationService>();
+
+		services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 		services.AddSingleton<IClient<HubSpotSettings>, RestSharpClient<HubSpotSettings>>();
 

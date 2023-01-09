@@ -1,19 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
-using FluentValidation;
-using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using Pelican.Application.Abstractions.Authentication;
-using Pelican.Application.Abstractions.Infrastructure;
-using Pelican.Application.Behaviours;
-using Pelican.Application.Options;
-using Pelican.Application.RestSharp;
-using Pelican.Application.Security;
-using Pelican.Domain.Settings.HubSpot;
 
 
 [assembly: InternalsVisibleTo("Pelican.Application.Test")]
@@ -24,6 +10,14 @@ public static class DependencyInjection
 	//Add application as a service that can be used in program
 	public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
 	{
+		IConfiguration mailSettings;
+		string keyVaultName = configuration["KeyVaultName"];
+		var kvUri = "https://" + keyVaultName + ".vault.azure.net";
+		var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
+
+		mailSettings = configuration.GetRequiredSection("MailSettings");
+		mailSettings["App:ApiKey"] = client.GetSecret("PelicanAdminPelicanSendgridApiKey").Value.Value;
+
 		services.AddHttpContextAccessor();
 
 		services.AddScoped<ICurrentUserService, CurrentUserService>();
@@ -53,6 +47,8 @@ public static class DependencyInjection
 		services.AddScoped<SecurityTokenHandler, JwtSecurityTokenHandler>();
 
 		services.AddScoped<ITokenService, TokenService>();
+
+		services.AddScoped<IMailService, MailService>();
 
 		return services;
 	}

@@ -14,6 +14,7 @@ public interface IUnitOfWork
 	public IGenericRepository<ClientContact> ClientContactRepository { get; }
 	public IGenericRepository<DealContact> DealContactRepository { get; }
 	public IGenericRepository<User> UserRepository { get; }
+	public IGenericRepository<Email> EmailRepository { get; }
 	public IGenericRepository<T> GetRepository<T>() where T : Entity;
 	Task SaveAsync(CancellationToken cancellationToken = default);
 }

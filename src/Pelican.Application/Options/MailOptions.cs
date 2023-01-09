@@ -4,6 +4,7 @@ namespace Pelican.Application.Options;
 public class MailOptions
 {
 	public const string MailSettings = "MailSettings";
+	public string ApiKey { get; set; } = string.Empty;
 	public string Mail { get; set; } = string.Empty;
 	public string DisplayName { get; set; } = string.Empty;
 	public string UserName { get; set; } = string.Empty;

@@ -1,14 +1,11 @@
 ﻿using Pelican.Domain.Entities;
-using SendGrid;
+using Pelican.Domain.Shared;
 
 namespace Pelican.Application.Abstractions.Authentication;
 public interface IMailService
 {
-	Task<Response> TestSendEmail();
-	Task<Response> SendUserActivationEmail(string email, string token);
-	Task<Response> SendForgotPasswordEmail(string email, string token);
+	Task<Result> TestSendEmail();
+	Task<Result> SendUserActivationEmail(string email, string token);
+	Task<Result> SendForgotPasswordEmail(string email, string token);
 	Task<string> GeneratePreview(Email emailDto);
-	Task<Response> SendInviteNewUserEmail(string email, string token);
-	Task<Response> SendInviteExistingUserEmail(string email);
-	Task<Response> SendReminderEmail(string email);
 }

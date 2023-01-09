@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 
 
+
 [assembly: InternalsVisibleTo("Pelican.Application.Test")]
 namespace Pelican.Application;
 
@@ -16,7 +17,7 @@ public static class DependencyInjection
 		var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
 
 		mailSettings = configuration.GetRequiredSection("MailSettings");
-		mailSettings["App:ApiKey"] = client.GetSecret("PelicanAdminPelicanSendgridApiKey").Value.Value;
+		mailSettings["Password"] = client.GetSecret("PelicanSendgridSMTPRelayApiKey").Value.Value;
 
 		services.AddHttpContextAccessor();
 

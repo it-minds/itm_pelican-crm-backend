@@ -13,11 +13,11 @@
 		<PackageReference Include="GreenDonut" Version="12.15.2" />
 		<PackageReference Include="HotChocolate.Types" Version="12.15.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
 		<PackageReference Include="FluentValidation" Version="11.2.2" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.2" />
 		<PackageReference Include="RestSharp" Version="108.0.2" />
-		<PackageReference Include="SendGrid" Version="9.28.1" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1" />
 	</ItemGroup>
 

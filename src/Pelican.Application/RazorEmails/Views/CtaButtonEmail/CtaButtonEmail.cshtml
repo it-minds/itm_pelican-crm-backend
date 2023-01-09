@@ -1,0 +1,36 @@
+﻿@using System.Text.RegularExpressions
+@using Microsoft.AspNetCore.Html
+@using Pelican.Application.RazorEmails.Views.CtaButtonEmail
+@using Pelican.Application.RazorEmails.Views.Shared
+@model CtaButtonEmailViewModel
+
+<tr>
+    <td class="mailSection">
+        @if (Model.Heading1 != null)
+        {
+            <h2>@Model.Heading1</h2>
+        }
+        @if (Model.paragraph1 != null)
+        {
+            <p>@Model.paragraph1</p>
+        }
+        @if (Model.Heading2 != null)
+        {
+            <h2>@Model.Heading2</h2>
+        }
+        @if (Model.paragraph2 != null)
+        {
+            <p>@Model.paragraph2.Replace(Environment.NewLine, "<br />")</p>
+        }
+        @if (Model.Heading3 != null)
+        {
+            <h2>@Model.Heading3</h2>
+        }
+        @if (Model.paragraph3 != null)
+        {
+            <p>@Model.paragraph3.Replace(Environment.NewLine, "<br />")</p>
+        }
+
+        @await Html.PartialAsync("EmailButton", new EmailButtonViewModel(@Model.CtaButtonText, Model.CtaButtonUrl))
+    </td>
+</tr>

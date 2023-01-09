@@ -4,6 +4,7 @@ using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Mails.SendResetPassword;
 using Pelican.Domain.Entities;
+using Pelican.Domain.Entities.Users;
 using Pelican.Domain.Shared;
 using Xunit;
 
@@ -113,5 +114,47 @@ public class SendResetPasswordCommandHandlerUnitTest
 					x => x.Email == command.Email,
 					default),
 			Times.Once);
+	}
+
+	[Fact]
+	public async void Handle_UserFound_ReturnsSuccess()
+	{
+		// Arrange
+		SendResetPasswordCommand command = new("testMail");
+
+		_unitOfWorkMock
+			.Setup(u => u
+				.UserRepository
+				.FirstOrDefaultAsync(
+					It.IsAny<Expression<Func<User, bool>>>(),
+					It.IsAny<CancellationToken>()))
+			.ReturnsAsync(new StandardUser());
+
+		_tokenServiceMock
+			.Setup(x => x
+				.CreateSSOToken(
+					It.IsAny<User>()))
+			.Returns(("testTokenId", "testToken"));
+
+		// Act
+		var result = await _uut.Handle(command, default);
+
+		// Assert
+		Assert.True(result.IsSuccess);
+
+		_unitOfWorkMock.Verify(
+			u => u.UserRepository
+				.FirstOrDefaultAsync(
+					x => x.Email == command.Email,
+					default),
+			Times.Once);
+
+		_unitOfWorkMock.Verify(
+			x => x.SaveAsync(default), Times.Once);
+
+		_mailServiceMock.Verify(
+			x => x.SendForgotPasswordEmail(
+				command.Email,
+				"testToken"), Times.Once());
 	}
 }

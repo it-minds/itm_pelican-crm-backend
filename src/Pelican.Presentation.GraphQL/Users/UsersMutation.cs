@@ -2,6 +2,7 @@ using MediatR;
 using Pelican.Application.Authentication;
 using Pelican.Application.Users.Commands.CreateAdmin;
 using Pelican.Application.Users.Commands.CreateStandardUser;
+using Pelican.Application.Users.Commands.UpdateMe;
 using Pelican.Application.Users.Commands.UpdatePassword;
 using Pelican.Application.Users.Commands.UpdateUser;
 
@@ -36,6 +37,14 @@ public sealed class UsersMutation
 		CancellationToken cancellationToken)
 		=> await mediator.Send(
 			new UpdateUserCommand(user),
+			cancellationToken);
+
+	public async Task<Domain.Shared.Result<UserDto>> UpdateMe(
+		UserDto user,
+		[Service] IMediator mediator,
+		CancellationToken cancellationToken)
+		=> await mediator.Send(
+			new UpdateMeCommand(user),
 			cancellationToken);
 
 	public async Task<Domain.Shared.Result<UserDto>> UpdatePassword(

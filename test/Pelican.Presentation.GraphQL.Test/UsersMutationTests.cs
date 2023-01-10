@@ -7,6 +7,7 @@ using Pelican.Application.Users.Commands.UpdateUser;
 using Pelican.Application.Users.Commands.UpdatePassword;
 using Pelican.Application.Users.Commands.CreateStandardUser;
 using Pelican.Application.Authentication;
+using Pelican.Application.Users.Commands.UpdateMe;
 
 namespace Pelican.Presentation.GraphQL.Test;
 
@@ -15,7 +16,7 @@ public class UsersMutationTests
 	private readonly UsersMutation _uut = new();
 
 	[Fact]
-	public async Task CreateStandardUser()
+	public async Task CreateStandardUser_VerifyCommandSend()
 	{
 		// Arrange
 		const string NAME = "name";
@@ -41,7 +42,7 @@ public class UsersMutationTests
 	}
 
 	[Fact]
-	public async Task CreateAdmin()
+	public async Task CreateAdmin_VerifyCommandSend()
 	{
 		// Arrange
 		const string NAME = "name";
@@ -67,7 +68,7 @@ public class UsersMutationTests
 	}
 
 	[Fact]
-	public async Task UpdateUser()
+	public async Task UpdateUser_VerifyCommandSend()
 	{
 		// Arrange
 		UserDto user = new();
@@ -89,7 +90,29 @@ public class UsersMutationTests
 	}
 
 	[Fact]
-	public async Task UpdatePassword()
+	public async Task UpdateMe_VerifyCommandSend()
+	{
+		// Arrange
+		UserDto user = new();
+
+		Mock<IMediator> mediatorMock = new();
+
+		// Act
+		var result = await _uut.UpdateMe(
+			user,
+			mediatorMock.Object,
+			default);
+
+		// Assert
+		mediatorMock.Verify(
+			m => m.Send(It.Is<UpdateMeCommand>(
+				x => x.User == user),
+				default),
+			Times.Once);
+	}
+
+	[Fact]
+	public async Task UpdatePassword_VerifyCommandSend()
 	{
 		// Arrange
 		const string PASSWORD = "password";

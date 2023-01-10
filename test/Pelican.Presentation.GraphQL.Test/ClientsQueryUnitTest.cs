@@ -2,6 +2,7 @@
 using Moq;
 using Pelican.Application.Clients.Queries.GetClientById;
 using Pelican.Application.Clients.Queries.GetClients;
+using Pelican.Application.Clients.Queries.GetLocations;
 using Pelican.Domain.Entities;
 using Pelican.Presentation.GraphQL.Clients;
 using Xunit;
@@ -49,6 +50,31 @@ public class ClientsQueryUnitTest
 
 		_mediatorMock.Verify(
 			x => x.Send(input, default),
+			Times.Once);
+	}
+
+	[Fact]
+	public void GetLocationsAsync_SendsQueryToMediator_ReturnsValueFromMediator()
+	{
+		// Arrange
+		IQueryable<Client> clients = new List<Client>()
+		{
+			new(),
+			new(),
+		}.AsQueryable();
+
+		_mediatorMock
+			.Setup(m => m.Send(
+				It.IsAny<GetLocationsQuery>(),
+				It.IsAny<CancellationToken>()))
+			.ReturnsAsync(clients);
+
+		// Act
+		_ = _uut.GetLocationsAsync(_mediatorMock.Object, default);
+
+		// Assert
+		_mediatorMock.Verify(
+			x => x.Send(It.IsAny<GetLocationsQuery>(), default),
 			Times.Once);
 	}
 }

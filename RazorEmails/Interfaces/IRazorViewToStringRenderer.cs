@@ -1,4 +1,4 @@
-﻿namespace Pelican.Application.RazorEmails.Interfaces;
+﻿namespace RazorEmails.Interfaces;
 public interface IRazorViewToStringRenderer
 {
 	Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model);

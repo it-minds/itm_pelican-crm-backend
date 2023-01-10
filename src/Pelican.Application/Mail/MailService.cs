@@ -4,12 +4,10 @@ using Microsoft.Extensions.Options;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Options;
-using Pelican.Application.RazorEmails.Interfaces;
-using Pelican.Application.RazorEmails.Views.CtaButtonEmail;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
-
-
+using RazorEmails.Interfaces;
+using RazorEmails.Views.Emails.CtaButtonEmail;
 
 namespace Pelican.Application.Mail;
 public sealed class MailService : IMailService
@@ -48,7 +46,7 @@ public sealed class MailService : IMailService
 		return Result.Success();
 	}
 
-	public async Task<Result> TestSendEmail()
+	public async Task<Result> SendTestEmail()
 	{
 		var emailModel = new CtaButtonEmailViewModel
 		{
@@ -64,9 +62,9 @@ public sealed class MailService : IMailService
 
 		MailRequestDto mail = new()
 		{
-			ToEmail = _mailOptions.Mail,
+			ToEmail = "ame@it-minds.dk",
 			Subject = "Test mail From Pelican Support",
-			Body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/CtaButtonEmail/CtaButtonEmail.cshtml", emailModel),
+			Body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/Emails/CtaButtonEmail/CtaButtonEmail.cshtml", emailModel),
 		};
 
 		return await SendEmailAsync(mail);
@@ -97,7 +95,7 @@ public sealed class MailService : IMailService
 		{
 			ToEmail = email,
 			Subject = emailEntity.Subject,
-			Body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/CtaButtonEmail/CtaButtonEmail.cshtml", emailModel)
+			Body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/Emails/CtaButtonEmail/CtaButtonEmail.cshtml", emailModel)
 		};
 		return await SendEmailAsync(mail);
 	}
@@ -127,7 +125,7 @@ public sealed class MailService : IMailService
 		{
 			ToEmail = email,
 			Subject = emailEntity.Subject,
-			Body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/CtaButtonEmail/CtaButtonEmail.cshtml", emailModel)
+			Body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/Emails/CtaButtonEmail/CtaButtonEmail.cshtml", emailModel)
 		};
 		return await SendEmailAsync(mail);
 	}

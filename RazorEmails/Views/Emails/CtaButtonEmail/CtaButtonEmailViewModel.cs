@@ -1,4 +1,4 @@
-﻿namespace Pelican.Application.RazorEmails.Views.CtaButtonEmail;
+﻿namespace RazorEmails.Views.Emails.CtaButtonEmail;
 public class CtaButtonEmailViewModel
 {
 	public string Heading1 { get; set; } = string.Empty;

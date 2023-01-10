@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
-using Pelican.Application.RazorEmails.Interfaces;
+using RazorEmails.Interfaces;
 
-namespace Pelican.Application.RazorEmails.Services;
+namespace RazorEmails.Services;
 // Code from: https://github.com/aspnet/Entropy/blob/dev/samples/Mvc.RenderViewToString/RazorViewToStringRenderer.cs
 
 public class RazorViewToStringRenderer : IRazorViewToStringRenderer

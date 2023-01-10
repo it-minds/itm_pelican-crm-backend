@@ -13,11 +13,11 @@ using Pelican.Application.Abstractions.Infrastructure;
 using Pelican.Application.Behaviours;
 using Pelican.Application.Mail;
 using Pelican.Application.Options;
-using Pelican.Application.RazorEmails.Interfaces;
-using Pelican.Application.RazorEmails.Services;
 using Pelican.Application.RestSharp;
 using Pelican.Application.Security;
 using Pelican.Domain.Settings.HubSpot;
+using RazorEmails.Interfaces;
+using RazorEmails.Services;
 
 [assembly: InternalsVisibleTo("Pelican.Application.Test")]
 namespace Pelican.Application;
@@ -27,13 +27,16 @@ public static class DependencyInjection
 	//Add application as a service that can be used in program
 	public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
 	{
-		IConfiguration mailSettings;
+		IConfigurationSection mailSettings;
 		string keyVaultName = configuration["KeyVaultName"];
 		var kvUri = "https://" + keyVaultName + ".vault.azure.net";
 		var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
 
-		mailSettings = configuration.GetRequiredSection("MailSettings");
+		mailSettings = configuration.GetSection("MailSettings");
 		mailSettings["Password"] = client.GetSecret("PelicanSendgridSMTPRelayApiKey").Value.Value;
+
+		services.Configure<MailOptions>(mailSettings);
+
 
 		services.AddHttpContextAccessor();
 

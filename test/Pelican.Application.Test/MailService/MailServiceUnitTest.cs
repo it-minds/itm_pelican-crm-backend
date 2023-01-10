@@ -3,7 +3,7 @@ using Moq;
 using Pelican.Application.Abstractions.Data.Repositories;
 using Pelican.Application.Mail;
 using Pelican.Application.Options;
-using Pelican.Application.RazorEmails.Interfaces;
+using RazorEmails.Interfaces;
 
 namespace Pelican.Application.Test.Mail;
 public class MailServiceUnitTest

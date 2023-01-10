@@ -2,6 +2,7 @@
 using Moq;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.Mail;
 using Pelican.Application.Mails.SendResetPassword;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Entities.Users;
@@ -152,9 +153,11 @@ public class SendResetPasswordCommandHandlerUnitTest
 		_unitOfWorkMock.Verify(
 			x => x.SaveAsync(default), Times.Once);
 
-		_mailServiceMock.Verify(
-			x => x.SendForgotPasswordEmail(
-				command.Email,
-				"testToken"), Times.Once());
+		_mailServiceMock
+			.Verify(x => x
+				.SendForgotPasswordEmailAsync(
+					command.Email,
+					"testToken"),
+				Times.Once());
 	}
 }

@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Infrastructure;
+using Pelican.Application.Abstractions.Mail;
 using Pelican.Application.Behaviours;
 using Pelican.Application.Mail;
 using Pelican.Application.Options;

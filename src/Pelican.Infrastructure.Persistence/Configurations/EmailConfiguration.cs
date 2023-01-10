@@ -48,5 +48,8 @@ public class EmailConfiguration : IEntityTypeConfiguration<Email>
 
 		builder.Property(e => e.EmailType)
 			.IsRequired();
+
+		builder.HasIndex(e => e.EmailType)
+			.IsUnique();
 	}
 }

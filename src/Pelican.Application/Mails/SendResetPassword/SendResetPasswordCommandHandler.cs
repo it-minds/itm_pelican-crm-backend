@@ -1,5 +1,6 @@
 ﻿using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.Mail;
 using Pelican.Application.Abstractions.Messaging;
 using Pelican.Domain.Entities;
 using Pelican.Domain.Shared;
@@ -35,7 +36,7 @@ public sealed class SendResetPasswordCommandHandler : ICommandHandler<SendResetP
 
 		await _unitOfWork.SaveAsync(cancellationToken);
 
-		await _mailService.SendForgotPasswordEmail(request.Email, token);
+		await _mailService.SendForgotPasswordEmailAsync(request.Email, token);
 
 		return Result.Success();
 	}

@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Net.Mail;
 using Microsoft.Extensions.Options;
-using Pelican.Application.Abstractions.Authentication;
 using Pelican.Application.Abstractions.Data.Repositories;
+using Pelican.Application.Abstractions.Mail;
 using Pelican.Application.Options;
 using Pelican.Application.RazorEmails.Interfaces;
 using Pelican.Application.RazorEmails.Views.CtaButtonEmail;
@@ -17,17 +17,20 @@ public sealed class MailService : IMailService
 	private readonly MailOptions _mailOptions;
 	private readonly IRazorViewToStringRenderer _razorViewToStringRenderer;
 	private readonly IUnitOfWork _unitOfWork;
+	private readonly ISmtpClientProvider _smtpClientProvider;
 	public MailService(
 		IOptions<MailOptions> mailOptions,
 		IRazorViewToStringRenderer razorViewToStringRenderer,
-		IUnitOfWork unitOfWork)
+		IUnitOfWork unitOfWork,
+		ISmtpClientProvider smtpClientProvider)
 	{
 		_mailOptions = mailOptions.Value ?? throw new ArgumentNullException(nameof(mailOptions));
 		_razorViewToStringRenderer = razorViewToStringRenderer ?? throw new ArgumentNullException(nameof(razorViewToStringRenderer));
 		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		_smtpClientProvider = smtpClientProvider ?? throw new ArgumentNullException(nameof(smtpClientProvider));
 	}
 
-	public async Task<Result> SendEmailAsync(MailRequestDto mailRequest, CancellationToken cancellationToken = default)
+	private Result SendEmail(MailRequestDto mailRequest, CancellationToken cancellationToken = default)
 	{
 		MailAddress to = new(mailRequest.ToEmail, mailRequest.ToName);
 		MailAddress from = new(_mailOptions.Mail, _mailOptions.DisplayName);
@@ -38,16 +41,11 @@ public sealed class MailService : IMailService
 		message.IsBodyHtml = true;
 
 		ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-		SmtpClient client = new(_mailOptions.Host, _mailOptions.Port)
-		{
-			Credentials = new NetworkCredential(_mailOptions.UserName, _mailOptions.Password),
-			EnableSsl = false
-		};
-		client.Send(message);
-		return Result.Success();
+
+		return _smtpClientProvider.SendEmailWithSmtpClient(_mailOptions, message); ;
 	}
 
-	public async Task<Result> TestSendEmail()
+	public async Task<Result> TestSendEmailAsync()
 	{
 		var emailModel = new CtaButtonEmailViewModel
 		{
@@ -68,10 +66,10 @@ public sealed class MailService : IMailService
 			Body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/CtaButtonEmail/CtaButtonEmail.cshtml", emailModel),
 		};
 
-		return await SendEmailAsync(mail);
+		return SendEmail(mail);
 	}
 
-	public async Task<Result> SendUserActivationEmail(string email, string token)
+	public async Task<Result> SendUserActivationEmailAsync(string email, string token)
 	{
 		Email? emailEntity = _unitOfWork.EmailRepository
 			.FirstOrDefaultAsync(x => x.EmailType == Domain.Enums.EmailTypeEnum.SendUserActivation).Result;
@@ -89,7 +87,7 @@ public sealed class MailService : IMailService
 			Heading3 = emailEntity.Heading3,
 			paragraph3 = emailEntity.Paragraph3,
 			CtaButtonText = emailEntity.CtaButtonText,
-			CtaButtonUrl = _mailOptions.baseUrl + "/changepassword?token=" + token
+			CtaButtonUrl = _mailOptions.BaseUrl + "/changepassword?token=" + token
 		};
 
 		MailRequestDto mail = new()
@@ -98,10 +96,10 @@ public sealed class MailService : IMailService
 			Subject = emailEntity.Subject,
 			Body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/CtaButtonEmail/CtaButtonEmail.cshtml", emailModel)
 		};
-		return await SendEmailAsync(mail);
+		return SendEmail(mail);
 	}
 
-	public async Task<Result> SendForgotPasswordEmail(string email, string token)
+	public async Task<Result> SendForgotPasswordEmailAsync(string email, string token)
 	{
 		Email? emailEntity = _unitOfWork.EmailRepository
 			.FirstOrDefaultAsync(x => x.EmailType == Domain.Enums.EmailTypeEnum.SendForgotPassword).Result;
@@ -119,7 +117,7 @@ public sealed class MailService : IMailService
 			Heading3 = emailEntity.Heading3,
 			paragraph3 = emailEntity.Paragraph3,
 			CtaButtonText = emailEntity.CtaButtonText,
-			CtaButtonUrl = _mailOptions.baseUrl + "/changepassword?token=" + token
+			CtaButtonUrl = _mailOptions.BaseUrl + "/changepassword?token=" + token
 		};
 
 		MailRequestDto mail = new()
@@ -128,10 +126,10 @@ public sealed class MailService : IMailService
 			Subject = emailEntity.Subject,
 			Body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/CtaButtonEmail/CtaButtonEmail.cshtml", emailModel)
 		};
-		return await SendEmailAsync(mail);
+		return SendEmail(mail);
 	}
 
-	public async Task<string> GeneratePreview(Email emailDto)
+	public async Task<string> GeneratePreviewAsync(EmailDto emailDto)
 	{
 		var emailModel = new CtaButtonEmailViewModel()
 		{
@@ -145,10 +143,10 @@ public sealed class MailService : IMailService
 		};
 
 		var htmlString = await _razorViewToStringRenderer.RenderViewToStringAsync(
-		  "/Views/Emails/CtaButtonEmail/CtaButtonEmail.cshtml", emailModel);
+		  "/Views/CtaButtonEmail/CtaButtonEmail.cshtml", emailModel);
 
-		var hostedLogo = _mailOptions.baseUrl + "/images/logo.png";
-		var hostedAltLogo = _mailOptions.baseUrl + "/images/altlogo.png";
+		var hostedLogo = _mailOptions.BaseUrl + "/images/logo.png";
+		var hostedAltLogo = _mailOptions.BaseUrl + "/images/altlogo.png";
 
 		var imgReplacedHtml = htmlString
 		  .Replace("cid:Logo", hostedLogo)

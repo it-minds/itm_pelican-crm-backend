@@ -11,6 +11,6 @@ public class MailOptions
 	public string Password { get; set; } = string.Empty;
 	public string Host { get; set; } = string.Empty;
 	public int Port { get; set; }
-	public string baseUrl { get; set; } = string.Empty;
+	public string BaseUrl { get; set; } = string.Empty;
 	public List<Email> DefaultEmails { get; set; } = new List<Email>();
 }

@@ -1,4 +1,5 @@
-﻿using Pelican.Domain.Extensions;
+﻿using Pelican.Domain.Enums;
+using Pelican.Domain.Extensions;
 using Pelican.Domain.Primitives;
 
 namespace Pelican.Domain.Entities;
@@ -86,6 +87,7 @@ public class Email : Entity, ITimeTracked
 			_ctaButtonText = value.CheckAndShortenExceedingString(StringLengths.CtaButtonText);
 		}
 	}
+	public EmailTypeEnum EmailType { get; set; }
 	public long CreatedAt { get; set; }
 	public long? LastUpdatedAt { get; set; }
 }

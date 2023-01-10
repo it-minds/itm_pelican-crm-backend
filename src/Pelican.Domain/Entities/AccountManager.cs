@@ -4,8 +4,8 @@ using Pelican.Domain.Primitives;
 namespace Pelican.Domain.Entities;
 public class AccountManager : Entity, ITimeTracked
 {
-	private string _firstName = string.Empty;
-	private string _lastName = string.Empty;
+	private string? _firstName;
+	private string? _lastName;
 	private string _email = string.Empty;
 	private string? _phoneNumber;
 	private string? _linkedInUrl;
@@ -20,15 +20,15 @@ public class AccountManager : Entity, ITimeTracked
 
 	public long SourceUserId { get; set; }
 
-	public string FirstName
+	public string? FirstName
 	{
 		get => _firstName;
-		set => _firstName = value.CheckAndShortenExceedingString(StringLengths.Name);
+		set => _firstName = value?.CheckAndShortenExceedingString(StringLengths.Name);
 	}
-	public string LastName
+	public string? LastName
 	{
 		get => _lastName;
-		set => _lastName = value.CheckAndShortenExceedingString(StringLengths.Name);
+		set => _lastName = value?.CheckAndShortenExceedingString(StringLengths.Name);
 	}
 
 	public string Email

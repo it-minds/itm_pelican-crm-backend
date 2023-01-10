@@ -116,7 +116,7 @@ public class OwnerResponseToAccountManagerTests
 		AccountManager result = response.ToAccountManager();
 
 		/// Assert
-		Assert.Equal(StringLengths.Name, result.FirstName.Length);
+		Assert.Equal(StringLengths.Name, result.FirstName!.Length);
 		Assert.Equal("...", result.FirstName.Substring(StringLengths.Name - 3));
 		Assert.Equal(response.Firstname.Substring(0, StringLengths.Name - 3), result.FirstName.Substring(0, StringLengths.Name - 3));
 	}
@@ -131,7 +131,7 @@ public class OwnerResponseToAccountManagerTests
 		AccountManager result = response.ToAccountManager();
 
 		/// Assert
-		Assert.Equal(StringLengths.Name, result.LastName.Length);
+		Assert.Equal(StringLengths.Name, result.LastName!.Length);
 		Assert.Equal("...", result.LastName.Substring(StringLengths.Name - 3));
 		Assert.Equal(response.Lastname.Substring(0, StringLengths.Name - 3), result.LastName.Substring(0, StringLengths.Name - 3));
 	}

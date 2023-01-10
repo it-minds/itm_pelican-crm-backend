@@ -62,7 +62,7 @@ public sealed class MailService : IMailService
 
 		MailRequestDto mail = new()
 		{
-			ToEmail = "ame@it-minds.dk",
+			ToEmail = _mailOptions.Mail,
 			Subject = "Test mail From Pelican Support",
 			Body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/Emails/CtaButtonEmail/CtaButtonEmail.cshtml", emailModel),
 		};

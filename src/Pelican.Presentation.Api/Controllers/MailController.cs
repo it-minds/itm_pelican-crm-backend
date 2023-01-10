@@ -12,12 +12,16 @@ public sealed class MailController : ApiController
 	{
 		_mailService = mailService;
 	}
+
+	//TODO: Re add when GetMailsQuery is created
 	//[HttpGet]
 	//public async Task<ActionResult<List<EmailDto>>> GetAllMails()
 	//{
 	//	return await Mediator.Send(new GetMailsQuery());
 	//}
 
+
+	//TODO: Re add when UpdateEmailCommand is created
 	//[HttpPut("{id}")]
 	//public async Task<ActionResult> UpdateEmail([FromRoute] int id, UpdateEmailCommand command)
 	//{
@@ -33,10 +37,10 @@ public sealed class MailController : ApiController
 		await _mailService.SendTestEmail();
 		return NoContent();
 	}
-
-	//[HttpPost("preview")]
-	//public async Task<ActionResult<string>> GeneratePreview([FromBody] GeneratePreviewMailCommand command)
-	//{
-	//	return await Mediator.Send(command);
-	//}
+	//TODO: Re add after GeneratePreviewMailCommand is created
+	//	[HttpPost("preview")]
+	//	public async Task<ActionResult<string>> GeneratePreview([FromBody] GeneratePreviewMailCommand command)
+	//	{
+	//		return await Mediator.Send(command);
+	//	}
 }

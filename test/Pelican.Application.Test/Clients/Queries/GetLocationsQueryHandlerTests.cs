@@ -40,7 +40,7 @@ public class GetLocationsQueryHandlerTests
 	}
 
 	[Fact]
-	public async void Handle_()
+	public async void Handle_VerifyCallToRepository()
 	{
 		// Arrange
 		GetLocationsQuery query = new();

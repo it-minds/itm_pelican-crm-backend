@@ -36,7 +36,6 @@ public sealed class MailService : IMailService
 		message.Subject = mailRequest.Subject;
 		message.Body = mailRequest.Body;
 		message.IsBodyHtml = true;
-		AlternateView htmlView = AlternateView.CreateAlternateViewFromString(mailRequest.Body, null, "text/html");
 
 		ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 		SmtpClient client = new(_mailOptions.Host, _mailOptions.Port)

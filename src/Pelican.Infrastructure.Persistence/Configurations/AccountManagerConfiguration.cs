@@ -11,12 +11,10 @@ internal class AccountManagerConfiguration : IEntityTypeConfiguration<AccountMan
 		builder.ToTable("AccountManagers");
 
 		builder.Property(p => p.FirstName)
-			.HasMaxLength(StringLengths.Name)
-			.IsRequired();
+			.HasMaxLength(StringLengths.Name);
 
 		builder.Property(p => p.LastName)
-			.HasMaxLength(StringLengths.Name)
-			.IsRequired();
+			.HasMaxLength(StringLengths.Name);
 
 		builder.Property(p => p.PictureUrl)
 			.HasMaxLength(StringLengths.Url);

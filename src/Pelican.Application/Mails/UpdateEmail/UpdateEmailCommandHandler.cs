@@ -14,8 +14,8 @@ public sealed class UpdateEmailCommandHandler : ICommandHandler<UpdateEmailComma
 		IUnitOfWork unitOfWork,
 		IMapper mapper)
 	{
-		_unitOfWork = unitOfWork;
-		_mapper = mapper;
+		_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+		_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 	}
 
 	public async Task<Result<EmailDto>> Handle(
@@ -32,7 +32,7 @@ public sealed class UpdateEmailCommandHandler : ICommandHandler<UpdateEmailComma
 		{
 			return new Error(
 				"Email.NotFound",
-				$"Email with Id: {request.Email.Id} not found");
+				$"Email with id: {request.Email.Id} not found");
 		}
 
 		email.Name = request.Email.Name;

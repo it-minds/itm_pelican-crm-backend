@@ -43,7 +43,7 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, UserTokenDto>
 		{
 			return Result.Failure<UserTokenDto>(new Error(
 				"Authentication.InvalidEmailOrPassword",
-				"The specified email or password are incorrect."));
+				"The specified email or password is incorrect."));
 		}
 
 		var token = _tokenService.CreateToken(user);

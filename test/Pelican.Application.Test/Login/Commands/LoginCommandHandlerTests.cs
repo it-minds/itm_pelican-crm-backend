@@ -141,7 +141,7 @@ public class LoginCommandHandlerTests
 		Assert.Equal(
 			new Error(
 				"Authentication.InvalidEmailOrPassword",
-				"The specified email or password is incorrect."),
+				"The specified email or password are incorrect."),
 			result.Error);
 	}
 

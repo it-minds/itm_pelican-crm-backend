@@ -1,15 +1,14 @@
 ﻿namespace Pelican.Domain.Shared;
 public class Result
 {
-	protected internal Result(bool isSucces, Error error)
+	protected internal Result(bool isSuccess, Error error)
 	{
-		if (isSucces && error != Error.None) throw new InvalidOperationException();
-		if (!isSucces && error == Error.None) throw new InvalidOperationException();
+		if (isSuccess && error != Error.None) throw new InvalidOperationException();
+		if (!isSuccess && error == Error.None) throw new InvalidOperationException();
 
-		IsSuccess = isSucces;
+		IsSuccess = isSuccess;
 		Error = error;
 	}
-
 
 	public bool IsSuccess { get; }
 
